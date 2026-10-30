@@ -1,71 +1,254 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Create a 1280 × 720 YouTube thumbnail from your own image and text.">
-<title>YouTube Thumbnail Maker - LOOX Utility Kit</title>
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Create polished YouTube thumbnails with editable text, layouts, colors and original starter artwork.">
+<title>YouTube Thumbnail Studio — LOOX MediaGrab</title>
 <style>
-:root{--bg-dark:#0b0d14;--sidebar-bg:#08090d;--card-bg:#131722;--card-border:#1e2436;--accent-pink:#ec4899;--accent-purple:#8b5cf6;--accent-blue:#3b82f6;--text-main:#f3f4f6;--text-muted:#9ca3af}
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:var(--bg-dark);color:var(--text-main);min-height:100vh;display:flex;overflow-x:hidden}
-aside{width:260px;background:var(--sidebar-bg);border-right:1px solid var(--card-border);display:flex;flex-direction:column;padding:20px;position:fixed;height:100vh;z-index:10;overflow-y:auto}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.2rem;margin-bottom:30px;color:#fff;text-decoration:none;flex-shrink:0}
-.brand-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple));border-radius:8px;display:flex;align-items:center;justify-content:center}
-.brand span{background:linear-gradient(to right,#fff,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.nav-section-title{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 10px;font-weight:700}
+:root{--bg:#090b12;--panel:#111522;--panel2:#171c2b;--line:#293147;--pink:#f04b9b;--purple:#8b5cf6;--blue:#438bff;--text:#f5f6fb;--muted:#a3acc0;--green:#37d6a0}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body{background:radial-gradient(ellipse at 75% -10%,rgba(111,69,202,.2),transparent 38%),var(--bg);color:var(--text);min-height:100vh;display:flex}
+aside{width:250px;position:fixed;inset:0 auto 0 0;background:#080a10;border-right:1px solid var(--line);padding:20px 16px;overflow:auto;z-index:20}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;font-weight:900;font-size:1.12rem;margin:0 0 32px;white-space:nowrap}
+.brand-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--pink),var(--purple));display:grid;place-items:center;box-shadow:0 5px 22px #8b5cf644}
+.brand span{color:#fff!important;background:none!important;-webkit-text-fill-color:#fff!important}
+.nav-section-title{font-size:.7rem;color:#78839b;letter-spacing:1.3px;font-weight:800;margin:8px 0 12px}
 .nav-links{display:flex;flex-direction:column;gap:5px}
-.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:var(--text-muted);text-decoration:none;font-size:.88rem;font-weight:500;transition:.2s;border:1px solid transparent}
-.nav-item:hover{background:rgba(255,255,255,.04);color:#fff}
-.nav-item.active{background:rgba(236,72,153,.1);border-color:rgba(236,72,153,.3);color:#fff}
-main{margin-left:260px;flex:1;padding:40px;display:flex;flex-direction:column;min-height:100vh;min-width:0}
-.hero{margin-bottom:25px}.hero h1{font-size:2.2rem;font-weight:900;margin-bottom:8px}.gradient-text{background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple) 50%,var(--accent-blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.hero p{color:var(--text-muted);font-size:.95rem;line-height:1.6}
-.workspace-card,.info-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:16px;padding:26px;box-shadow:0 20px 40px rgba(0,0,0,.25);margin-bottom:18px}
-.upload-area{border:2px dashed rgba(236,72,153,.4);border-radius:12px;padding:38px 20px;text-align:center;cursor:pointer;background:rgba(0,0,0,.2);transition:.2s}
-.upload-area:hover,.upload-area.dragover{border-color:var(--accent-pink);background:rgba(236,72,153,.06)}
-.upload-area input{display:none}
-.muted{color:var(--text-muted);font-size:.9rem;line-height:1.6}.hint{font-size:.8rem;color:var(--text-muted);margin-top:8px}
-.btn{border:0;border-radius:9px;padding:12px 18px;font-weight:750;font-size:.92rem;cursor:pointer;transition:.2s}
-.btn-primary{background:linear-gradient(135deg,var(--accent-pink),var(--accent-purple));color:white;box-shadow:0 4px 15px rgba(236,72,153,.2)}
-.btn-secondary{background:#202638;border:1px solid #30394f;color:#e5e7eb}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:18px}
-.field{display:flex;flex-direction:column;gap:7px;min-width:150px;flex:1}
-label{font-size:.85rem;color:#d1d5db;font-weight:650}
-input[type=text],input[type=number],select,textarea{width:100%;background:#0d111b;color:#f3f4f6;border:1px solid #30394f;border-radius:8px;padding:11px 12px;outline:none}
-input:focus,select:focus,textarea:focus{border-color:var(--accent-pink)}
-input[type=range]{accent-color:var(--accent-pink);width:100%}
-.preview{display:block;max-width:100%;max-height:520px;object-fit:contain;margin:18px auto 0;border-radius:10px;border:1px solid var(--card-border)}
-.preview-wrap{background:#0c1019;border:1px solid var(--card-border);border-radius:12px;padding:14px;margin-top:18px;text-align:center;overflow:hidden}
-.status{margin-top:14px;padding:12px 14px;border-radius:9px;background:#0d1721;border:1px solid #1f3b4d;color:#b9e6f5;line-height:1.5;display:none;overflow-wrap:anywhere}
-.status.error{background:#24131a;border-color:#633044;color:#fecdd3}
-.status.success{background:#112319;border-color:#28553a;color:#bbf7d0}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:15px}
-.step{background:#0d111b;border:1px solid var(--card-border);border-radius:10px;padding:14px;color:var(--text-muted);font-size:.87rem;line-height:1.5}
-.step b{display:block;color:#fff;margin-bottom:5px}
-.notice{border-left:3px solid var(--accent-purple);padding:10px 13px;background:rgba(139,92,246,.08);border-radius:0 8px 8px 0;color:#c4b5fd;font-size:.85rem;line-height:1.5;margin-top:14px}
-canvas{max-width:100%;height:auto;border-radius:10px}
-@media(max-width:900px){aside{width:70px;padding:15px 9px}aside .brand span,aside .nav-section-title,aside .nav-item span{display:none}aside .nav-item{justify-content:center;padding:12px 4px}main{margin-left:70px;padding:20px}}
-@media(max-width:560px){main{padding:16px}.hero h1{font-size:1.75rem}.workspace-card,.info-card{padding:17px}.controls{flex-direction:column;align-items:stretch}.controls .btn{width:100%}}
-</style>
-</head><body>
-<aside><a href="index.html" class="brand"><div class="brand-icon">⚡</div><span>LOOX Kit</span></a><div class="nav-section-title">Tools Hub</div><nav class="nav-links"><a href="index.html" class="nav-item "><span>🏠</span><span>Dashboard Hub</span></a>
-<a href="bg-remove.html" class="nav-item "><span>✂️</span><span>Background Remover</span></a>
-<a href="imgformatconverter.html" class="nav-item "><span>🖼️</span><span>Image Converter</span></a>
-<a href="cropimage.html" class="nav-item "><span>📐</span><span>Image Cropper</span></a>
-<a href="faceswap.html" class="nav-item "><span>👤</span><span>AI Face Swapper</span></a>
-<a href="face-blur.html" class="nav-item "><span>🫥</span><span>Face Blur</span></a>
-<a href="image-compressor.html" class="nav-item "><span>📦</span><span>Image Compressor</span></a>
-<a href="video-to-gif.html" class="nav-item "><span>🎞️</span><span>Video to GIF</span></a>
-<a href="video-to-mp3.html" class="nav-item "><span>🎵</span><span>Video to MP3</span></a>
-<a href="video-compressor.html" class="nav-item "><span>🎬</span><span>Video Compressor</span></a>
-<a href="youtube-thumbnail-maker.html" class="nav-item active"><span>▶️</span><span>YouTube Thumbnail Maker</span></a></nav></aside>
-<main><div class="hero"><h1>YouTube <span class="gradient-text">Thumbnail Maker</span></h1><p>Create a 1280 × 720 YouTube thumbnail from your own image and text.</p></div><section class="workspace-card"><div class="upload-area" id="drop"><input id="file" type="file" accept="image/jpeg,image/png,image/webp"><h3>▶️ Upload a background image</h3><p class="muted">Choose a photo or game screenshot for your thumbnail</p><p class="hint">JPG, PNG or WebP · Maximum 20 MB</p></div><div id="editor" style="display:none"><div class="controls"><div class="field"><label>Thumbnail title</label><input id="titleText" type="text" maxlength="80" value="YOUR VIDEO TITLE"></div><div class="field"><label>Small subtitle (optional)</label><input id="subText" type="text" maxlength="90" placeholder="Add a short subtitle"></div></div><div class="controls"><div class="field"><label>Title color</label><input id="color" type="color" value="#ffffff"></div><div class="field"><label>Text size: <output id="sizeOut">76</output> px</label><input id="size" type="range" min="36" max="110" value="76"></div><div class="field"><label>Text position</label><select id="position"><option value="center">Center</option><option value="top">Top</option><option value="bottom">Bottom</option></select></div></div><div class="preview-wrap"><canvas id="canvas" width="1280" height="720" style="width:100%"></canvas></div><div class="controls"><button class="btn btn-primary" id="download">Download 1280 × 720 thumbnail</button><button class="btn btn-secondary" id="replace">Change background</button></div></div><div class="status" id="status" role="status"></div></section><section class="info-card"><h3>How to use this tool</h3><div class="steps"><div class="step"><b>1. Choose a file</b>Select a supported file from your device.</div><div class="step"><b>2. Adjust settings</b>Choose the quality or options you need.</div><div class="step"><b>3. Process & download</b>Wait for the result, then save it to your device.</div></div><div class="notice"><b>Privacy & safety:</b> Processing happens in your browser. Your selected file is not uploaded to LOOX. Use files you own or have permission to edit. Avoid sharing private or sensitive media on public devices.</div></section></main>
-<script>const $=id=>document.getElementById(id);let bg=null,canvas=$('canvas'),ctx=canvas.getContext('2d');
-$('drop').onclick=()=>$('file').click();$('drop').ondragover=e=>{e.preventDefault();$('drop').classList.add('dragover')};$('drop').ondragleave=()=>$('drop').classList.remove('dragover');$('drop').ondrop=e=>{e.preventDefault();$('drop').classList.remove('dragover');load(e.dataTransfer.files[0])};$('file').onchange=e=>load(e.target.files[0]);
-async function load(f){if(!f)return;if(!/^image\/(jpeg|png|webp)$/.test(f.type)||f.size>20*1024*1024){msg('Choose a JPG, PNG or WebP image under 20 MB.',true);return}try{bg=await createImageBitmap(f);if(bg.width*bg.height>40000000)throw Error('Image exceeds the 40-megapixel safety limit.');$('drop').style.display='none';$('editor').style.display='block';draw()}catch(e){msg(e.message||'Could not open image.',true)}}
-function msg(t,err=false){$('status').textContent=t;$('status').className='status'+(err?' error':'');$('status').style.display='block'}
-function draw(){if(!bg)return;ctx.clearRect(0,0,1280,720);const scale=Math.max(1280/bg.width,720/bg.height),w=bg.width*scale,h=bg.height*scale;ctx.drawImage(bg,(1280-w)/2,(720-h)/2,w,h);const shade=ctx.createLinearGradient(0,0,0,720);shade.addColorStop(0,'rgba(0,0,0,.18)');shade.addColorStop(.5,'rgba(0,0,0,.28)');shade.addColorStop(1,'rgba(0,0,0,.72)');ctx.fillStyle=shade;ctx.fillRect(0,0,1280,720);const pos=$('position').value,title=$('titleText').value.trim(),sub=$('subText').value.trim(),y=pos==='top'?170:pos==='bottom'?520:390;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=$('color').value;ctx.strokeStyle='rgba(0,0,0,.9)';ctx.lineWidth=10;ctx.lineJoin='round';ctx.shadowColor='rgba(0,0,0,.7)';ctx.shadowBlur=16;ctx.font='900 '+$('size').value+'px Arial';const words=title.split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>1120&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);const lh=Number($('size').value)*1.08,start=y-(lines.length-1)*lh/2-(sub?25:0);lines.slice(0,3).forEach((l,i)=>{ctx.strokeText(l,640,start+i*lh,1120);ctx.fillText(l,640,start+i*lh,1120)});if(sub){ctx.font='700 32px Arial';ctx.strokeText(sub,640,Math.min(670,start+lines.length*lh+28),1100);ctx.fillText(sub,640,Math.min(670,start+lines.length*lh+28),1100)}ctx.shadowBlur=0}
-['titleText','subText','color','size','position'].forEach(id=>$(id).addEventListener('input',()=>{if(id==='size')$('sizeOut').textContent=$('size').value;draw()}));
-$('download').onclick=()=>canvas.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='loox-youtube-thumbnail.jpg';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/jpeg',.94);
-$('replace').onclick=()=>{$('file').value='';$('editor').style.display='none';$('drop').style.display='block';bg?.close();bg=null};</script>
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border:1px solid transparent;border-radius:10px;text-decoration:none;color:#a8b0c2;font-size:.84rem;font-weight:650;transition:.2s}
+.nav-item:hover{color:#fff;background:#171b29;transform:translateX(3px)}
+.nav-item.active{color:#fff;border-color:#8b5cf655;background:linear-gradient(100deg,#ec48991c,#8b5cf61b)}
+main{margin-left:250px;width:calc(100% - 250px);padding:32px;min-width:0}
+.topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.eyebrow{font-size:.72rem;letter-spacing:1.8px;text-transform:uppercase;color:#c084fc;font-weight:850;margin-bottom:9px}
+h1{font-size:clamp(1.7rem,3vw,2.55rem);font-weight:900;letter-spacing:-1.2px;line-height:1.08}
+.gradient{background:linear-gradient(100deg,#ff72b6,#a78bfa 55%,#65a8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro{color:var(--muted);margin-top:10px;line-height:1.6;font-size:.94rem;max-width:780px}
+.pill{border:1px solid #37d6a044;background:#37d6a012;color:#86f0c9;border-radius:999px;padding:8px 12px;font-size:.76rem;font-weight:750;white-space:nowrap}
+.studio{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+.stage-panel,.editor-panel,.guide{background:linear-gradient(150deg,#141a29,#0f1320);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 55px #0005}
+.stage-panel{padding:17px;min-width:0}
+.stage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.stage-head strong{font-size:.9rem}.stage-head small{color:var(--muted);font-size:.76rem}
+.canvas-shell{background-color:#0a0d15;background-image:linear-gradient(45deg,#171c29 25%,transparent 25%),linear-gradient(-45deg,#171c29 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#171c29 75%),linear-gradient(-45deg,transparent 75%,#171c29 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;border:1px solid #303950;border-radius:13px;padding:10px;overflow:hidden}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:7px;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+button,.btn{border:1px solid #343e56;background:#20283a;color:#f4f5fb;border-radius:9px;padding:10px 13px;font-weight:750;font-size:.79rem;cursor:pointer;transition:.2s}
+button:hover,.btn:hover{border-color:#b06bfa;transform:translateY(-1px);filter:brightness(1.1)}
+button.primary{background:linear-gradient(110deg,var(--pink),var(--purple));border:0;box-shadow:0 5px 18px #a347c544}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.editor-panel{padding:17px;position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto}
+.panel-title{font-size:.96rem;font-weight:850;margin-bottom:4px}
+.panel-sub{font-size:.75rem;color:var(--muted);line-height:1.5;margin-bottom:15px}
+.tabs{display:flex;gap:5px;padding:4px;background:#090d17;border:1px solid var(--line);border-radius:10px;margin-bottom:15px}
+.tab{flex:1;padding:8px 4px;border:0;background:transparent;color:#aab3c7;font-size:.74rem}
+.tab.active{background:#272c40;color:#fff;border:1px solid #8b5cf655}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.field label,.field-label{font-size:.75rem;color:#cbd2e1;font-weight:750}
+input[type=text],select,textarea{width:100%;background:#0a0f1b;border:1px solid #303a51;color:#fff;border-radius:8px;padding:10px 11px;outline:none;font-size:.82rem}
+input:focus,select:focus,textarea:focus{border-color:#bd6aff;box-shadow:0 0 0 3px #8b5cf622}
+input[type=range]{width:100%;accent-color:#c05aff}
+input[type=color]{width:100%;height:38px;border:1px solid #303a51;border-radius:8px;background:#0a0f1b;padding:3px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.range-line{display:flex;justify-content:space-between;gap:10px;font-size:.72rem;color:var(--muted)}
+.layer-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
+.layer-row{display:flex;align-items:center;gap:8px;padding:9px;background:#0b101b;border:1px solid #283148;border-radius:9px;cursor:pointer;font-size:.76rem}
+.layer-row.active{border-color:#bc65ff;background:#281a38}
+.layer-row span:first-child{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layer-row button{padding:5px 8px;font-size:.7rem}
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.template{border:1px solid #303950;border-radius:10px;background:#0c111d;padding:0;overflow:hidden;text-align:left}
+.template-art{height:65px;display:flex;align-items:center;justify-content:center;font-weight:1000;font-size:1rem;letter-spacing:-.5px;text-shadow:0 2px 8px #000}
+.template small{display:block;padding:8px;color:#cbd2e1;font-size:.7rem}
+.help{font-size:.73rem;line-height:1.55;color:#9ea9bd}
+.guide{margin-top:18px;padding:18px}
+.guide h2{font-size:1rem;margin-bottom:13px}
+.guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.guide-card{border:1px solid var(--line);background:#0c111c;border-radius:12px;padding:13px}
+.guide-art{height:88px;border-radius:8px;margin-bottom:10px;display:grid;place-items:center;text-align:center;font-size:1.2rem;font-weight:950;text-shadow:0 2px 8px #000}
+.guide-card b{font-size:.78rem;display:block;margin-bottom:5px}
+.guide-card p{font-size:.72rem;color:var(--muted);line-height:1.45}
+.status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;background:#13251f;color:#a7f3d0;font-size:.78rem;line-height:1.5}
+.status.error{background:#2a151e;color:#fecdd3}
+input[type=file]{display:none}
+@media(max-width:1120px){.studio{grid-template-columns:1fr}.editor-panel{position:static;max-height:none}.topline{align-items:flex-start}}
+@media(max-width:900px){aside{width:220px;padding:16px}main{margin-left:220px;width:calc(100% - 220px);padding:20px}}
+@media(max-width:650px){aside{width:66px;padding:12px 7px}aside .brand{justify-content:center}aside .brand span,aside .nav-section-title,aside .nav-item span+span{display:none}aside .nav-item{justify-content:center;padding:12px 4px}main{margin-left:66px;width:calc(100% - 66px);padding:12px}.pill{display:none}.guide-grid{grid-template-columns:1fr}.two{grid-template-columns:1fr 1fr}}
+</style></head>
+<body>
+<aside>
+<a href="index.html" class="brand"><div class="brand-icon">⚡</div><span>LOOX MediaGrab</span></a>
+<div class="nav-section-title">CREATOR TOOLS</div><nav class="nav-links">
+<a href="index.html" class="nav-item"><span>🏠</span><span>Dashboard Hub</span></a>
+<a href="bg-remove.html" class="nav-item"><span>✂️</span><span>Background Remover</span></a>
+<a href="imgformatconverter.html" class="nav-item"><span>🖼️</span><span>Image Converter</span></a>
+<a href="cropimage.html" class="nav-item"><span>📐</span><span>Image Cropper</span></a>
+<a href="faceswap.html" class="nav-item"><span>👤</span><span>AI Face Swapper</span></a>
+<a href="face-blur.html" class="nav-item"><span>🫥</span><span>Face Blur</span></a>
+<a href="image-compressor.html" class="nav-item"><span>📦</span><span>Image Compressor</span></a>
+<a href="video-to-gif.html" class="nav-item"><span>🎞️</span><span>Video to GIF</span></a>
+<a href="video-to-mp3.html" class="nav-item"><span>🎵</span><span>Video to MP3</span></a>
+<a href="video-compressor.html" class="nav-item"><span>🎬</span><span>Video Compressor</span></a>
+<a href="youtube-thumbnail-maker.html" class="nav-item active"><span>▶️</span><span>Thumbnail Studio</span></a>
+</nav></aside>
+<main>
+<div class="topline"><div><div class="eyebrow">CREATOR WORKSPACE / DESIGN</div><h1>YouTube <span class="gradient">Thumbnail Studio</span></h1><p class="intro">Build bold 1280 × 720 thumbnails with editable text layers, ready-made layouts, original starter artwork and precise controls. Your design stays on this device.</p></div><div class="pill">● LOCAL EDITOR · 1280 × 720</div></div>
+<div class="studio">
+<section class="stage-panel">
+<div class="stage-head"><div><strong>Live canvas</strong><br><small>Drag text directly on the design to reposition it</small></div><small id="canvasSize">1280 × 720 px</small></div>
+<div class="canvas-shell"><canvas id="canvas" width="1280" height="720" aria-label="Thumbnail preview"></canvas></div>
+<div class="toolbar"><button id="uploadBtn">＋ Upload background</button><input id="file" type="file" accept="image/jpeg,image/png,image/webp"><button id="sampleBtn">✦ Use original sample art</button><button id="resetBtn">↺ Reset layout</button><button class="primary" id="downloadBtn">↓ Export thumbnail</button></div>
+<div class="status" id="status" role="status"></div>
+</section>
+<aside class="editor-panel" style="position:sticky">
+<div class="panel-title">Design controls</div><p class="panel-sub">Choose a layout, edit each text layer, then fine-tune the background and export.</p>
+<div class="tabs"><button class="tab active" data-tab="text">Text</button><button class="tab" data-tab="layout">Layouts</button><button class="tab" data-tab="background">Background</button><button class="tab" data-tab="export">Export</button></div>
+<div class="tab-pane active" id="tab-text">
+<div class="field"><div class="range-line"><span class="field-label">Text layers</span><span class="help">Select a layer to edit</span></div><div class="layer-list" id="layerList"></div><div class="two"><button id="addText">＋ Add text</button><button id="deleteText">Delete selected</button></div></div>
+<div class="field"><label for="layerText">Text content</label><textarea id="layerText" rows="2" maxlength="90">INSANE GAMEPLAY!</textarea></div>
+<div class="two"><div class="field"><label for="font">Font style</label><select id="font"><option value="Arial">Arial / Bold</option><option value="Impact">Impact</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></div><div class="field"><label for="weight">Weight</label><select id="weight"><option value="900">Black</option><option value="800">Extra bold</option><option value="700">Bold</option><option value="500">Medium</option></select></div></div>
+<div class="two"><div class="field"><label for="textColor">Text color</label><input id="textColor" type="color" value="#ffffff"></div><div class="field"><label for="strokeColor">Outline color</label><input id="strokeColor" type="color" value="#111111"></div></div>
+<div class="field"><div class="range-line"><label for="fontSize">Font size</label><output id="fontSizeOut">104 px</output></div><input id="fontSize" type="range" min="24" max="190" value="104"></div>
+<div class="field"><div class="range-line"><label for="strokeWidth">Outline thickness</label><output id="strokeOut">10 px</output></div><input id="strokeWidth" type="range" min="0" max="24" value="10"></div>
+<div class="field"><div class="range-line"><label for="rotation">Rotation</label><output id="rotationOut">0°</output></div><input id="rotation" type="range" min="-25" max="25" value="0"></div>
+<div class="two"><div class="field"><label for="align">Text alignment</label><select id="align"><option value="center">Center</option><option value="left">Left</option><option value="right">Right</option></select></div><div class="field"><label for="shadow">Text shadow</label><select id="shadow"><option value="yes">Strong shadow</option><option value="soft">Soft shadow</option><option value="no">No shadow</option></select></div></div>
+<div class="field"><div class="range-line"><label for="posX">Horizontal position</label><output id="posXOut">640</output></div><input id="posX" type="range" min="0" max="1280" value="640"></div>
+<div class="field"><div class="range-line"><label for="posY">Vertical position</label><output id="posYOut">390</output></div><input id="posY" type="range" min="0" max="720" value="390"></div>
+</div>
+<div class="tab-pane" id="tab-layout">
+<div class="field"><label>Choose a starting layout</label><div class="template-grid">
+<button class="template" data-template="gaming"><div class="template-art" style="background:linear-gradient(135deg,#172b64,#e63283)">EPIC WIN</div><small>Gaming / action</small></button>
+<button class="template" data-template="reaction"><div class="template-art" style="background:linear-gradient(135deg,#f97316,#a21caf)">WHAT?!</div><small>Reaction / bold</small></button>
+<button class="template" data-template="tutorial"><div class="template-art" style="background:linear-gradient(135deg,#0e7490,#1d4ed8)">HOW TO</div><small>Tutorial / clean</small></button>
+<button class="template" data-template="cinematic"><div class="template-art" style="background:linear-gradient(135deg,#111827,#7c2d12)">THE FINAL</div><small>Cinematic</small></button>
+</div></div>
+<div class="field"><label>Quick additions</label><div class="two"><button id="addBadge">＋ Add badge</button><button id="addSubtitle">＋ Add subtitle</button></div></div>
+<p class="help">Layouts change text styling and positioning. Every layer remains editable after applying a preset.</p>
+</div>
+<div class="tab-pane" id="tab-background">
+<div class="field"><label>Background image</label><button id="backgroundUpload">Choose image from device</button></div>
+<div class="field"><label for="fit">Image fit</label><select id="fit"><option value="cover">Fill canvas (crop edges)</option><option value="contain">Fit entire image</option></select></div>
+<div class="field"><div class="range-line"><label for="brightness">Brightness</label><output id="brightnessOut">100%</output></div><input id="brightness" type="range" min="35" max="150" value="100"></div>
+<div class="field"><div class="range-line"><label for="saturation">Color intensity</label><output id="saturationOut">100%</output></div><input id="saturation" type="range" min="0" max="180" value="100"></div>
+<div class="field"><div class="range-line"><label for="overlay">Dark overlay</label><output id="overlayOut">25%</output></div><input id="overlay" type="range" min="0" max="75" value="25"></div>
+<div class="field"><label for="overlayColor">Overlay color</label><input id="overlayColor" type="color" value="#090b18"></div>
+<div class="two"><button id="generateBg">Generate new art</button><button id="clearBg">Clear image</button></div>
+</div>
+<div class="tab-pane" id="tab-export">
+<div class="field"><label for="format">File format</label><select id="format"><option value="image/jpeg">JPG · Smaller file</option><option value="image/png">PNG · Best for graphics</option><option value="image/webp">WebP · Modern format</option></select></div>
+<div class="field"><div class="range-line"><label for="quality">JPG / WebP quality</label><output id="qualityOut">92%</output></div><input id="quality" type="range" min="60" max="100" value="92"></div>
+<div class="field"><label>Canvas dimensions</label><div class="help">1280 × 720 px · YouTube recommended 16:9 thumbnail size</div></div>
+<button class="primary" id="exportNow" style="width:100%">Export 1280 × 720</button>
+<p class="help" style="margin-top:12px">PNG preserves sharp text and shapes. JPG is usually smaller. WebP can offer a good balance of size and quality.</p>
+</div>
+</aside>
+</div>
+<section class="guide"><h2>Make a thumbnail that reads clearly</h2><div class="guide-grid">
+<div class="guide-card"><div class="guide-art" style="background:radial-gradient(circle at 75% 35%,#ffb02e,#db2777 35%,#171b50)">BIG<br>SUBJECT</div><b>1. Start with a clear subject</b><p>Use your own screenshot or photo. Keep the main subject large and leave space for the title.</p></div>
+<div class="guide-card"><div class="guide-art" style="background:linear-gradient(120deg,#172554,#7c3aed)">SHORT<br>BOLD TEXT</div><b>2. Keep words short</b><p>Use a few large words, strong contrast and an outline so text remains readable on a phone.</p></div>
+<div class="guide-card"><div class="guide-art" style="background:linear-gradient(135deg,#0f766e,#0f172a)">16 : 9<br>1280 × 720</div><b>3. Export and check</b><p>Download at 1280 × 720. Preview at a small size before publishing.</p></div>
+</div><p class="help" style="margin-top:12px">Privacy & copyright: uploaded images are processed in your browser and are not sent to LOOX. The built-in starter artwork is drawn with original shapes and gradients—no stock photos or third-party photographs are included. Use images, logos and characters you own or have permission to use.</p></section>
+</main>
+<script>
+const $=id=>document.getElementById(id),canvas=$('canvas'),ctx=canvas.getContext('2d');
+let background=null,selectedLayer=0,layers=[],dragging=false,dragOffset={x:0,y:0},generated=0;
+const makeLayer=(text,x,y,size,color='#ffffff')=>({text,x,y,size,color,font:'Arial',weight:'900',stroke:'#111111',strokeWidth:10,rotation:0,align:'center',shadow:'yes'});
+layers=[makeLayer('INSANE GAMEPLAY!',640,390,104),makeLayer('YOU WONT BELIEVE THIS',640,515,42,'#ffe66d')];
+function drawGenerated(){
+ const g=ctx.createLinearGradient(0,0,1280,720),n=generated%4;
+ const palettes=[['#081b46','#8d174f','#f97316'],['#071f2d','#0e7490','#8b5cf6'],['#190b36','#7e22ce','#ec4899'],['#101827','#9a3412','#facc15']];
+ const p=palettes[n];g.addColorStop(0,p[0]);g.addColorStop(.55,p[1]);g.addColorStop(1,p[2]);ctx.fillStyle=g;ctx.fillRect(0,0,1280,720);
+ for(let i=0;i<16;i++){const x=(i*197+generated*67)%1450-80,y=(i*113+generated*41)%850-60,r=35+(i*19)%150;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.025+(i%4)*.012)+')';ctx.fill()}
+ const glow=ctx.createRadialGradient(900,350,20,900,350,430);glow.addColorStop(0,'rgba(255,255,255,.28)');glow.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=glow;ctx.fillRect(400,0,880,720);
+}
+function draw(){
+ ctx.clearRect(0,0,1280,720);
+ ctx.save();
+ if(background){
+  const fit=$('fit').value==='cover'?Math.max(1280/background.width,720/background.height):Math.min(1280/background.width,720/background.height);
+  const w=background.width*fit,h=background.height*fit;
+  ctx.filter='brightness('+$('brightness').value+'%) saturate('+$('saturation').value+'%)';
+  ctx.drawImage(background,(1280-w)/2,(720-h)/2,w,h);ctx.filter='none';
+ }else drawGenerated();
+ const alpha=Number($('overlay').value)/100;
+ if(alpha>0){ctx.fillStyle=$('overlayColor').value;ctx.globalAlpha=alpha;ctx.fillRect(0,0,1280,720);ctx.globalAlpha=1}
+ ctx.restore();
+ layers.forEach((layer,index)=>{
+  const lines=String(layer.text||'').split('\n'),lineHeight=layer.size*1.04;
+  ctx.save();ctx.translate(layer.x,layer.y);ctx.rotate(layer.rotation*Math.PI/180);
+  ctx.font=layer.weight+' '+layer.size+'px "'+layer.font+'"';ctx.textAlign=layer.align;ctx.textBaseline='middle';
+  ctx.lineJoin='round';ctx.lineWidth=layer.strokeWidth;ctx.strokeStyle=layer.stroke;
+  if(layer.shadow!=='no'){ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=layer.shadow==='soft'?12:24;ctx.shadowOffsetY=8}
+  const total=(lines.length-1)*lineHeight;
+  lines.forEach((line,i)=>{const y=i*lineHeight-total/2;if(layer.strokeWidth>0)ctx.strokeText(line,0,y,1160);ctx.fillStyle=layer.color;ctx.fillText(line,0,y,1160)});
+  ctx.shadowBlur=0;
+  if(index===selectedLayer){const width=Math.min(1160,Math.max(180,...lines.map(line=>ctx.measureText(line).width))+32),height=Math.max(layer.size*1.25,lines.length*lineHeight)+22;ctx.setLineDash([10,8]);ctx.strokeStyle='rgba(255,255,255,.75)';ctx.lineWidth=2;ctx.strokeRect(layer.align==='center'?-width/2:layer.align==='right'?-width:-8,-height/2,width,height)}
+  ctx.restore();
+ });
+}
+function renderLayers(){
+ $('layerList').innerHTML='';
+ layers.forEach((layer,i)=>{const row=document.createElement('div');row.className='layer-row'+(i===selectedLayer?' active':'');const name=document.createElement('span');name.textContent=(i+1)+'. '+(layer.text||'Empty text');const pick=document.createElement('button');pick.textContent='Edit';pick.onclick=e=>{e.stopPropagation();selectLayer(i)};row.append(name,pick);row.onclick=()=>selectLayer(i);$('layerList').append(row)});
+}
+function selectLayer(i){
+ selectedLayer=i;const l=layers[i];if(!l)return;
+ $('layerText').value=l.text;$('font').value=l.font;$('weight').value=l.weight;$('textColor').value=l.color;$('strokeColor').value=l.stroke;
+ $('fontSize').value=l.size;$('strokeWidth').value=l.strokeWidth;$('rotation').value=l.rotation;$('align').value=l.align;$('shadow').value=l.shadow;$('posX').value=l.x;$('posY').value=l.y;
+ syncOutputs();renderLayers();draw();
+}
+function syncOutputs(){
+ $('fontSizeOut').textContent=$('fontSize').value+' px';$('strokeOut').textContent=$('strokeWidth').value+' px';$('rotationOut').textContent=$('rotation').value+'°';$('posXOut').textContent=$('posX').value;$('posYOut').textContent=$('posY').value;
+ $('brightnessOut').textContent=$('brightness').value+'%';$('saturationOut').textContent=$('saturation').value+'%';$('overlayOut').textContent=$('overlay').value+'%';$('qualityOut').textContent=$('quality').value+'%';
+}
+function syncLayer(){
+ const l=layers[selectedLayer];if(!l)return;
+ l.text=$('layerText').value;l.font=$('font').value;l.weight=$('weight').value;l.color=$('textColor').value;l.stroke=$('strokeColor').value;
+ l.size=Number($('fontSize').value);l.strokeWidth=Number($('strokeWidth').value);l.rotation=Number($('rotation').value);l.align=$('align').value;l.shadow=$('shadow').value;l.x=Number($('posX').value);l.y=Number($('posY').value);
+ syncOutputs();renderLayers();draw();
+}
+['layerText','font','weight','textColor','strokeColor','fontSize','strokeWidth','rotation','align','shadow','posX','posY'].forEach(id=>$(id).addEventListener('input',syncLayer));
+['brightness','saturation','overlay','overlayColor','fit'].forEach(id=>$(id).addEventListener('input',()=>{syncOutputs();draw()}));
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===btn));document.querySelectorAll('.tab-pane').forEach(x=>x.classList.toggle('active',x.id==='tab-'+btn.dataset.tab))}));
+function upload(){ $('file').click() }
+$('uploadBtn').onclick=upload;$('backgroundUpload').onclick=upload;
+$('file').onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ if(!/^image\/(jpeg|png|webp)$/.test(file.type)||file.size>25*1024*1024){status('Choose a JPG, PNG or WebP image smaller than 25 MB.',true);return}
+ try{const image=await createImageBitmap(file);if(image.width*image.height>40000000)throw Error('This image is larger than the 40-megapixel safety limit.');background=image;status('Background loaded. It stays on your device.');draw()}catch(err){status(err.message||'Could not open this image.',true)}
+};
+function status(message,error=false){$('status').textContent=message;$('status').className='status'+(error?' error':'');$('status').style.display='block'}
+$('addText').onclick=()=>{layers.push(makeLayer('NEW TEXT',640,360,68));selectLayer(layers.length-1);};
+$('deleteText').onclick=()=>{if(layers.length<=1){status('Keep at least one text layer.');return}layers.splice(selectedLayer,1);selectedLayer=Math.max(0,selectedLayer-1);selectLayer(selectedLayer)};
+$('addBadge').onclick=()=>{layers.push(makeLayer('NEW • BADGE',1040,100,38,'#ffe66d'));selectLayer(layers.length-1);};
+$('addSubtitle').onclick=()=>{layers.push(makeLayer('Add your subtitle',640,625,34,'#ffffff'));selectLayer(layers.length-1);};
+function applyTemplate(type){
+ const presets={
+ gaming:[makeLayer('EPIC WIN!',640,390,150,'#ffffff'),makeLayer('BEST MOMENTS',640,565,54,'#ffe66d')],
+ reaction:[makeLayer('WHAT JUST',640,340,145,'#ffffff'),makeLayer('HAPPENED?!',640,490,126,'#ffe66d')],
+ tutorial:[makeLayer('HOW TO',640,350,150,'#ffffff'),makeLayer('DO IT RIGHT',640,520,64,'#8df5ff')],
+ cinematic:[makeLayer('THE FINAL',640,390,136,'#ffffff'),makeLayer('BATTLE',640,535,90,'#ffb86b')]
+ };
+ layers=presets[type]||presets.gaming;selectLayer(0);status('Layout applied. Select any text layer to edit it.');
+}
+document.querySelectorAll('[data-template]').forEach(btn=>btn.onclick=()=>applyTemplate(btn.dataset.template));
+$('sampleBtn').onclick=()=>{background=null;generated++;draw();status('Original abstract starter artwork loaded. No stock photograph used.')};
+$('generateBg').onclick=()=>{background=null;generated++;draw();status('A new original gradient artwork was generated.')};
+$('clearBg').onclick=()=>{background=null;draw();status('Background image cleared.')};
+$('resetBtn').onclick=()=>{background=null;layers=[makeLayer('INSANE GAMEPLAY!',640,390,104),makeLayer('YOU WONT BELIEVE THIS',640,515,42,'#ffe66d')];selectLayer(0);status('Canvas reset.')};
+function pointerPos(e){const r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*1280/r.width,y:(e.clientY-r.top)*720/r.height}}
+canvas.addEventListener('pointerdown',e=>{
+ const p=pointerPos(e);let hit=-1;
+ for(let i=layers.length-1;i>=0;i--){const l=layers[i],w=Math.max(180,String(l.text).length*l.size*.58),h=l.size*1.6;if(Math.abs(p.x-l.x)<w/2+25&&Math.abs(p.y-l.y)<h/2+25){hit=i;break}}
+ if(hit>=0){selectLayer(hit);dragging=true;dragOffset={x:p.x-layers[hit].x,y:p.y-layers[hit].y};canvas.setPointerCapture(e.pointerId)}
+});
+canvas.addEventListener('pointermove',e=>{if(!dragging)return;const p=pointerPos(e),l=layers[selectedLayer];l.x=Math.max(0,Math.min(1280,p.x-dragOffset.x));l.y=Math.max(0,Math.min(720,p.y-dragOffset.y));$('posX').value=Math.round(l.x);$('posY').value=Math.round(l.y);syncOutputs();draw()});
+canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
+function exportImage(){
+ const type=$('format').value,q=Number($('quality').value)/100;
+ const out=document.createElement('canvas');out.width=1280;out.height=720;const octx=out.getContext('2d');octx.drawImage(canvas,0,0);
+ out.toBlob(blob=>{if(!blob){status('Export failed. Try PNG or JPG.',true);return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='loox-youtube-thumbnail.'+(type==='image/png'?'png':type==='image/webp'?'webp':'jpg');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);status('Thumbnail exported at 1280 × 720. File size: '+(blob.size/1024).toFixed(0)+' KB.');},type,q);
+}
+$('downloadBtn').onclick=exportImage;$('exportNow').onclick=exportImage;
+syncOutputs();renderLayers();draw();
+</script>
 </body></html>
