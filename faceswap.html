@@ -101,7 +101,7 @@
             <p style="color: var(--text-muted); font-size: 0.85rem;">Upload the face you want to copy</p>
           </div>
           <img id="sourcePreview" style="display: none;" alt="Source Face">
-          <input type="file" id="sourceInput" accept="image/*">
+          <input type="file" id="sourceInput" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
         </div>
 
         <!-- Target Photo -->
@@ -141,8 +141,8 @@
 
     function handleImageUpload(file, type) {
       if (!file) return;
-      if (!file.type.startsWith('image/')) {
-        alert('Please choose an image file.');
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type.toLowerCase())) {
+        alert('Please use a JPG, PNG, or WebP image. If your photo is HEIC, AVIF, or another format, save/export it as JPG or PNG first.');
         return;
       }
       const reader = new FileReader();
