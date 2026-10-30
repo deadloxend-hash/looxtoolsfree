@@ -290,6 +290,7 @@
         offCtx.fill();
       } else if (currentTool === 'restore') {
         offCtx.globalCompositeOperation = 'source-over';
+        offSrc = offCtx;
         offCtx.save();
         offCtx.clip();
         offCtx.drawImage(originalImg, 0, 0);
