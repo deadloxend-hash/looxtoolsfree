@@ -46,9 +46,24 @@ input[type=range]{accent-color:var(--accent-pink);width:100%}
 canvas{max-width:100%;height:auto;border-radius:10px}
 @media(max-width:900px){aside{width:70px;padding:15px 9px}aside .brand span,aside .nav-section-title,aside .nav-item span+span{display:none}aside .nav-item{justify-content:center;padding:12px 4px}main{margin-left:70px;padding:20px}}
 @media(max-width:560px){main{padding:16px}.hero h1{font-size:1.75rem}.workspace-card,.info-card{padding:17px}.controls{flex-direction:column;align-items:stretch}.controls .btn{width:100%}}
+
+/* LOOX unified brand, navigation and page transitions */
+.brand span{display:inline!important;color:#fff!important;background:none!important;-webkit-text-fill-color:#fff!important;white-space:nowrap;letter-spacing:.15px}
+.brand{min-height:38px;flex-shrink:0}
+aside{box-shadow:12px 0 34px rgba(0,0,0,.16)}
+.nav-item{position:relative;overflow:hidden;transition:background .22s ease,border-color .22s ease,color .22s ease,transform .22s ease}
+.nav-item::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(236,72,153,.14),transparent);transform:translateX(-110%);transition:transform .45s ease;pointer-events:none}
+.nav-item:hover::before{transform:translateX(110%)}
+.nav-item:hover{transform:translateX(3px)}
+body{animation:looxPageIn .34s ease both}
+@keyframes looxPageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s ease,transform .16s ease}
+@media(max-width:900px){aside{width:220px!important;padding:16px!important}aside .brand span,aside .nav-section-title,aside .nav-item span+span{display:initial!important}aside .nav-section-title{display:block!important}aside .nav-item{justify-content:flex-start!important;padding:10px 12px!important}main{margin-left:220px!important;padding:22px!important}}
+@media(max-width:620px){aside{width:68px!important;padding:12px 8px!important}aside .brand{justify-content:center}aside .brand span,aside .nav-section-title,aside .nav-item span+span{display:none!important}aside .nav-item{justify-content:center!important;padding:12px 4px!important}main{margin-left:68px!important;padding:14px!important}}
+
 </style>
 </head><body>
-<aside><a href="index.html" class="brand"><div class="brand-icon">⚡</div><span>LOOX Kit</span></a><div class="nav-section-title">Tools Hub</div><nav class="nav-links"><a href="index.html" class="nav-item "><span>🏠</span><span>Dashboard Hub</span></a>
+<aside><a href="index.html" class="brand"><div class="brand-icon">⚡</div><span>LOOX MediaGrab</span></a><div class="nav-section-title">Tools Hub</div><nav class="nav-links"><a href="index.html" class="nav-item "><span>🏠</span><span>Dashboard Hub</span></a>
 <a href="bg-remove.html" class="nav-item "><span>✂️</span><span>Background Remover</span></a>
 <a href="imgformatconverter.html" class="nav-item "><span>🖼️</span><span>Image Converter</span></a>
 <a href="cropimage.html" class="nav-item "><span>📐</span><span>Image Cropper</span></a>
