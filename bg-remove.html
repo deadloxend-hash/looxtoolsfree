@@ -7,6 +7,7 @@
   <style>
     :root {
       --bg-dark: #0b0d14;
+      --sidebar-bg: #08090d;
       --card-bg: #131722;
       --card-border: #1e2436;
       --accent-pink: #ec4899;
@@ -17,35 +18,46 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 60px; }
+    body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; overflow-x: hidden; }
 
-    /* Navigation Header */
-    header { width: 100%; border-bottom: 1px solid var(--card-border); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; background: rgba(11, 13, 20, 0.8); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.3rem; text-decoration: none; color: #fff; }
-    .brand-icon { width: 34px; height: 34px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    /* Left Sidebar */
+    aside { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 10; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; margin-bottom: 30px; color: #fff; text-decoration: none; }
+    .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
     .brand span { background: linear-gradient(to right, #ffffff, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    .main-container { width: 100%; max-width: 950px; padding: 30px 20px; }
+    .nav-section-title { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; font-weight: 700; }
+    .nav-links { display: flex; flex-direction: column; gap: 5px; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
+    .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
+    .nav-item.active { background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.3); color: #fff; }
 
-    .back-btn { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--card-border); padding: 10px 18px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-weight: 600; font-size: 0.85rem; transition: 0.2s; text-decoration: none; display: inline-block; }
-    .back-btn:hover { background: rgba(255,255,255,0.12); }
+    /* Main Content Area */
+    main { margin-left: 260px; flex: 1; padding: 40px; display: flex; flex-direction: column; min-height: 100vh; }
+    @media (max-width: 900px) {
+      aside { width: 70px; padding: 15px 10px; }
+      aside .brand span, aside .nav-section-title, aside .nav-item span { display: none; }
+      main { margin-left: 70px; padding: 20px; }
+    }
 
-    .workspace { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-    
-    /* Upload Box */
-    .upload-area { border: 2px dashed rgba(236, 72, 153, 0.4); border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); }
+    .hero { margin-bottom: 25px; }
+    .hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; }
+    .gradient-text { background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 50%, var(--accent-blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { color: var(--text-muted); font-size: 0.95rem; }
+
+    .workspace-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); flex: 1; display: flex; flex-direction: column; }
+
+    .upload-area { border: 2px dashed rgba(236, 72, 153, 0.4); border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); margin: auto 0; }
     .upload-area:hover { border-color: var(--accent-pink); background: rgba(236, 72, 153, 0.03); }
     .upload-area input { display: none; }
 
-    /* Canvas Editor Layout */
-    .editor-layout { display: none; grid-template-columns: 1fr 300px; gap: 20px; margin-top: 20px; }
-    @media (max-width: 850px) { .editor-layout { grid-template-columns: 1fr; } }
+    .editor-layout { display: none; grid-template-columns: 1fr 300px; gap: 20px; margin-top: 15px; }
+    @media (max-width: 950px) { .editor-layout { grid-template-columns: 1fr; } }
 
     .canvas-wrapper { position: relative; background-color: #08090d; border-radius: 10px; display: flex; align-items: center; justify-content: center; min-height: 400px; overflow: hidden; border: 1px solid var(--card-border); }
     .checkerboard { background-image: linear-gradient(45deg, #181b26 25%, transparent 25%), linear-gradient(-45deg, #181b26 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #181b26 75%), linear-gradient(-45deg, transparent 75%, #181b26 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
     canvas { max-width: 100%; max-height: 480px; cursor: crosshair; }
 
-    /* Control Panel */
     .controls { display: flex; flex-direction: column; gap: 15px; }
     .tabs { display: flex; background: #08090d; border-radius: 8px; padding: 4px; border: 1px solid var(--card-border); }
     .tab-btn { flex: 1; padding: 9px; background: none; border: none; color: var(--text-muted); font-weight: 600; cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
@@ -70,20 +82,34 @@
 </head>
 <body>
 
-  <!-- Top Header -->
-  <header>
+  <!-- Left Sidebar Navigation -->
+  <aside>
     <a href="index.html" class="brand">
       <div class="brand-icon">⚡</div>
-      <span>LOOX Utility Kit</span>
+      <span>LOOX Kit</span>
     </a>
-  </header>
 
-  <div class="main-container">
-    <a href="index.html" class="back-btn">← Back to All Tools</a>
-    
-    <div class="workspace">
-      <h2 style="font-size: 1.4rem; margin-bottom: 15px;">✂️ AI Background Remover</h2>
-      
+    <div class="nav-section-title">Tools Hub</div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-item">
+        <span>🏠</span>
+        <span>Dashboard Hub</span>
+      </a>
+      <a href="bg-remove.html" class="nav-item active">
+        <span>✂️</span>
+        <span>Background Remover</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+    <div class="hero">
+      <h1>AI Background <span class="gradient-text">Remover</span></h1>
+      <p>Instant studio-grade cutout precision powered by advanced cloud AI.</p>
+    </div>
+
+    <div class="workspace-card">
       <!-- Upload Box -->
       <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <h3 style="font-size: 1.2rem; margin-bottom: 5px;">📁 Click or Drag Image Here</h3>
@@ -93,10 +119,10 @@
 
       <!-- Loading State -->
       <div class="loader" id="loader">
-        ⚡ Processing image with Cloud AI... Please wait.
+        ⚡ Processing with Cloud AI... Please wait.
       </div>
 
-      <!-- Image Canvas & Controls -->
+      <!-- Canvas Editor Layout -->
       <div class="editor-layout" id="editorLayout">
         <div class="canvas-wrapper checkerboard" id="canvasWrapper">
           <canvas id="mainCanvas"></canvas>
@@ -133,7 +159,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </main>
 
   <script>
     const fileInput = document.getElementById('fileInput');
@@ -150,7 +176,6 @@
     let bgColor = 'transparent';
     let currentTab = 'removed';
 
-    // Drag and drop handlers
     dropZone.addEventListener('dragover', (e) => e.preventDefault());
     dropZone.addEventListener('drop', (e) => {
       e.preventDefault();
@@ -172,7 +197,6 @@
         const formData = new FormData();
         formData.append('image_file', file);
 
-        // Your Vercel backend serverless function
         const vercelEndpoint = 'https://looxtoolfree-backend.vercel.app/api/remove-bg';
 
         const response = await fetch(vercelEndpoint, {
