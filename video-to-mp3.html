@@ -102,17 +102,14 @@ function show(message,kind='info'){
 async function getFFmpeg(){
   if(loaded)return ffmpeg;
   show('Preparing the video engine. The first load can take a minute...');
-  const [{FFmpeg},{toBlobURL}]=await Promise.all([
-    import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js'),
-    import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.2/dist/esm/index.js')
-  ]);
+  const {FFmpeg}=await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
   ffmpeg=new FFmpeg();
   ffmpeg.on('progress',({progress})=>{if(Number.isFinite(progress))$('progress').value=Math.max(0,Math.min(100,Math.round(progress*100)))});
   ffmpeg.on('log',({message})=>{ffmpegLogs.push(message);if(ffmpegLogs.length>40)ffmpegLogs.shift()});
   await ffmpeg.load({
     classWorkerURL:new URL('vendor/ffmpeg/worker.js',location.href).href,
-    coreURL:await toBlobURL('https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js','text/javascript'),
-    wasmURL:await toBlobURL('https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm','application/wasm')
+    coreURL:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js',
+    wasmURL:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm'
   });
   loaded=true;return ffmpeg;
 }
