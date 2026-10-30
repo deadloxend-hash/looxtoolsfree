@@ -103,10 +103,10 @@
         <span>🖼️</span>
         <span>Image Converter</span>
       </a>
-  <a href="cropimage.html" class="nav-item">
-  <span>📐</span>
-  <span>Image Cropper</span>
-</a>
+      <a href="cropimage.html" class="nav-item">
+        <span>📐</span>
+        <span>Image Cropper</span>
+      </a>
     </div>
   </aside>
 
@@ -294,7 +294,6 @@
         offCtx.fill();
       } else if (currentTool === 'restore') {
         offCtx.globalCompositeOperation = 'source-over';
-        offSrc = offCtx;
         offCtx.save();
         offCtx.clip();
         offCtx.drawImage(originalImg, 0, 0);
