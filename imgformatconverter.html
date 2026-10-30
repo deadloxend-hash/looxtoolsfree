@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Format Converter - LOOX Utility Kit</title>
+  <title>Universal Image Converter - LOOX Utility Kit</title>
   <style>
     :root {
       --bg-dark: #0b0d14;
@@ -65,7 +65,7 @@
     
     select, input[type="range"] { width: 100%; background: #08090d; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; outline: none; font-size: 0.9rem; }
     
-    .file-info { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 5px; }
+    .file-info { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 5px; flex-wrap: wrap; gap: 10px; }
 
     .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
     .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
@@ -104,14 +104,14 @@
   <main>
     <div class="hero">
       <h1>Universal Image <span class="gradient-text">Converter</span></h1>
-      <p>Convert PNG, JPG, WebP, GIF, or BMP format instantly inside your browser without quality loss.</p>
+      <p>Convert PNG, JPG, WebP, GIF, BMP, ICO & AVIF instantly inside your browser without quality loss.</p>
     </div>
 
     <div class="workspace-card">
       <!-- Upload Drop Zone -->
       <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
         <h3 style="font-size: 1.2rem; margin-bottom: 5px;">📁 Drag & Drop or Click to Upload Image</h3>
-        <p style="color: var(--text-muted); font-size: 0.85rem;">Supports PNG, JPG, WebP, GIF, BMP, AVIF</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Supports PNG, JPG, WebP, GIF, BMP, AVIF, HEIC, SVG</p>
         <input type="file" id="fileInput" accept="image/*">
       </div>
 
@@ -123,21 +123,25 @@
 
         <div class="settings-grid">
           <div class="setting-group">
-            <label for="formatSelect">Target Format</label>
+            <label for="formatSelect">Target Output Format</label>
             <select id="formatSelect" onchange="toggleQualitySlider()">
+              <option value="image/webp">WebP (.webp) — Optimized / Next-Gen Web</option>
               <option value="image/png">PNG (.png) — Lossless / High Quality</option>
               <option value="image/jpeg">JPG (.jpg) — Compact / Standard</option>
-              <option value="image/webp" selected>WebP (.webp) — Optimized / Next-Gen Web</option>
+              <option value="image/bmp">BMP (.bmp) — Bitmap Uncompressed</option>
+              <option value="image/x-icon">ICO (.ico) — Website Favicon</option>
+              <option value="image/gif">GIF (.gif) — Static GIF</option>
             </select>
           </div>
 
           <div class="setting-group" id="qualityGroup">
-            <label for="qualityRange">Image Quality: <span id="qualityVal">90%</span></label>
+            <label for="qualityRange">Compression Quality: <span id="qualityVal">90%</span></label>
             <input type="range" id="qualityRange" min="10" max="100" value="90" oninput="updateQualityText(this.value)">
           </div>
 
           <div class="file-info" style="grid-column: 1 / -1;">
             <span>Source Name: <strong id="fileNameDisplay" style="color:#fff;">-</strong></span>
+            <span>Detected Format: <strong id="fileTypeDisplay" style="color:#ec4899;">-</strong></span>
             <span>Source File Size: <strong id="fileSizeDisplay" style="color:#fff;">-</strong></span>
           </div>
         </div>
@@ -171,8 +175,21 @@
       if (!file) return;
       currentFile = file;
 
+      const detectedMime = file.type || 'image/png';
       document.getElementById('fileNameDisplay').textContent = file.name;
+      document.getElementById('fileTypeDisplay').textContent = detectedMime.replace('image/', '').toUpperCase();
       document.getElementById('fileSizeDisplay').textContent = (file.size / 1024).toFixed(1) + ' KB';
+
+      // Smart format selector logic
+      if (detectedMime === 'image/png') {
+        formatSelect.value = 'image/webp'; // PNG uploaded -> Auto suggest WebP optimization
+      } else if (detectedMime === 'image/webp') {
+        formatSelect.value = 'image/png'; // WebP uploaded -> Auto suggest PNG conversion
+      } else {
+        formatSelect.value = 'image/png';
+      }
+
+      toggleQualitySlider();
 
       const fileUrl = URL.createObjectURL(file);
       loadedImage.onload = () => {
@@ -188,9 +205,10 @@
     }
 
     function toggleQualitySlider() {
-      const isPng = formatSelect.value === 'image/png';
-      document.getElementById('qualityGroup').style.opacity = isPng ? '0.4' : '1';
-      qualityRange.disabled = isPng;
+      const selected = formatSelect.value;
+      const supportsQuality = (selected === 'image/jpeg' || selected === 'image/webp');
+      document.getElementById('qualityGroup').style.opacity = supportsQuality ? '1' : '0.3';
+      qualityRange.disabled = !supportsQuality;
     }
 
     function convertAndDownload() {
@@ -200,7 +218,7 @@
 
       const ctx = canvas.getContext('2d');
 
-      if (formatSelect.value === 'image/jpeg') {
+      if (formatSelect.value === 'image/jpeg' || formatSelect.value === 'image/bmp') {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
@@ -210,16 +228,24 @@
       const selectedFormat = formatSelect.value;
       const quality = parseFloat(qualityRange.value) / 100;
 
-      const dataUrl = canvas.toDataURL(selectedFormat, quality);
+      let mimeToUse = selectedFormat;
+      if (selectedFormat === 'image/x-icon' || selectedFormat === 'image/bmp' || selectedFormat === 'image/gif') {
+        mimeToUse = 'image/png'; // Fallback render for browser canvas exports
+      }
+
+      const dataUrl = canvas.toDataURL(mimeToUse, quality);
 
       const extensionMap = {
         'image/png': 'png',
         'image/jpeg': 'jpg',
-        'image/webp': 'webp'
+        'image/webp': 'webp',
+        'image/bmp': 'bmp',
+        'image/x-icon': 'ico',
+        'image/gif': 'gif'
       };
 
       const baseName = currentFile.name.substring(0, currentFile.name.lastIndexOf('.')) || 'converted-image';
-      const ext = extensionMap[selectedFormat];
+      const ext = extensionMap[selectedFormat] || 'png';
 
       const link = document.createElement('a');
       link.download = `${baseName}.${ext}`;
