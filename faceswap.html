@@ -89,7 +89,7 @@
   <main>
     <div class="hero">
       <h1>AI Face <span class="gradient-text">Swapper</span></h1>
-      <p>Seamless studio-grade facial replacement powered by Segmind AI.</p>
+      <p>Swap faces in your photos with AI. Processing time can vary depending on queue load.</p>
     </div>
 
     <div class="workspace-card">
@@ -118,7 +118,7 @@
       <button class="btn btn-primary" onclick="processFaceSwap()">⚡ Swap Faces Now</button>
 
       <div class="loader" id="loader">
-        ⚡ Processing AI Face Swap... Please wait (3-5s).
+        <span id="loaderMessage">⚡ Preparing your images...</span>
       </div>
 
       <!-- Result Section -->
@@ -131,14 +131,20 @@
   </main>
 
   <script>
+    const API_BASE = 'https://looxtoolfree-backend.vercel.app/api';
     let sourceBase64 = null;
     let targetBase64 = null;
+    let resultObjectUrl = null;
 
     document.getElementById('sourceInput').addEventListener('change', (e) => handleImageUpload(e.target.files[0], 'source'));
     document.getElementById('targetInput').addEventListener('change', (e) => handleImageUpload(e.target.files[0], 'target'));
 
     function handleImageUpload(file, type) {
       if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        alert('Please choose an image file.');
+        return;
+      }
       const reader = new FileReader();
       reader.onload = (e) => {
         if (type === 'source') {
@@ -153,8 +159,23 @@
           document.getElementById('targetPlaceholder').style.display = 'none';
         }
       };
+      reader.onerror = () => alert('Could not read that image. Please try another file.');
       reader.readAsDataURL(file);
     }
+
+    function setProcessingMessage(message) {
+      document.getElementById('loaderMessage').textContent = message;
+    }
+
+    async function readJsonResponse(response) {
+      const raw = await response.text();
+      let data;
+      try { data = JSON.parse(raw); } catch { data = { error: raw || 'The server returned an unexpected response.' }; }
+      if (!response.ok) throw new Error(data.error || data.message || ('Request failed (HTTP ' + response.status + ').'));
+      return data;
+    }
+
+    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
     async function processFaceSwap() {
       if (!sourceBase64 || !targetBase64) {
@@ -164,40 +185,76 @@
 
       const loader = document.getElementById('loader');
       const resultContainer = document.getElementById('resultContainer');
+      const swapButton = document.querySelector('.btn-primary');
       loader.style.display = 'block';
       resultContainer.style.display = 'none';
+      swapButton.disabled = true;
+      swapButton.style.opacity = '0.6';
+      setProcessingMessage('⚡ Uploading images and starting your face swap...');
 
       try {
-        const response = await fetch('https://looxtoolfree-backend.vercel.app/api/face-swap', {
+        const submitResponse = await fetch(API_BASE + '/face-swap', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sourceImageBase64: sourceBase64,
-            targetImageBase64: targetBase64
-          })
+          body: JSON.stringify({ sourceImageBase64: sourceBase64, targetImageBase64: targetBase64 })
         });
+        const job = await readJsonResponse(submitResponse);
+        if (!job.jobId || !job.statusToken) throw new Error('The server did not return a valid job reference.');
 
-        if (!response.ok) {
-          const errText = await response.text();
-          throw new Error(errText);
+        const statusUrl = new URL(API_BASE + '/face-swap-status');
+        statusUrl.searchParams.set('jobId', job.jobId);
+        statusUrl.searchParams.set('token', job.statusToken);
+
+        const startedAt = Date.now();
+        const maxWaitMs = 4 * 60 * 1000;
+
+        while (Date.now() - startedAt < maxWaitMs) {
+          await wait(2500);
+          const statusResponse = await fetch(statusUrl.toString(), { cache: 'no-store' });
+          const status = await readJsonResponse(statusResponse);
+          const state = String(status.status || 'processing').toLowerCase();
+
+          if (status.ready) {
+            setProcessingMessage('✨ Your result is ready. Loading image...');
+            const downloadUrl = new URL(statusUrl.toString());
+            downloadUrl.searchParams.set('download', '1');
+            const imageResponse = await fetch(downloadUrl.toString(), { cache: 'no-store' });
+            if (!imageResponse.ok) await readJsonResponse(imageResponse);
+            const blob = await imageResponse.blob();
+            if (!blob.type.startsWith('image/')) throw new Error('The server returned an invalid result image.');
+            if (resultObjectUrl) URL.revokeObjectURL(resultObjectUrl);
+            resultObjectUrl = URL.createObjectURL(blob);
+            document.getElementById('resultImage').src = resultObjectUrl;
+            resultContainer.style.display = 'flex';
+            return;
+          }
+
+          if (['error', 'failed', 'canceled', 'cancelled'].includes(state)) {
+            throw new Error(status.message || 'Magic Hour could not complete this face swap.');
+          }
+
+          setProcessingMessage(state === 'queued'
+            ? '⏳ Your job is queued. Waiting for processing to start...'
+            : '🎨 AI is working on your face swap. This may take a little while...');
         }
 
-        const blob = await response.blob();
-        const resultUrl = URL.createObjectURL(blob);
-        document.getElementById('resultImage').src = resultUrl;
-        resultContainer.style.display = 'flex';
-      } catch (err) {
-        console.error(err);
-        alert('Error: ' + err.message);
+        throw new Error('This is taking longer than expected. Your job may still be processing. Please wait and try checking again instead of submitting another swap.');
+      } catch (error) {
+        console.error('Face swap error:', error);
+        alert('Face swap error: ' + (error.message || 'Something went wrong. Please try again.'));
       } finally {
         loader.style.display = 'none';
+        swapButton.disabled = false;
+        swapButton.style.opacity = '1';
       }
     }
 
     function downloadResult() {
+      const image = document.getElementById('resultImage');
+      if (!image.src || image.src === window.location.href) return;
       const link = document.createElement('a');
       link.download = 'loox-faceswap.png';
-      link.href = document.getElementById('resultImage').src;
+      link.href = image.src;
       link.click();
     }
   </script>
