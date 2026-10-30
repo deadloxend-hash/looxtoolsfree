@@ -108,8 +108,8 @@ async function getFFmpeg(){
   ffmpeg.on('log',({message})=>{ffmpegLogs.push(message);if(ffmpegLogs.length>40)ffmpegLogs.shift()});
   await ffmpeg.load({
     classWorkerURL:new URL('vendor/ffmpeg/worker.js',location.href).href,
-    coreURL:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.js',
-    wasmURL:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm/ffmpeg-core.wasm'
+    coreURL:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.js',
+    wasmURL:'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.wasm'
   });
   loaded=true;return ffmpeg;
 }
