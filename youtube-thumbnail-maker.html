@@ -100,7 +100,7 @@ input[type=file]{display:none}
 <div class="toolbar"><button id="uploadBtn">＋ Upload background</button><input id="file" type="file" accept="image/jpeg,image/png,image/webp"><button id="sampleBtn">✦ Use original sample art</button><button id="resetBtn">↺ Reset layout</button><button class="primary" id="downloadBtn">↓ Export thumbnail</button></div>
 <div class="status" id="status" role="status"></div>
 </section>
-<aside class="editor-panel" style="position:sticky">
+<section class="editor-panel">
 <div class="panel-title">Design controls</div><p class="panel-sub">Choose a layout, edit each text layer, then fine-tune the background and export.</p>
 <div class="tabs"><button class="tab active" data-tab="text">Text</button><button class="tab" data-tab="layout">Layouts</button><button class="tab" data-tab="background">Background</button><button class="tab" data-tab="export">Export</button></div>
 <div class="tab-pane active" id="tab-text">
@@ -141,7 +141,7 @@ input[type=file]{display:none}
 <button class="primary" id="exportNow" style="width:100%">Export 1280 × 720</button>
 <p class="help" style="margin-top:12px">PNG preserves sharp text and shapes. JPG is usually smaller. WebP can offer a good balance of size and quality.</p>
 </div>
-</aside>
+</section>
 </div>
 <section class="guide"><h2>Make a thumbnail that reads clearly</h2><div class="guide-grid">
 <div class="guide-card"><div class="guide-art" style="background:radial-gradient(circle at 75% 35%,#ffb02e,#db2777 35%,#171b50)">BIG<br>SUBJECT</div><b>1. Start with a clear subject</b><p>Use your own screenshot or photo. Keep the main subject large and leave space for the title.</p></div>
@@ -251,4 +251,4 @@ function exportImage(){
 $('downloadBtn').onclick=exportImage;$('exportNow').onclick=exportImage;
 syncOutputs();renderLayers();draw();
 </script>
-</body></html>
+<script>(()=>{document.addEventListener('click',e=>{const a=e.target.closest('a[href]');if(!a||e.defaultPrevented||e.button!==0||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||a.target==='_blank')return;let u;try{u=new URL(a.href,location.href)}catch{return}if(u.origin!==location.origin||u.pathname===location.pathname)return;e.preventDefault();document.body.classList.add('loox-leaving');setTimeout(()=>location.href=u.href,150)},true)})();</script><style>body{animation:looxPageIn .34s ease both}@keyframes looxPageIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s ease,transform .16s ease}</style></body></html>
