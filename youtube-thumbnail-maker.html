@@ -244,8 +244,10 @@ canvas.addEventListener('pointerdown',e=>{
 canvas.addEventListener('pointermove',e=>{if(!dragging)return;const p=pointerPos(e),l=layers[selectedLayer];l.x=Math.max(0,Math.min(1280,p.x-dragOffset.x));l.y=Math.max(0,Math.min(720,p.y-dragOffset.y));$('posX').value=Math.round(l.x);$('posY').value=Math.round(l.y);syncOutputs();draw()});
 canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
 function exportImage(){
- const type=$('format').value,q=Number($('quality').value)/100;
+ const type=$('format').value,q=Number($('quality').value)/100,previousSelection=selectedLayer;
+ selectedLayer=-1;draw();
  const out=document.createElement('canvas');out.width=1280;out.height=720;const octx=out.getContext('2d');octx.drawImage(canvas,0,0);
+ selectedLayer=previousSelection;draw();
  out.toBlob(blob=>{if(!blob){status('Export failed. Try PNG or JPG.',true);return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='loox-youtube-thumbnail.'+(type==='image/png'?'png':type==='image/webp'?'webp':'jpg');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);status('Thumbnail exported at 1280 × 720. File size: '+(blob.size/1024).toFixed(0)+' KB.');},type,q);
 }
 $('downloadBtn').onclick=exportImage;$('exportNow').onclick=exportImage;
