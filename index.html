@@ -183,8 +183,8 @@
         const formData = new FormData();
         formData.append('image_file', file);
 
-        // ⚠️ REPLACE THIS URL WITH YOUR LIVE VERCEL BACKEND URL
-        const vercelEndpoint = 'https://loox-tools-backend.vercel.app/api/remove-bg';
+        // Connected to your live Vercel backend proxy
+        const vercelEndpoint = 'https://looxtoolfree-backend.vercel.app/api/remove-bg';
 
         const response = await fetch(vercelEndpoint, {
           method: 'POST',
