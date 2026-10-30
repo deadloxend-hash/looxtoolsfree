@@ -179,7 +179,7 @@
 
         if (!response.ok) {
           const errText = await response.text();
-          throw new Error(errText || 'Face swap request failed');
+          throw new Error(errText);
         }
 
         const blob = await response.blob();
@@ -188,7 +188,7 @@
         resultContainer.style.display = 'flex';
       } catch (err) {
         console.error(err);
-        alert('Failed to process AI face swap. Check backend environment variables.');
+        alert('Error: ' + err.message);
       } finally {
         loader.style.display = 'none';
       }
