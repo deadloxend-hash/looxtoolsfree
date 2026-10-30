@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LOOX Utility Kit - AI Web Tools</title>
+  <title>LOOX Utility Kit - Dashboard Hub</title>
   <style>
     :root {
       --bg-dark: #0b0d14;
@@ -20,7 +20,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
     body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; display: flex; overflow-x: hidden; }
 
-    /* Left Sidebar */
+    /* Left Sidebar Navigation */
     aside { width: 260px; background-color: var(--sidebar-bg); border-right: 1px solid var(--card-border); display: flex; flex-direction: column; padding: 20px; position: fixed; height: 100vh; z-index: 10; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; margin-bottom: 30px; color: #fff; text-decoration: none; }
     .brand-icon { width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
@@ -40,23 +40,23 @@
       main { margin-left: 70px; padding: 20px; }
     }
 
-    /* Hero Banner */
-    .hero { margin-bottom: 30px; }
-    .hero h1 { font-size: 2.2rem; font-weight: 900; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .hero { margin-bottom: 35px; }
+    .hero h1 { font-size: 2.4rem; font-weight: 900; margin-bottom: 8px; }
     .gradient-text { background: linear-gradient(135deg, var(--accent-pink) 0%, var(--accent-purple) 50%, var(--accent-blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { color: var(--text-muted); font-size: 0.95rem; }
+    .hero p { color: var(--text-muted); font-size: 1rem; }
 
-    /* Tools Grid Hub Container */
-    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-    .tool-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 14px; padding: 25px; cursor: pointer; transition: all 0.25s ease; display: flex; flex-direction: column; gap: 12px; text-decoration: none; position: relative; overflow: hidden; }
-    .tool-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent-pink), var(--accent-purple)); opacity: 0; transition: 0.25s; }
-    .tool-card:hover { transform: translateY(-4px); border-color: #313952; box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
-    .tool-card:hover::before { opacity: 1; }
-
-    .card-icon { width: 44px; height: 44px; background: rgba(255,255,255,0.05); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; border: 1px solid var(--card-border); }
-    .tool-card h3 { font-size: 1.15rem; font-weight: 700; color: #fff; }
-    .tool-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
-    .card-action { margin-top: auto; font-size: 0.85rem; font-weight: 700; color: var(--accent-pink); display: flex; align-items: center; gap: 5px; }
+    /* Tools Grid */
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    
+    .tool-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 25px; text-decoration: none; color: inherit; transition: 0.2s; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .tool-card:hover { border-color: var(--accent-pink); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(236, 72, 153, 0.1); }
+    
+    .tool-icon { width: 48px; height: 48px; background: rgba(236, 72, 153, 0.1); border: 1px solid rgba(236, 72, 153, 0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 20px; }
+    .tool-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: #fff; }
+    .tool-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; flex: 1; }
+    
+    .tool-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--card-border); font-size: 0.85rem; font-weight: 600; color: var(--accent-pink); }
+    .badge { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
   </style>
 </head>
 <body>
@@ -70,59 +70,66 @@
 
     <div class="nav-section-title">Tools Hub</div>
     <div class="nav-links">
-      <a href="index.html" class="nav-item active">
-        <span>🏠</span>
-        <span>Dashboard Hub</span>
-      </a>
-      <a href="bg-remove.html" class="nav-item">
-        <span>✂️</span>
-        <span>Background Remover</span>
-      </a>
-      <a href="imgformatconverter.html" class="nav-item">
-        <span>🖼️</span>
-        <span>Image Converter</span>
-      </a>
-      <a href="cropimage.html" class="nav-item">
-        <span>📐</span>
-        <span>Image Cropper</span>
-      </a>
+      <a href="index.html" class="nav-item active"><span>🏠</span><span>Dashboard Hub</span></a>
+      <a href="bg-remove.html" class="nav-item"><span>✂️</span><span>Background Remover</span></a>
+      <a href="imgformatconverter.html" class="nav-item"><span>🖼️</span><span>Image Converter</span></a>
+      <a href="cropimage.html" class="nav-item"><span>📐</span><span>Image Cropper</span></a>
+      <a href="faceswap.html" class="nav-item"><span>👤</span><span>AI Face Swapper</span></a>
     </div>
   </aside>
 
-  <!-- Main Content -->
+  <!-- Main Content Area -->
   <main>
     <div class="hero">
-      <h1>LOOX Utility <span class="gradient-text">Kit Hub</span></h1>
-      <p>Select a professional web tool below to get started instantly.</p>
+      <h1>LOOX Utility <span class="gradient-text">Kit</span></h1>
+      <p>High-performance, dark-themed utilities built for speed, privacy, and media creators.</p>
     </div>
 
-    <!-- Tools Grid -->
-    <div class="tool-grid">
-      <!-- Background Remover Card -->
+    <div class="tools-grid">
+      <!-- AI Face Swapper Tool -->
+      <a href="faceswap.html" class="tool-card">
+        <div class="tool-icon">👤</div>
+        <h3>AI Face Swapper</h3>
+        <p>Seamless studio-grade facial replacement between photos powered by cloud AI.</p>
+        <div class="tool-footer">
+          <span>Launch Tool</span>
+          <span class="badge">AI Powered</span>
+        </div>
+      </a>
+
+      <!-- Background Remover Tool -->
       <a href="bg-remove.html" class="tool-card">
-        <div class="card-icon">✂️</div>
-        <h3>AI Background Remover</h3>
-        <p>Instant studio-grade cutouts powered by advanced cloud AI precision.</p>
-        <div class="card-action">Launch Tool →</div>
+        <div class="tool-icon">✂️</div>
+        <h3>Background Remover</h3>
+        <p>Instantly erase photo backgrounds with precise edge detection and manual mask brushes.</p>
+        <div class="tool-footer">
+          <span>Launch Tool</span>
+          <span>→</span>
+        </div>
       </a>
 
-      <!-- Image Converter Card -->
+      <!-- Image Converter Tool -->
       <a href="imgformatconverter.html" class="tool-card">
-        <div class="card-icon">🖼️</div>
-        <h3>Universal Image Converter</h3>
-        <p>Convert any image file instantly to WebP, PNG, or JPG right in your browser with zero quality loss.</p>
-        <div class="card-action">Launch Tool →</div>
+        <div class="tool-icon">🖼️</div>
+        <h3>Image Converter</h3>
+        <p>Convert images between PNG, JPEG, WEBP formats locally and efficiently.</p>
+        <div class="tool-footer">
+          <span>Launch Tool</span>
+          <span>→</span>
+        </div>
       </a>
 
-      <!-- Image Cropper Card -->
+      <!-- Image Cropper Tool -->
       <a href="cropimage.html" class="tool-card">
-        <div class="card-icon">📐</div>
-        <h3>Pro Image Cropper</h3>
-        <p>Crop images with custom width/height inputs, position tracking, and preset aspect ratios.</p>
-        <div class="card-action">Launch Tool →</div>
+        <div class="tool-icon">📐</div>
+        <h3>Image Cropper</h3>
+        <p>Crop, rotate, and resize your visual assets precisely with custom aspect ratios.</p>
+        <div class="tool-footer">
+          <span>Launch Tool</span>
+          <span>→</span>
+        </div>
       </a>
     </div>
   </main>
-
 </body>
 </html>
