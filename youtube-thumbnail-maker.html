@@ -245,10 +245,27 @@ canvas.addEventListener('pointermove',e=>{if(!dragging)return;const p=pointerPos
 canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
 function exportImage(){
  const type=$('format').value,q=Number($('quality').value)/100,previousSelection=selectedLayer;
- selectedLayer=-1;draw();
- const out=document.createElement('canvas');out.width=1280;out.height=720;const octx=out.getContext('2d');octx.drawImage(canvas,0,0);
- selectedLayer=previousSelection;draw();
- out.toBlob(blob=>{if(!blob){status('Export failed. Try PNG or JPG.',true);return}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='loox-youtube-thumbnail.'+(type==='image/png'?'png':type==='image/webp'?'webp':'jpg');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);status('Thumbnail exported at 1280 × 720. File size: '+(blob.size/1024).toFixed(0)+' KB.');},type,q);
+ try{
+  selectedLayer=-1;draw();
+  const out=document.createElement('canvas');out.width=1280;out.height=720;
+  const octx=out.getContext('2d');if(!octx)throw new Error('Your browser could not create the export canvas.');
+  octx.drawImage(canvas,0,0);
+  selectedLayer=previousSelection;draw();
+  // Create the download URL and click the link immediately in the original button gesture.
+  // This avoids browsers blocking a delayed download from an asynchronous toBlob callback.
+  let dataUrl=out.toDataURL(type,q);
+  let extension=type==='image/png'?'png':type==='image/webp'?'webp':'jpg';
+  if(!dataUrl||dataUrl==='data:,')throw new Error('The browser could not encode this thumbnail. Try JPG or PNG.');
+  if(!dataUrl.startsWith('data:'+type)) {
+   dataUrl=out.toDataURL('image/png');extension='png';
+  }
+  const a=document.createElement('a');a.href=dataUrl;a.download='loox-youtube-thumbnail.'+extension;
+  a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+  status('Your 1280 × 720 thumbnail download was started. If it does not appear, check your browser downloads or try PNG.');
+ }catch(error){
+  selectedLayer=previousSelection;draw();
+  status(error.message||'Export failed. Please try JPG or PNG.',true);
+ }
 }
 $('downloadBtn').onclick=exportImage;$('exportNow').onclick=exportImage;
 syncOutputs();renderLayers();draw();
