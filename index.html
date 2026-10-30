@@ -1,128 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LOOX AI - Background Remover & Editor</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #18191c; color: #fff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 30px 15px; }
+<!-- Replace your script tags with this single ES Module block -->
+  <script type="module">
+    import imglyRemoveBackground from 'https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm';
 
-    h1 { margin-bottom: 10px; font-size: 2rem; color: #3b82f6; }
-    p.sub { color: #9ca3af; margin-bottom: 25px; font-size: 0.95rem; }
-
-    .app-container { background: #22242a; border-radius: 12px; width: 100%; max-width: 900px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-
-    /* Upload Box */
-    .upload-area { border: 2px dashed #3b82f6; border-radius: 8px; padding: 40px; text-align: center; cursor: pointer; transition: 0.2s; background: #1a1c23; }
-    .upload-area:hover { background: #252833; }
-    .upload-area input { display: none; }
-
-    /* Main Editor Layout */
-    .editor-layout { display: none; grid-template-columns: 1fr 300px; gap: 20px; margin-top: 20px; }
-    @media (max-width: 768px) { .editor-layout { grid-template-columns: 1fr; } }
-
-    /* Left Preview Box */
-    .canvas-wrapper { position: relative; background-color: #111216; border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 380px; overflow: hidden; border: 1px solid #333; }
-    /* Checkerboard pattern for transparency */
-    .checkerboard { background-image: linear-gradient(45deg, #2a2a2a 25%, transparent 25%), linear-gradient(-45deg, #2a2a2a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #2a2a2a 75%), linear-gradient(-45deg, transparent 75%, #2a2a2a 75%); background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px; }
-    
-    canvas { max-width: 100%; max-height: 450px; cursor: crosshair; }
-
-    /* Control Panel */
-    .controls { display: flex; flex-direction: column; gap: 15px; }
-
-    /* Tabs */
-    .tabs { display: flex; background: #111216; border-radius: 6px; padding: 3px; }
-    .tab-btn { flex: 1; padding: 8px; background: none; border: none; color: #888; font-weight: 600; cursor: pointer; border-radius: 4px; }
-    .tab-btn.active { background: #3b82f6; color: #fff; }
-
-    /* Tool Sections */
-    .tool-group { background: #1a1c2f; padding: 15px; border-radius: 6px; border: 1px solid #2e3248; }
-    .tool-group h4 { margin-bottom: 10px; font-size: 0.85rem; color: #a1a1aa; text-transform: uppercase; }
-
-    /* Buttons & Inputs */
-    .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-    .btn-primary { background: #2563eb; color: #fff; }
-    .btn-primary:hover { background: #1d4ed8; }
-    .btn-secondary { background: #374151; color: #fff; }
-    .btn-secondary:hover { background: #4b5563; }
-    .btn-toggle { background: #2e3248; color: #ccc; margin-bottom: 6px; }
-    .btn-toggle.active { background: #10b981; color: #fff; }
-
-    .color-pickers { display: flex; gap: 8px; margin-top: 8px; }
-    .color-btn { width: 30px; height: 30px; border-radius: 50%; border: 2px solid #555; cursor: pointer; }
-
-    /* Loader */
-    .loader { display: none; text-align: center; padding: 20px; color: #60a5fa; font-weight: bold; }
-  </style>
-</head>
-<body>
-
-  <h1>LOOX Background Remover</h1>
-  <p class="sub">100% Free • On-Device AI • Manual Erase/Restore Tool</p>
-
-  <div class="app-container">
-    <!-- File Input -->
-    <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
-      <h3>📁 Click or Drag Image Here</h3>
-      <p style="color: #666; font-size: 0.85rem; margin-top: 5px;">Supports PNG, JPG, WebP</p>
-      <input type="file" id="fileInput" accept="image/*">
-    </div>
-
-    <!-- Processing Loader -->
-    <div class="loader" id="loader">
-      ⚡ Processing image... (Downloading model on first run)
-    </div>
-
-    <!-- Main Workspace -->
-    <div class="editor-layout" id="editorLayout">
-      <!-- Canvas Display -->
-      <div class="canvas-wrapper checkerboard" id="canvasWrapper">
-        <canvas id="mainCanvas"></canvas>
-      </div>
-
-      <!-- Controls Right Panel -->
-      <div class="controls">
-        <!-- View Mode Tabs -->
-        <div class="tabs">
-          <button class="tab-btn active" id="tabRemoved" onclick="switchTab('removed')">Removed</button>
-          <button class="tab-btn" id="tabOriginal" onclick="switchTab('original')">Original</button>
-        </div>
-
-        <!-- Erase / Restore Brush Tool -->
-        <div class="tool-group">
-          <h4>Manual Touch-Up</h4>
-          <button class="btn btn-toggle" id="eraseBtn" onclick="setTool('erase')">🧹 Erase Brush</button>
-          <button class="btn btn-toggle" id="restoreBtn" onclick="setTool('restore')">🖌️ Restore Brush</button>
-          
-          <label style="font-size: 0.8rem; color: #aaa; margin-top: 10px; display: block;">Brush Size:</label>
-          <input type="range" id="brushSize" min="5" max="80" value="20" style="width: 100%;">
-        </div>
-
-        <!-- Background Options -->
-        <div class="tool-group">
-          <h4>Background Color</h4>
-          <div class="color-pickers">
-            <div class="color-btn" style="background: transparent; border-dash: 2px;" onclick="setBgColor('transparent')"></div>
-            <div class="color-btn" style="background: #ffffff;" onclick="setBgColor('#ffffff')"></div>
-            <div class="color-btn" style="background: #000000;" onclick="setBgColor('#000000')"></div>
-            <div class="color-btn" style="background: #3b82f6;" onclick="setBgColor('#3b82f6')"></div>
-            <input type="color" id="customBgColor" onchange="setBgColor(this.value)" style="width: 30px; height: 30px; border:none; cursor:pointer;">
-          </div>
-        </div>
-
-        <!-- Download Buttons -->
-        <button class="btn btn-primary" onclick="downloadImage()">⬇️ Download PNG</button>
-        <button class="btn btn-secondary" onclick="resetApp()">🔄 New Image</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Load imgly AI Background Removal Engine -->
-  <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/dist/index.js"></script>
-
-  <script>
     const fileInput = document.getElementById('fileInput');
     const dropZone = document.getElementById('dropZone');
     const loader = document.getElementById('loader');
@@ -150,8 +29,18 @@
       await loadOriginal(fileUrl);
 
       try {
-        // Run AI Background Removal
-        const blob = await imglyRemoveBackground(file);
+        // Configure explicit CDN assets path to avoid fetching errors
+        const config = {
+          publicPath: 'https://cdn.jsdelivr.net/npm/@imgly/background-removal-data@1.5.5/dist/',
+          progress: (key, current, total) => {
+            if (total > 0) {
+              const percent = Math.round((current / total) * 100);
+              loader.innerText = `⚡ Downloading AI Model... ${percent}%`;
+            }
+          }
+        };
+
+        const blob = await imglyRemoveBackground(file, config);
         const cutoutUrl = URL.createObjectURL(blob);
         
         cutoutImg.onload = () => {
@@ -161,7 +50,8 @@
         };
         cutoutImg.src = cutoutUrl;
       } catch (err) {
-        alert("Error processing image.");
+        console.error("BG Removal Error Details:", err);
+        alert("Failed to process image. Check browser console (F12) for network logs.");
         resetApp();
       }
     }
@@ -185,22 +75,20 @@
         return;
       }
 
-      // Draw Background Color if selected
       if (bgColor !== 'transparent') {
         ctx.fillStyle = bgColor;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
 
-      // Draw AI Cutout
       ctx.drawImage(cutoutImg, 0, 0);
     }
 
-    // Manual Touch-Up (Erase / Restore Brush Engine)
-    function setTool(tool) {
+    // Touch-Up Engine
+    window.setTool = function(tool) {
       currentTool = currentTool === tool ? null : tool;
       document.getElementById('eraseBtn').classList.toggle('active', currentTool === 'erase');
       document.getElementById('restoreBtn').classList.toggle('active', currentTool === 'restore');
-    }
+    };
 
     canvas.addEventListener('mousedown', () => isDrawing = true);
     canvas.addEventListener('mouseup', () => isDrawing = false);
@@ -217,14 +105,12 @@
       const y = (e.clientY - rect.top) * scaleY;
       const radius = document.getElementById('brushSize').value;
 
-      // We modify the cutoutImg layer directly via offscreen canvas operations
       const offCanvas = document.createElement('canvas');
       offCanvas.width = canvas.width;
       offCanvas.height = canvas.height;
       const offCtx = offCanvas.getContext('2d');
 
       offCtx.drawImage(cutoutImg, 0, 0);
-
       offCtx.beginPath();
       offCtx.arc(x, y, radius, 0, Math.PI * 2);
 
@@ -233,14 +119,12 @@
         offCtx.fill();
       } else if (currentTool === 'restore') {
         offCtx.globalCompositeOperation = 'source-over';
-        // Clip to original image pixels
         offCtx.save();
         offCtx.clip();
         offCtx.drawImage(originalImg, 0, 0);
         offCtx.restore();
       }
 
-      // Update cutout image reference
       const updatedImg = new Image();
       updatedImg.onload = () => {
         cutoutImg = updatedImg;
@@ -249,29 +133,26 @@
       updatedImg.src = offCanvas.toDataURL();
     }
 
-    // UI Tab & Color Controls
-    function switchTab(tab) {
+    window.switchTab = function(tab) {
       currentTab = tab;
       document.getElementById('tabRemoved').classList.toggle('active', tab === 'removed');
       document.getElementById('tabOriginal').classList.toggle('active', tab === 'original');
       renderCanvas();
-    }
+    };
 
-    function setBgColor(color) {
+    window.setBgColor = function(color) {
       bgColor = color;
       renderCanvas();
-    }
+    };
 
-    function downloadImage() {
+    window.downloadImage = function() {
       const link = document.createElement('a');
       link.download = 'loox-bg-removed.png';
       link.href = canvas.toDataURL('image/png');
       link.click();
-    }
+    };
 
-    function resetApp() {
+    window.resetApp = function() {
       location.reload();
-    }
+    };
   </script>
-</body>
-</html>
