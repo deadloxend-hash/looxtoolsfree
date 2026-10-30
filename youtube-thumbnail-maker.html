@@ -259,8 +259,17 @@ function exportImage(){
   if(!dataUrl.startsWith('data:'+type)) {
    dataUrl=out.toDataURL('image/png');extension='png';
   }
-  const a=document.createElement('a');a.href=dataUrl;a.download='loox-youtube-thumbnail.'+extension;
+  // Turn the encoded image into a Blob and trigger the download immediately.
+  // This avoids relying on a large data-URL download in the browser.
+  const parts=dataUrl.split(',');
+  const binary=atob(parts[1]);
+  const bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+  const blob=new Blob([bytes],{type:extension==='jpg'?'image/jpeg':'image/'+extension});
+  const downloadUrl=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=downloadUrl;a.download='loox-youtube-thumbnail.'+extension;
   a.style.display='none';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(downloadUrl),60000);
   status('Your 1280 × 720 thumbnail download was started. If it does not appear, check your browser downloads or try PNG.');
  }catch(error){
   selectedLayer=previousSelection;draw();
