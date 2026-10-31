@@ -17,7 +17,7 @@ $('undo').onclick=()=>{if(!history.length)return;future.push(snapshot());restore
 $('redo').onclick=()=>{if(!future.length)return;history.push(snapshot());restore(future.pop())};
 document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||/input|textarea|select/i.test(e.target.tagName))return;const k=e.key.toLowerCase();if(k==='z'){e.preventDefault();e.shiftKey?$('redo').click():$('undo').click()}if(k==='y'){e.preventDefault();$('redo').click()}});
 const say=s=>$('status').textContent=s;
-const base=(kind,name)=>({id:nextId++,kind,name,x:.5,y:.5,w:.6,h:.5,rotation:0,scale:1,opacity:1,flip:1,color:'#ffffff',font:'Arial',fontSize:70,text:'Your title',effect:'shadow',filter:'none',brightness:100,contrast:100,saturation:100,blur:0,zoom:1,fit:'contain',sticker:'✨',shape:'rectangle',stroke:'#ffffff',points:[],brushWidth:16});
+const base=(kind,name)=>({id:nextId++,kind,name,x:.5,y:.5,w:.6,h:.5,rotation:0,scale:1,opacity:1,flip:1,color:'#ffffff',font:'Arial',fontSize:70,text:'Your title',effect:'shadow',filter:'none',brightness:100,contrast:100,saturation:100,blur:0,zoom:1,panX:0,panY:0,fit:'contain',sticker:'✨',shape:'rectangle',stroke:'#ffffff',points:[],brushWidth:16});
 const own=()=>layers.find(l=>l.id===selected)||null;
 function pick(id){selected=id;showLayers();showInspector();draw()}
 function updateEmpty(){$('empty').classList.toggle('studio-hidden',layers.length>0)}
@@ -106,6 +106,7 @@ function showInspector(){
   html+=field('Effect preset','filter',options([['none','Original'],['vivid','Vibrant'],['mono','Black & White'],['vintage','Vintage'],['warm','Warm sunset'],['cool','Cool blue']],l.filter),'select');
   html+=field('Image fit','fit',options([['cover','Fill / crop'],['contain','Show entire photo']],l.fit),'select');
   html+=field('Zoom / crop','zoom',l.zoom,'range',1,4,.05);
+  html+='<div class="studio-field-grid">'+field('Crop pan X','panX',l.panX,'range',-100,100)+field('Crop pan Y','panY',l.panY,'range',-100,100)+'</div>';
  }
  if(l.kind==='text'){
   html+=field('Text content','text',l.text,'textarea');
@@ -140,7 +141,7 @@ function remove(){const l=own();if(!l)return;remember();layers.splice(layers.ind
 function drawImageLayer(l,w,h){
  if(!l.img||!l.img.naturalWidth)return;
  const sw=l.img.naturalWidth,sh=l.img.naturalHeight,dw=w*l.w,dh=h*l.h,ratio=(l.fit==='cover'?Math.max(dw/sw,dh/sh):Math.min(dw/sw,dh/sh))*l.zoom;
- ctx.beginPath();ctx.rect(-dw/2,-dh/2,dw,dh);ctx.clip();ctx.drawImage(l.img,-sw*ratio/2,-sh*ratio/2,sw*ratio,sh*ratio)
+ ctx.beginPath();ctx.rect(-dw/2,-dh/2,dw,dh);ctx.clip();const ox=-Math.max(0,sw*ratio-dw)*(l.panX||0)/200,oy=-Math.max(0,sh*ratio-dh)*(l.panY||0)/200;ctx.drawImage(l.img,-sw*ratio/2+ox,-sh*ratio/2+oy,sw*ratio,sh*ratio)
 }
 function drawTextLayer(l,w){
  const lines=String(l.text).split('\n').slice(0,12),font=Math.max(6,l.fontSize*w/1280);
