@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Edit video online in LOOX Video Studio. Combine video layers, text, stickers, audio, transitions and filters in a multi-track browser timeline with flexible export resolution.">
+<meta name="description" content="Edit video online in LOOX Video Studio. Combine video layers, editable text, audio, transitions and filters in a multi-track browser timeline with flexible export resolution.">
 <meta name="theme-color" content="#0b0c14"><title>LOOX Video Studio — Layered Online Video Editor</title>
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/video-editor.html">
-<link rel="stylesheet" href="loox-studio.css?v=1">
+<link rel="stylesheet" href="loox-studio.css?v=2">
 </head>
 <body class="studio-page">
 <header class="studio-top">
@@ -13,7 +13,7 @@
   <div class="studio-top-actions"><span class="studio-pill">Local-first • No account needed</span><button class="studio-btn secondary" id="undo" title="Undo (Ctrl+Z)">↶ Undo</button><button class="studio-btn secondary" id="redo" title="Redo (Ctrl+Y)">↷ Redo</button><button class="studio-btn" id="exportTop">↥ Export</button></div>
 </header>
 <main class="studio-main">
-<section class="studio-heading"><div><div class="studio-kicker">CREATE · COMBINE · EXPORT</div><h1>Video editing, your way.</h1><p>Mix clips, overlays, images, audio, titles, and animated stickers in a layered timeline.</p></div><span class="studio-pill">LOOX original editing experience</span></section>
+<section class="studio-heading"><div><div class="studio-kicker">CREATE · COMBINE · EXPORT</div><h1>Video editing, your way.</h1><p>Mix clips, video overlays, images, music, and editable animated titles in a layered timeline.</p></div><span class="studio-pill">LOOX original editing experience</span></section>
 <section class="studio-workspace" aria-label="Video editing workspace">
  <nav class="studio-panel studio-toolrail" aria-label="Video editing tools">
   <button type="button" id="toolVideo" class="active" title="Add videos"><strong>▣</strong>Video</button>
@@ -21,7 +21,7 @@
   <button type="button" id="toolImage" title="Add image"><strong>▧</strong>Image</button>
   <button type="button" id="toolAudio" title="Add audio"><strong>♫</strong>Audio</button>
   <button type="button" id="toolText" title="Add text"><strong>T</strong>Text</button>
-  <button type="button" id="toolSticker" title="Add sticker"><strong>✦</strong>Sticker</button>
+  <button type="button" id="toolCrop" title="Crop selected video or image with the mouse"><strong>⌗</strong>Crop</button>
   <button type="button" id="toolProject" title="Project settings"><strong>⚙</strong>Canvas</button>
  </nav>
  <aside class="studio-panel studio-assets" aria-label="Media library">
@@ -33,7 +33,7 @@
   <input class="studio-hidden" id="fileImage" type="file" accept="image/*" multiple>
   <input class="studio-hidden" id="fileAudio" type="file" accept="audio/*" multiple>
   <h3>Project layers</h3><div id="layerList" class="studio-list" aria-live="polite"></div>
-  <p class="studio-section-note">Select a layer to edit its position, timing and appearance. Drag clips along the timeline to reposition them.</p>
+  <p class="studio-section-note">Select a layer to edit its position, timing and appearance. Drag timeline clips to reposition; choose Crop for handles.</p>
  </aside>
  <section class="studio-panel studio-stage" aria-label="Video preview">
   <div class="studio-stage-top"><strong>Live preview</strong><span id="canvasInfo">16:9 • 960 × 540 preview</span></div>
@@ -50,7 +50,9 @@
   <div class="studio-timeline-ruler" id="ruler"></div><div id="tracks"></div>
   <input class="studio-scrub" type="range" min="0" max="30" value="0" step=".01" id="scrub" aria-label="Seek video timeline">
 </section>
+<dialog id="exportDialog" class="studio-export-dialog">
 <section class="studio-panel" style="margin-top:13px">
+<div class="studio-export-head"><h2>Export settings</h2><button type="button" class="studio-btn secondary" id="closeExport">✕ Close</button></div>
  <h2>Export your project</h2><div class="studio-field-grid" style="max-width:780px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
  <label class="studio-field"><span>Aspect ratio</span><select id="aspect"><option value="16:9">16:9 Widescreen</option><option value="9:16">9:16 Vertical</option><option value="1:1">1:1 Square</option><option value="4:5">4:5 Portrait</option></select></label>
  <label class="studio-field"><span>Resolution</span><select id="resolution"><option value="320">320p</option><option value="480">480p</option><option value="720" selected>720p HD</option><option value="1080">1080p Full HD</option><option value="1440">1440p QHD</option><option value="2160">2160p / 4K UHD*</option></select></label>
@@ -59,7 +61,9 @@
  </div><div class="studio-button-row"><button class="studio-btn" id="export">Export WebM</button><button class="studio-btn secondary" id="cancelExport" disabled>Cancel export</button><span id="exportInfo" class="studio-section-note">Final dimensions adapt to aspect ratio. Export records in real time.</span></div>
  <p class="studio-footer-note">*4K is an output size option, not a promise of enhanced source detail. Large projects, 60 fps, 4K, codecs and audio export depend on browser and device capabilities. Export currently uses WebM, not MP4. Keep this tab open while recording; no files are uploaded by this editor.</p>
 </section>
+</dialog>
 </main>
-<script src="loox-video-studio.js?v=3"></script>
+<script src="loox-crop-controls.js?v=1"></script>
+<script src="loox-video-studio.js?v=4"></script>
 <script src="loox-navigation.js?v=2"></script>
 </body></html>
