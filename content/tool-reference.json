@@ -649,6 +649,1766 @@
           "The editor works locally in your browser and does not send the photo to LOOX."
         ]
       ]
+    },
+    "fancy-fonts.html": {
+      "title": "Fancy Unicode Styles",
+      "category": "FONTS WORKSPACE",
+      "type": "code",
+      "icon": "Aa",
+      "intro": "Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Choose an alphabet or style",
+          "Type ordinary text, browse the style cards, filter by alphabet family and copy the version you like. The results are Unicode characters, not downloadable font files.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Use decorative text sparingly. Some platforms and screen readers handle these characters differently, and unsupported characters may appear as boxes.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Use decorative text sparingly. Some platforms and screen readers handle these characters differently, and unsupported characters may appear as boxes.",
+      "faq": [
+        [
+          "What does Fancy Unicode Styles do?",
+          "Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Type ordinary text, browse the style cards, filter by alphabet family and copy the version you like. The results are Unicode characters, not downloadable font files."
+        ],
+        [
+          "What should I check before using the output?",
+          "Use decorative text sparingly. Some platforms and screen readers handle these characters differently, and unsupported characters may appear as boxes."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "text-editor.html": {
+      "title": "Text Editor",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "Tx",
+      "intro": "A focused place to draft, reorganize and save plain text without sending the document to a writing service.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Open a UTF-8 text file or start typing. Use the editing actions to change case, sort lines, remove duplicates or insert a timestamp, then download a separate text file.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "This is a plain-text editor. It does not preserve Word formatting or provide cloud backups. Save important drafts before closing the tab.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "A focused place to draft, reorganize and save plain text without sending the document to a writing service.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "This is a plain-text editor. It does not preserve Word formatting or provide cloud backups. Save important drafts before closing the tab.",
+      "faq": [
+        [
+          "What does Text Editor do?",
+          "A focused place to draft, reorganize and save plain text without sending the document to a writing service."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Open a UTF-8 text file or start typing. Use the editing actions to change case, sort lines, remove duplicates or insert a timestamp, then download a separate text file."
+        ],
+        [
+          "What should I check before using the output?",
+          "This is a plain-text editor. It does not preserve Word formatting or provide cloud backups. Save important drafts before closing the tab."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "case-converter.html": {
+      "title": "Case Converter",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "Ca",
+      "intro": "Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Paste the source, select a case rule and transform the text. Review names and abbreviations afterward because automatic casing does not understand every writing convention.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Title and sentence case use general language rules. Brand names, acronyms and specialist capitalization may need a final human edit.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Title and sentence case use general language rules. Brand names, acronyms and specialist capitalization may need a final human edit.",
+      "faq": [
+        [
+          "What does Case Converter do?",
+          "Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Paste the source, select a case rule and transform the text. Review names and abbreviations afterward because automatic casing does not understand every writing convention."
+        ],
+        [
+          "What should I check before using the output?",
+          "Title and sentence case use general language rules. Brand names, acronyms and specialist capitalization may need a final human edit."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "concat-text.html": {
+      "title": "Concatenate Text",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "+T",
+      "intro": "Bring separate pieces of text together with a separator you choose.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Use the first and second input boxes for the text blocks. Enter a separator such as a space, comma or newline, then combine the blocks into one result.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "A separator is literal text. Use the newline shortcut when building a multi-line list, and check spacing around existing punctuation.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Bring separate pieces of text together with a separator you choose.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "A separator is literal text. Use the newline shortcut when building a multi-line list, and check spacing around existing punctuation.",
+      "faq": [
+        [
+          "What does Concatenate Text do?",
+          "Bring separate pieces of text together with a separator you choose."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Use the first and second input boxes for the text blocks. Enter a separator such as a space, comma or newline, then combine the blocks into one result."
+        ],
+        [
+          "What should I check before using the output?",
+          "A separator is literal text. Use the newline shortcut when building a multi-line list, and check spacing around existing punctuation."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "split-text.html": {
+      "title": "Split Text",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "Sp",
+      "intro": "Turn a long block into useful parts with a literal delimiter or line breaks.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Enter the source and the separator that marks each part. The result places the parts on separate lines, ready to copy into a list or another workflow.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "This tool splits on an exact delimiter. For a quoted CSV file, use Extract Columns so commas inside quoted fields are handled correctly.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Turn a long block into useful parts with a literal delimiter or line breaks.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "This tool splits on an exact delimiter. For a quoted CSV file, use Extract Columns so commas inside quoted fields are handled correctly.",
+      "faq": [
+        [
+          "What does Split Text do?",
+          "Turn a long block into useful parts with a literal delimiter or line breaks."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Enter the source and the separator that marks each part. The result places the parts on separate lines, ready to copy into a list or another workflow."
+        ],
+        [
+          "What should I check before using the output?",
+          "This tool splits on an exact delimiter. For a quoted CSV file, use Extract Columns so commas inside quoted fields are handled correctly."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "extract-columns.html": {
+      "title": "Extract Columns",
+      "category": "DEVELOPER WORKSPACE",
+      "type": "code",
+      "icon": "Xc",
+      "intro": "Keep the useful columns from a delimited table without rebuilding the whole file.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Choose the delimiter, paste CSV or tab-separated data, and enter one-based column numbers such as 1,3. Quoted fields and doubled quotes are supported.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Rows can contain different numbers of fields. Missing selected fields become empty cells. The output remains delimited text, not a spreadsheet workbook.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Keep the useful columns from a delimited table without rebuilding the whole file.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Rows can contain different numbers of fields. Missing selected fields become empty cells. The output remains delimited text, not a spreadsheet workbook.",
+      "faq": [
+        [
+          "What does Extract Columns do?",
+          "Keep the useful columns from a delimited table without rebuilding the whole file."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose the delimiter, paste CSV or tab-separated data, and enter one-based column numbers such as 1,3. Quoted fields and doubled quotes are supported."
+        ],
+        [
+          "What should I check before using the output?",
+          "Rows can contain different numbers of fields. Missing selected fields become empty cells. The output remains delimited text, not a spreadsheet workbook."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "remove-spaces.html": {
+      "title": "Remove Extra Spaces",
+      "category": "CLEANERS WORKSPACE",
+      "type": "code",
+      "icon": "Ws",
+      "intro": "Clean up accidental gaps while deciding whether to preserve paragraph breaks.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Choose whether to collapse horizontal spaces only or all whitespace. Apply the cleanup and compare the result before replacing the source.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Whitespace can carry meaning in code and tables. Do not collapse indentation in a program unless you understand the effect.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Clean up accidental gaps while deciding whether to preserve paragraph breaks.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Whitespace can carry meaning in code and tables. Do not collapse indentation in a program unless you understand the effect.",
+      "faq": [
+        [
+          "What does Remove Extra Spaces do?",
+          "Clean up accidental gaps while deciding whether to preserve paragraph breaks."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose whether to collapse horizontal spaces only or all whitespace. Apply the cleanup and compare the result before replacing the source."
+        ],
+        [
+          "What should I check before using the output?",
+          "Whitespace can carry meaning in code and tables. Do not collapse indentation in a program unless you understand the effect."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "strip-html.html": {
+      "title": "Strip HTML Tags",
+      "category": "CLEANERS WORKSPACE",
+      "type": "code",
+      "icon": "Ht",
+      "intro": "Recover readable text from an HTML snippet without displaying the markup as a live page.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Paste markup and extract text. Script and style content are removed, and block boundaries are kept as line breaks where practical.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Extracting text is not a security sanitizer for HTML. Use a dedicated sanitizer if you plan to render untrusted markup in an application.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Recover readable text from an HTML snippet without displaying the markup as a live page.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Extracting text is not a security sanitizer for HTML. Use a dedicated sanitizer if you plan to render untrusted markup in an application.",
+      "faq": [
+        [
+          "What does Strip HTML Tags do?",
+          "Recover readable text from an HTML snippet without displaying the markup as a live page."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Paste markup and extract text. Script and style content are removed, and block boundaries are kept as line breaks where practical."
+        ],
+        [
+          "What should I check before using the output?",
+          "Extracting text is not a security sanitizer for HTML. Use a dedicated sanitizer if you plan to render untrusted markup in an application."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "remove-emojis.html": {
+      "title": "Remove Emojis",
+      "category": "CLEANERS WORKSPACE",
+      "type": "code",
+      "icon": "Em",
+      "intro": "Create a simpler text copy by removing emoji clusters, flags and common emoji sequences.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Paste the text and run the remover. Where supported, grapheme segmentation keeps multi-character emoji sequences together during cleanup.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Emoji standards and platform rendering differ. Review the output, especially keycaps, flags and unusual combined characters.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Create a simpler text copy by removing emoji clusters, flags and common emoji sequences.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Emoji standards and platform rendering differ. Review the output, especially keycaps, flags and unusual combined characters.",
+      "faq": [
+        [
+          "What does Remove Emojis do?",
+          "Create a simpler text copy by removing emoji clusters, flags and common emoji sequences."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Paste the text and run the remover. Where supported, grapheme segmentation keeps multi-character emoji sequences together during cleanup."
+        ],
+        [
+          "What should I check before using the output?",
+          "Emoji standards and platform rendering differ. Review the output, especially keycaps, flags and unusual combined characters."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "remove-symbols.html": {
+      "title": "Remove Unicode Symbols",
+      "category": "CLEANERS WORKSPACE",
+      "type": "code",
+      "icon": "Sy",
+      "intro": "Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Run the symbol cleanup on a copy of the source. Currency signs, mathematical signs and many pictographic symbols are removed by their Unicode categories.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "This is a symbol filter, not an ASCII-only filter. Accented letters and non-Latin writing are preserved. Currency and mathematical meaning can be lost.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "This is a symbol filter, not an ASCII-only filter. Accented letters and non-Latin writing are preserved. Currency and mathematical meaning can be lost.",
+      "faq": [
+        [
+          "What does Remove Unicode Symbols do?",
+          "Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Run the symbol cleanup on a copy of the source. Currency signs, mathematical signs and many pictographic symbols are removed by their Unicode categories."
+        ],
+        [
+          "What should I check before using the output?",
+          "This is a symbol filter, not an ASCII-only filter. Accented letters and non-Latin writing are preserved. Currency and mathematical meaning can be lost."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "upside-down.html": {
+      "title": "Upside Down Text",
+      "category": "FONTS WORKSPACE",
+      "type": "code",
+      "icon": "Ud",
+      "intro": "Give a short message a playful upside-down appearance using approximate Unicode counterparts.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Choose an alphabet or style",
+          "Type a short line and transform it. The character order is reversed and supported Latin characters are replaced by upside-down lookalikes.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Not every letter has an exact upside-down equivalent. Numbers, accents and punctuation may use approximations or stay unchanged.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Give a short message a playful upside-down appearance using approximate Unicode counterparts.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Not every letter has an exact upside-down equivalent. Numbers, accents and punctuation may use approximations or stay unchanged.",
+      "faq": [
+        [
+          "What does Upside Down Text do?",
+          "Give a short message a playful upside-down appearance using approximate Unicode counterparts."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Type a short line and transform it. The character order is reversed and supported Latin characters are replaced by upside-down lookalikes."
+        ],
+        [
+          "What should I check before using the output?",
+          "Not every letter has an exact upside-down equivalent. Numbers, accents and punctuation may use approximations or stay unchanged."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "unicode-normalizer.html": {
+      "title": "Normalize Unicode",
+      "category": "DEVELOPER WORKSPACE",
+      "type": "code",
+      "icon": "Un",
+      "intro": "Make equivalent Unicode representations more consistent before comparison, storage or further text processing.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Choose NFC, NFD, NFKC or NFKD and normalize the input. NFC composes canonical equivalents; compatibility forms also simplify some presentation characters.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Normalization is not transliteration or a complete defense against lookalike characters. Compatibility normalization can intentionally remove stylistic distinctions.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Make equivalent Unicode representations more consistent before comparison, storage or further text processing.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Normalization is not transliteration or a complete defense against lookalike characters. Compatibility normalization can intentionally remove stylistic distinctions.",
+      "faq": [
+        [
+          "What does Normalize Unicode do?",
+          "Make equivalent Unicode representations more consistent before comparison, storage or further text processing."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose NFC, NFD, NFKC or NFKD and normalize the input. NFC composes canonical equivalents; compatibility forms also simplify some presentation characters."
+        ],
+        [
+          "What should I check before using the output?",
+          "Normalization is not transliteration or a complete defense against lookalike characters. Compatibility normalization can intentionally remove stylistic distinctions."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "bold-text.html": {
+      "title": "Bold Unicode Text",
+      "category": "FONTS WORKSPACE",
+      "type": "code",
+      "icon": "Bo",
+      "intro": "Create mathematical bold-style Unicode letters for a short label or caption.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Choose an alphabet or style",
+          "Type Latin letters or digits and copy the transformed result. Supported characters are replaced; other writing systems and punctuation are kept.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "This does not apply real font-weight formatting. For accessible headings on a website, use semantic HTML and CSS instead.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Create mathematical bold-style Unicode letters for a short label or caption.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "This does not apply real font-weight formatting. For accessible headings on a website, use semantic HTML and CSS instead.",
+      "faq": [
+        [
+          "What does Bold Unicode Text do?",
+          "Create mathematical bold-style Unicode letters for a short label or caption."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Type Latin letters or digits and copy the transformed result. Supported characters are replaced; other writing systems and punctuation are kept."
+        ],
+        [
+          "What should I check before using the output?",
+          "This does not apply real font-weight formatting. For accessible headings on a website, use semantic HTML and CSS instead."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "italic-text.html": {
+      "title": "Italic Unicode Text",
+      "category": "FONTS WORKSPACE",
+      "type": "code",
+      "icon": "It",
+      "intro": "Give supported Latin letters an italic-style appearance without a rich-text editor.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Choose an alphabet or style",
+          "Enter a short phrase and copy the generated characters. Check the result in the destination app before publishing.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Unicode italic characters are mathematical symbols. Their rendering, search behavior and pronunciation can differ from ordinary letters.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Give supported Latin letters an italic-style appearance without a rich-text editor.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Unicode italic characters are mathematical symbols. Their rendering, search behavior and pronunciation can differ from ordinary letters.",
+      "faq": [
+        [
+          "What does Italic Unicode Text do?",
+          "Give supported Latin letters an italic-style appearance without a rich-text editor."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Enter a short phrase and copy the generated characters. Check the result in the destination app before publishing."
+        ],
+        [
+          "What should I check before using the output?",
+          "Unicode italic characters are mathematical symbols. Their rendering, search behavior and pronunciation can differ from ordinary letters."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "blackletter-text.html": {
+      "title": "Old English Text",
+      "category": "FONTS WORKSPACE",
+      "type": "code",
+      "icon": "Fr",
+      "intro": "Explore a blackletter-style alphabet for an ornamental heading or creative signature.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Choose an alphabet or style",
+          "Enter Latin text and copy the Fraktur-style result. The mapping includes the legacy Unicode letters used by this alphabet.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Keep longer passages in ordinary text for readability. A stylized alphabet does not add privacy or encryption.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Explore a blackletter-style alphabet for an ornamental heading or creative signature.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Keep longer passages in ordinary text for readability. A stylized alphabet does not add privacy or encryption.",
+      "faq": [
+        [
+          "What does Old English Text do?",
+          "Explore a blackletter-style alphabet for an ornamental heading or creative signature."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Enter Latin text and copy the Fraktur-style result. The mapping includes the legacy Unicode letters used by this alphabet."
+        ],
+        [
+          "What should I check before using the output?",
+          "Keep longer passages in ordinary text for readability. A stylized alphabet does not add privacy or encryption."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "cursive-text.html": {
+      "title": "Cursive Unicode Text",
+      "category": "FONTS WORKSPACE",
+      "type": "code",
+      "icon": "Cu",
+      "intro": "Turn a short phrase into a flowing script-style Unicode version.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Choose an alphabet or style",
+          "Type the phrase, copy the script characters and preview them in the app where you plan to use them.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Script-style characters are not handwritten signatures. Avoid relying on them for legal identity, search keywords or essential accessible information.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Turn a short phrase into a flowing script-style Unicode version.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Script-style characters are not handwritten signatures. Avoid relying on them for legal identity, search keywords or essential accessible information.",
+      "faq": [
+        [
+          "What does Cursive Unicode Text do?",
+          "Turn a short phrase into a flowing script-style Unicode version."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Type the phrase, copy the script characters and preview them in the app where you plan to use them."
+        ],
+        [
+          "What should I check before using the output?",
+          "Script-style characters are not handwritten signatures. Avoid relying on them for legal identity, search keywords or essential accessible information."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "random-numbers.html": {
+      "title": "Random Number Generator",
+      "category": "RANDOM WORKSPACE",
+      "type": "code",
+      "icon": "Rn",
+      "intro": "Generate integers within an inclusive range using the browser’s cryptographic random source.",
+      "steps": [
+        [
+          "Choose count and generation settings",
+          "Set a count that suits your task. Generation is manual so results do not change unexpectedly.",
+          "01"
+        ],
+        [
+          "Choose the permitted range or alphabet",
+          "Choose the minimum, maximum and count. Enable unique results when repeated values would be inconvenient. Requests are bounded to keep processing practical.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "This utility is not a certified lottery or gambling system. Unique output requires enough values in the selected range.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Generate integers within an inclusive range using the browser’s cryptographic random source.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "This utility is not a certified lottery or gambling system. Unique output requires enough values in the selected range.",
+      "faq": [
+        [
+          "What does Random Number Generator do?",
+          "Generate integers within an inclusive range using the browser’s cryptographic random source."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose the minimum, maximum and count. Enable unique results when repeated values would be inconvenient. Requests are bounded to keep processing practical."
+        ],
+        [
+          "What should I check before using the output?",
+          "This utility is not a certified lottery or gambling system. Unique output requires enough values in the selected range."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "random-emails.html": {
+      "title": "Random Example Emails",
+      "category": "RANDOM WORKSPACE",
+      "type": "code",
+      "icon": "Re",
+      "intro": "Create clearly fictional email-shaped values for mockups, sample tables and development fixtures.",
+      "steps": [
+        [
+          "Choose count and generation settings",
+          "Set a count that suits your task. Generation is manual so results do not change unexpectedly.",
+          "01"
+        ],
+        [
+          "Choose the permitted range or alphabet",
+          "Choose a count and generate addresses on reserved example.com, example.net or example.org domains. Copy or download the list as sample data.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "These are fictional examples, not working inboxes. Do not use generated addresses for sign-ups or unsolicited messages.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Create clearly fictional email-shaped values for mockups, sample tables and development fixtures.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "These are fictional examples, not working inboxes. Do not use generated addresses for sign-ups or unsolicited messages.",
+      "faq": [
+        [
+          "What does Random Example Emails do?",
+          "Create clearly fictional email-shaped values for mockups, sample tables and development fixtures."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose a count and generate addresses on reserved example.com, example.net or example.org domains. Copy or download the list as sample data."
+        ],
+        [
+          "What should I check before using the output?",
+          "These are fictional examples, not working inboxes. Do not use generated addresses for sign-ups or unsolicited messages."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "pronounceable-passwords.html": {
+      "title": "Pronounceable Passphrases",
+      "category": "SECURITY WORKSPACE",
+      "type": "code",
+      "icon": "Pp",
+      "intro": "Generate memorable-looking strings from randomized syllables, optional digits and separators.",
+      "steps": [
+        [
+          "Choose count and generation settings",
+          "Set a count that suits your task. Generation is manual so results do not change unexpectedly.",
+          "01"
+        ],
+        [
+          "Choose the permitted range or alphabet",
+          "Choose the length and count, then generate with the browser’s cryptographic random API. Review the result and store it privately if you decide to use it.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Pronounceable structure reduces the space of possible results compared with unrestricted random characters. For important accounts, prefer a password manager’s long random password.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Generate memorable-looking strings from randomized syllables, optional digits and separators.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Pronounceable structure reduces the space of possible results compared with unrestricted random characters. For important accounts, prefer a password manager’s long random password.",
+      "faq": [
+        [
+          "What does Pronounceable Passphrases do?",
+          "Generate memorable-looking strings from randomized syllables, optional digits and separators."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose the length and count, then generate with the browser’s cryptographic random API. Review the result and store it privately if you decide to use it."
+        ],
+        [
+          "What should I check before using the output?",
+          "Pronounceable structure reduces the space of possible results compared with unrestricted random characters. For important accounts, prefer a password manager’s long random password."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "strong-passwords.html": {
+      "title": "Strong Password Generator",
+      "category": "SECURITY WORKSPACE",
+      "type": "code",
+      "icon": "Pw",
+      "intro": "Create random passwords with selectable character groups and a length you control.",
+      "steps": [
+        [
+          "Choose count and generation settings",
+          "Set a count that suits your task. Generation is manual so results do not change unexpectedly.",
+          "01"
+        ],
+        [
+          "Choose the permitted range or alphabet",
+          "Select uppercase, lowercase, digits and symbols. The generator includes at least one character from each selected group and shuffles with cryptographic randomness.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "No generated password is a guarantee of account security. Use a unique password for each account, enable additional authentication and keep the result out of screenshots or shared documents.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Create random passwords with selectable character groups and a length you control.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "No generated password is a guarantee of account security. Use a unique password for each account, enable additional authentication and keep the result out of screenshots or shared documents.",
+      "faq": [
+        [
+          "What does Strong Password Generator do?",
+          "Create random passwords with selectable character groups and a length you control."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Select uppercase, lowercase, digits and symbols. The generator includes at least one character from each selected group and shuffles with cryptographic randomness."
+        ],
+        [
+          "What should I check before using the output?",
+          "No generated password is a guarantee of account security. Use a unique password for each account, enable additional authentication and keep the result out of screenshots or shared documents."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "usernames.html": {
+      "title": "Username Generator",
+      "category": "RANDOM WORKSPACE",
+      "type": "code",
+      "icon": "Us",
+      "intro": "Find a starting point for a handle without sharing your name or personal details.",
+      "steps": [
+        [
+          "Choose count and generation settings",
+          "Set a count that suits your task. Generation is manual so results do not change unexpectedly.",
+          "01"
+        ],
+        [
+          "Choose the permitted range or alphabet",
+          "Choose the number of suggestions and generate adjective-and-noun combinations with randomized suffixes. Copy a candidate and check availability on the destination service.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Availability, trademark rights and platform rules are not checked. Avoid including identifying information in a public handle.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Find a starting point for a handle without sharing your name or personal details.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Availability, trademark rights and platform rules are not checked. Avoid including identifying information in a public handle.",
+      "faq": [
+        [
+          "What does Username Generator do?",
+          "Find a starting point for a handle without sharing your name or personal details."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose the number of suggestions and generate adjective-and-noun combinations with randomized suffixes. Copy a candidate and check availability on the destination service."
+        ],
+        [
+          "What should I check before using the output?",
+          "Availability, trademark rights and platform rules are not checked. Avoid including identifying information in a public handle."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "random-strings.html": {
+      "title": "Random String Generator",
+      "category": "RANDOM WORKSPACE",
+      "type": "code",
+      "icon": "Rs",
+      "intro": "Generate sample identifiers and arbitrary character strings from a character set you define.",
+      "steps": [
+        [
+          "Choose count and generation settings",
+          "Set a count that suits your task. Generation is manual so results do not change unexpectedly.",
+          "01"
+        ],
+        [
+          "Choose the permitted range or alphabet",
+          "Set the alphabet, string length and count. The generator chooses characters with cryptographic randomness and removes duplicate alphabet entries first.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "A random string is not automatically a valid authentication token. Token design also needs enough entropy, safe storage, expiration and server-side validation.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Generate sample identifiers and arbitrary character strings from a character set you define.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "A random string is not automatically a valid authentication token. Token design also needs enough entropy, safe storage, expiration and server-side validation.",
+      "faq": [
+        [
+          "What does Random String Generator do?",
+          "Generate sample identifiers and arbitrary character strings from a character set you define."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Set the alphabet, string length and count. The generator chooses characters with cryptographic randomness and removes duplicate alphabet entries first."
+        ],
+        [
+          "What should I check before using the output?",
+          "A random string is not automatically a valid authentication token. Token design also needs enough entropy, safe storage, expiration and server-side validation."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "email-extractor.html": {
+      "title": "Email Extractor",
+      "category": "EXTRACTORS WORKSPACE",
+      "type": "code",
+      "icon": "Ex",
+      "intro": "Pull email-shaped addresses out of a text document and remove repeated entries.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Paste a source you have permission to process. Extract the matching addresses, review the list and export it if needed.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Matching syntax does not verify an inbox or give permission to contact its owner. This tool focuses on common ASCII email forms, not every possible internationalized address.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Pull email-shaped addresses out of a text document and remove repeated entries.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Matching syntax does not verify an inbox or give permission to contact its owner. This tool focuses on common ASCII email forms, not every possible internationalized address.",
+      "faq": [
+        [
+          "What does Email Extractor do?",
+          "Pull email-shaped addresses out of a text document and remove repeated entries."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Paste a source you have permission to process. Extract the matching addresses, review the list and export it if needed."
+        ],
+        [
+          "What should I check before using the output?",
+          "Matching syntax does not verify an inbox or give permission to contact its owner. This tool focuses on common ASCII email forms, not every possible internationalized address."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "url-extractor.html": {
+      "title": "URL Extractor",
+      "category": "EXTRACTORS WORKSPACE",
+      "type": "code",
+      "icon": "Ur",
+      "intro": "Collect HTTP and HTTPS links from a block of notes or copied text.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Extract links, inspect the output as plain text and copy the list. Common trailing punctuation is trimmed and duplicate results are removed.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "The tool does not open links or determine whether a destination is safe. Review unfamiliar URLs before visiting them.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Collect HTTP and HTTPS links from a block of notes or copied text.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "The tool does not open links or determine whether a destination is safe. Review unfamiliar URLs before visiting them.",
+      "faq": [
+        [
+          "What does URL Extractor do?",
+          "Collect HTTP and HTTPS links from a block of notes or copied text."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Extract links, inspect the output as plain text and copy the list. Common trailing punctuation is trimmed and duplicate results are removed."
+        ],
+        [
+          "What should I check before using the output?",
+          "The tool does not open links or determine whether a destination is safe. Review unfamiliar URLs before visiting them."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "word-counter.html": {
+      "title": "Word & Character Counter",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "Wc",
+      "intro": "Understand the length of a draft with live counts for words, characters, lines and paragraphs.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Type or paste text to see the counters update. Character measurements distinguish grapheme clusters from code points and UTF-16 units.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Word boundaries vary between languages and platforms. Treat the count as a writing aid and check the destination’s own rules for strict limits.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Understand the length of a draft with live counts for words, characters, lines and paragraphs.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Word boundaries vary between languages and platforms. Treat the count as a writing aid and check the destination’s own rules for strict limits.",
+      "faq": [
+        [
+          "What does Word & Character Counter do?",
+          "Understand the length of a draft with live counts for words, characters, lines and paragraphs."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Type or paste text to see the counters update. Character measurements distinguish grapheme clusters from code points and UTF-16 units."
+        ],
+        [
+          "What should I check before using the output?",
+          "Word boundaries vary between languages and platforms. Treat the count as a writing aid and check the destination’s own rules for strict limits."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "find-replace.html": {
+      "title": "Find & Replace",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "Fx",
+      "intro": "Make consistent changes across a draft without repeatedly editing the same phrase by hand.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Enter a literal search string and a replacement. Choose case sensitivity and whether to replace one match or every match.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Search is literal, not a regular expression. Review names, URLs and longer words that may contain the same sequence before using Replace all.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Make consistent changes across a draft without repeatedly editing the same phrase by hand.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Search is literal, not a regular expression. Review names, URLs and longer words that may contain the same sequence before using Replace all.",
+      "faq": [
+        [
+          "What does Find & Replace do?",
+          "Make consistent changes across a draft without repeatedly editing the same phrase by hand."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Enter a literal search string and a replacement. Choose case sensitivity and whether to replace one match or every match."
+        ],
+        [
+          "What should I check before using the output?",
+          "Search is literal, not a regular expression. Review names, URLs and longer words that may contain the same sequence before using Replace all."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "text-diff.html": {
+      "title": "Text Difference Checker",
+      "category": "DEVELOPER WORKSPACE",
+      "type": "code",
+      "icon": "Df",
+      "intro": "Compare two versions and see which lines were added, removed or kept.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Paste the earlier version into the first box and the new version into the second. Generate a line-based comparison with visible additions and removals.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "This is a line comparison, not a plagiarism detector or an assessment of meaning. Large inputs are bounded to keep the browser responsive.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Compare two versions and see which lines were added, removed or kept.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "This is a line comparison, not a plagiarism detector or an assessment of meaning. Large inputs are bounded to keep the browser responsive.",
+      "faq": [
+        [
+          "What does Text Difference Checker do?",
+          "Compare two versions and see which lines were added, removed or kept."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Paste the earlier version into the first box and the new version into the second. Generate a line-based comparison with visible additions and removals."
+        ],
+        [
+          "What should I check before using the output?",
+          "This is a line comparison, not a plagiarism detector or an assessment of meaning. Large inputs are bounded to keep the browser responsive."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "json-formatter.html": {
+      "title": "JSON Formatter",
+      "category": "DEVELOPER WORKSPACE",
+      "type": "code",
+      "icon": "Js",
+      "intro": "Turn valid JSON into a readable structure or a compact representation.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Paste JSON, choose pretty printing or minification and run the formatter. Invalid JSON produces an error rather than a guessed correction.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "JSON parsing can lose precision for numbers beyond JavaScript’s safe integer range. Use strings for identifiers or a specialized parser when exact large integers matter.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Turn valid JSON into a readable structure or a compact representation.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "JSON parsing can lose precision for numbers beyond JavaScript’s safe integer range. Use strings for identifiers or a specialized parser when exact large integers matter.",
+      "faq": [
+        [
+          "What does JSON Formatter do?",
+          "Turn valid JSON into a readable structure or a compact representation."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Paste JSON, choose pretty printing or minification and run the formatter. Invalid JSON produces an error rather than a guessed correction."
+        ],
+        [
+          "What should I check before using the output?",
+          "JSON parsing can lose precision for numbers beyond JavaScript’s safe integer range. Use strings for identifiers or a specialized parser when exact large integers matter."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "base64-encoder.html": {
+      "title": "Base64 Encoder & Decoder",
+      "category": "DEVELOPER WORKSPACE",
+      "type": "code",
+      "icon": "64",
+      "intro": "Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Select encode or decode. UTF-8 text is converted through bytes so non-ASCII letters and emoji are handled consistently.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Base64 is reversible encoding, not encryption. Binary files and invalid UTF-8 require a file-oriented workflow rather than this text utility.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Base64 is reversible encoding, not encryption. Binary files and invalid UTF-8 require a file-oriented workflow rather than this text utility.",
+      "faq": [
+        [
+          "What does Base64 Encoder & Decoder do?",
+          "Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Select encode or decode. UTF-8 text is converted through bytes so non-ASCII letters and emoji are handled consistently."
+        ],
+        [
+          "What should I check before using the output?",
+          "Base64 is reversible encoding, not encryption. Binary files and invalid UTF-8 require a file-oriented workflow rather than this text utility."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "url-encoder.html": {
+      "title": "URL Encoder & Decoder",
+      "category": "DEVELOPER WORKSPACE",
+      "type": "code",
+      "icon": "%",
+      "intro": "Prepare a text value for a URL component or decode an encoded component into a readable form.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Choose encode or decode. The tool uses component encoding so reserved characters such as & and = are escaped when they belong to a value.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Encoding a whole URL as one component changes its separators. Use this for a value or component, not as a safety check for a destination.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Prepare a text value for a URL component or decode an encoded component into a readable form.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Encoding a whole URL as one component changes its separators. Use this for a value or component, not as a safety check for a destination.",
+      "faq": [
+        [
+          "What does URL Encoder & Decoder do?",
+          "Prepare a text value for a URL component or decode an encoded component into a readable form."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Choose encode or decode. The tool uses component encoding so reserved characters such as & and = are escaped when they belong to a value."
+        ],
+        [
+          "What should I check before using the output?",
+          "Encoding a whole URL as one component changes its separators. Use this for a value or component, not as a safety check for a destination."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This module applies explicit local transformations or browser-generated randomness. It does not send your text to an AI model."
+        ]
+      ]
+    },
+    "prompt-builder.html": {
+      "title": "AI Writing Prompt Builder",
+      "category": "TEXT WORKSPACE",
+      "type": "code",
+      "icon": "Ai",
+      "intro": "Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints.",
+      "steps": [
+        [
+          "Paste or open your source text",
+          "Enter source material you have permission to use. The editor accepts UTF-8 text and keeps processing in the browser.",
+          "01"
+        ],
+        [
+          "Configure the operation",
+          "Enter your brief and choose a writing goal. The tool creates a structured prompt to copy into the AI service you choose; it does not call a model or generate an AI answer.",
+          "02"
+        ],
+        [
+          "Generate and review the result",
+          "Review private details before pasting the prompt into another service. This local template builder makes no remote AI request.",
+          "03"
+        ],
+        [
+          "Copy or download a separate text file",
+          "Use Copy or Download text. The output is a new file, and the original remains available for comparison.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints.",
+        "Use a dedicated workspace with visible settings and a plain-text output.",
+        "Copy the result or download a separate UTF-8 text file.",
+        "Process input locally without sending the text to an AI service."
+      ],
+      "privacy": "This utility processes text and generates results locally in your browser. Input, generated passwords and outputs are not uploaded to LOOX by the tool. Preferences are stored on this device, but this module does not save drafts or passwords to local storage. Browser extensions, clipboard history and a compromised device can still expose sensitive material.",
+      "tips": "Review private details before pasting the prompt into another service. This local template builder makes no remote AI request.",
+      "faq": [
+        [
+          "What does AI Writing Prompt Builder do?",
+          "Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints."
+        ],
+        [
+          "How do I choose the right settings?",
+          "Enter your brief and choose a writing goal. The tool creates a structured prompt to copy into the AI service you choose; it does not call a model or generate an AI answer."
+        ],
+        [
+          "What should I check before using the output?",
+          "Review private details before pasting the prompt into another service. This local template builder makes no remote AI request."
+        ],
+        [
+          "Is this an AI-generated result?",
+          "No. This is a local prompt-template builder. It helps structure a request for a separate AI service, but it does not call a model."
+        ]
+      ]
+    },
+    "watermark.html": {
+      "title": "Image & Video Watermark",
+      "category": "MEDIA OWNERSHIP WORKSPACE",
+      "type": "video",
+      "icon": "WM",
+      "intro": "Add a visible ownership mark with repeating text or your own logo, then keep a separate image or video copy.",
+      "steps": [
+        [
+          "Choose an image or video",
+          "Open a supported local image or video. Your source is used for the preview and is not overwritten.",
+          "01"
+        ],
+        [
+          "Choose text or upload a logo",
+          "Enter a short credit or upload a logo you own. Transparent PNG and WebP images make practical logo overlays.",
+          "02"
+        ],
+        [
+          "Set opacity, angle, spacing and position",
+          "Use the live preview to adjust the mark. Turn off repeating mode to drag one mark into position.",
+          "03"
+        ],
+        [
+          "Export a new image or MP4 video",
+          "Download PNG, JPEG or WebP for an image, or render a watermarked MP4 video. Keep the tab visible during recording.",
+          "04"
+        ]
+      ],
+      "benefits": [
+        "Use text or a transparent logo.",
+        "Repeat the mark across the frame or place a single mark by dragging.",
+        "Adjust opacity, size, angle and spacing.",
+        "Keep the original file and export a separate image or video."
+      ],
+      "privacy": "Watermark composition runs locally in your browser. Source images, videos and logo files are not uploaded to LOOX by this workflow. If MP4 conversion is needed, the browser downloads a pinned FFmpeg processing engine from a third-party CDN; the media is still processed on your device.",
+      "tips": "A visible watermark is a credit and deterrent, not copy protection. Choose a placement that does not cover faces, captions or essential details. Use only media and logos you own or have permission to process.",
+      "faq": [
+        [
+          "Can I watermark a video as well as an image?",
+          "Yes. Supported videos are rendered with the chosen mark and exported as MP4 when the browser or local encoder can complete the operation."
+        ],
+        [
+          "Can I use a logo?",
+          "Yes. Upload a supported logo image. A transparent PNG or WebP usually blends best."
+        ],
+        [
+          "Why does video export take time?",
+          "The canvas records the video in real time, and a browser encoder or FFmpeg may then prepare MP4. Keep this tab visible; changing tabs cancels an active recording to avoid incomplete frames."
+        ],
+        [
+          "Does a watermark prevent copying?",
+          "No. It makes a visible credit or ownership claim part of the picture, but it cannot prevent copying or establish that the claim is legally valid."
+        ]
+      ]
     }
   },
   "toolbox": {

@@ -7,6 +7,8 @@ import vm from 'node:vm';
 import {createRequire} from 'node:module';
 import {topics,copy,locales} from '../content/editorial.mjs';
 import {phrases} from '../content/interface.mjs';
+import {extraTopics} from '../content/text-tool-topics.mjs';
+Object.assign(topics,extraTopics);
 const require=createRequire(import.meta.url),sharp=require('sharp');
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const write=(p,s)=>{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,s)};
@@ -51,7 +53,7 @@ for(const [slug,t]of Object.entries(topics)){
  // Encoding and resizing for website delivery; the generated composition is preserved.
  if(src.path!=='assets/tool-art/'+slug+'.webp')await sharp(src.path).resize({width:1000,withoutEnlargement:true}).webp({quality:80}).toFile('assets/tool-art/'+slug+'.webp');
  const color=t.kind==='cloud'?'#ffb5cf':t.kind==='document'?'#a9d7ff':t.kind==='audio'?'#8ae0cb':'#c0b0ff';
- const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#212a40"/><path d="'+glyphs[slug]+'" stroke="'+color+'" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>';
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="#212a40"/>'+(glyphs[slug]?'<path d="'+glyphs[slug]+'" stroke="'+color+'" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>':'<rect x="8" y="9" width="32" height="30" rx="5" fill="none" stroke="'+color+'" stroke-width="1.5"/><text x="24" y="29" text-anchor="middle" fill="'+color+'" font-size="14" font-family="system-ui,sans-serif" font-weight="750">'+esc(t.badge||'Tx')+'</text>')+'</svg>';
  write('assets/icons/'+slug+'.svg',svg);
  const url=utility.has(slug)?'toolbox.html#'+slug:slug+'.html';
  const old=utility.has(slug)?reference.toolbox[slug]:reference.guides[slug+'.html'];
@@ -75,7 +77,7 @@ for(const [slug,t]of Object.entries(topics)){
   write('assets/guides/'+l+'/'+slug+'.html',html);
   const schema={'@context':'https://schema.org','@type':'Article',headline:name+' — '+c.how,description:t.lead[i],inLanguage:l,author:{'@type':'Organization',name:'LOOX Tools'},publisher:{'@type':'Organization',name:'LOOX Tools'},image:root+'assets/tool-art/'+slug+'.webp',mainEntityOfPage:root+'learn/'+l+'/'+slug+'.html'};
   const canonical=root+'learn/'+l+'/'+slug+'.html';
-  write('learn/'+l+'/'+slug+'.html','<!doctype html><html lang="'+l+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../../"><title>'+esc(name)+' — '+c.how+' | LOOX Tools</title><meta name="description" content="'+esc(t.lead[i])+'"><link rel="canonical" href="'+canonical+'">'+locales.map(lang=>'<link rel="alternate" hreflang="'+lang+'" href="'+root+'learn/'+lang+'/'+slug+'.html">').join('')+'<link rel="stylesheet" href="loox-experience.css?v=20"><script type="application/ld+json">'+JSON.stringify(schema).replace(/</g,'\\u003c')+'</script></head><body style="margin:0;background:#0e111a"><header style="padding:20px;color:#fff;display:flex;justify-content:space-between"><a href="index.html" style="color:inherit;text-decoration:none;font:800 20px system-ui">LOOX Tools</a><a href="'+url.replace('#','?lang='+l+'#')+(url.includes('#')?'':'?lang='+l)+'" class="loox-story-link">'+c.open+' ↗</a><nav aria-label="Language">'+locales.map((lang,j)=>'<a style="color:#c0b0ff;margin:6px" href="learn/'+lang+'/'+slug+'.html" lang="'+lang+'">'+['English','Español','Français','Deutsch'][j]+'</a>').join('')+'</nav></header><main class="loox-guide-host">'+html+'</main></body></html>');
+  write('learn/'+l+'/'+slug+'.html','<!doctype html><html lang="'+l+'"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><base href="../../"><title>'+esc(name)+' — '+c.how+' | LOOX Tools</title><meta name="description" content="'+esc(t.lead[i])+'"><link rel="canonical" href="'+canonical+'">'+locales.map(lang=>'<link rel="alternate" hreflang="'+lang+'" href="'+root+'learn/'+lang+'/'+slug+'.html">').join('')+'<link rel="stylesheet" href="loox-experience.css?v=31"><script type="application/ld+json">'+JSON.stringify(schema).replace(/</g,'\\u003c')+'</script></head><body style="margin:0;background:#0e111a"><header style="padding:20px;color:#fff;display:flex;justify-content:space-between"><a href="index.html" style="color:inherit;text-decoration:none;font:800 20px system-ui">LOOX Tools</a><a href="'+url.replace('#','?lang='+l+'#')+(url.includes('#')?'':'?lang='+l)+'" class="loox-story-link">'+c.open+' ↗</a><nav aria-label="Language">'+locales.map((lang,j)=>'<a style="color:#c0b0ff;margin:6px" href="learn/'+lang+'/'+slug+'.html" lang="'+lang+'">'+['English','Español','Français','Deutsch'][j]+'</a>').join('')+'</nav></header><main class="loox-guide-host">'+html+'</main></body></html>');
  }
 }
 write('assets/tool-catalog.json',JSON.stringify(manifest,null,2));
@@ -86,11 +88,15 @@ write('assets/locales/interface.json',JSON.stringify(interfaceDictionary,null,2)
 // Integrate static English guides into the existing tools; the editor scripts stay intact.
 for(const name of fs.readdirSync('.').filter(n=>n.endsWith('.html'))){
  let html=fs.readFileSync(name,'utf8');
- if(name==='index.html')html=html.split('\n').map(line=>{const tool=manifest.find(t=>line.includes("url:'"+t.url+"'"));return tool?line.replace(/tags:'([^']*)'/,(match,tags)=>"tags:'"+tags+' '+Object.values(tool.names).join(' ').replace(/'/g,'')+"'"):line}).join('\n');
+ if(name==='index.html'){
+  html=html.replace(/<title>[^<]*<\/title>/,'<title>LOOX Tools — Creative, Text & Developer Utilities</title>');
+  html=html.replace(/<meta name="description" content="[^"]*"\s*\/?\s*>/,'<meta name="description" content="Image, video, audio, PDF, text and developer tools. Explore Unicode styles, watermark media, clean text and create locally with LOOX Tools.">');
+ }
+ if(name==='index.html')html=html.split('\n').map(line=>{const tool=manifest.find(t=>line.includes("url:'"+t.url+"'"));return tool?line.replace(/tags:'([^']*)'/,(match,tags)=>"tags:'"+[...new Set((tags+' '+Object.values(tool.names).join(' ')).replace(/'/g,'').split(/\s+/))].join(' ')+"'"):line}).join('\n');
  html=html.replace(/<script[^>]+src="loox-navigation\.js[^"]*"[^>]*><\/script>/g,'').replace(/<script[^>]+src="loox-tool-guides\.js[^"]*"[^>]*><\/script>/g,'');
  html=html.replace(/<link[^>]+href="loox-experience\.css[^"]*"[^>]*>/g,'').replace(/<script[^>]+src="loox-experience\.js[^"]*"[^>]*><\/script>/g,'');
- html=html.replace('</head>','<link rel="stylesheet" href="loox-experience.css?v=20">\n</head>');
- html=html.replace(/loox-crop-controls\.js\?v=\d+/g,'loox-crop-controls.js?v=20').replace(/loox-photo-studio\.js\?v=\d+/g,'loox-photo-studio.js?v=20').replace(/loox-video-studio\.js\?v=\d+/g,'loox-video-studio.js?v=20');
+ html=html.replace('</head>','<link rel="stylesheet" href="loox-experience.css?v=31">\n</head>');
+ html=html.replace(/loox-crop-controls\.js\?v=\d+/g,'loox-crop-controls.js?v=31').replace(/loox-photo-studio\.js\?v=\d+/g,'loox-photo-studio.js?v=31').replace(/loox-video-studio\.js\?v=\d+/g,'loox-video-studio.js?v=31').replace(/loox-tool-ui\.js\?v=\d+/g,'loox-tool-ui.js?v=31');
  const item=manifest.find(t=>t.url===name);
  // The marked section makes rebuilding safe and avoids duplicating article content.
  html=html.replace(/<!-- LOOX ORIGINAL GUIDE START -->[\s\S]*?<!-- LOOX ORIGINAL GUIDE END -->/g,'');
@@ -101,13 +107,14 @@ for(const name of fs.readdirSync('.').filter(n=>n.endsWith('.html'))){
    const description=topics[slug].lead[0]+' Learn the workflow, choose useful settings, and review privacy details with LOOX Tools.';
    if(/<meta name="description"/.test(html))html=html.replace(/<meta name="description" content="[^"]*"\s*\/?\s*>/,'<meta name="description" content="'+esc(description)+'">');
    else html=html.replace('</head>','<meta name="description" content="'+esc(description)+'"></head>');
+   if(!html.includes('rel="canonical"'))html=html.replace('</head>','<link rel="canonical" href="'+root+item.url+'"></head>');
   }
  }
- html=html.replace('</body>','<script src="loox-experience.js?v=20" defer></script>\n</body>');
+ html=html.replace('</body>','<script src="loox-experience.js?v=31" defer></script>\n</body>');
  write(name,html);
 }
 // A permanent, searchable editorial index for every workspace.
-write('guides.html','<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Practical Image, Video, Audio & PDF Guides — LOOX Tools</title><meta name="description" content="Explore original LOOX guides for image editing, video export, audio, PDF and creator tools, with illustrated steps and clear processing information."><link rel="canonical" href="'+root+'guides.html"><link rel="stylesheet" href="loox-experience.css?v=20"></head><body style="margin:0;background:#0e111a;color:#fff"><header style="height:76px;display:flex;align-items:center;padding:24px;font:800 22px system-ui">LOOX Tools</header><main class="experience-content loox-story"><span class="loox-eyebrow">LEARN SOMETHING USEFUL</span><h1 style="font:750 clamp(30px,5vw,58px)/1.1 system-ui">Good tools. A little know-how.<br>Better things to make.</h1><p>Find the right workflow, understand the choices that matter, and keep creating with confidence.</p><div class="loox-related-grid">'+manifest.map(t=>'<article class="loox-related-card"><img src="assets/tool-art/'+t.slug+'.webp" alt="'+esc(t.names.en)+' original concept illustration" loading="lazy" width="500" height="312" style="width:100%;height:auto;aspect-ratio:1.6;object-fit:cover;border-radius:12px"><h2 style="font-size:21px">'+esc(t.names.en)+'</h2><p style="font-size:14px">'+esc(t.lead.en)+'</p><a class="loox-story-link" href="learn/en/'+t.slug+'.html">Read the guide ↗</a><p style="font-size:11px;margin-top:14px">'+locales.slice(1).map((l,i)=>'<a style="color:#b8a9f3;margin-right:10px" href="learn/'+l+'/'+t.slug+'.html">'+['Español','Français','Deutsch'][i]+'</a>').join('')+'</p></article>').join('')+'</div></main><script src="loox-experience.js?v=20" defer></script></body></html>');
+write('guides.html','<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Practical Image, Video, Audio & PDF Guides — LOOX Tools</title><meta name="description" content="Explore original LOOX guides for image editing, video export, audio, PDF and creator tools, with illustrated steps and clear processing information."><link rel="canonical" href="'+root+'guides.html"><link rel="stylesheet" href="loox-experience.css?v=31"></head><body style="margin:0;background:#0e111a;color:#fff"><header style="height:76px;display:flex;align-items:center;padding:24px;font:800 22px system-ui">LOOX Tools</header><main class="experience-content loox-story"><span class="loox-eyebrow">LEARN SOMETHING USEFUL</span><h1 style="font:750 clamp(30px,5vw,58px)/1.1 system-ui">Good tools. A little know-how.<br>Better things to make.</h1><p>Find the right workflow, understand the choices that matter, and keep creating with confidence.</p><div class="loox-related-grid">'+manifest.map(t=>'<article class="loox-related-card"><img src="assets/tool-art/'+t.slug+'.webp" alt="'+esc(t.names.en)+' original concept illustration" loading="lazy" width="500" height="312" style="width:100%;height:auto;aspect-ratio:1.6;object-fit:cover;border-radius:12px"><h2 style="font-size:21px">'+esc(t.names.en)+'</h2><p style="font-size:14px">'+esc(t.lead.en)+'</p><a class="loox-story-link" href="learn/en/'+t.slug+'.html">Read the guide ↗</a><p style="font-size:11px;margin-top:14px">'+locales.slice(1).map((l,i)=>'<a style="color:#b8a9f3;margin-right:10px" href="learn/'+l+'/'+t.slug+'.html">'+['Español','Français','Deutsch'][i]+'</a>').join('')+'</p></article>').join('')+'</div></main><script src="loox-experience.js?v=31" defer></script></body></html>');
 const oldMap=fs.readFileSync('sitemap.xml','utf8');
 const pageLinks=Object.keys(topics).flatMap(slug=>locales.map(l=>root+'learn/'+l+'/'+slug+'.html'));
 const withoutGenerated=oldMap.replace(/\s*<url><loc>[^<]*\/learn\/[^<]*<\/loc><\/url>/g,'');

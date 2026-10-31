@@ -1,4 +1,238 @@
 {
+  "Workspace settings": {
+    "en": "Workspace settings",
+    "es": "Ajustes del espacio de trabajo",
+    "fr": "Réglages de l’espace de travail",
+    "de": "Arbeitsbereich-Einstellungen"
+  },
+  "Input": {
+    "en": "Input",
+    "es": "Entrada",
+    "fr": "Entrée",
+    "de": "Eingabe"
+  },
+  "Output": {
+    "en": "Output",
+    "es": "Salida",
+    "fr": "Sortie",
+    "de": "Ausgabe"
+  },
+  "Your text": {
+    "en": "Your text",
+    "es": "Tu texto",
+    "fr": "Votre texte",
+    "de": "Dein Text"
+  },
+  "Second text": {
+    "en": "Second text",
+    "es": "Segundo texto",
+    "fr": "Deuxième texte",
+    "de": "Zweiter Text"
+  },
+  "Count": {
+    "en": "Count",
+    "es": "Cantidad",
+    "fr": "Nombre",
+    "de": "Anzahl"
+  },
+  "Length": {
+    "en": "Length",
+    "es": "Longitud",
+    "fr": "Longueur",
+    "de": "Länge"
+  },
+  "Minimum": {
+    "en": "Minimum",
+    "es": "Mínimo",
+    "fr": "Minimum",
+    "de": "Minimum"
+  },
+  "Maximum": {
+    "en": "Maximum",
+    "es": "Máximo",
+    "fr": "Maximum",
+    "de": "Maximum"
+  },
+  "Generate": {
+    "en": "Generate",
+    "es": "Generar",
+    "fr": "Générer",
+    "de": "Erzeugen"
+  },
+  "Transform text": {
+    "en": "Transform text",
+    "es": "Transformar texto",
+    "fr": "Transformer le texte",
+    "de": "Text umwandeln"
+  },
+  "Copy result": {
+    "en": "Copy result",
+    "es": "Copiar resultado",
+    "fr": "Copier le résultat",
+    "de": "Ergebnis kopieren"
+  },
+  "Download text": {
+    "en": "Download text",
+    "es": "Descargar texto",
+    "fr": "Télécharger le texte",
+    "de": "Text herunterladen"
+  },
+  "Open text file": {
+    "en": "Open text file",
+    "es": "Abrir archivo de texto",
+    "fr": "Ouvrir un fichier texte",
+    "de": "Textdatei öffnen"
+  },
+  "Clear": {
+    "en": "Clear",
+    "es": "Limpiar",
+    "fr": "Effacer",
+    "de": "Leeren"
+  },
+  "Unique values": {
+    "en": "Unique values",
+    "es": "Valores únicos",
+    "fr": "Valeurs uniques",
+    "de": "Eindeutige Werte"
+  },
+  "Uppercase": {
+    "en": "Uppercase",
+    "es": "Mayúsculas",
+    "fr": "Majuscules",
+    "de": "Großbuchstaben"
+  },
+  "Lowercase": {
+    "en": "Lowercase",
+    "es": "Minúsculas",
+    "fr": "Minuscules",
+    "de": "Kleinbuchstaben"
+  },
+  "Digits": {
+    "en": "Digits",
+    "es": "Dígitos",
+    "fr": "Chiffres",
+    "de": "Ziffern"
+  },
+  "Symbols": {
+    "en": "Symbols",
+    "es": "Símbolos",
+    "fr": "Symboles",
+    "de": "Symbole"
+  },
+  "Find": {
+    "en": "Find",
+    "es": "Buscar",
+    "fr": "Rechercher",
+    "de": "Suchen"
+  },
+  "Replace with": {
+    "en": "Replace with",
+    "es": "Reemplazar por",
+    "fr": "Remplacer par",
+    "de": "Ersetzen durch"
+  },
+  "Case sensitive": {
+    "en": "Case sensitive",
+    "es": "Distinguir mayúsculas",
+    "fr": "Respecter la casse",
+    "de": "Groß-/Kleinschreibung beachten"
+  },
+  "Replace all": {
+    "en": "Replace all",
+    "es": "Reemplazar todo",
+    "fr": "Tout remplacer",
+    "de": "Alle ersetzen"
+  },
+  "Search styles": {
+    "en": "Search styles",
+    "es": "Buscar estilos",
+    "fr": "Rechercher des styles",
+    "de": "Stile suchen"
+  },
+  "Alphabet family": {
+    "en": "Alphabet family",
+    "es": "Familia de alfabetos",
+    "fr": "Famille d’alphabets",
+    "de": "Alphabetfamilie"
+  },
+  "Copy style": {
+    "en": "Copy style",
+    "es": "Copiar estilo",
+    "fr": "Copier le style",
+    "de": "Stil kopieren"
+  },
+  "Load more styles": {
+    "en": "Load more styles",
+    "es": "Cargar más estilos",
+    "fr": "Charger d’autres styles",
+    "de": "Weitere Stile laden"
+  },
+  "Watermark type": {
+    "en": "Watermark type",
+    "es": "Tipo de marca de agua",
+    "fr": "Type de filigrane",
+    "de": "Art des Wasserzeichens"
+  },
+  "Watermark text": {
+    "en": "Watermark text",
+    "es": "Texto de marca de agua",
+    "fr": "Texte du filigrane",
+    "de": "Wasserzeichentext"
+  },
+  "Logo image": {
+    "en": "Logo image",
+    "es": "Imagen de logotipo",
+    "fr": "Image du logo",
+    "de": "Logobild"
+  },
+  "Repeat across the frame": {
+    "en": "Repeat across the frame",
+    "es": "Repetir por todo el marco",
+    "fr": "Répéter sur l’image",
+    "de": "Über das ganze Bild wiederholen"
+  },
+  "Choose an image or video": {
+    "en": "Choose an image or video",
+    "es": "Elige una imagen o un vídeo",
+    "fr": "Choisissez une image ou une vidéo",
+    "de": "Wähle ein Bild oder Video"
+  },
+  "Export watermarked media": {
+    "en": "Export watermarked media",
+    "es": "Exportar con marca de agua",
+    "fr": "Exporter avec filigrane",
+    "de": "Medien mit Wasserzeichen exportieren"
+  },
+  "Character alphabet": {
+    "en": "Character alphabet",
+    "es": "Alfabeto de caracteres",
+    "fr": "Alphabet de caractères",
+    "de": "Zeichensatz"
+  },
+  "Normalization form": {
+    "en": "Normalization form",
+    "es": "Forma de normalización",
+    "fr": "Forme de normalisation",
+    "de": "Normalisierungsform"
+  },
+  "Writing goal": {
+    "en": "Writing goal",
+    "es": "Objetivo de escritura",
+    "fr": "Objectif d’écriture",
+    "de": "Schreibziel"
+  },
+  "Audience": {
+    "en": "Audience",
+    "es": "Público",
+    "fr": "Public",
+    "de": "Zielgruppe"
+  },
+  "Tone": {
+    "en": "Tone",
+    "es": "Tono",
+    "fr": "Ton",
+    "de": "Tonfall"
+  },
   "Tools": {
     "en": "Tools",
     "es": "Herramientas",
@@ -1090,5 +1324,197 @@
     "es": "Visor de miniaturas",
     "fr": "Aperçu des miniatures",
     "de": "Thumbnail-Vorschau"
+  },
+  "Fancy Unicode Styles": {
+    "en": "Fancy Unicode Styles",
+    "es": "Estilos Unicode",
+    "fr": "Styles Unicode",
+    "de": "Unicode-Stile"
+  },
+  "Text Editor": {
+    "en": "Text Editor",
+    "es": "Editor de texto",
+    "fr": "Éditeur de texte",
+    "de": "Texteditor"
+  },
+  "Case Converter": {
+    "en": "Case Converter",
+    "es": "Conversor de mayúsculas",
+    "fr": "Conversion de casse",
+    "de": "Groß-/Kleinschreibung"
+  },
+  "Concatenate Text": {
+    "en": "Concatenate Text",
+    "es": "Concatenar texto",
+    "fr": "Concaténer du texte",
+    "de": "Text verbinden"
+  },
+  "Split Text": {
+    "en": "Split Text",
+    "es": "Dividir texto",
+    "fr": "Séparer du texte",
+    "de": "Text aufteilen"
+  },
+  "Extract Columns": {
+    "en": "Extract Columns",
+    "es": "Extraer columnas",
+    "fr": "Extraire des colonnes",
+    "de": "Spalten extrahieren"
+  },
+  "Remove Extra Spaces": {
+    "en": "Remove Extra Spaces",
+    "es": "Quitar espacios extra",
+    "fr": "Supprimer les espaces inutiles",
+    "de": "Überflüssige Leerzeichen entfernen"
+  },
+  "Strip HTML Tags": {
+    "en": "Strip HTML Tags",
+    "es": "Eliminar etiquetas HTML",
+    "fr": "Supprimer les balises HTML",
+    "de": "HTML-Tags entfernen"
+  },
+  "Remove Emojis": {
+    "en": "Remove Emojis",
+    "es": "Eliminar emojis",
+    "fr": "Supprimer les emojis",
+    "de": "Emojis entfernen"
+  },
+  "Remove Unicode Symbols": {
+    "en": "Remove Unicode Symbols",
+    "es": "Eliminar símbolos Unicode",
+    "fr": "Supprimer les symboles Unicode",
+    "de": "Unicode-Symbole entfernen"
+  },
+  "Upside Down Text": {
+    "en": "Upside Down Text",
+    "es": "Texto al revés",
+    "fr": "Texte renversé",
+    "de": "Text auf dem Kopf"
+  },
+  "Normalize Unicode": {
+    "en": "Normalize Unicode",
+    "es": "Normalizar Unicode",
+    "fr": "Normaliser Unicode",
+    "de": "Unicode normalisieren"
+  },
+  "Bold Unicode Text": {
+    "en": "Bold Unicode Text",
+    "es": "Texto Unicode en negrita",
+    "fr": "Texte Unicode gras",
+    "de": "Fetter Unicode-Text"
+  },
+  "Italic Unicode Text": {
+    "en": "Italic Unicode Text",
+    "es": "Texto Unicode en cursiva",
+    "fr": "Texte Unicode italique",
+    "de": "Kursiver Unicode-Text"
+  },
+  "Old English Text": {
+    "en": "Old English Text",
+    "es": "Texto gótico",
+    "fr": "Texte gothique",
+    "de": "Frakturtext"
+  },
+  "Cursive Unicode Text": {
+    "en": "Cursive Unicode Text",
+    "es": "Texto manuscrito Unicode",
+    "fr": "Texte Unicode cursif",
+    "de": "Unicode-Schreibschrift"
+  },
+  "Random Number Generator": {
+    "en": "Random Number Generator",
+    "es": "Generador de números aleatorios",
+    "fr": "Générateur de nombres aléatoires",
+    "de": "Zufallszahlengenerator"
+  },
+  "Random Example Emails": {
+    "en": "Random Example Emails",
+    "es": "Correos de ejemplo aleatorios",
+    "fr": "Adresses e-mail fictives",
+    "de": "Zufällige Beispieladressen"
+  },
+  "Pronounceable Passphrases": {
+    "en": "Pronounceable Passphrases",
+    "es": "Contraseñas pronunciables",
+    "fr": "Phrases de passe prononçables",
+    "de": "Aussprechbare Passphrasen"
+  },
+  "Strong Password Generator": {
+    "en": "Strong Password Generator",
+    "es": "Generador de contraseñas",
+    "fr": "Générateur de mots de passe",
+    "de": "Passwortgenerator"
+  },
+  "Username Generator": {
+    "en": "Username Generator",
+    "es": "Generador de nombres de usuario",
+    "fr": "Générateur de pseudonymes",
+    "de": "Benutzernamengenerator"
+  },
+  "Random String Generator": {
+    "en": "Random String Generator",
+    "es": "Generador de cadenas",
+    "fr": "Générateur de chaînes aléatoires",
+    "de": "Zufällige Zeichenfolgen"
+  },
+  "Email Extractor": {
+    "en": "Email Extractor",
+    "es": "Extractor de correos",
+    "fr": "Extraction d’e-mails",
+    "de": "E-Mail-Adressen extrahieren"
+  },
+  "URL Extractor": {
+    "en": "URL Extractor",
+    "es": "Extractor de URL",
+    "fr": "Extraction d’URL",
+    "de": "URLs extrahieren"
+  },
+  "Word & Character Counter": {
+    "en": "Word & Character Counter",
+    "es": "Contador de palabras",
+    "fr": "Compteur de mots",
+    "de": "Wort- und Zeichenzähler"
+  },
+  "Find & Replace": {
+    "en": "Find & Replace",
+    "es": "Buscar y reemplazar",
+    "fr": "Rechercher et remplacer",
+    "de": "Suchen und Ersetzen"
+  },
+  "Text Difference Checker": {
+    "en": "Text Difference Checker",
+    "es": "Comparador de textos",
+    "fr": "Comparaison de textes",
+    "de": "Textvergleich"
+  },
+  "JSON Formatter": {
+    "en": "JSON Formatter",
+    "es": "Formateador JSON",
+    "fr": "Formatage JSON",
+    "de": "JSON formatieren"
+  },
+  "Base64 Encoder & Decoder": {
+    "en": "Base64 Encoder & Decoder",
+    "es": "Codificar y decodificar Base64",
+    "fr": "Encodage et décodage Base64",
+    "de": "Base64 kodieren und dekodieren"
+  },
+  "URL Encoder & Decoder": {
+    "en": "URL Encoder & Decoder",
+    "es": "Codificar y decodificar URL",
+    "fr": "Encodage et décodage d’URL",
+    "de": "URL kodieren und dekodieren"
+  },
+  "AI Writing Prompt Builder": {
+    "en": "AI Writing Prompt Builder",
+    "es": "Creador de prompts de escritura",
+    "fr": "Créateur de prompts d’écriture",
+    "de": "Schreibprompt-Generator"
+  },
+  "Image & Video Watermark": {
+    "en": "Image & Video Watermark",
+    "es": "Marca de agua para imagen y vídeo",
+    "fr": "Filigrane image et vidéo",
+    "de": "Wasserzeichen für Bild und Video"
   }
 }

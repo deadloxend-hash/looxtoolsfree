@@ -389,5 +389,549 @@
       "fr": "Retrouvez l’image d’aperçu disponible sans parcourir la vidéo.",
       "de": "Finde verfügbare Vorschaubilder, ohne das Video zu durchsuchen."
     }
+  },
+  {
+    "slug": "fancy-fonts",
+    "url": "fancy-fonts.html",
+    "kind": "text",
+    "names": {
+      "en": "Fancy Unicode Styles",
+      "es": "Estilos Unicode",
+      "fr": "Styles Unicode",
+      "de": "Unicode-Stile"
+    },
+    "lead": {
+      "en": "Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels.",
+      "es": "Una herramienta local para estilos unicode, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour styles unicode, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Unicode-Stile, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "text-editor",
+    "url": "text-editor.html",
+    "kind": "text",
+    "names": {
+      "en": "Text Editor",
+      "es": "Editor de texto",
+      "fr": "Éditeur de texte",
+      "de": "Texteditor"
+    },
+    "lead": {
+      "en": "A focused place to draft, reorganize and save plain text without sending the document to a writing service.",
+      "es": "Una herramienta local para editor de texto, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour éditeur de texte, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Texteditor, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "case-converter",
+    "url": "case-converter.html",
+    "kind": "text",
+    "names": {
+      "en": "Case Converter",
+      "es": "Conversor de mayúsculas",
+      "fr": "Conversion de casse",
+      "de": "Groß-/Kleinschreibung"
+    },
+    "lead": {
+      "en": "Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case.",
+      "es": "Una herramienta local para conversor de mayúsculas, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour conversion de casse, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Groß-/Kleinschreibung, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "concat-text",
+    "url": "concat-text.html",
+    "kind": "text",
+    "names": {
+      "en": "Concatenate Text",
+      "es": "Concatenar texto",
+      "fr": "Concaténer du texte",
+      "de": "Text verbinden"
+    },
+    "lead": {
+      "en": "Bring separate pieces of text together with a separator you choose.",
+      "es": "Una herramienta local para concatenar texto, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour concaténer du texte, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Text verbinden, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "split-text",
+    "url": "split-text.html",
+    "kind": "text",
+    "names": {
+      "en": "Split Text",
+      "es": "Dividir texto",
+      "fr": "Séparer du texte",
+      "de": "Text aufteilen"
+    },
+    "lead": {
+      "en": "Turn a long block into useful parts with a literal delimiter or line breaks.",
+      "es": "Una herramienta local para dividir texto, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour séparer du texte, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Text aufteilen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "extract-columns",
+    "url": "extract-columns.html",
+    "kind": "code",
+    "names": {
+      "en": "Extract Columns",
+      "es": "Extraer columnas",
+      "fr": "Extraire des colonnes",
+      "de": "Spalten extrahieren"
+    },
+    "lead": {
+      "en": "Keep the useful columns from a delimited table without rebuilding the whole file.",
+      "es": "Una herramienta local para extraer columnas, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour extraire des colonnes, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Spalten extrahieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "remove-spaces",
+    "url": "remove-spaces.html",
+    "kind": "text",
+    "names": {
+      "en": "Remove Extra Spaces",
+      "es": "Quitar espacios extra",
+      "fr": "Supprimer les espaces inutiles",
+      "de": "Überflüssige Leerzeichen entfernen"
+    },
+    "lead": {
+      "en": "Clean up accidental gaps while deciding whether to preserve paragraph breaks.",
+      "es": "Una herramienta local para quitar espacios extra, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour supprimer les espaces inutiles, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Überflüssige Leerzeichen entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "strip-html",
+    "url": "strip-html.html",
+    "kind": "text",
+    "names": {
+      "en": "Strip HTML Tags",
+      "es": "Eliminar etiquetas HTML",
+      "fr": "Supprimer les balises HTML",
+      "de": "HTML-Tags entfernen"
+    },
+    "lead": {
+      "en": "Recover readable text from an HTML snippet without displaying the markup as a live page.",
+      "es": "Una herramienta local para eliminar etiquetas html, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour supprimer les balises html, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für HTML-Tags entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "remove-emojis",
+    "url": "remove-emojis.html",
+    "kind": "text",
+    "names": {
+      "en": "Remove Emojis",
+      "es": "Eliminar emojis",
+      "fr": "Supprimer les emojis",
+      "de": "Emojis entfernen"
+    },
+    "lead": {
+      "en": "Create a simpler text copy by removing emoji clusters, flags and common emoji sequences.",
+      "es": "Una herramienta local para eliminar emojis, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour supprimer les emojis, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Emojis entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "remove-symbols",
+    "url": "remove-symbols.html",
+    "kind": "text",
+    "names": {
+      "en": "Remove Unicode Symbols",
+      "es": "Eliminar símbolos Unicode",
+      "fr": "Supprimer les symboles Unicode",
+      "de": "Unicode-Symbole entfernen"
+    },
+    "lead": {
+      "en": "Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing.",
+      "es": "Una herramienta local para eliminar símbolos unicode, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour supprimer les symboles unicode, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Unicode-Symbole entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "upside-down",
+    "url": "upside-down.html",
+    "kind": "text",
+    "names": {
+      "en": "Upside Down Text",
+      "es": "Texto al revés",
+      "fr": "Texte renversé",
+      "de": "Text auf dem Kopf"
+    },
+    "lead": {
+      "en": "Give a short message a playful upside-down appearance using approximate Unicode counterparts.",
+      "es": "Una herramienta local para texto al revés, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour texte renversé, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Text auf dem Kopf, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "unicode-normalizer",
+    "url": "unicode-normalizer.html",
+    "kind": "code",
+    "names": {
+      "en": "Normalize Unicode",
+      "es": "Normalizar Unicode",
+      "fr": "Normaliser Unicode",
+      "de": "Unicode normalisieren"
+    },
+    "lead": {
+      "en": "Make equivalent Unicode representations more consistent before comparison, storage or further text processing.",
+      "es": "Una herramienta local para normalizar unicode, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour normaliser unicode, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Unicode normalisieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "bold-text",
+    "url": "bold-text.html",
+    "kind": "text",
+    "names": {
+      "en": "Bold Unicode Text",
+      "es": "Texto Unicode en negrita",
+      "fr": "Texte Unicode gras",
+      "de": "Fetter Unicode-Text"
+    },
+    "lead": {
+      "en": "Create mathematical bold-style Unicode letters for a short label or caption.",
+      "es": "Una herramienta local para texto unicode en negrita, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour texte unicode gras, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Fetter Unicode-Text, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "italic-text",
+    "url": "italic-text.html",
+    "kind": "text",
+    "names": {
+      "en": "Italic Unicode Text",
+      "es": "Texto Unicode en cursiva",
+      "fr": "Texte Unicode italique",
+      "de": "Kursiver Unicode-Text"
+    },
+    "lead": {
+      "en": "Give supported Latin letters an italic-style appearance without a rich-text editor.",
+      "es": "Una herramienta local para texto unicode en cursiva, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour texte unicode italique, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Kursiver Unicode-Text, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "blackletter-text",
+    "url": "blackletter-text.html",
+    "kind": "text",
+    "names": {
+      "en": "Old English Text",
+      "es": "Texto gótico",
+      "fr": "Texte gothique",
+      "de": "Frakturtext"
+    },
+    "lead": {
+      "en": "Explore a blackletter-style alphabet for an ornamental heading or creative signature.",
+      "es": "Una herramienta local para texto gótico, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour texte gothique, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Frakturtext, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "cursive-text",
+    "url": "cursive-text.html",
+    "kind": "text",
+    "names": {
+      "en": "Cursive Unicode Text",
+      "es": "Texto manuscrito Unicode",
+      "fr": "Texte Unicode cursif",
+      "de": "Unicode-Schreibschrift"
+    },
+    "lead": {
+      "en": "Turn a short phrase into a flowing script-style Unicode version.",
+      "es": "Una herramienta local para texto manuscrito unicode, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour texte unicode cursif, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Unicode-Schreibschrift, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "random-numbers",
+    "url": "random-numbers.html",
+    "kind": "text",
+    "names": {
+      "en": "Random Number Generator",
+      "es": "Generador de números aleatorios",
+      "fr": "Générateur de nombres aléatoires",
+      "de": "Zufallszahlengenerator"
+    },
+    "lead": {
+      "en": "Generate integers within an inclusive range using the browser’s cryptographic random source.",
+      "es": "Una herramienta local para generador de números aleatorios, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour générateur de nombres aléatoires, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Zufallszahlengenerator, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "random-emails",
+    "url": "random-emails.html",
+    "kind": "text",
+    "names": {
+      "en": "Random Example Emails",
+      "es": "Correos de ejemplo aleatorios",
+      "fr": "Adresses e-mail fictives",
+      "de": "Zufällige Beispieladressen"
+    },
+    "lead": {
+      "en": "Create clearly fictional email-shaped values for mockups, sample tables and development fixtures.",
+      "es": "Una herramienta local para correos de ejemplo aleatorios, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour adresses e-mail fictives, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Zufällige Beispieladressen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "pronounceable-passwords",
+    "url": "pronounceable-passwords.html",
+    "kind": "text",
+    "names": {
+      "en": "Pronounceable Passphrases",
+      "es": "Contraseñas pronunciables",
+      "fr": "Phrases de passe prononçables",
+      "de": "Aussprechbare Passphrasen"
+    },
+    "lead": {
+      "en": "Generate memorable-looking strings from randomized syllables, optional digits and separators.",
+      "es": "Una herramienta local para contraseñas pronunciables, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour phrases de passe prononçables, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Aussprechbare Passphrasen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "strong-passwords",
+    "url": "strong-passwords.html",
+    "kind": "text",
+    "names": {
+      "en": "Strong Password Generator",
+      "es": "Generador de contraseñas",
+      "fr": "Générateur de mots de passe",
+      "de": "Passwortgenerator"
+    },
+    "lead": {
+      "en": "Create random passwords with selectable character groups and a length you control.",
+      "es": "Una herramienta local para generador de contraseñas, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour générateur de mots de passe, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Passwortgenerator, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "usernames",
+    "url": "usernames.html",
+    "kind": "text",
+    "names": {
+      "en": "Username Generator",
+      "es": "Generador de nombres de usuario",
+      "fr": "Générateur de pseudonymes",
+      "de": "Benutzernamengenerator"
+    },
+    "lead": {
+      "en": "Find a starting point for a handle without sharing your name or personal details.",
+      "es": "Una herramienta local para generador de nombres de usuario, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour générateur de pseudonymes, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Benutzernamengenerator, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "random-strings",
+    "url": "random-strings.html",
+    "kind": "text",
+    "names": {
+      "en": "Random String Generator",
+      "es": "Generador de cadenas",
+      "fr": "Générateur de chaînes aléatoires",
+      "de": "Zufällige Zeichenfolgen"
+    },
+    "lead": {
+      "en": "Generate sample identifiers and arbitrary character strings from a character set you define.",
+      "es": "Una herramienta local para generador de cadenas, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour générateur de chaînes aléatoires, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Zufällige Zeichenfolgen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "email-extractor",
+    "url": "email-extractor.html",
+    "kind": "text",
+    "names": {
+      "en": "Email Extractor",
+      "es": "Extractor de correos",
+      "fr": "Extraction d’e-mails",
+      "de": "E-Mail-Adressen extrahieren"
+    },
+    "lead": {
+      "en": "Pull email-shaped addresses out of a text document and remove repeated entries.",
+      "es": "Una herramienta local para extractor de correos, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour extraction d’e-mails, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für E-Mail-Adressen extrahieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "url-extractor",
+    "url": "url-extractor.html",
+    "kind": "text",
+    "names": {
+      "en": "URL Extractor",
+      "es": "Extractor de URL",
+      "fr": "Extraction d’URL",
+      "de": "URLs extrahieren"
+    },
+    "lead": {
+      "en": "Collect HTTP and HTTPS links from a block of notes or copied text.",
+      "es": "Una herramienta local para extractor de url, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour extraction d’url, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für URLs extrahieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "word-counter",
+    "url": "word-counter.html",
+    "kind": "text",
+    "names": {
+      "en": "Word & Character Counter",
+      "es": "Contador de palabras",
+      "fr": "Compteur de mots",
+      "de": "Wort- und Zeichenzähler"
+    },
+    "lead": {
+      "en": "Understand the length of a draft with live counts for words, characters, lines and paragraphs.",
+      "es": "Una herramienta local para contador de palabras, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour compteur de mots, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Wort- und Zeichenzähler, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "find-replace",
+    "url": "find-replace.html",
+    "kind": "text",
+    "names": {
+      "en": "Find & Replace",
+      "es": "Buscar y reemplazar",
+      "fr": "Rechercher et remplacer",
+      "de": "Suchen und Ersetzen"
+    },
+    "lead": {
+      "en": "Make consistent changes across a draft without repeatedly editing the same phrase by hand.",
+      "es": "Una herramienta local para buscar y reemplazar, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour rechercher et remplacer, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Suchen und Ersetzen, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "text-diff",
+    "url": "text-diff.html",
+    "kind": "code",
+    "names": {
+      "en": "Text Difference Checker",
+      "es": "Comparador de textos",
+      "fr": "Comparaison de textes",
+      "de": "Textvergleich"
+    },
+    "lead": {
+      "en": "Compare two versions and see which lines were added, removed or kept.",
+      "es": "Una herramienta local para comparador de textos, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour comparaison de textes, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Textvergleich, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "json-formatter",
+    "url": "json-formatter.html",
+    "kind": "code",
+    "names": {
+      "en": "JSON Formatter",
+      "es": "Formateador JSON",
+      "fr": "Formatage JSON",
+      "de": "JSON formatieren"
+    },
+    "lead": {
+      "en": "Turn valid JSON into a readable structure or a compact representation.",
+      "es": "Una herramienta local para formateador json, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour formatage json, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für JSON formatieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "base64-encoder",
+    "url": "base64-encoder.html",
+    "kind": "code",
+    "names": {
+      "en": "Base64 Encoder & Decoder",
+      "es": "Codificar y decodificar Base64",
+      "fr": "Encodage et décodage Base64",
+      "de": "Base64 kodieren und dekodieren"
+    },
+    "lead": {
+      "en": "Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters.",
+      "es": "Una herramienta local para codificar y decodificar base64, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour encodage et décodage base64, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Base64 kodieren und dekodieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "url-encoder",
+    "url": "url-encoder.html",
+    "kind": "code",
+    "names": {
+      "en": "URL Encoder & Decoder",
+      "es": "Codificar y decodificar URL",
+      "fr": "Encodage et décodage d’URL",
+      "de": "URL kodieren und dekodieren"
+    },
+    "lead": {
+      "en": "Prepare a text value for a URL component or decode an encoded component into a readable form.",
+      "es": "Una herramienta local para codificar y decodificar url, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour encodage et décodage d’url, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für URL kodieren und dekodieren, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "prompt-builder",
+    "url": "prompt-builder.html",
+    "kind": "text",
+    "names": {
+      "en": "AI Writing Prompt Builder",
+      "es": "Creador de prompts de escritura",
+      "fr": "Créateur de prompts d’écriture",
+      "de": "Schreibprompt-Generator"
+    },
+    "lead": {
+      "en": "Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints.",
+      "es": "Una herramienta local para creador de prompts de escritura, con ajustes claros y una copia del resultado.",
+      "fr": "Un outil local pour créateur de prompts d’écriture, avec des réglages clairs et un résultat à conserver.",
+      "de": "Ein lokales Werkzeug für Schreibprompt-Generator, mit klaren Einstellungen und einer separaten Ausgabe."
+    }
+  },
+  {
+    "slug": "watermark",
+    "url": "watermark.html",
+    "kind": "media",
+    "names": {
+      "en": "Image & Video Watermark",
+      "es": "Marca de agua para imagen y vídeo",
+      "fr": "Filigrane image et vidéo",
+      "de": "Wasserzeichen für Bild und Video"
+    },
+    "lead": {
+      "en": "Add a visible ownership mark with repeating text or your own logo, then keep a separate image or video copy.",
+      "es": "Añade texto o tu logotipo como marca visible y guarda una copia independiente.",
+      "fr": "Ajoutez un texte ou votre logo comme filigrane visible et conservez une copie séparée.",
+      "de": "Ergänze Text oder dein Logo als sichtbares Wasserzeichen und speichere eine separate Kopie."
+    }
   }
 ]

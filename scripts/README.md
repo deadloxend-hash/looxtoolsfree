@@ -4,6 +4,22 @@ The website remains buildless HTML, CSS and JavaScript for GitHub Pages.
 All published guides and images are committed; a build step is not required
 to use the website.
 
+The extended text suite is generated with:
+
+```sh
+node scripts/build-text-suite.mjs
+```
+
+Its 31 workspaces share `tools/text-core.mjs` and `loox-text-suite.mjs`.
+`tools/unicode-styles.mjs` defines 24 alphabet families × 7 accent variants ×
+8 frames = 1,344 combinations. These are Unicode transformations, not 1,344
+installed font families. The writing prompt builder uses local templates and
+does not call an AI model.
+
+The text/logo watermark workspace uses `loox-watermark.mjs` and the local canvas
+recorder in `tools/media-export.mjs`. MP4 conversion may download the pinned
+FFmpeg engine; source media is not uploaded by that workflow.
+
 ## Editorial sources
 
 - `content/editorial.mjs`: original article copy, localized tool names and workflows.

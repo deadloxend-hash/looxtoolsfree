@@ -27,7 +27,7 @@
   {
     "slug": "faceswap",
     "path": "assets/tool-art/faceswap.webp",
-    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools faceswap. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Two different entirely fictional consenting adult portrait photo cards, natural well-lit faces at similar angles, and a third stylized portrait result connected by an elegant subtle arrow; communicate creative face replacement, no celebrities. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. A natural woman-to-woman face swap concept. Exactly three similarly sized portrait cards aligned left to right: a fictional adult woman age 27 with brown eyes and shoulder-length brunette hair in soft daylight (source); a different fictional adult woman age 29 with a similar face angle and light brown hair, in a cream sweater in soft daylight (target); the target cream-sweater portrait with the source woman's facial features naturally blended, realistic skin texture, consistent lighting and proportions (result). Small subtle directional arrows between cards. No men, no children, no extreme makeup. Clean natural photography, no exaggerated claims. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
   },
   {
     "slug": "video-to-gif",
@@ -113,5 +113,165 @@
     "slug": "qr",
     "path": "assets/tool-art/qr.webp",
     "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools qr. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic blank cream cafe menu card with a clean black-and-white QR-like illustrative square pattern and a modern phone with a highlighted scanning frame, warm wood and lavender accent; avoid implying pattern is a functioning code. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "text-editor",
+    "path": "assets/tool-art/text-editor.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. A focused place to draft, reorganize and save plain text without sending the document to a writing service. Concept: Text Editor. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "extract-columns",
+    "path": "assets/tool-art/extract-columns.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Keep the useful columns from a delimited table without rebuilding the whole file. Concept: Extract Columns. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "fancy-fonts",
+    "path": "assets/tool-art/fancy-fonts.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels. Concept: Fancy Unicode Styles. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "remove-spaces",
+    "path": "assets/tool-art/remove-spaces.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Clean up accidental gaps while deciding whether to preserve paragraph breaks. Concept: Remove Extra Spaces. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "strip-html",
+    "path": "assets/tool-art/strip-html.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Recover readable text from an HTML snippet without displaying the markup as a live page. Concept: Strip HTML Tags. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "case-converter",
+    "path": "assets/tool-art/case-converter.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case. Concept: Case Converter. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "remove-symbols",
+    "path": "assets/tool-art/remove-symbols.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing. Concept: Remove Unicode Symbols. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "concat-text",
+    "path": "assets/tool-art/concat-text.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Bring separate pieces of text together with a separator you choose. Concept: Concatenate Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "remove-emojis",
+    "path": "assets/tool-art/remove-emojis.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Create a simpler text copy by removing emoji clusters, flags and common emoji sequences. Concept: Remove Emojis. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "upside-down",
+    "path": "assets/tool-art/upside-down.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Give a short message a playful upside-down appearance using approximate Unicode counterparts. Concept: Upside Down Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "split-text",
+    "path": "assets/tool-art/split-text.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Turn a long block into useful parts with a literal delimiter or line breaks. Concept: Split Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "unicode-normalizer",
+    "path": "assets/tool-art/unicode-normalizer.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Make equivalent Unicode representations more consistent before comparison, storage or further text processing. Concept: Normalize Unicode. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "bold-text",
+    "path": "assets/tool-art/bold-text.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Create mathematical bold-style Unicode letters for a short label or caption. Concept: Bold Unicode Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "random-numbers",
+    "path": "assets/tool-art/random-numbers.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Generate integers within an inclusive range using the browser’s cryptographic random source. Concept: Random Number Generator. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "italic-text",
+    "path": "assets/tool-art/italic-text.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Give supported Latin letters an italic-style appearance without a rich-text editor. Concept: Italic Unicode Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "random-emails",
+    "path": "assets/tool-art/random-emails.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Create clearly fictional email-shaped values for mockups, sample tables and development fixtures. Concept: Random Example Emails. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "strong-passwords",
+    "path": "assets/tool-art/strong-passwords.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Create random passwords with selectable character groups and a length you control. Concept: Strong Password Generator. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "blackletter-text",
+    "path": "assets/tool-art/blackletter-text.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Explore a blackletter-style alphabet for an ornamental heading or creative signature. Concept: Old English Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "pronounceable-passwords",
+    "path": "assets/tool-art/pronounceable-passwords.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Generate memorable-looking strings from randomized syllables, optional digits and separators. Concept: Pronounceable Passphrases. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "usernames",
+    "path": "assets/tool-art/usernames.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Find a starting point for a handle without sharing your name or personal details. Concept: Username Generator. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "cursive-text",
+    "path": "assets/tool-art/cursive-text.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Turn a short phrase into a flowing script-style Unicode version. Concept: Cursive Unicode Text. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "random-strings",
+    "path": "assets/tool-art/random-strings.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Generate sample identifiers and arbitrary character strings from a character set you define. Concept: Random String Generator. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "word-counter",
+    "path": "assets/tool-art/word-counter.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Understand the length of a draft with live counts for words, characters, lines and paragraphs. Concept: Word & Character Counter. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "email-extractor",
+    "path": "assets/tool-art/email-extractor.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Pull email-shaped addresses out of a text document and remove repeated entries. Concept: Email Extractor. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "find-replace",
+    "path": "assets/tool-art/find-replace.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Make consistent changes across a draft without repeatedly editing the same phrase by hand. Concept: Find & Replace. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "url-extractor",
+    "path": "assets/tool-art/url-extractor.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Collect HTTP and HTTPS links from a block of notes or copied text. Concept: URL Extractor. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "text-diff",
+    "path": "assets/tool-art/text-diff.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Compare two versions and see which lines were added, removed or kept. Concept: Text Difference Checker. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "url-encoder",
+    "path": "assets/tool-art/url-encoder.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Prepare a text value for a URL component or decode an encoded component into a readable form. Concept: URL Encoder & Decoder. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "prompt-builder",
+    "path": "assets/tool-art/prompt-builder.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints. Concept: AI Writing Prompt Builder. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "json-formatter",
+    "path": "assets/tool-art/json-formatter.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Turn valid JSON into a readable structure or a compact representation. Concept: JSON Formatter. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "watermark",
+    "path": "assets/tool-art/watermark.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Three original photorealistic image cards: an attractive fictional adult woman age 28 in a casual city portrait, a fictional adult man age 32 in a creative studio, and a blue-eyed Siberian Husky outdoors. Each carries a subtle repeating visible LOOX watermark pattern, with a small translucent logo tile and opacity slider beside the cards. Show clearly that ownership marks are added over the pictures. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "base64-encoder",
+    "path": "assets/tool-art/base64-encoder.webp",
+    "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters. Concept: Base64 Encoder & Decoder. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
   }
 ]

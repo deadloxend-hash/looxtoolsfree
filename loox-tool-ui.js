@@ -88,4 +88,5 @@
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!themeMenu.hidden){closeMenu();themeTrigger.focus()}});
  let saved='dark';try{saved=localStorage.getItem(themeKey)||'dark'}catch(_){}
  applyTheme(saved,readCustom(),false);
+ window.LOOXApplyTheme=name=>applyTheme(name,readCustom(),true);
 })();
