@@ -372,6 +372,52 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
 :root[data-theme="custom"][data-tone="dark"] .theme-popover{background:#fff;color:#211d35}
 :root[data-theme="custom"][data-tone="dark"] .theme-option{background:#fff;color:#29243d}
 
+
+/* LOOX polish pass: visual hierarchy, keyboard access, responsive surfaces */
+:root{--radius:20px}
+.topbar{box-shadow:0 5px 30px rgba(7,8,19,.05)}
+.brand-mark{border:1px solid rgba(255,255,255,.22)}
+.hero h1{letter-spacing:clamp(-3.2px,-.045em,-1.4px);text-wrap:balance}
+.hero-copy{max-width:56ch}
+.section-head h2,.explore-title-row h2{text-wrap:balance}
+.quick-card,.tool-card,.personal-card{will-change:auto}
+.quick-card:focus-within,.tool-card:focus-within,.personal-card:focus-within{border-color:var(--purple);box-shadow:0 0 0 3px color-mix(in srgb,var(--purple) 17%,transparent)}
+.filter:focus-visible,.search-go:focus-visible,.menu-toggle:focus-visible,.theme-trigger:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+.tool-copy h3{font-size:14px;line-height:1.4}
+.tool-copy p{font-size:11.5px;line-height:1.65}
+.tool-card{padding:19px;min-height:125px}
+.quick-card strong{font-size:15px}
+.quick-card small{font-size:11px}
+.search-panel{min-height:62px}
+.search-panel input{font-size:15px}
+:root[data-theme="dark"] .topbar{background:rgba(11,13,22,.88);border-bottom-color:rgba(154,141,207,.13)}
+:root[data-theme="dark"] .hero{background:radial-gradient(ellipse at 80% 10%,rgba(120,83,215,.22),transparent 38%),radial-gradient(ellipse at 10% 90%,rgba(194,74,146,.10),transparent 37%),linear-gradient(130deg,#0c0d17,#121324 58%,#101321)}
+:root[data-theme="dark"] .hero:before{border-color:rgba(167,140,255,.12);box-shadow:0 0 0 42px rgba(139,111,214,.025),0 0 0 88px rgba(139,111,214,.016)}
+:root[data-theme="dark"] .hero h1{color:#f7f5ff}
+:root[data-theme="dark"] .hero-copy{color:#b7b2cc}
+:root[data-theme="dark"] .search-panel{box-shadow:0 18px 55px rgba(0,0,0,.23)}
+:root[data-theme="dark"] .quick-card:hover,:root[data-theme="dark"] .tool-card:hover{border-color:rgba(170,136,255,.48);box-shadow:0 18px 42px rgba(0,0,0,.23)}
+@media(max-width:640px){
+ .container{width:min(100% - 30px,1180px)}
+ .hero{padding:43px 0 36px}
+ .hero h1{font-size:clamp(35px,9vw,48px);line-height:1.1;letter-spacing:-1.6px}
+ .hero-copy{font-size:14px;line-height:1.65}
+ .search-panel{gap:8px;padding-left:12px}
+ .search-hint{display:none}
+ .search-go{padding:12px}
+ .section{padding-block:38px}
+ .explore-panel{padding:17px;border-radius:19px}
+ .filters{gap:7px;margin-bottom:18px}
+ .filter{min-height:40px}
+ .tool-card{padding:15px}
+ .tool-copy h3{font-size:13px}
+ .tool-copy p{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .quick-card,.tool-card,.personal-card,.nav-cta,.search-go{transition:none!important;transform:none!important}
+}
+
 </style>
 </head>
 <body>
