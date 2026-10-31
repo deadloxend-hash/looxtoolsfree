@@ -112,6 +112,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
+
+<meta name="description" content="A stronger frame can make the same photograph tell a clearer story. Learn the workflow, choose useful settings, and review privacy details with LOOX Tools."><link rel="stylesheet" href="loox-experience.css?v=20">
 </head>
 <body>
 
@@ -228,6 +230,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     </div>
   </main>
 
+  <script src="loox-crop-controls.js?v=20"></script>
   <script>
     const fileInput = document.getElementById('fileInput');
     const dropZone = document.getElementById('dropZone');
@@ -242,6 +245,12 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     const inputX = document.getElementById('cropXInput');
     const inputY = document.getElementById('cropYInput');
     const aspectSelect = document.getElementById('aspectRatioSelect');
+    const edgeFields=document.createElement('div');edgeFields.className='input-row';
+    edgeFields.innerHTML='<div class="field-box"><label for="cropRightInset">Right inset (px)</label><input id="cropRightInset" type="number" min="0" step="1"></div><div class="field-box"><label for="cropBottomInset">Bottom inset (px)</label><input id="cropBottomInset" type="number" min="0" step="1"></div>';
+    inputX.closest('.control-group').append(edgeFields);
+    const inputRight=document.getElementById('cropRightInset'),inputBottom=document.getElementById('cropBottomInset');
+    inputRight.onchange=()=>{crop.x=Math.max(0,Math.min(img.width-crop.w,img.width-crop.w-(Number(inputRight.value)||0)));updateUI()};
+    inputBottom.onchange=()=>{crop.y=Math.max(0,Math.min(img.height-crop.h,img.height-crop.h-(Number(inputBottom.value)||0)));updateUI()};
 
     let img = new Image();
     let currentFile = null;
@@ -316,6 +325,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       inputHeight.value = Math.round(crop.h);
       inputX.value = Math.round(crop.x);
       inputY.value = Math.round(crop.y);
+      inputRight.value=Math.round(Math.max(0,img.width-crop.x-crop.w));
+      inputBottom.value=Math.round(Math.max(0,img.height-crop.y-crop.h));
     }
 
     // Manual input listeners
@@ -347,69 +358,37 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       updateUI();
     }
 
-    // Drag and Resize Handlers
-    cropBox.addEventListener('mousedown', (e) => {
-      if (e.target.classList.contains('handle')) {
-        isResizing = true;
-        activeHandle = e.target.getAttribute('data-handle');
-      } else {
-        isDragging = true;
-      }
-      dragStart = { x: e.clientX, y: e.clientY };
+    // Pointer capture supports a mouse, pen or touchscreen without losing the drag.
+    let cropGesture = null;
+    cropBox.style.touchAction = 'none';
+    cropBox.tabIndex = 0;
+    cropBox.setAttribute('aria-label','Crop frame. Drag the edges or use arrow keys to move.');
+    cropBox.addEventListener('pointerdown', e => {
+      if (e.button !== 0) return;
       updateScale();
-      e.preventDefault();
+      cropGesture = {
+        mode:e.target.dataset.handle || 'move',
+        from:{x:e.clientX/(img.width/scaleX),y:e.clientY/(img.height/scaleY)},
+        rect:{x:crop.x/img.width,y:crop.y/img.height,w:crop.w/img.width,h:crop.h/img.height}
+      };
+      cropBox.setPointerCapture(e.pointerId);cropBox.focus();e.preventDefault();
     });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging && !isResizing) return;
-
-      const dx = (e.clientX - dragStart.x) * scaleX;
-      const dy = (e.clientY - dragStart.y) * scaleY;
-      dragStart = { x: e.clientX, y: e.clientY };
-
-      if (isDragging) {
-        crop.x = Math.min(Math.max(0, crop.x + dx), img.width - crop.w);
-        crop.y = Math.min(Math.max(0, crop.y + dy), img.height - crop.h);
-      } else if (isResizing) {
-        let newX = crop.x;
-        let newY = crop.y;
-        let newW = crop.w;
-        let newH = crop.h;
-
-        if (activeHandle.includes('e')) newW = Math.min(img.width - crop.x, crop.w + dx);
-        if (activeHandle.includes('s')) newH = Math.min(img.height - crop.y, crop.h + dy);
-        if (activeHandle.includes('w')) {
-          const possibleW = crop.w - dx;
-          if (possibleW > 20 && crop.x + dx >= 0) {
-            newX = crop.x + dx;
-            newW = possibleW;
-          }
-        }
-        if (activeHandle.includes('n')) {
-          const possibleH = crop.h - dy;
-          if (possibleH > 20 && crop.y + dy >= 0) {
-            newY = crop.y + dy;
-            newH = possibleH;
-          }
-        }
-
-        crop.x = newX;
-        crop.y = newY;
-        crop.w = Math.max(20, newW);
-        crop.h = Math.max(20, newH);
-
-        applyAspectRatio();
-      }
-      updateUI();
+    cropBox.addEventListener('pointermove', e => {
+      if (!cropGesture) return;
+      const displayW=img.width/scaleX,displayH=img.height/scaleY;
+      const ratio=aspectSelect.value==='free'?0:aspectSelect.value.split(':').map(Number).reduce((a,b)=>a/b);
+      const r=LOOXCrop.drag(cropGesture.rect,cropGesture.mode,cropGesture.from,{x:e.clientX/displayW,y:e.clientY/displayH},displayW,displayH,ratio);
+      crop={x:r.x*img.width,y:r.y*img.height,w:r.w*img.width,h:r.h*img.height};updateUI();
     });
-
-    window.addEventListener('mouseup', () => {
-      isDragging = false;
-      isResizing = false;
-      activeHandle = null;
+    ['pointerup','pointercancel','lostpointercapture'].forEach(type=>cropBox.addEventListener(type,()=>cropGesture=null));
+    cropBox.addEventListener('keydown',e=>{
+      const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
+      if(!moves[e.key])return;e.preventDefault();const step=e.shiftKey?10:1;
+      crop.x=Math.max(0,Math.min(img.width-crop.w,crop.x+moves[e.key][0]*step));
+      crop.y=Math.max(0,Math.min(img.height-crop.h,crop.y+moves[e.key][1]*step));updateUI();
     });
-
-    window.addEventListener('resize', updateUI);
+    window.addEventListener('resize',()=>{if(img.naturalWidth)updateUI()});
+    new ResizeObserver(()=>{if(img.naturalWidth)updateUI()}).observe(canvasWrapper);
 
     function cropAndDownload() {
       const exportCanvas = document.createElement('canvas');
@@ -436,8 +415,13 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       dropZone.style.display = 'block';
     }
   </script>
-  <script src="loox-tool-guides.js?v=1"></script>
+  
   <script src="loox-tool-ui.js?v=2"></script>
-<script src="loox-navigation.js?v=1"></script>
+
+
+
+<!-- LOOX ORIGINAL GUIDE START --><section class="loox-guide-host"><article class="loox-story" lang="en"><section class="loox-story-row" data-reveal><figure class="loox-figure"><img src="assets/tool-art/cropimage.webp" alt="Image Cropper — Illustrated workflow" width="1000" height="625" loading="lazy"><figcaption>Original concept illustration. Settings and results depend on your file.</figcaption></figure><div><span class="loox-eyebrow">LOOX FIELD NOTES</span><h2>Image Cropper</h2><p>A stronger frame can make the same photograph tell a clearer story.</p><p>Cropping is a choice about attention. Remove a distracting edge, bring a small subject forward, or leave deliberate space for a caption. The useful question is not how much you can remove, but what the viewer should notice first.</p><a class="loox-story-link" href="#loox-how-to">How to use Image Cropper ↓</a></div></section><section id="loox-how-to"><span class="loox-eyebrow">Illustrated workflow</span><h2>How to use Image Cropper</h2><div class="loox-steps"><article class="loox-step-card" data-reveal><span class="loox-step-count">01</span><img src="assets/guides/steps/cropimage-1.svg" alt="Upload an image" width="520" height="230" loading="lazy"><h3>Upload an image</h3><p>Choose a photo from your device. It appears in the crop workspace.</p></article><article class="loox-step-card" data-reveal><span class="loox-step-count">02</span><img src="assets/guides/steps/cropimage-2.svg" alt="Set your frame" width="520" height="230" loading="lazy"><h3>Set your frame</h3><p>Drag the crop handles and choose a ratio or custom dimensions when needed.</p></article><article class="loox-step-card" data-reveal><span class="loox-step-count">03</span><img src="assets/guides/steps/cropimage-3.svg" alt="Fine-tune the composition" width="520" height="230" loading="lazy"><h3>Fine-tune the composition</h3><p>Keep the subject inside the frame and check that important details are not cut off.</p></article><article class="loox-step-card" data-reveal><span class="loox-step-count">04</span><img src="assets/guides/steps/cropimage-4.svg" alt="Export the crop" width="520" height="230" loading="lazy"><h3>Export the crop</h3><p>Apply the crop and download the finished image in the available format.</p></article></div></section><section class="loox-story-row reverse" data-reveal><figure class="loox-figure"><img src="assets/tool-art/cropimage.webp" alt="Image Cropper — Illustrated workflow" width="1000" height="625" loading="lazy"><figcaption>Original concept illustration. Settings and results depend on your file.</figcaption></figure><div><span class="loox-eyebrow">LOOX TOOLS</span><h2>Precision when the destination matters</h2><p>Choose a ratio when you need a consistent shape, then move the frame to protect the subject. Width, height and edge positions use pixels for exact adjustments. Drag a corner or an edge for a quick change; use the numeric fields for a repeatable crop. Cropping removes pixels and does not recreate missing detail.</p><ul class="loox-feature-list"><li>Prepare images for profile pictures, social posts and thumbnails.</li><li>Use aspect ratios to create consistent frames.</li><li>Adjust the crop before exporting the new image.</li></ul><p>Start with the final destination in mind. A square crop works for many profile images, while landscape and portrait ratios suit different publishing layouts. Leave a little breathing room around faces and text.</p></div></section><aside class="loox-trust-note"><span class="loox-eyebrow">LOCAL / NETWORK</span><h2>Your files deserve a clear explanation</h2><p>Cropping is performed in your browser. The selected image is handled by the page’s local image and canvas code rather than uploaded to LOOX. Avoid using a shared or public device for private photos, and close the page when finished.</p><h3>A thoughtful final check</h3><p>Review identifying details, confidential information and the final file before sharing. Local processing does not automatically remove metadata or guarantee anonymity. AI-generated or heavily edited content may need clear labeling.</p></aside><section class="loox-faq-original"><span class="loox-eyebrow">LOOX HELP</span><h2>Questions, answered</h2><details><summary>Does cropping reduce image quality?</summary><p>Cropping removes pixels outside the selected frame. The remaining pixels are not enlarged unless you also resize the image.</p></details><details><summary>Can I choose a custom crop?</summary><p>Use the crop handles and the available aspect-ratio or dimension controls in the workspace.</p></details><details><summary>Is my image uploaded?</summary><p>This cropper processes the image in your browser; it is not sent to LOOX by the crop workflow.</p></details><details><summary>Will this replace my original file?</summary><p>The tools create a separate output. Keep the original until you have checked the exported file; the site does not provide cloud project backups.</p></details><details><summary>Can I publish the result?</summary><p>Use source media you own or have permission to edit. Check the destination’s requirements and the rights of anyone shown before publishing.</p></details></section><section><span class="loox-eyebrow">Keep creating</span><h2>Explore all tools</h2><div class="loox-related-grid"><a class="loox-related-card" href="photo-editor.html?lang=en"><img src="assets/icons/photo-editor.svg" alt="" width="40" height="40">Photo Editor ↗</a><a class="loox-related-card" href="face-blur.html?lang=en"><img src="assets/icons/face-blur.svg" alt="" width="40" height="40">Face Blur ↗</a><a class="loox-related-card" href="image-compressor.html?lang=en"><img src="assets/icons/image-compressor.svg" alt="" width="40" height="40">Image Compressor ↗</a></div></section></article></section><!-- LOOX ORIGINAL GUIDE END -->
+<script src="loox-experience.js?v=20" defer></script>
 </body>
 </html>
+

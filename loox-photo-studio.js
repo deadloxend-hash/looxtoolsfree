@@ -92,6 +92,7 @@ function fitCropRatio(changed=''){
 }
 function syncCropControls(except=null){
  const root=$('inspector');if(tool!=='crop')return;
+ window.LOOXCrop.syncInsets(root,cropUnit(),canvas.width,canvas.height);
  const values={cropX:Math.round(crop.x*canvas.width/100),cropY:Math.round(crop.y*canvas.height/100),
  cropW:Math.round(crop.w*canvas.width/100),cropH:Math.round(crop.h*canvas.height/100)};
  for(const [k,v] of Object.entries(values)){const el=root.querySelector('[data-prop='+k+']');if(el&&el!==except)el.value=v}
@@ -124,6 +125,7 @@ function showInspector(){
   });
   root.querySelector('#applyCrop').onclick=applyCrop;
   root.querySelector('#resetCrop').onclick=()=>{crop={x:5,y:5,w:90,h:90};fitCropRatio();syncCropControls();draw()};
+  window.LOOXCrop.attachInsets(root,canvas.width,canvas.height,cropUnit,r=>{crop={x:r.x*100,y:r.y*100,w:r.w*100,h:r.h*100};syncCropControls();draw()});
   syncCropControls();return
  }
  if(tool==='canvas'){
@@ -316,3 +318,4 @@ $('closeExport').onclick=()=>$('exportDialog').close();
 window.addEventListener('beforeunload',()=>urls.forEach(u=>URL.revokeObjectURL(u)));
 refresh();say('Ready. Add a photo or create a design.');
 })();
+

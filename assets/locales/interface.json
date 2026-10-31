@@ -1,0 +1,1094 @@
+{
+  "Tools": {
+    "en": "Tools",
+    "es": "Herramientas",
+    "fr": "Outils",
+    "de": "Werkzeuge"
+  },
+  "All tools": {
+    "en": "All tools",
+    "es": "Todas las herramientas",
+    "fr": "Tous les outils",
+    "de": "Alle Werkzeuge"
+  },
+  "Theme": {
+    "en": "Theme",
+    "es": "Tema",
+    "fr": "Thème",
+    "de": "Design"
+  },
+  "Appearance": {
+    "en": "Appearance",
+    "es": "Apariencia",
+    "fr": "Apparence",
+    "de": "Darstellung"
+  },
+  "Choose how LOOX looks": {
+    "en": "Choose how LOOX looks",
+    "es": "Elige el aspecto de LOOX",
+    "fr": "Choisissez l’apparence de LOOX",
+    "de": "Wähle das Aussehen von LOOX"
+  },
+  "White": {
+    "en": "White",
+    "es": "Blanco",
+    "fr": "Blanc",
+    "de": "Weiß"
+  },
+  "Clean and bright": {
+    "en": "Clean and bright",
+    "es": "Limpio y luminoso",
+    "fr": "Clair et lumineux",
+    "de": "Hell und klar"
+  },
+  "Light grey": {
+    "en": "Light grey",
+    "es": "Gris claro",
+    "fr": "Gris clair",
+    "de": "Hellgrau"
+  },
+  "Soft neutral look": {
+    "en": "Soft neutral look",
+    "es": "Aspecto neutro suave",
+    "fr": "Aspect neutre et doux",
+    "de": "Sanfte neutrale Optik"
+  },
+  "Black": {
+    "en": "Black",
+    "es": "Negro",
+    "fr": "Noir",
+    "de": "Schwarz"
+  },
+  "Easy on the eyes": {
+    "en": "Easy on the eyes",
+    "es": "Cómodo para la vista",
+    "fr": "Reposant pour les yeux",
+    "de": "Angenehm für die Augen"
+  },
+  "Customize": {
+    "en": "Customize",
+    "es": "Personalizar",
+    "fr": "Personnaliser",
+    "de": "Anpassen"
+  },
+  "Pick your own colors": {
+    "en": "Pick your own colors",
+    "es": "Elige tus colores",
+    "fr": "Choisissez vos couleurs",
+    "de": "Wähle eigene Farben"
+  },
+  "Page background": {
+    "en": "Page background",
+    "es": "Fondo de página",
+    "fr": "Fond de page",
+    "de": "Seitenhintergrund"
+  },
+  "Accent color": {
+    "en": "Accent color",
+    "es": "Color de acento",
+    "fr": "Couleur d’accent",
+    "de": "Akzentfarbe"
+  },
+  "Reset custom colors": {
+    "en": "Reset custom colors",
+    "es": "Restablecer colores",
+    "fr": "Réinitialiser les couleurs",
+    "de": "Eigene Farben zurücksetzen"
+  },
+  "Upload": {
+    "en": "Upload",
+    "es": "Subir",
+    "fr": "Importer",
+    "de": "Hochladen"
+  },
+  "Add files": {
+    "en": "Add files",
+    "es": "Añadir archivos",
+    "fr": "Ajouter des fichiers",
+    "de": "Dateien hinzufügen"
+  },
+  "+ Import media": {
+    "en": "+ Import media",
+    "es": "+ Importar medios",
+    "fr": "+ Importer des médias",
+    "de": "+ Medien importieren"
+  },
+  "Download": {
+    "en": "Download",
+    "es": "Descargar",
+    "fr": "Télécharger",
+    "de": "Herunterladen"
+  },
+  "Export": {
+    "en": "Export",
+    "es": "Exportar",
+    "fr": "Exporter",
+    "de": "Exportieren"
+  },
+  "Save": {
+    "en": "Save",
+    "es": "Guardar",
+    "fr": "Enregistrer",
+    "de": "Speichern"
+  },
+  "Close": {
+    "en": "Close",
+    "es": "Cerrar",
+    "fr": "Fermer",
+    "de": "Schließen"
+  },
+  "Cancel": {
+    "en": "Cancel",
+    "es": "Cancelar",
+    "fr": "Annuler",
+    "de": "Abbrechen"
+  },
+  "Reset": {
+    "en": "Reset",
+    "es": "Restablecer",
+    "fr": "Réinitialiser",
+    "de": "Zurücksetzen"
+  },
+  "Duplicate": {
+    "en": "Duplicate",
+    "es": "Duplicar",
+    "fr": "Dupliquer",
+    "de": "Duplizieren"
+  },
+  "Delete": {
+    "en": "Delete",
+    "es": "Eliminar",
+    "fr": "Supprimer",
+    "de": "Löschen"
+  },
+  "Undo": {
+    "en": "Undo",
+    "es": "Deshacer",
+    "fr": "Annuler",
+    "de": "Rückgängig"
+  },
+  "Redo": {
+    "en": "Redo",
+    "es": "Rehacer",
+    "fr": "Rétablir",
+    "de": "Wiederholen"
+  },
+  "Properties": {
+    "en": "Properties",
+    "es": "Propiedades",
+    "fr": "Propriétés",
+    "de": "Eigenschaften"
+  },
+  "Clip inspector": {
+    "en": "Clip inspector",
+    "es": "Inspector de clip",
+    "fr": "Inspecteur du clip",
+    "de": "Clip-Eigenschaften"
+  },
+  "Transform": {
+    "en": "Transform",
+    "es": "Transformar",
+    "fr": "Transformation",
+    "de": "Transformieren"
+  },
+  "Audio": {
+    "en": "Audio",
+    "es": "Audio",
+    "fr": "Audio",
+    "de": "Audio"
+  },
+  "Color & effects": {
+    "en": "Color & effects",
+    "es": "Color y efectos",
+    "fr": "Couleur et effets",
+    "de": "Farbe und Effekte"
+  },
+  "Video": {
+    "en": "Video",
+    "es": "Vídeo",
+    "fr": "Vidéo",
+    "de": "Video"
+  },
+  "Overlay": {
+    "en": "Overlay",
+    "es": "Superposición",
+    "fr": "Superposition",
+    "de": "Überlagerung"
+  },
+  "Image": {
+    "en": "Image",
+    "es": "Imagen",
+    "fr": "Image",
+    "de": "Bild"
+  },
+  "Text": {
+    "en": "Text",
+    "es": "Texto",
+    "fr": "Texte",
+    "de": "Text"
+  },
+  "Crop": {
+    "en": "Crop",
+    "es": "Recortar",
+    "fr": "Recadrer",
+    "de": "Zuschneiden"
+  },
+  "Canvas": {
+    "en": "Canvas",
+    "es": "Lienzo",
+    "fr": "Canevas",
+    "de": "Leinwand"
+  },
+  "Move": {
+    "en": "Move",
+    "es": "Mover",
+    "fr": "Déplacer",
+    "de": "Verschieben"
+  },
+  "Shape": {
+    "en": "Shape",
+    "es": "Forma",
+    "fr": "Forme",
+    "de": "Form"
+  },
+  "Draw": {
+    "en": "Draw",
+    "es": "Dibujar",
+    "fr": "Dessiner",
+    "de": "Zeichnen"
+  },
+  "Erase": {
+    "en": "Erase",
+    "es": "Borrar",
+    "fr": "Effacer",
+    "de": "Radieren"
+  },
+  "Transitions": {
+    "en": "Transitions",
+    "es": "Transiciones",
+    "fr": "Transitions",
+    "de": "Übergänge"
+  },
+  "Filters": {
+    "en": "Filters",
+    "es": "Filtros",
+    "fr": "Filtres",
+    "de": "Filter"
+  },
+  "Stickers": {
+    "en": "Stickers",
+    "es": "Pegatinas",
+    "fr": "Autocollants",
+    "de": "Sticker"
+  },
+  "Effects": {
+    "en": "Effects",
+    "es": "Efectos",
+    "fr": "Effets",
+    "de": "Effekte"
+  },
+  "Project monitor": {
+    "en": "Project monitor",
+    "es": "Monitor del proyecto",
+    "fr": "Moniteur du projet",
+    "de": "Projektvorschau"
+  },
+  "Live preview": {
+    "en": "Live preview",
+    "es": "Vista previa",
+    "fr": "Aperçu en direct",
+    "de": "Live-Vorschau"
+  },
+  "Media library": {
+    "en": "Media library",
+    "es": "Biblioteca multimedia",
+    "fr": "Bibliothèque multimédia",
+    "de": "Medienbibliothek"
+  },
+  "Project layers": {
+    "en": "Project layers",
+    "es": "Capas del proyecto",
+    "fr": "Calques du projet",
+    "de": "Projektebenen"
+  },
+  "Timeline": {
+    "en": "Timeline",
+    "es": "Línea de tiempo",
+    "fr": "Timeline",
+    "de": "Zeitleiste"
+  },
+  "Ripple": {
+    "en": "Ripple",
+    "es": "Desplazar clips",
+    "fr": "Décalage automatique",
+    "de": "Lücken schließen"
+  },
+  "Snap": {
+    "en": "Snap",
+    "es": "Ajustar",
+    "fr": "Magnétisme",
+    "de": "Einrasten"
+  },
+  "+ Video track": {
+    "en": "+ Video track",
+    "es": "+ Pista de vídeo",
+    "fr": "+ Piste vidéo",
+    "de": "+ Videospur"
+  },
+  "+ Audio track": {
+    "en": "+ Audio track",
+    "es": "+ Pista de audio",
+    "fr": "+ Piste audio",
+    "de": "+ Audiospur"
+  },
+  "Lock": {
+    "en": "Lock",
+    "es": "Bloquear",
+    "fr": "Verrouiller",
+    "de": "Sperren"
+  },
+  "Hide": {
+    "en": "Hide",
+    "es": "Ocultar",
+    "fr": "Masquer",
+    "de": "Ausblenden"
+  },
+  "Mute": {
+    "en": "Mute",
+    "es": "Silenciar",
+    "fr": "Couper le son",
+    "de": "Stumm"
+  },
+  "Solo": {
+    "en": "Solo",
+    "es": "Solo",
+    "fr": "Solo",
+    "de": "Solo"
+  },
+  "Start (s)": {
+    "en": "Start (s)",
+    "es": "Inicio (s)",
+    "fr": "Début (s)",
+    "de": "Start (s)"
+  },
+  "Length (s)": {
+    "en": "Length (s)",
+    "es": "Duración (s)",
+    "fr": "Durée (s)",
+    "de": "Länge (s)"
+  },
+  "Source in (s)": {
+    "en": "Source in (s)",
+    "es": "Entrada de origen (s)",
+    "fr": "Entrée source (s)",
+    "de": "Quellstart (s)"
+  },
+  "Volume %": {
+    "en": "Volume %",
+    "es": "Volumen %",
+    "fr": "Volume %",
+    "de": "Lautstärke %"
+  },
+  "Playback speed (0.1–16×)": {
+    "en": "Playback speed (0.1–16×)",
+    "es": "Velocidad (0.1–16×)",
+    "fr": "Vitesse (0.1–16×)",
+    "de": "Geschwindigkeit (0.1–16×)"
+  },
+  "Horizontal %": {
+    "en": "Horizontal %",
+    "es": "Horizontal %",
+    "fr": "Horizontal %",
+    "de": "Horizontal %"
+  },
+  "Vertical %": {
+    "en": "Vertical %",
+    "es": "Vertical %",
+    "fr": "Vertical %",
+    "de": "Vertikal %"
+  },
+  "Width %": {
+    "en": "Width %",
+    "es": "Ancho %",
+    "fr": "Largeur %",
+    "de": "Breite %"
+  },
+  "Height %": {
+    "en": "Height %",
+    "es": "Alto %",
+    "fr": "Hauteur %",
+    "de": "Höhe %"
+  },
+  "Rotation °": {
+    "en": "Rotation °",
+    "es": "Rotación °",
+    "fr": "Rotation °",
+    "de": "Drehung °"
+  },
+  "Opacity %": {
+    "en": "Opacity %",
+    "es": "Opacidad %",
+    "fr": "Opacité %",
+    "de": "Deckkraft %"
+  },
+  "Scale": {
+    "en": "Scale",
+    "es": "Escala",
+    "fr": "Échelle",
+    "de": "Skalierung"
+  },
+  "Layer order": {
+    "en": "Layer order",
+    "es": "Orden de capa",
+    "fr": "Ordre du calque",
+    "de": "Ebenenreihenfolge"
+  },
+  "Move to track": {
+    "en": "Move to track",
+    "es": "Mover a pista",
+    "fr": "Déplacer vers la piste",
+    "de": "Auf Spur verschieben"
+  },
+  "Fade duration (s)": {
+    "en": "Fade duration (s)",
+    "es": "Duración de fundido (s)",
+    "fr": "Durée du fondu (s)",
+    "de": "Blenddauer (s)"
+  },
+  "Transition": {
+    "en": "Transition",
+    "es": "Transición",
+    "fr": "Transition",
+    "de": "Übergang"
+  },
+  "None": {
+    "en": "None",
+    "es": "Ninguno",
+    "fr": "Aucun",
+    "de": "Keiner"
+  },
+  "Fade in": {
+    "en": "Fade in",
+    "es": "Fundido de entrada",
+    "fr": "Fondu d’entrée",
+    "de": "Einblenden"
+  },
+  "Slide from right": {
+    "en": "Slide from right",
+    "es": "Entrada desde la derecha",
+    "fr": "Glissement depuis la droite",
+    "de": "Von rechts einschieben"
+  },
+  "Slide from left": {
+    "en": "Slide from left",
+    "es": "Entrada desde la izquierda",
+    "fr": "Glissement depuis la gauche",
+    "de": "Von links einschieben"
+  },
+  "Zoom in": {
+    "en": "Zoom in",
+    "es": "Acercar",
+    "fr": "Zoom avant",
+    "de": "Hineinzoomen"
+  },
+  "Framing": {
+    "en": "Framing",
+    "es": "Encuadre",
+    "fr": "Cadrage",
+    "de": "Bildanpassung"
+  },
+  "Fill & crop": {
+    "en": "Fill & crop",
+    "es": "Rellenar y recortar",
+    "fr": "Remplir et recadrer",
+    "de": "Füllen und zuschneiden"
+  },
+  "Fit inside": {
+    "en": "Fit inside",
+    "es": "Ajustar dentro",
+    "fr": "Adapter à l’intérieur",
+    "de": "Einpassen"
+  },
+  "Crop / zoom": {
+    "en": "Crop / zoom",
+    "es": "Recorte / zoom",
+    "fr": "Recadrage / zoom",
+    "de": "Zuschnitt / Zoom"
+  },
+  "Crop pan X": {
+    "en": "Crop pan X",
+    "es": "Recorte X",
+    "fr": "Décalage X",
+    "de": "Ausschnitt X"
+  },
+  "Crop pan Y": {
+    "en": "Crop pan Y",
+    "es": "Recorte Y",
+    "fr": "Décalage Y",
+    "de": "Ausschnitt Y"
+  },
+  "Filter": {
+    "en": "Filter",
+    "es": "Filtro",
+    "fr": "Filtre",
+    "de": "Filter"
+  },
+  "Original": {
+    "en": "Original",
+    "es": "Original",
+    "fr": "Original",
+    "de": "Original"
+  },
+  "Vivid": {
+    "en": "Vivid",
+    "es": "Vívido",
+    "fr": "Vif",
+    "de": "Lebendig"
+  },
+  "Cinematic warm": {
+    "en": "Cinematic warm",
+    "es": "Cálido cinematográfico",
+    "fr": "Chaleur cinéma",
+    "de": "Filmisch warm"
+  },
+  "Cool": {
+    "en": "Cool",
+    "es": "Frío",
+    "fr": "Froid",
+    "de": "Kühl"
+  },
+  "B&W": {
+    "en": "B&W",
+    "es": "Blanco y negro",
+    "fr": "Noir et blanc",
+    "de": "Schwarzweiß"
+  },
+  "Retro": {
+    "en": "Retro",
+    "es": "Retro",
+    "fr": "Rétro",
+    "de": "Retro"
+  },
+  "Brightness": {
+    "en": "Brightness",
+    "es": "Brillo",
+    "fr": "Luminosité",
+    "de": "Helligkeit"
+  },
+  "Contrast": {
+    "en": "Contrast",
+    "es": "Contraste",
+    "fr": "Contraste",
+    "de": "Kontrast"
+  },
+  "Saturation": {
+    "en": "Saturation",
+    "es": "Saturación",
+    "fr": "Saturation",
+    "de": "Sättigung"
+  },
+  "Temperature": {
+    "en": "Temperature",
+    "es": "Temperatura",
+    "fr": "Température",
+    "de": "Temperatur"
+  },
+  "Blur": {
+    "en": "Blur",
+    "es": "Desenfoque",
+    "fr": "Flou",
+    "de": "Unschärfe"
+  },
+  "Reset color & effects": {
+    "en": "Reset color & effects",
+    "es": "Restablecer color y efectos",
+    "fr": "Réinitialiser couleur et effets",
+    "de": "Farbe und Effekte zurücksetzen"
+  },
+  "EQ preset": {
+    "en": "EQ preset",
+    "es": "Preajuste de ecualización",
+    "fr": "Préréglage d’égalisation",
+    "de": "EQ-Voreinstellung"
+  },
+  "Flat": {
+    "en": "Flat",
+    "es": "Plano",
+    "fr": "Neutre",
+    "de": "Neutral"
+  },
+  "Bass boost": {
+    "en": "Bass boost",
+    "es": "Refuerzo de graves",
+    "fr": "Renforcement des basses",
+    "de": "Bassverstärkung"
+  },
+  "Vocal clarity": {
+    "en": "Vocal clarity",
+    "es": "Claridad vocal",
+    "fr": "Clarté vocale",
+    "de": "Stimmklarheit"
+  },
+  "Treble reduction": {
+    "en": "Treble reduction",
+    "es": "Reducción de agudos",
+    "fr": "Réduction des aigus",
+    "de": "Höhenabsenkung"
+  },
+  "Hum reduction": {
+    "en": "Hum reduction",
+    "es": "Reducción de zumbido",
+    "fr": "Réduction du bourdonnement",
+    "de": "Brummfilter"
+  },
+  "Off": {
+    "en": "Off",
+    "es": "Desactivado",
+    "fr": "Désactivé",
+    "de": "Aus"
+  },
+  "High-pass · 120 Hz": {
+    "en": "High-pass · 120 Hz",
+    "es": "Paso alto · 120 Hz",
+    "fr": "Passe-haut · 120 Hz",
+    "de": "Hochpass · 120 Hz"
+  },
+  "Keyframe gain %": {
+    "en": "Keyframe gain %",
+    "es": "Ganancia de fotograma clave %",
+    "fr": "Gain de l’image clé %",
+    "de": "Keyframe-Lautstärke %"
+  },
+  "◆ Set volume keyframe": {
+    "en": "◆ Set volume keyframe",
+    "es": "◆ Añadir fotograma de volumen",
+    "fr": "◆ Ajouter une image clé de volume",
+    "de": "◆ Lautstärke-Keyframe setzen"
+  },
+  "Clear keyframes": {
+    "en": "Clear keyframes",
+    "es": "Borrar fotogramas clave",
+    "fr": "Effacer les images clés",
+    "de": "Keyframes entfernen"
+  },
+  "Title": {
+    "en": "Title",
+    "es": "Título",
+    "fr": "Titre",
+    "de": "Titel"
+  },
+  "Font": {
+    "en": "Font",
+    "es": "Fuente",
+    "fr": "Police",
+    "de": "Schrift"
+  },
+  "Size": {
+    "en": "Size",
+    "es": "Tamaño",
+    "fr": "Taille",
+    "de": "Größe"
+  },
+  "Color": {
+    "en": "Color",
+    "es": "Color",
+    "fr": "Couleur",
+    "de": "Farbe"
+  },
+  "Text effect": {
+    "en": "Text effect",
+    "es": "Efecto de texto",
+    "fr": "Effet de texte",
+    "de": "Texteffekt"
+  },
+  "Shadow": {
+    "en": "Shadow",
+    "es": "Sombra",
+    "fr": "Ombre",
+    "de": "Schatten"
+  },
+  "Outline": {
+    "en": "Outline",
+    "es": "Contorno",
+    "fr": "Contour",
+    "de": "Kontur"
+  },
+  "Neon Glow": {
+    "en": "Neon Glow",
+    "es": "Brillo neón",
+    "fr": "Lueur néon",
+    "de": "Neonleuchten"
+  },
+  "Crop aspect ratio": {
+    "en": "Crop aspect ratio",
+    "es": "Proporción del recorte",
+    "fr": "Ratio du recadrage",
+    "de": "Seitenverhältnis des Zuschnitts"
+  },
+  "Free crop": {
+    "en": "Free crop",
+    "es": "Recorte libre",
+    "fr": "Recadrage libre",
+    "de": "Freier Zuschnitt"
+  },
+  "X (px)": {
+    "en": "X (px)",
+    "es": "X (px)",
+    "fr": "X (px)",
+    "de": "X (px)"
+  },
+  "Y (px)": {
+    "en": "Y (px)",
+    "es": "Y (px)",
+    "fr": "Y (px)",
+    "de": "Y (px)"
+  },
+  "Width (px)": {
+    "en": "Width (px)",
+    "es": "Ancho (px)",
+    "fr": "Largeur (px)",
+    "de": "Breite (px)"
+  },
+  "Height (px)": {
+    "en": "Height (px)",
+    "es": "Alto (px)",
+    "fr": "Hauteur (px)",
+    "de": "Höhe (px)"
+  },
+  "X position (px)": {
+    "en": "X position (px)",
+    "es": "Posición X (px)",
+    "fr": "Position X (px)",
+    "de": "X-Position (px)"
+  },
+  "Y position (px)": {
+    "en": "Y position (px)",
+    "es": "Posición Y (px)",
+    "fr": "Position Y (px)",
+    "de": "Y-Position (px)"
+  },
+  "Left edge (px)": {
+    "en": "Left edge (px)",
+    "es": "Borde izquierdo (px)",
+    "fr": "Bord gauche (px)",
+    "de": "Linker Rand (px)"
+  },
+  "Top edge (px)": {
+    "en": "Top edge (px)",
+    "es": "Borde superior (px)",
+    "fr": "Bord supérieur (px)",
+    "de": "Oberer Rand (px)"
+  },
+  "Right inset (px)": {
+    "en": "Right inset (px)",
+    "es": "Margen derecho (px)",
+    "fr": "Marge droite (px)",
+    "de": "Abstand rechts (px)"
+  },
+  "Bottom inset (px)": {
+    "en": "Bottom inset (px)",
+    "es": "Margen inferior (px)",
+    "fr": "Marge basse (px)",
+    "de": "Abstand unten (px)"
+  },
+  "✓ Apply crop": {
+    "en": "✓ Apply crop",
+    "es": "✓ Aplicar recorte",
+    "fr": "✓ Appliquer le recadrage",
+    "de": "✓ Zuschnitt anwenden"
+  },
+  "⌗ Crop with mouse": {
+    "en": "⌗ Crop with mouse",
+    "es": "⌗ Recortar con el ratón",
+    "fr": "⌗ Recadrer à la souris",
+    "de": "⌗ Mit der Maus zuschneiden"
+  },
+  "Aspect ratio": {
+    "en": "Aspect ratio",
+    "es": "Proporción",
+    "fr": "Ratio",
+    "de": "Seitenverhältnis"
+  },
+  "Resolution": {
+    "en": "Resolution",
+    "es": "Resolución",
+    "fr": "Résolution",
+    "de": "Auflösung"
+  },
+  "Frame rate": {
+    "en": "Frame rate",
+    "es": "Fotogramas por segundo",
+    "fr": "Fréquence d’images",
+    "de": "Bildrate"
+  },
+  "Background": {
+    "en": "Background",
+    "es": "Fondo",
+    "fr": "Arrière-plan",
+    "de": "Hintergrund"
+  },
+  "Export settings": {
+    "en": "Export settings",
+    "es": "Ajustes de exportación",
+    "fr": "Paramètres d’export",
+    "de": "Exporteinstellungen"
+  },
+  "Export your project": {
+    "en": "Export your project",
+    "es": "Exporta tu proyecto",
+    "fr": "Exportez votre projet",
+    "de": "Projekt exportieren"
+  },
+  "Export MP4": {
+    "en": "Export MP4",
+    "es": "Exportar MP4",
+    "fr": "Exporter en MP4",
+    "de": "MP4 exportieren"
+  },
+  "Cancel export": {
+    "en": "Cancel export",
+    "es": "Cancelar exportación",
+    "fr": "Annuler l’export",
+    "de": "Export abbrechen"
+  },
+  "Choose file": {
+    "en": "Choose file",
+    "es": "Elegir archivo",
+    "fr": "Choisir un fichier",
+    "de": "Datei auswählen"
+  },
+  "Choose another image": {
+    "en": "Choose another image",
+    "es": "Elegir otra imagen",
+    "fr": "Choisir une autre image",
+    "de": "Anderes Bild wählen"
+  },
+  "Start time (seconds)": {
+    "en": "Start time (seconds)",
+    "es": "Inicio (segundos)",
+    "fr": "Début (secondes)",
+    "de": "Startzeit (Sekunden)"
+  },
+  "End time (seconds)": {
+    "en": "End time (seconds)",
+    "es": "Final (segundos)",
+    "fr": "Fin (secondes)",
+    "de": "Endzeit (Sekunden)"
+  },
+  "Output format": {
+    "en": "Output format",
+    "es": "Formato de salida",
+    "fr": "Format de sortie",
+    "de": "Ausgabeformat"
+  },
+  "Quality": {
+    "en": "Quality",
+    "es": "Calidad",
+    "fr": "Qualité",
+    "de": "Qualität"
+  },
+  "Compress": {
+    "en": "Compress",
+    "es": "Comprimir",
+    "fr": "Compresser",
+    "de": "Komprimieren"
+  },
+  "Convert": {
+    "en": "Convert",
+    "es": "Convertir",
+    "fr": "Convertir",
+    "de": "Konvertieren"
+  },
+  "Favorites": {
+    "en": "Favorites",
+    "es": "Favoritos",
+    "fr": "Favoris",
+    "de": "Favoriten"
+  },
+  "Recently used": {
+    "en": "Recently used",
+    "es": "Usados recientemente",
+    "fr": "Utilisés récemment",
+    "de": "Zuletzt verwendet"
+  },
+  "Search tools": {
+    "en": "Search tools",
+    "es": "Buscar herramientas",
+    "fr": "Rechercher des outils",
+    "de": "Werkzeuge suchen"
+  },
+  "In browser": {
+    "en": "In browser",
+    "es": "En el navegador",
+    "fr": "Dans le navigateur",
+    "de": "Im Browser"
+  },
+  "Cloud AI": {
+    "en": "Cloud AI",
+    "es": "IA en la nube",
+    "fr": "IA dans le cloud",
+    "de": "Cloud-KI"
+  },
+  "See tool": {
+    "en": "See tool",
+    "es": "Ver herramienta",
+    "fr": "Voir l’outil",
+    "de": "Werkzeug ansehen"
+  },
+  "Your canvas. Your creativity.": {
+    "en": "Your canvas. Your creativity.",
+    "es": "Tu lienzo. Tu creatividad.",
+    "fr": "Votre canevas. Votre créativité.",
+    "de": "Deine Leinwand. Deine Kreativität."
+  },
+  "Video editing, your way.": {
+    "en": "Video editing, your way.",
+    "es": "Edición de vídeo a tu manera.",
+    "fr": "Le montage vidéo à votre façon.",
+    "de": "Videos bearbeiten auf deine Art."
+  },
+  "Good tools. A little know-how.": {
+    "en": "Good tools. A little know-how.",
+    "es": "Buenas herramientas. Un poco de práctica.",
+    "fr": "De bons outils. Un peu de savoir-faire.",
+    "de": "Gute Werkzeuge. Ein wenig Know-how."
+  },
+  "Video Editor": {
+    "en": "Video Editor",
+    "es": "Editor de vídeo",
+    "fr": "Éditeur vidéo",
+    "de": "Videoeditor"
+  },
+  "Photo Editor": {
+    "en": "Photo Editor",
+    "es": "Editor de fotos",
+    "fr": "Éditeur photo",
+    "de": "Fotoeditor"
+  },
+  "Design Studio": {
+    "en": "Design Studio",
+    "es": "Estudio de diseño",
+    "fr": "Studio de création",
+    "de": "Designstudio"
+  },
+  "Background Remover": {
+    "en": "Background Remover",
+    "es": "Eliminador de fondos",
+    "fr": "Suppression d’arrière-plan",
+    "de": "Hintergrundentferner"
+  },
+  "AI Face Swap": {
+    "en": "AI Face Swap",
+    "es": "Intercambio de rostros con IA",
+    "fr": "Échange de visages IA",
+    "de": "KI-Gesichtstausch"
+  },
+  "Face Blur": {
+    "en": "Face Blur",
+    "es": "Desenfoque de rostros",
+    "fr": "Floutage des visages",
+    "de": "Gesichter weichzeichnen"
+  },
+  "Image Cropper": {
+    "en": "Image Cropper",
+    "es": "Recortador de imágenes",
+    "fr": "Recadrage d’image",
+    "de": "Bild zuschneiden"
+  },
+  "Image Compressor": {
+    "en": "Image Compressor",
+    "es": "Compresor de imágenes",
+    "fr": "Compression d’image",
+    "de": "Bildkompressor"
+  },
+  "Image Converter": {
+    "en": "Image Converter",
+    "es": "Conversor de imágenes",
+    "fr": "Conversion d’image",
+    "de": "Bildkonverter"
+  },
+  "Video Compressor": {
+    "en": "Video Compressor",
+    "es": "Compresor de vídeo",
+    "fr": "Compression vidéo",
+    "de": "Videokompressor"
+  },
+  "Video to GIF": {
+    "en": "Video to GIF",
+    "es": "Vídeo a GIF",
+    "fr": "Vidéo en GIF",
+    "de": "Video zu GIF"
+  },
+  "Video to MP3": {
+    "en": "Video to MP3",
+    "es": "Vídeo a MP3",
+    "fr": "Vidéo en MP3",
+    "de": "Video zu MP3"
+  },
+  "Video Trimmer": {
+    "en": "Video Trimmer",
+    "es": "Recortador de vídeo",
+    "fr": "Découpage vidéo",
+    "de": "Video kürzen"
+  },
+  "Thumbnail Maker": {
+    "en": "Thumbnail Maker",
+    "es": "Creador de miniaturas",
+    "fr": "Création de miniatures",
+    "de": "Thumbnail-Gestalter"
+  },
+  "Image Resizer": {
+    "en": "Image Resizer",
+    "es": "Redimensionador de imágenes",
+    "fr": "Redimensionnement d’image",
+    "de": "Bildgröße ändern"
+  },
+  "Audio Cutter": {
+    "en": "Audio Cutter",
+    "es": "Recortador de audio",
+    "fr": "Découpage audio",
+    "de": "Audio schneiden"
+  },
+  "PDF Merger": {
+    "en": "PDF Merger",
+    "es": "Unir PDF",
+    "fr": "Fusion de PDF",
+    "de": "PDF zusammenfügen"
+  },
+  "PDF Splitter": {
+    "en": "PDF Splitter",
+    "es": "Dividir PDF",
+    "fr": "Extraction de pages PDF",
+    "de": "PDF teilen"
+  },
+  "PDF Rotator": {
+    "en": "PDF Rotator",
+    "es": "Girar PDF",
+    "fr": "Rotation de PDF",
+    "de": "PDF drehen"
+  },
+  "Images to PDF": {
+    "en": "Images to PDF",
+    "es": "Imágenes a PDF",
+    "fr": "Images en PDF",
+    "de": "Bilder zu PDF"
+  },
+  "Developer & Text Utilities": {
+    "en": "Developer & Text Utilities",
+    "es": "Utilidades de desarrollo y texto",
+    "fr": "Outils de développement et de texte",
+    "de": "Entwickler- und Textwerkzeuge"
+  },
+  "QR Code Generator": {
+    "en": "QR Code Generator",
+    "es": "Generador de códigos QR",
+    "fr": "Générateur de QR codes",
+    "de": "QR-Code-Generator"
+  },
+  "Thumbnail Viewer": {
+    "en": "Thumbnail Viewer",
+    "es": "Visor de miniaturas",
+    "fr": "Aperçu des miniatures",
+    "de": "Thumbnail-Vorschau"
+  }
+}

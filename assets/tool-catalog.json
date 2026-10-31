@@ -1,0 +1,393 @@
+[
+  {
+    "slug": "video-editor",
+    "url": "video-editor.html",
+    "kind": "video",
+    "names": {
+      "en": "Video Editor",
+      "es": "Editor de vídeo",
+      "fr": "Éditeur vidéo",
+      "de": "Videoeditor"
+    },
+    "lead": {
+      "en": "Give every clip a clear purpose. Bring pictures, sound and a few well-chosen words together in one timeline.",
+      "es": "Dale una intención a cada clip. Combina imágenes, sonido y unas palabras bien elegidas en una sola línea de tiempo.",
+      "fr": "Donnez une intention à chaque plan. Réunissez images, son et quelques mots bien choisis dans une seule timeline.",
+      "de": "Gib jedem Clip eine klare Aufgabe. Verbinde Bilder, Ton und passende Worte auf einer gemeinsamen Zeitleiste."
+    }
+  },
+  {
+    "slug": "photo-editor",
+    "url": "photo-editor.html",
+    "kind": "image",
+    "names": {
+      "en": "Photo Editor",
+      "es": "Editor de fotos",
+      "fr": "Éditeur photo",
+      "de": "Fotoeditor"
+    },
+    "lead": {
+      "en": "Make a photo feel like the moment you remember.",
+      "es": "Haz que una foto se sienta como el momento que recuerdas.",
+      "fr": "Retrouvez dans votre photo le souvenir du moment.",
+      "de": "Lass ein Foto so wirken wie den Moment in deiner Erinnerung."
+    }
+  },
+  {
+    "slug": "design-studio",
+    "url": "design-studio.html",
+    "kind": "design",
+    "names": {
+      "en": "Design Studio",
+      "es": "Estudio de diseño",
+      "fr": "Studio de création",
+      "de": "Designstudio"
+    },
+    "lead": {
+      "en": "Turn one clear idea into a graphic people can understand at a glance.",
+      "es": "Convierte una idea clara en un diseño que se entienda de un vistazo.",
+      "fr": "Transformez une idée claire en un visuel compris au premier regard.",
+      "de": "Mach aus einer klaren Idee eine Grafik, die sofort verständlich ist."
+    }
+  },
+  {
+    "slug": "bg-remove",
+    "url": "bg-remove.html",
+    "kind": "cloud",
+    "names": {
+      "en": "Background Remover",
+      "es": "Eliminador de fondos",
+      "fr": "Suppression d’arrière-plan",
+      "de": "Hintergrundentferner"
+    },
+    "lead": {
+      "en": "Give your subject a clean stage, from a product listing to your next creative composition.",
+      "es": "Dale a tu sujeto un escenario limpio para productos y diseños.",
+      "fr": "Offrez à votre sujet un fond net pour vos produits et compositions.",
+      "de": "Gib deinem Motiv einen klaren Auftritt für Produktbilder und Designs."
+    }
+  },
+  {
+    "slug": "faceswap",
+    "url": "faceswap.html",
+    "kind": "cloud",
+    "names": {
+      "en": "AI Face Swap",
+      "es": "Intercambio de rostros con IA",
+      "fr": "Échange de visages IA",
+      "de": "KI-Gesichtstausch"
+    },
+    "lead": {
+      "en": "Explore a creative portrait idea with permission, care and a clear eye for the final result.",
+      "es": "Explora un retrato creativo con permiso, cuidado y atención al resultado.",
+      "fr": "Explorez un portrait créatif avec autorisation, soin et regard critique.",
+      "de": "Entdecke kreative Porträts mit Zustimmung, Sorgfalt und einem kritischen Blick."
+    }
+  },
+  {
+    "slug": "face-blur",
+    "url": "face-blur.html",
+    "kind": "image",
+    "names": {
+      "en": "Face Blur",
+      "es": "Desenfoque de rostros",
+      "fr": "Floutage des visages",
+      "de": "Gesichter weichzeichnen"
+    },
+    "lead": {
+      "en": "Share the moment while taking care of the people in it.",
+      "es": "Comparte el momento cuidando a quienes aparecen en él.",
+      "fr": "Partagez le moment en prenant soin des personnes présentes.",
+      "de": "Teile den Moment und achte auf die Menschen darin."
+    }
+  },
+  {
+    "slug": "cropimage",
+    "url": "cropimage.html",
+    "kind": "image",
+    "names": {
+      "en": "Image Cropper",
+      "es": "Recortador de imágenes",
+      "fr": "Recadrage d’image",
+      "de": "Bild zuschneiden"
+    },
+    "lead": {
+      "en": "A stronger frame can make the same photograph tell a clearer story.",
+      "es": "Un encuadre mejor puede contar una historia más clara con la misma foto.",
+      "fr": "Un meilleur cadrage peut rendre le même cliché plus expressif.",
+      "de": "Ein besserer Ausschnitt lässt dasselbe Foto mehr erzählen."
+    }
+  },
+  {
+    "slug": "image-compressor",
+    "url": "image-compressor.html",
+    "kind": "image",
+    "names": {
+      "en": "Image Compressor",
+      "es": "Compresor de imágenes",
+      "fr": "Compression d’image",
+      "de": "Bildkompressor"
+    },
+    "lead": {
+      "en": "Keep the detail people notice. Reduce the bytes they have to wait for.",
+      "es": "Conserva los detalles importantes y reduce los bytes que hacen esperar.",
+      "fr": "Gardez les détails utiles et réduisez les octets qui ralentissent.",
+      "de": "Bewahre sichtbare Details und reduziere unnötige Ladezeit."
+    }
+  },
+  {
+    "slug": "imgformatconverter",
+    "url": "imgformatconverter.html",
+    "kind": "image",
+    "names": {
+      "en": "Image Converter",
+      "es": "Conversor de imágenes",
+      "fr": "Conversion d’image",
+      "de": "Bildkonverter"
+    },
+    "lead": {
+      "en": "Make your image fit the workflow, without rebuilding it from scratch.",
+      "es": "Adapta tu imagen al trabajo sin volver a crearla.",
+      "fr": "Adaptez votre image au bon usage sans la recréer.",
+      "de": "Passe dein Bild an den Arbeitsablauf an, ohne neu anzufangen."
+    }
+  },
+  {
+    "slug": "video-compressor",
+    "url": "video-compressor.html",
+    "kind": "video",
+    "names": {
+      "en": "Video Compressor",
+      "es": "Compresor de vídeo",
+      "fr": "Compression vidéo",
+      "de": "Videokompressor"
+    },
+    "lead": {
+      "en": "Make a video easier to send, upload and keep—while protecting the detail your audience needs.",
+      "es": "Facilita el envío y la publicación del vídeo conservando los detalles importantes.",
+      "fr": "Facilitez le partage de vos vidéos en préservant les détails utiles.",
+      "de": "Mach Videos leichter teilbar und bewahre die wichtigen Details."
+    }
+  },
+  {
+    "slug": "video-to-gif",
+    "url": "video-to-gif.html",
+    "kind": "video",
+    "names": {
+      "en": "Video to GIF",
+      "es": "Vídeo a GIF",
+      "fr": "Vidéo en GIF",
+      "de": "Video zu GIF"
+    },
+    "lead": {
+      "en": "Turn one small moment into an animation worth replaying.",
+      "es": "Convierte un pequeño momento en una animación que merece repetirse.",
+      "fr": "Transformez un instant en une animation à revoir.",
+      "de": "Mach aus einem kleinen Moment eine sehenswerte Schleife."
+    }
+  },
+  {
+    "slug": "video-to-mp3",
+    "url": "video-to-mp3.html",
+    "kind": "audio",
+    "names": {
+      "en": "Video to MP3",
+      "es": "Vídeo a MP3",
+      "fr": "Vidéo en MP3",
+      "de": "Video zu MP3"
+    },
+    "lead": {
+      "en": "Keep the sound when you do not need the screen.",
+      "es": "Quédate con el sonido cuando no necesitas la pantalla.",
+      "fr": "Gardez le son lorsque l’image n’est plus nécessaire.",
+      "de": "Behalte den Ton, wenn du das Bild nicht brauchst."
+    }
+  },
+  {
+    "slug": "video-trimmer",
+    "url": "video-trimmer.html",
+    "kind": "video",
+    "names": {
+      "en": "Video Trimmer",
+      "es": "Recortador de vídeo",
+      "fr": "Découpage vidéo",
+      "de": "Video kürzen"
+    },
+    "lead": {
+      "en": "Start where it matters. Finish when the moment is complete.",
+      "es": "Empieza donde importa y termina cuando el momento esté completo.",
+      "fr": "Commencez au bon moment et terminez au bon endroit.",
+      "de": "Beginne beim Wesentlichen und höre im richtigen Moment auf."
+    }
+  },
+  {
+    "slug": "youtube-thumbnail-maker",
+    "url": "youtube-thumbnail-maker.html",
+    "kind": "design",
+    "names": {
+      "en": "Thumbnail Maker",
+      "es": "Creador de miniaturas",
+      "fr": "Création de miniatures",
+      "de": "Thumbnail-Gestalter"
+    },
+    "lead": {
+      "en": "Make the promise of your video clear in one small image.",
+      "es": "Expresa la idea de tu vídeo en una imagen pequeña.",
+      "fr": "Exprimez la promesse de votre vidéo dans une petite image.",
+      "de": "Zeige in einem kleinen Bild, worum es in deinem Video geht."
+    }
+  },
+  {
+    "slug": "image-resizer",
+    "url": "toolbox.html#image-resizer",
+    "kind": "image",
+    "names": {
+      "en": "Image Resizer",
+      "es": "Redimensionador de imágenes",
+      "fr": "Redimensionnement d’image",
+      "de": "Bildgröße ändern"
+    },
+    "lead": {
+      "en": "Give every image the dimensions its destination actually needs.",
+      "es": "Dale a cada imagen las dimensiones que necesita.",
+      "fr": "Donnez à chaque image les dimensions adaptées à sa destination.",
+      "de": "Gib jedem Bild die Maße, die am Ziel gebraucht werden."
+    }
+  },
+  {
+    "slug": "audio-cutter",
+    "url": "toolbox.html#audio-cutter",
+    "kind": "audio",
+    "names": {
+      "en": "Audio Cutter",
+      "es": "Recortador de audio",
+      "fr": "Découpage audio",
+      "de": "Audio schneiden"
+    },
+    "lead": {
+      "en": "Save the part worth listening to again.",
+      "es": "Guarda la parte que merece volver a escucharse.",
+      "fr": "Gardez le passage que vous souhaitez réécouter.",
+      "de": "Speichere den Ausschnitt, den du noch einmal hören möchtest."
+    }
+  },
+  {
+    "slug": "pdf-merge",
+    "url": "toolbox.html#pdf-merge",
+    "kind": "document",
+    "names": {
+      "en": "PDF Merger",
+      "es": "Unir PDF",
+      "fr": "Fusion de PDF",
+      "de": "PDF zusammenfügen"
+    },
+    "lead": {
+      "en": "Bring separate documents into one clear reading order.",
+      "es": "Reúne documentos separados en un orden claro.",
+      "fr": "Rassemblez vos documents dans un ordre de lecture clair.",
+      "de": "Bringe einzelne Dokumente in eine klare Lesereihenfolge."
+    }
+  },
+  {
+    "slug": "pdf-split",
+    "url": "toolbox.html#pdf-split",
+    "kind": "document",
+    "names": {
+      "en": "PDF Splitter",
+      "es": "Dividir PDF",
+      "fr": "Extraction de pages PDF",
+      "de": "PDF teilen"
+    },
+    "lead": {
+      "en": "Share the pages that matter, with less to search through.",
+      "es": "Comparte las páginas importantes sin contenido innecesario.",
+      "fr": "Partagez les pages utiles sans imposer tout le document.",
+      "de": "Teile die wichtigen Seiten ohne unnötigen Ballast."
+    }
+  },
+  {
+    "slug": "pdf-rotate",
+    "url": "toolbox.html#pdf-rotate",
+    "kind": "document",
+    "names": {
+      "en": "PDF Rotator",
+      "es": "Girar PDF",
+      "fr": "Rotation de PDF",
+      "de": "PDF drehen"
+    },
+    "lead": {
+      "en": "Put sideways pages back into a comfortable reading position.",
+      "es": "Devuelve las páginas giradas a una posición cómoda.",
+      "fr": "Remettez les pages dans le bon sens pour les lire.",
+      "de": "Bringe verdrehte Seiten wieder in eine lesbare Position."
+    }
+  },
+  {
+    "slug": "images-pdf",
+    "url": "toolbox.html#images-pdf",
+    "kind": "document",
+    "names": {
+      "en": "Images to PDF",
+      "es": "Imágenes a PDF",
+      "fr": "Images en PDF",
+      "de": "Bilder zu PDF"
+    },
+    "lead": {
+      "en": "Turn a collection of images into a document people can follow.",
+      "es": "Convierte una colección de imágenes en un documento ordenado.",
+      "fr": "Transformez vos images en un document facile à parcourir.",
+      "de": "Mach aus einer Bildsammlung ein übersichtliches Dokument."
+    }
+  },
+  {
+    "slug": "developer",
+    "url": "toolbox.html#developer",
+    "kind": "code",
+    "names": {
+      "en": "Developer & Text Utilities",
+      "es": "Utilidades de desarrollo y texto",
+      "fr": "Outils de développement et de texte",
+      "de": "Entwickler- und Textwerkzeuge"
+    },
+    "lead": {
+      "en": "Small utilities for the details that interrupt a good workflow.",
+      "es": "Pequeñas utilidades para los detalles que interrumpen el trabajo.",
+      "fr": "Des outils simples pour les détails qui ralentissent votre travail.",
+      "de": "Kleine Helfer für die Details, die deinen Arbeitsfluss unterbrechen."
+    }
+  },
+  {
+    "slug": "qr",
+    "url": "toolbox.html#qr",
+    "kind": "code",
+    "names": {
+      "en": "QR Code Generator",
+      "es": "Generador de códigos QR",
+      "fr": "Générateur de QR codes",
+      "de": "QR-Code-Generator"
+    },
+    "lead": {
+      "en": "Make the next step easy to reach with a scan.",
+      "es": "Facilita el siguiente paso con un escaneo.",
+      "fr": "Rendez la prochaine étape accessible en un scan.",
+      "de": "Mach den nächsten Schritt mit einem Scan erreichbar."
+    }
+  },
+  {
+    "slug": "yt-thumb",
+    "url": "toolbox.html#yt-thumb",
+    "kind": "remote",
+    "names": {
+      "en": "Thumbnail Viewer",
+      "es": "Visor de miniaturas",
+      "fr": "Aperçu des miniatures",
+      "de": "Thumbnail-Vorschau"
+    },
+    "lead": {
+      "en": "Find the available preview image without searching through a video.",
+      "es": "Encuentra la imagen disponible sin recorrer el vídeo.",
+      "fr": "Retrouvez l’image d’aperçu disponible sans parcourir la vidéo.",
+      "de": "Finde verfügbare Vorschaubilder, ohne das Video zu durchsuchen."
+    }
+  }
+]

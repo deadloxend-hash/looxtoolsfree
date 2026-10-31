@@ -16,6 +16,9 @@
    if(d<=1.15&&d<dist){dist=d;best=name}
   }
   if(best)return best;
+  // Edges remain draggable between the visible handles.
+  if(x>=r.x&&x<=r.x+r.w){if(Math.abs(y-r.y)<tolY*.7)return 'n';if(Math.abs(y-r.y-r.h)<tolY*.7)return 's'}
+  if(y>=r.y&&y<=r.y+r.h){if(Math.abs(x-r.x)<tolX*.7)return 'w';if(Math.abs(x-r.x-r.w)<tolX*.7)return 'e'}
   if(x>=r.x&&x<=r.x+r.w&&y>=r.y&&y<=r.y+r.h)return 'move';
   return null
  }
@@ -70,7 +73,8 @@
   ctx.strokeStyle='rgba(255,255,255,.32)';ctx.lineWidth=Math.max(1,thick*.5);
   for(let i=1;i<=2;i++){ctx.beginPath();ctx.moveTo(x+w*i/3,y);ctx.lineTo(x+w*i/3,y+h);ctx.moveTo(x,y+h*i/3);ctx.lineTo(x+w,y+h*i/3);ctx.stroke()}
   ctx.fillStyle='#fff';ctx.strokeStyle='#8553f0';ctx.lineWidth=Math.max(1,thick*.7);
-  const size=Math.max(8,Math.min(19,canvasW/90)),p=handles(r);
+  const displayW=ctx.canvas.getBoundingClientRect?.().width||canvasW;
+  const size=Math.max(10,14*canvasW/Math.max(1,displayW)),p=handles(r);
   for(const [u,v] of Object.values(p)){
    const xx=u*canvasW,yy=v*canvasH;
    ctx.fillRect(xx-size/2,yy-size/2,size,size);
@@ -78,5 +82,24 @@
   }
   ctx.restore()
  }
- global.LOOXCrop={hit,drag,draw,copy};
+ function syncInsets(root,r,width,height){
+  const right=root.querySelector('[data-crop-inset=right]'),bottom=root.querySelector('[data-crop-inset=bottom]');
+  if(right&&document.activeElement!==right)right.value=Math.round(Math.max(0,1-r.x-r.w)*width);
+  if(bottom&&document.activeElement!==bottom)bottom.value=Math.round(Math.max(0,1-r.y-r.h)*height);
+ }
+ function attachInsets(root,width,height,get,set){
+  const group=document.createElement('div');group.className='studio-field-grid';
+  for(const [edge,label,size]of [['right','Right inset (px)',width],['bottom','Bottom inset (px)',height]]){
+   const field=document.createElement('label');field.className='studio-field';
+   const title=document.createElement('span');title.textContent=label;
+   const input=document.createElement('input');input.type='number';input.min='0';input.max=String(size-1);input.step='1';input.dataset.cropInset=edge;
+   input.onchange=()=>{const r=copy(get()),inset=clamp(Number(input.value)||0,0,(1-(edge==='right'?r.w:r.h))*size);
+    if(edge==='right')r.x=clamp(1-r.w-inset/width,0,1-r.w);else r.y=clamp(1-r.h-inset/height,0,1-r.h);
+    set(r);syncInsets(root,r,width,height)};
+   field.append(title,input);group.append(field)
+  }
+  root.querySelector('.studio-field-grid')?.after(group);syncInsets(root,get(),width,height)
+ }
+ global.LOOXCrop={hit,drag,draw,copy,attachInsets,syncInsets};
 })(window);
+

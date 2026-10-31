@@ -147,6 +147,7 @@ function syncVideoCropFields(except=null){
  if(!cropMode||!cropDraft)return;
  const c=getSelected();if(!c)return;
  const dims=cropPixels(c),inspector=$('properties');
+ window.LOOXCrop.syncInsets(inspector,cropDraft,dims.w,dims.h);
  const px={cropX:Math.round(cropDraft.x*dims.w),cropY:Math.round(cropDraft.y*dims.h),
  cropW:Math.round(cropDraft.w*dims.w),cropH:Math.round(cropDraft.h*dims.h)};
  Object.entries(px).forEach(([key,v])=>{const el=inspector.querySelector('[data-prop='+key+']');if(el&&el!==except)el.value=v});
@@ -184,6 +185,7 @@ function showVideoCropInspector(c,el){
  el.querySelector('#applyVideoCrop').onclick=applyVideoCrop;
  el.querySelector('#cancelVideoCrop').onclick=exitCrop;
  el.querySelector('#resetVideoCrop').onclick=()=>{cropDraft={x:.03,y:.03,w:.94,h:.94};fitVideoCropRatio();syncVideoCropFields()};
+ window.LOOXCrop.attachInsets(el,dims.w,dims.h,()=>cropDraft,r=>{cropDraft=r;syncVideoCropFields()});
  syncVideoCropFields();
 }
 function applyVideoCrop(){
@@ -543,4 +545,5 @@ $('closeExport').onclick=()=>{$('exportDialog').close()};
 window.addEventListener('beforeunload',()=>{pause();urls.forEach(u=>URL.revokeObjectURL(u));if(audioCtx)audioCtx.close().catch(()=>{})});
 showLayers();showProperties();renderTimeline();setTab('video');status('Ready. Import video, image or audio, or paste/drag media into the editor.');
 })();
+
 

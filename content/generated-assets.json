@@ -1,0 +1,117 @@
+[
+  {
+    "slug": "cropimage",
+    "prompt": "Original wide editorial illustration for LOOX Image Cropper: realistic orange ceramic teapot and green leaves on a stone table, lavender crop frame with handles and rule-of-thirds lines, smaller square finished composition on a navy backdrop. No words, logos, watermarks or existing brand references. Concept illustration rather than a screenshot.",
+    "path": "assets/tool-art/cropimage.webp"
+  },
+  {
+    "slug": "photo-editor",
+    "path": "assets/tool-art/photo-editor.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools photo-editor. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic closeup still life of ripe peaches on linen, two overlapping versions neutral and warmly graded with small color adjustment sliders beside them. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "design-studio",
+    "path": "assets/tool-art/design-studio.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools design-studio. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. An original editorial social poster with photorealistic purple iris flowers, abstract typographic blocks with no readable words, shapes, color swatches and alignment handles. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "video-editor",
+    "path": "assets/tool-art/video-editor.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools video-editor. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic sea-cliff sunset video preview floating above three layered lavender and teal film timeline strips, text-layer rectangle and music waveform. Show editing as an elegant conceptual product illustration. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "bg-remove",
+    "path": "assets/tool-art/bg-remove.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools bg-remove. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic tan hiking boot standing on moss on the left, same boot carefully isolated against an obvious transparency checkerboard on the right, crisp lace and sole detail. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "faceswap",
+    "path": "assets/tool-art/faceswap.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools faceswap. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Two different entirely fictional consenting adult portrait photo cards, natural well-lit faces at similar angles, and a third stylized portrait result connected by an elegant subtle arrow; communicate creative face replacement, no celebrities. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "video-to-gif",
+    "path": "assets/tool-art/video-to-gif.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools video-to-gif. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. A sequence of three realistic orange butterfly wing positions on lavender flowers contained in connected film frames forming a looping arc, looping arrow icon. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "face-blur",
+    "path": "assets/tool-art/face-blur.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools face-blur. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic street cafe with two entirely fictional adults, one photo card as source and another same composition with strong opaque frosted blur patches fully covering faces, a soft brush ring. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "image-compressor",
+    "path": "assets/tool-art/image-compressor.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools image-compressor. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Two photo cards of photorealistic fresh citrus slices on a ceramic plate, same visible subject with large and small abstract storage blocks beside them, communicate smaller file without numeric claims. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "video-to-mp3",
+    "path": "assets/tool-art/video-to-mp3.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools video-to-mp3. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic acoustic guitar performance video card, lavender sound waveform flowing from it into a separate audio file tile and headphones, no text. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "imgformatconverter",
+    "path": "assets/tool-art/imgformatconverter.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools imgformatconverter. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic green fern in a glass bottle displayed on three overlapping image format cards with different colored corner markers, clean conversion arrows, transparency checkerboard under one card. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "video-trimmer",
+    "path": "assets/tool-art/video-trimmer.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools video-trimmer. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic city-at-dusk video preview with a filmstrip below, bright trim handles around the middle scene, dimmed unwanted ends and scissors symbol. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "youtube-thumbnail-maker",
+    "path": "assets/tool-art/youtube-thumbnail-maker.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools youtube-thumbnail-maker. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Original colorful thumbnail composition of a fictional adult traveler and a photorealistic desert canyon, expressive composition, large abstract title blocks and draggable text handles, no readable text. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "video-compressor",
+    "path": "assets/tool-art/video-compressor.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools video-compressor. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic mountain lake travel film in two matching rounded video cards, one large storage tile and one smaller storage tile, subtle progress line, no percentages or text. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "image-resizer",
+    "path": "assets/tool-art/image-resizer.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools image-resizer. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic pink tulips in a vase repeated inside a large landscape photo card and a smaller correctly proportioned card with precise dimension arrows and corner guides, no numbers. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "audio-cutter",
+    "path": "assets/tool-art/audio-cutter.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools audio-cutter. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic studio microphone and headphones next to a teal and lavender audio waveform with a highlighted center selection, trim handles and two dimmed ends. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "pdf-merge",
+    "path": "assets/tool-art/pdf-merge.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools pdf-merge. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Three original realistic paper report sheets with abstract charts and lavender page tabs combining with a soft arrow into one tidy paper stack; no readable personal data. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "pdf-split",
+    "path": "assets/tool-art/pdf-split.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools pdf-split. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. An original realistic multi-page paper report with abstract diagrams, selected lavender page tabs separating into a smaller fresh stack; communicate extracting selected pages. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "pdf-rotate",
+    "path": "assets/tool-art/pdf-rotate.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools pdf-rotate. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. An original realistic sideways page containing a photorealistic architectural facade and abstract paragraph lines turning clockwise into an upright report page with curved rotation arrow. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "yt-thumb",
+    "path": "assets/tool-art/yt-thumb.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools yt-thumb. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Three photorealistic variants of the same original coral reef underwater video thumbnail at progressively smaller resolutions floating in a tidy size-comparison grid, small magnifying glass motif. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "images-pdf",
+    "path": "assets/tool-art/images-pdf.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools images-pdf. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Three photorealistic botanical photo prints, green fern pink flower and orange leaf, becoming ordered pages in a beautifully bound white PDF-style document with lavender tabs. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "developer",
+    "path": "assets/tool-art/developer.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools developer. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. A refined developer workbench: realistic laptop edge and notebook, dark floating code panel with abstract aligned lavender and mint code lines, braces and tidy indentation, small lock symbol, no readable secret data. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  },
+  {
+    "slug": "qr",
+    "path": "assets/tool-art/qr.webp",
+    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools qr. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic blank cream cafe menu card with a clean black-and-white QR-like illustrative square pattern and a modern phone with a highlighted scanning frame, warm wood and lavender accent; avoid implying pattern is a functioning code. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+  }
+]
