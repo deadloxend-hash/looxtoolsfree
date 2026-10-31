@@ -302,3 +302,24 @@ html{scroll-behavior:smooth;scroll-padding-top:92px}
    background:#ffffff14!important;border-color:#ffffff25!important;
  }
 }
+
+
+/* Edge-to-edge mobile hero and workspace illustration. */
+@media(max-width:600px){
+ body.experience-shell .hero{width:100%!important;margin:0!important;padding:30px 0 28px!important;overflow:hidden!important;}
+ body.experience-shell .hero>.container{width:100%!important;max-width:100%!important;padding:0 14px!important;margin:0!important;}
+ body.experience-shell .hero-art{
+   width:100%!important;max-width:none!important;min-height:0!important;
+   margin:22px 0 0!important;display:block!important;
+ }
+ body.experience-shell .hero-art .art-window{
+   width:100%!important;max-width:none!important;transform:none!important;
+   margin:0!important;padding:14px!important;border-radius:18px!important;
+ }
+ body.experience-shell .hero-art .art-categories,
+ body.experience-shell .hero-art .art-card-row{width:100%!important;min-width:0!important;}
+ body.experience-shell .hero-art .art-cat,
+ body.experience-shell .hero-art .art-mini{min-width:0!important;}
+ body.experience-shell .hero-art .float-tag{display:none!important;}
+ body.experience-shell .hero-art .art-glow{max-width:100%!important;}
+}
