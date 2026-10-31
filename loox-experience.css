@@ -323,3 +323,26 @@ html{scroll-behavior:smooth;scroll-padding-top:92px}
  body.experience-shell .hero-art .float-tag{display:none!important;}
  body.experience-shell .hero-art .art-glow{max-width:100%!important;}
 }
+
+
+/* Mobile: use the full hero width, retaining a small readable inset for copy. */
+@media(max-width:600px){
+ body.experience-shell .hero{box-sizing:border-box!important;width:100%!important;max-width:100%!important;}
+ body.experience-shell .hero>.container{
+   box-sizing:border-box!important;width:100%!important;max-width:none!important;
+   padding:0!important;margin:0!important;
+ }
+ body.experience-shell .hero>.container>:not(.hero-art){
+   margin-left:14px!important;margin-right:14px!important;
+ }
+ body.experience-shell .hero .hero-art{
+   box-sizing:border-box!important;width:100%!important;max-width:none!important;
+   padding:0!important;margin:22px 0 0!important;
+ }
+ body.experience-shell .hero .hero-art .art-window{
+   box-sizing:border-box!important;width:100%!important;max-width:none!important;
+   margin:0!important;border-radius:16px!important;transform:none!important;
+ }
+ body.experience-shell .hero .hero-art .art-categories,
+ body.experience-shell .hero .hero-art .art-card-row{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+}
