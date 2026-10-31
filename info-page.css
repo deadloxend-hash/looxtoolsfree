@@ -86,7 +86,7 @@ body.info-page{margin:0;background:var(--info-bg);color:var(--info-text);font:15
  }
  body.info-page.experience-shell.rail-compact .loox-rail>:not(.loox-rail-head){display:none!important;}
  body.info-page.experience-shell .loox-rail-head{
-   position:fixed!important;top:77px!important;left:8px!important;bottom:auto!important;
+   position:fixed!important;top:13px!important;left:8px!important;bottom:auto!important;
    height:36px!important;min-height:36px!important;width:36px!important;
    padding:0!important;border:0!important;background:transparent!important;
    pointer-events:auto!important;z-index:100!important;
