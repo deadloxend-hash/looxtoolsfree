@@ -189,3 +189,83 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-ink);fo
  .studio-page .studio-top-actions #saveTop,.studio-page .studio-top-actions #exportTop{padding:7px;font-size:10px;min-height:33px}
  .studio-page .studio-brand-mark{width:28px;height:28px;flex:0 0 auto}
 }
+
+
+/* Studio viewport repair — grid panels must NOT size from long inspector content. */
+@media (min-width:1081px) and (min-height:620px){
+ html:has(body.studio-page){overflow:auto}
+ body.studio-page{height:100dvh;overflow:hidden}
+ body.studio-page main.studio-main.loox-with-rail{
+  min-height:0!important;
+  height:calc(100dvh - 66px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  scrollbar-width:thin;
+ }
+ body.studio-page .studio-heading{flex:0 0 auto}
+ body.studio-page .studio-workspace{
+  flex:1 1 0!important;
+  min-height:260px!important;
+  height:auto!important;
+  grid-template-rows:minmax(0,1fr)!important;
+  align-items:stretch!important;
+  overflow:visible!important;
+ }
+ body.studio-page .studio-workspace>.studio-panel{
+  min-height:0!important;
+  max-height:100%!important;
+  height:100%!important;
+  overflow:hidden;
+ }
+ body.studio-page .studio-workspace>.studio-assets,
+ body.studio-page .studio-workspace>.studio-inspector,
+ body.studio-page .studio-workspace>.studio-toolrail{
+  overflow-y:auto!important;
+  scrollbar-width:thin;
+ }
+ body.studio-page .studio-workspace>.studio-stage{
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+ }
+ body.studio-page .studio-preview-shell{
+  flex:1 1 0!important;
+  min-height:0!important;
+  height:0!important;
+  overflow:hidden;
+ }
+ body.studio-page .studio-preview-shell canvas{
+  display:block;
+  max-width:100%!important;
+  max-height:100%!important;
+  width:auto!important;
+  height:auto!important;
+  object-fit:contain!important;
+ }
+ body.studio-page .studio-timeline{
+  flex:0 0 clamp(155px,22vh,205px)!important;
+  min-height:155px!important;
+  max-height:205px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  overflow:hidden!important;
+ }
+ body.studio-page .studio-timeline #tracks{flex:1 1 auto!important;min-height:24px!important;overflow-y:auto!important}
+ body.studio-page .studio-timeline .studio-scrub{flex:0 0 auto!important}
+}
+/* Visible breathing room around the actual frame, not an oversized black block. */
+body.studio-page .studio-preview-shell{
+ background:radial-gradient(ellipse at 50% 50%,#252238 0%,#171824 65%,#10121d 100%)!important;
+ background-size:100% 100%!important;
+}
+body.studio-page .studio-stage{min-width:0}
+body.studio-page .studio-stage-top{min-height:20px}
+body.studio-page .studio-preview-shell canvas{box-shadow:0 8px 30px #0005!important}
+body.studio-page .studio-timeline{scrollbar-width:thin}
+@media(max-width:1080px),(max-height:619px){
+ body.studio-page .studio-timeline{overflow:visible!important;max-height:none!important}
+ body.studio-page .studio-timeline #tracks{max-height:240px;overflow-y:auto!important}
+ body.studio-page .studio-workspace>.studio-stage{min-height:0!important}
+}
