@@ -86,6 +86,6 @@
  });
  document.addEventListener('click',e=>{if(!header.querySelector('.loox-theme').contains(e.target))closeMenu()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!themeMenu.hidden){closeMenu();themeTrigger.focus()}});
- let saved='white';try{saved=localStorage.getItem(themeKey)||'white'}catch(_){}
+ let saved='dark';try{saved=localStorage.getItem(themeKey)||'dark'}catch(_){}
  applyTheme(saved,readCustom(),false);
 })();
