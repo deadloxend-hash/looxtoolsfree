@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://deadloxend-hash.github.io/looxtoolsfree/sitemap.xml
