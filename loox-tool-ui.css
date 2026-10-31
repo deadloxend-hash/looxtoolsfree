@@ -393,3 +393,6 @@ body .loox-app-footer a{color:var(--loox-accent);text-decoration:none;font-weigh
  .loox-guide-end p{flex:1 1 calc(100% - 35px)}
  .loox-guide-end a{margin-left:31px}
 }
+
+/* The learning guide spans the full editor canvas on standalone studio pages */
+body>.app>.loox-guide{grid-column:1 / -1;width:100%;min-width:0}
