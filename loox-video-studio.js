@@ -5,7 +5,7 @@ const $ = id => document.getElementById(id);
 const canvas=$('preview'),ctx=canvas.getContext('2d',{alpha:false}),scrub=$('scrub');
 if(!ctx){$('status').textContent='Canvas rendering is unavailable in this browser.';return}
 const clips=[];let selected=null,playhead=0,playing=false,playStarted=0,exporting=false,recorder=null,exportStream=null,exportTimer=null;
-let viewSeconds=30,nextId=1,aspect='16:9',bg='#090916',audioCtx=null,audioDest=null,audioNodes=new Map(),cropMode=false,cropDraft=null,cropRatio='free';
+let viewSeconds=30,nextId=1,aspect='16:9',bg='#171827',audioCtx=null,audioDest=null,audioNodes=new Map(),cropMode=false,cropDraft=null,cropRatio='free';
 const history=[],future=[],urls=new Set(),maxHistory=30;
 const themes={none:'none',vivid:'saturate(1.7) contrast(1.16)',warm:'sepia(.3) saturate(1.35)',cool:'hue-rotate(22deg) saturate(1.2)',mono:'grayscale(1)',vintage:'sepia(.6) contrast(.9)',dream:'saturate(1.2) blur(1.5px)'};
 const icons={video:'▣',image:'▧',audio:'♫',text:'T'};
