@@ -53,6 +53,14 @@
   rail.querySelector('.loox-settings-trigger').onclick=openSettings;
   mountHeader();
  }
+ // On mobile, tapping the page outside the open tools drawer closes it.
+ document.addEventListener('pointerdown',event=>{
+  if(!matchMedia('(max-width:900px)').matches || compact || !rail.contains || rail.contains(event.target))return;
+  compact=true;
+  save('loox-rail-collapsed','true');
+  document.body.classList.add('rail-compact');
+  drawRail();
+ });
  function changeLanguage(value){language=value;save('loox-language',language);const u=new URL(location.href);u.searchParams.set('lang',language);history.replaceState(null,'',u);drawRail();applyLanguage();brandCards();loadGuide()}
  function mountHeader(){
   const header=document.querySelector('.studio-top,.loox-appbar-inner,.suite-header,.work-header,.topbar-inner,.nav-inner,.info-header-inner')||document.querySelector('header');
