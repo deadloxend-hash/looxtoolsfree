@@ -74,13 +74,57 @@ function field(title,key,value,type='number',min='',max='',step='1'){
  return '<label class="studio-field"><span>'+title+'</span>'+control+'</label>'
 }
 const options=(arr,actual)=>arr.map(([value,name])=>'<option value="'+esc(value)+'" '+(String(actual)===String(value)?'selected':'')+'>'+esc(name)+'</option>').join('');
+function cropUnit(){return {x:crop.x/100,y:crop.y/100,w:crop.w/100,h:crop.h/100}}
+function cropValue(){if(cropRatio==='free')return 0;const p=cropRatio.split(':').map(Number);return p[0]/p[1]}
+function fitCropRatio(changed=''){
+ const ratio=cropValue();if(!ratio)return;
+ const target=ratio*canvas.height/canvas.width;
+ const cx=crop.x+crop.w/2,cy=crop.y+crop.h/2;
+ let w=crop.w/100,h=crop.h/100;
+ if(changed==='w')h=w/target;
+ else if(changed==='h')w=h*target;
+ else if(w/h>target)w=h*target;
+ else h=w/target;
+ if(w>1){w=1;h=w/target}
+ if(h>1){h=1;w=h*target}
+ crop.w=clamp(w*100,.2,100);crop.h=clamp(h*100,.2,100);
+ crop.x=clamp(cx-crop.w/2,0,100-crop.w);crop.y=clamp(cy-crop.h/2,0,100-crop.h)
+}
+function syncCropControls(except=null){
+ const root=$('inspector');if(tool!=='crop')return;
+ const values={cropX:Math.round(crop.x*canvas.width/100),cropY:Math.round(crop.y*canvas.height/100),
+ cropW:Math.round(crop.w*canvas.width/100),cropH:Math.round(crop.h*canvas.height/100)};
+ for(const [k,v] of Object.entries(values)){const el=root.querySelector('[data-prop='+k+']');if(el&&el!==except)el.value=v}
+ const output=root.querySelector('#cropReadout');
+ if(output)output.textContent='Output: '+Math.max(1,values.cropW)+' × '+Math.max(1,values.cropH)+' px';
+}
 function showInspector(){
  const root=$('inspector'),l=own();
  if(tool==='crop'){
-  root.innerHTML='<p class="studio-section-note">Crop will flatten the visible design into a new base image. Undo restores the original layers.</p>'+
-  '<div class="studio-field-grid">'+field('Left %','cropX',crop.x,'number',0,99)+field('Top %','cropY',crop.y,'number',0,99)+field('Width %','cropW',crop.w,'number',1,100)+field('Height %','cropH',crop.h,'number',1,100)+'</div><button class="studio-btn" id="applyCrop">Apply crop</button>';
-  root.querySelectorAll('[data-prop]').forEach(input=>input.onchange=()=>{crop[input.dataset.prop.replace('crop','').toLowerCase()]=Number(input.value);draw()});
-  root.querySelector('#applyCrop').onclick=applyCrop;return
+  root.innerHTML='<p class="studio-crop-guide">Drag inside the crop to move it, or drag any of its eight white handles to resize. Choose an aspect ratio or enter exact pixels below.</p>'+
+  field('Crop aspect ratio','cropRatio',options([['free','Free crop'],['1:1','1:1 Square'],['16:9','16:9 Landscape'],['9:16','9:16 Portrait'],['4:3','4:3 Classic'],['3:2','3:2 Photo'],['4:5','4:5 Portrait']],cropRatio),'select')+
+  '<div class="studio-field-grid">'+field('X position (px)','cropX',Math.round(crop.x*canvas.width/100),'number',0,canvas.width)+field('Y position (px)','cropY',Math.round(crop.y*canvas.height/100),'number',0,canvas.height)+
+  field('Width (px)','cropW',Math.round(crop.w*canvas.width/100),'number',8,canvas.width)+field('Height (px)','cropH',Math.round(crop.h*canvas.height/100),'number',8,canvas.height)+'</div>'+
+  '<p class="studio-section-note" id="cropReadout"></p><div class="studio-button-row"><button class="studio-btn" id="applyCrop">✓ Apply crop</button><button class="studio-btn secondary" id="resetCrop">Reset</button></div>'+
+  '<p class="studio-crop-guide">Crop applies to the complete composition and flattens it into a new image layer; Undo restores your previous layers.</p>';
+  const ratioInput=root.querySelector('[data-prop=cropRatio]');
+  ratioInput.onchange=()=>{cropRatio=ratioInput.value;fitCropRatio();syncCropControls();draw()};
+  ['cropX','cropY','cropW','cropH'].forEach(key=>{
+   const input=root.querySelector('[data-prop='+key+']');
+   input.oninput=()=>{
+    const value=Number(input.value),unit=(key==='cropX'||key==='cropW'?canvas.width:canvas.height);
+    if(!Number.isFinite(value))return;
+    const prop=key.slice(-1).toLowerCase();
+    crop[prop]=clamp(value/unit*100,prop==='w'||prop==='h'?.2:0,100);
+    crop.w=clamp(crop.w,.2,100-crop.x);crop.h=clamp(crop.h,.2,100-crop.y);
+    crop.x=clamp(crop.x,0,100-crop.w);crop.y=clamp(crop.y,0,100-crop.h);
+    if(cropRatio!=='free'&&(prop==='w'||prop==='h'))fitCropRatio(prop);
+    syncCropControls(input);draw()
+   }
+  });
+  root.querySelector('#applyCrop').onclick=applyCrop;
+  root.querySelector('#resetCrop').onclick=()=>{crop={x:5,y:5,w:90,h:90};fitCropRatio();syncCropControls();draw()};
+  syncCropControls();return
  }
  if(tool==='canvas'){
   root.innerHTML='<p class="studio-section-note">Resize the output canvas. Existing layers scale proportionally with it.</p>'+
@@ -174,8 +218,7 @@ function render(withSelection=true,onlyOriginal=false){
   }
  });
  if(withSelection&&tool==='crop'){
-  const x=crop.x*w/100,y=crop.y*h/100,cw=crop.w*w/100,ch=crop.h*h/100;
-  ctx.save();ctx.fillStyle='#0008';ctx.beginPath();ctx.rect(0,0,w,h);ctx.rect(x,y,cw,ch);ctx.fill('evenodd');ctx.strokeStyle='#fff';ctx.lineWidth=Math.max(2,w/700);ctx.strokeRect(x,y,cw,ch);ctx.restore()
+  window.LOOXCrop.draw(ctx,w,h,cropUnit());
  }
 }
 function draw(){render(true,comparison)}
