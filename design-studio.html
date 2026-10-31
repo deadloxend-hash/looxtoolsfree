@@ -11,7 +11,9 @@
 
 
 
+
 <link rel="stylesheet" href="loox-experience.css?v=40">
+<link rel="stylesheet" href="design-studio-pro.css?v=1">
 </head><body><header class="top"><a class="brand" href="index.html">⚡ LOOX <b>Design Studio</b></a><a href="index.html">← All tools</a></header>
 <div class="app"><section class="tools"><h2>Design controls</h2><div class="group"><label>Canvas size</label><div class="presets"><button class="btn alt" data-size="1080,1080">Post 1:1</button><button class="btn alt" data-size="1080,1920">Story 9:16</button><button class="btn alt" data-size="1280,720">YouTube 16:9</button><button class="btn alt" data-size="1200,628">Banner</button></div></div>
 <div class="group"><label>Background</label><input type="color" id="bg" value="#ffffff"></div>
@@ -36,7 +38,10 @@ document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{const [w,h]=b
 c.onclick=e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;let best=-1,dist=Infinity;items.forEach((o,i)=>{const d=Math.hypot(o.x-x,o.y-y);if(d<dist){dist=d;best=i}});selected=dist<.2?best:-1;sync();draw()};
 document.getElementById('download').onclick=()=>{const a=document.createElement('a');a.download='loox-design.png';a.href=c.toDataURL('image/png');a.click()};draw();
 </script>  
+  <script src="design-studio-pro.js?v=1"></script>
   <script src="loox-tool-ui.js?v=40"></script>
+
+
 
 
 
