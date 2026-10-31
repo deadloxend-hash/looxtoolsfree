@@ -119,3 +119,14 @@ a{color:inherit;text-decoration:none}
  .studio-field-grid{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Photo Studio has no timeline: use the entire remaining viewport for the canvas/editor. */
+body.photo-studio-page .studio-main{grid-template-rows:auto minmax(0,1fr)}
+body.photo-studio-page .studio-workspace{height:100%}
+@media(max-width:900px){
+ body.photo-studio-page .studio-main{display:block}
+ body.photo-studio-page .studio-stage{height:58dvh;min-height:340px}
+}
+@media(max-width:560px){
+ body.photo-studio-page .studio-stage{height:50dvh;min-height:290px}
+}
