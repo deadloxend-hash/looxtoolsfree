@@ -704,8 +704,8 @@ document.addEventListener('click',event=>{
 document.addEventListener('keydown',event=>{
  if(event.key==='Escape'&&!$('themePopover').hidden){closeThemePopover();$('themeTrigger').focus()}
 });
-let savedTheme='white';
-try{savedTheme=localStorage.getItem(themeKey)||'white'}catch{}
+let savedTheme='dark';
+try{savedTheme=localStorage.getItem(themeKey)||'dark'}catch{}
 applyTheme(savedTheme,readCustomTheme(),false);
 
 </script>
