@@ -436,3 +436,51 @@ body .loox-guide-layout>.loox-guide-aside,body .loox-guide-layout>.loox-guide-ma
 @media(prefers-reduced-motion:reduce){
  body *,body *::before,body *::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
+
+/* Shared custom upload control: replaces the plain browser file button everywhere. */
+body main input[type=file]:not([hidden]),
+body>.app input[type=file]:not([hidden]){
+ width:100%!important;max-width:100%!important;min-height:72px!important;
+ display:block;padding:10px!important;
+ border:1px dashed color-mix(in srgb,var(--loox-accent) 55%,var(--loox-line))!important;
+ border-radius:14px!important;
+ background:linear-gradient(135deg,color-mix(in srgb,var(--loox-accent) 7%,var(--loox-surface-soft)),var(--loox-surface-soft))!important;
+ color:var(--loox-muted)!important;font-size:12px!important;font-weight:700!important;
+ cursor:pointer;transition:border-color .2s ease,background .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+body main input[type=file]:not([hidden])::file-selector-button,
+body>.app input[type=file]:not([hidden])::file-selector-button{
+ min-height:48px;margin:0 13px 0 0;padding:0 18px;
+ border:1px solid color-mix(in srgb,var(--loox-accent) 76%,#fff 12%);border-radius:11px;
+ background:linear-gradient(120deg,var(--loox-accent),color-mix(in srgb,var(--loox-accent) 62%,var(--loox-accent-2)));
+ color:#fff;font:inherit;font-weight:900;letter-spacing:.01em;
+ box-shadow:0 8px 18px color-mix(in srgb,var(--loox-accent) 24%,transparent);
+ cursor:pointer;transition:filter .18s ease,transform .18s ease,box-shadow .18s ease;
+}
+body main input[type=file]:not([hidden]):hover,
+body>.app input[type=file]:not([hidden]):hover{
+ border-color:var(--loox-accent)!important;
+ background:color-mix(in srgb,var(--loox-accent) 10%,var(--loox-surface-soft))!important;
+ box-shadow:0 10px 24px color-mix(in srgb,var(--loox-accent) 11%,transparent)!important;
+ transform:translateY(-1px);
+}
+body main input[type=file]:not([hidden]):hover::file-selector-button,
+body>.app input[type=file]:not([hidden]):hover::file-selector-button{
+ filter:brightness(1.08);box-shadow:0 10px 22px color-mix(in srgb,var(--loox-accent) 32%,transparent);
+}
+:root[data-theme=dark] body main input[type=file]:not([hidden]),
+:root[data-theme=dark] body>.app input[type=file]:not([hidden]){
+ background:linear-gradient(135deg,#1a1c28,#20212d)!important;
+ border-color:#69569e!important;color:#c6bfd6!important;
+}
+:root[data-theme=custom][data-tone=dark] body main input[type=file]:not([hidden]),
+:root[data-theme=custom][data-tone=dark] body>.app input[type=file]:not([hidden]){
+ background:color-mix(in srgb,var(--loox-accent) 8%,var(--loox-surface-soft))!important;
+ color:var(--loox-muted)!important;
+}
+@media(max-width:560px){
+ body main input[type=file]:not([hidden]),body>.app input[type=file]:not([hidden]){min-height:68px!important;padding:8px!important}
+ body main input[type=file]:not([hidden])::file-selector-button,
+ body>.app input[type=file]:not([hidden])::file-selector-button{min-height:46px;margin-right:9px;padding:0 13px}
+}
+
