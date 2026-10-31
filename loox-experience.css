@@ -379,3 +379,26 @@ html{scroll-behavior:smooth;scroll-padding-top:92px}
  body.experience-shell:has(.topbar) .topbar-inner{padding-left:48px!important;}
  body.experience-shell:has(.topbar) .loox-rail-head{left:8px!important;}
 }
+
+
+/* Guide directory layout and controls */
+.guides-page .loox-story{width:min(1120px,calc(100% - 40px));max-width:1120px;margin:0 auto;padding:42px 0 80px;box-sizing:border-box}
+.guides-page .loox-related-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px}
+.guides-page .loox-related-card[hidden]{display:none!important}
+.guide-categories{display:flex;flex-wrap:wrap;gap:10px;margin:26px 0 24px}
+.guide-categories button,.guide-load-more{border:1px solid #384055;border-radius:999px;background:#171d2a;color:#e8e7f4;padding:12px 19px;font:600 14px system-ui;cursor:pointer}
+.guide-categories button.active{background:#eee6ff;color:#171325;border-color:#eee6ff}
+.guide-pagination{text-align:center;margin:32px 0 0}
+.guide-load-more{background:linear-gradient(110deg,#8852f5,#c048dc);border:0;color:white;padding:14px 30px;border-radius:14px}
+.guide-load-more[hidden]{display:none!important}
+#guideProgress{color:#aaa8bf;font:14px system-ui;margin:12px}
+@media(max-width:900px){
+ .guides-page .info-header{height:64px!important;position:sticky;top:0;z-index:70}
+ .guides-page .info-header-inner{height:64px!important;padding-left:54px!important}
+ .guides-page .loox-story{width:calc(100% - 28px);padding:28px 0 65px}
+ .guides-page .loox-rail-head{top:13px!important;left:8px!important;bottom:auto!important}
+ .guides-page .loox-related-grid{grid-template-columns:1fr}
+ .guides-page .loox-related-card{min-width:0}
+ .guide-categories{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin;padding-bottom:7px}
+ .guide-categories button{flex:0 0 auto}
+}
