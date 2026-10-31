@@ -170,3 +170,8 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-ink);fo
  .studio-page .studio-inspector{max-height:380px}
  .studio-page .studio-assets{max-height:240px}
 }
+
+/* Fine alignment with the collapsible main tool rail */
+.studio-page .studio-assets,.studio-page .studio-inspector,.studio-page .studio-timeline #tracks{scrollbar-width:thin;scrollbar-color:#655380 transparent}
+@media(min-width:1081px) and (min-height:620px){body.studio-page .loox-rail{top:66px!important}}
+@media(max-width:600px){body.studio-page .loox-rail{top:64px!important}}
