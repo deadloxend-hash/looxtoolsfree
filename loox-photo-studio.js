@@ -71,7 +71,7 @@ function showLayers(){
 }
 function field(title,key,value,type='number',min='',max='',step='1'){
  let control=type==='textarea'?'<textarea data-prop="'+key+'">'+esc(value)+'</textarea>':type==='select'?'<select data-prop="'+key+'">'+value+'</select>':'<input data-prop="'+key+'" type="'+type+'" value="'+esc(value)+'" '+(min!==''?'min="'+min+'"':'')+' '+(max!==''?'max="'+max+'"':'')+' step="'+step+'">';
- return '<label class="studio-field"><span>'+title+'</span>'+control+'</label>'
+ return '<label class="studio-field"><span>'+title+(type==='range'?'<output class="studio-live-value">'+esc(value)+(key==='opacity'?'%':'')+'</output>':'')+'</span>'+control+'</label>'
 }
 const options=(arr,actual)=>arr.map(([value,name])=>'<option value="'+esc(value)+'" '+(String(actual)===String(value)?'selected':'')+'>'+esc(name)+'</option>').join('');
 function cropUnit(){return {x:crop.x/100,y:crop.y/100,w:crop.w/100,h:crop.h/100}}
@@ -160,14 +160,31 @@ function showInspector(){
  html+='<div class="studio-button-row"><button class="studio-btn secondary" id="rotateLeft">↶ 90°</button><button class="studio-btn secondary" id="rotateRight">↷ 90°</button><button class="studio-btn secondary" id="flipH">⇋ Flip</button><button class="studio-btn secondary" id="up">↑ Layer</button><button class="studio-btn secondary" id="down">↓ Layer</button><button class="studio-btn secondary" id="duplicate">Duplicate</button><button class="studio-btn danger" id="remove">Delete</button></div>';
  root.innerHTML=html;
  root.querySelectorAll('[data-prop]').forEach(el=>{
-  if(el.type==='range')el.onpointerdown=remember;
-  const apply=()=>{if(el.type!=='range')remember();let value=el.value,prop=el.dataset.prop;
+  const prop=el.dataset.prop;let marked=false;
+  const mark=()=>{if(!marked){remember();marked=true}};
+  el.addEventListener('focus',mark);
+  el.addEventListener('pointerdown',mark);
+  el.addEventListener('blur',()=>{marked=false;if(prop==='text')showLayers()});
+  const apply=()=>{
+   let value=el.value;
    if(!['text','font','color','effect','fit','filter','shape'].includes(prop))value=Number(value);
    if(['x','y','w','h','opacity'].includes(prop))value/=100;
    if(prop==='zoom')value=clamp(value,1,4);
-   l[prop]=value;draw();if(prop==='text')l.name='Text '+value.slice(0,14);
+   l[prop]=value;
+   if(prop==='text')l.name='Text '+String(value).slice(0,14);
+   const output=el.closest('label')?.querySelector('.studio-live-value');
+   if(output)output.textContent=el.value+(prop==='opacity'?'%':'');
+   draw()
   };
-  el.addEventListener(el.type==='range'?'input':'change',apply)
+  el.addEventListener(el.tagName==='SELECT'?'change':'input',apply);
+  if(el.type==='range'){
+   el.addEventListener('wheel',e=>{
+    e.preventDefault();mark();
+    const step=Number(el.step)||1,delta=e.deltaY>0?-step:step;
+    el.value=clamp(Number(el.value)+delta,Number(el.min),Number(el.max));
+    el.dispatchEvent(new Event('input',{bubbles:true}))
+   },{passive:false})
+  }
  });
  root.querySelector('#rotateLeft').onclick=()=>{remember();l.rotation=(l.rotation-90)%360;refresh()};
  root.querySelector('#rotateRight').onclick=()=>{remember();l.rotation=(l.rotation+90)%360;refresh()};
