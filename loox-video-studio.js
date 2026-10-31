@@ -321,14 +321,44 @@ function tick(now){
 }
 requestAnimationFrame(tick);
 let drag=null;
+function pointOnCanvas(e){const r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height,rect:r}}
+function cropPointer(e,c){
+ const p=pointOnCanvas(e),b=cropClipBox(c);
+ return {x:(p.x-b.x)/b.w,y:(p.y-b.y)/b.h,width:p.rect.width*b.w,height:p.rect.height*b.h}
+}
+function cropCursor(mode){return ({nw:'nwse-resize',se:'nwse-resize',ne:'nesw-resize',sw:'nesw-resize',n:'ns-resize',s:'ns-resize',e:'ew-resize',w:'ew-resize',move:'move'})[mode]||'crosshair'}
 canvas.addEventListener('pointerdown',e=>{
  if(exporting)return;
- const rect=canvas.getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width,y=(e.clientY-rect.top)/rect.height;
+ if(cropMode&&cropDraft){
+  const c=getSelected();if(!c)return;
+  const p=cropPointer(e,c),handle=window.LOOXCrop.hit(cropDraft,p.x,p.y,p.width,p.height);
+  if(!handle)return;
+  e.preventDefault();drag={type:'crop',handle,rect:{...cropDraft},from:{x:p.x,y:p.y}};
+  canvas.setPointerCapture(e.pointerId);canvas.style.cursor=cropCursor(handle);return
+ }
+ const {x,y}=pointOnCanvas(e);
  const hit=clips.filter(c=>active(c)&&c.kind!=='audio').sort((a,b)=>b.layer-a.layer).find(c=>Math.abs(x-c.x)<c.w/2&&Math.abs(y-c.y)<c.h/2);
- if(!hit)return;pick(hit.id);snap();drag={id:hit.id,x,y,origX:hit.x,origY:hit.y};canvas.setPointerCapture(e.pointerId);
+ if(!hit)return;
+ e.preventDefault();pick(hit.id);snap();drag={type:'move',id:hit.id,x,y,origX:hit.x,origY:hit.y};canvas.setPointerCapture(e.pointerId)
 });
-canvas.addEventListener('pointermove',e=>{if(!drag)return;const c=clips.find(c=>c.id===drag.id);if(!c)return;const r=canvas.getBoundingClientRect();c.x=clamp(drag.origX+(e.clientX-r.left)/r.width-drag.x,-.5,1.5);c.y=clamp(drag.origY+(e.clientY-r.top)/r.height-drag.y,-.5,1.5)});
-canvas.addEventListener('pointerup',()=>{if(drag){drag=null;showProperties()}});
+canvas.addEventListener('pointermove',e=>{
+ if(cropMode&&cropDraft){
+  const c=getSelected();if(!c)return;const p=cropPointer(e,c);
+  if(!drag){canvas.style.cursor=cropCursor(window.LOOXCrop.hit(cropDraft,p.x,p.y,p.width,p.height));return}
+  if(drag.type==='crop'){
+   cropDraft=window.LOOXCrop.drag(drag.rect,drag.handle,drag.from,{x:p.x,y:p.y},p.width,p.height,cropAspectValue());
+   syncVideoCropFields();return
+  }
+ }
+ if(!drag||drag.type!=='move')return;
+ const c=clips.find(c=>c.id===drag.id);if(!c)return;
+ const {x,y}=pointOnCanvas(e);
+ c.x=clamp(drag.origX+x-drag.x,-.5,1.5);
+ c.y=clamp(drag.origY+y-drag.y,-.5,1.5)
+});
+function endCanvasMove(){if(!drag)return;const hadMove=drag.type==='move';drag=null;if(hadMove)showProperties()}
+canvas.addEventListener('pointerup',endCanvasMove);
+canvas.addEventListener('pointercancel',endCanvasMove);
 function getRatio(){aspect=$('aspect').value;const [w,h]=previewDims();canvas.width=w;canvas.height=h;$('canvasInfo').textContent=aspect+' · '+w+' × '+h+' preview';updateExportInfo()}
 $('aspect').onchange=getRatio;$('background').oninput=e=>bg=e.target.value;$('resolution').onchange=updateExportInfo;$('fps').onchange=updateExportInfo;getRatio();
 async function enableAudio(){
