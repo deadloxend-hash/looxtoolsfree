@@ -175,3 +175,17 @@ body.studio-page{margin:0;background:var(--studio-bg);color:var(--studio-ink);fo
 .studio-page .studio-assets,.studio-page .studio-inspector,.studio-page .studio-timeline #tracks{scrollbar-width:thin;scrollbar-color:#655380 transparent}
 @media(min-width:1081px) and (min-height:620px){body.studio-page .loox-rail{top:66px!important}}
 @media(max-width:600px){body.studio-page .loox-rail{top:64px!important}}
+
+@media(max-width:600px){
+ .studio-page .studio-top{gap:7px}
+ .studio-page .studio-brand{font-size:12px;min-width:0}
+ .studio-page .studio-brand small{font-size:7px;letter-spacing:1px}
+ .studio-page .studio-top-actions{flex-wrap:nowrap;gap:4px}
+ .studio-page .studio-top-actions #undo,.studio-page .studio-top-actions #redo{
+  font-size:0;width:32px;min-width:32px;min-height:33px;padding:0
+ }
+ .studio-page .studio-top-actions #undo::before{content:'↶';font-size:20px}
+ .studio-page .studio-top-actions #redo::before{content:'↷';font-size:20px}
+ .studio-page .studio-top-actions #saveTop,.studio-page .studio-top-actions #exportTop{padding:7px;font-size:10px;min-height:33px}
+ .studio-page .studio-brand-mark{width:28px;height:28px;flex:0 0 auto}
+}
