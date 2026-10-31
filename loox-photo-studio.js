@@ -222,24 +222,48 @@ function render(withSelection=true,onlyOriginal=false){
  }
 }
 function draw(){render(true,comparison)}
+function pointerAt(e){const rect=canvas.getBoundingClientRect();return {x:(e.clientX-rect.left)/rect.width,y:(e.clientY-rect.top)/rect.height,rect}}
+function cropCursor(mode){return ({nw:'nwse-resize',se:'nwse-resize',ne:'nesw-resize',sw:'nesw-resize',n:'ns-resize',s:'ns-resize',w:'ew-resize',e:'ew-resize',move:'move'})[mode]||'crosshair'}
 canvas.addEventListener('pointerdown',e=>{
- if(comparison)return;const rect=canvas.getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width,y=(e.clientY-rect.top)/rect.height;
+ if(comparison)return;const {x,y,rect}=pointerAt(e);
+ if(tool==='crop'){
+  const frame=cropUnit(),mode=window.LOOXCrop.hit(frame,x,y,rect.width,rect.height);
+  if(!mode)return;
+  e.preventDefault();drag={type:'crop',mode,rect:frame,start:{x,y}};
+  canvas.setPointerCapture(e.pointerId);canvas.style.cursor=cropCursor(mode);return
+ }
  if(tool==='draw'||tool==='eraser'){
-  remember();const l=base(tool==='draw'?'paint':'erase',tool==='draw'?'Brush stroke':'Eraser stroke');l.color=$('brushColor').value;l.brushWidth=Number($('brushSize').value);l.points=[{x,y},{x:x+.00001,y:y+.00001}];layers.push(l);selected=l.id;drag={type:'paint',id:l.id};canvas.setPointerCapture(e.pointerId);draw();return
+  e.preventDefault();remember();
+  const l=base(tool==='draw'?'paint':'erase',tool==='draw'?'Brush stroke':'Eraser stroke');
+  l.color=$('brushColor').value;l.brushWidth=Number($('brushSize').value);
+  l.points=[{x,y},{x:x+.00001,y:y+.00001}];layers.push(l);selected=l.id;drag={type:'paint',id:l.id};
+  canvas.setPointerCapture(e.pointerId);draw();return
  }
  if(tool!=='move')return;
  const hit=[...layers].reverse().find(l=>l.kind!=='paint'&&l.kind!=='erase'&&Math.abs(x-l.x)<l.w/2&&Math.abs(y-l.y)<l.h/2);
  if(!hit){selected=null;showInspector();draw();return}
- pick(hit.id);remember();drag={type:'move',id:hit.id,startX:x,startY:y,x:hit.x,y:hit.y};canvas.setPointerCapture(e.pointerId)
+ e.preventDefault();pick(hit.id);remember();
+ drag={type:'move',id:hit.id,startX:x,startY:y,x:hit.x,y:hit.y};canvas.setPointerCapture(e.pointerId)
 });
 canvas.addEventListener('pointermove',e=>{
- if(!drag)return;const rect=canvas.getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width,y=(e.clientY-rect.top)/rect.height;
+ const {x,y,rect}=pointerAt(e);
+ if(!drag){
+  canvas.style.cursor=tool==='crop'?cropCursor(window.LOOXCrop.hit(cropUnit(),x,y,rect.width,rect.height)):tool==='move'?'default':'crosshair';
+  return
+ }
+ if(drag.type==='crop'){
+  const changed=window.LOOXCrop.drag(drag.rect,drag.mode,drag.start,{x,y},rect.width,rect.height,cropValue());
+  crop={x:changed.x*100,y:changed.y*100,w:changed.w*100,h:changed.h*100};
+  syncCropControls();draw();return
+ }
  const l=layers.find(l=>l.id===drag.id);if(!l)return;
  if(drag.type==='paint')l.points.push({x,y});
  else{l.x=clamp(drag.x+x-drag.startX,-1,2);l.y=clamp(drag.y+y-drag.startY,-1,2)}
  draw()
 });
-canvas.addEventListener('pointerup',()=>{if(drag){drag=null;showLayers();showInspector()}});
+function endCanvasDrag(){if(!drag)return;const cropWasActive=drag.type==='crop';drag=null;if(!cropWasActive){showLayers();showInspector()}else syncCropControls()}
+canvas.addEventListener('pointerup',endCanvasDrag);
+canvas.addEventListener('pointercancel',endCanvasDrag);
 async function applyCrop(){
  const x=clamp(crop.x,0,99),y=clamp(crop.y,0,99),w=clamp(crop.w,1,100-x),h=clamp(crop.h,1,100-y);
  remember();render(false,false);
@@ -270,7 +294,8 @@ function download(){
  };
  save()
 }
-$('download').onclick=download;$('saveTop').onclick=download;
+$('download').onclick=download;$('saveTop').onclick=()=>{$('exportDialog').showModal()};
+$('closeExport').onclick=()=>$('exportDialog').close();
 window.addEventListener('beforeunload',()=>urls.forEach(u=>URL.revokeObjectURL(u)));
 refresh();say('Ready. Add a photo or create a design.');
 })();
