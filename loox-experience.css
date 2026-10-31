@@ -164,3 +164,49 @@ html{scroll-behavior:smooth;scroll-padding-top:92px}
 .loox-guide-search span{padding:0 10px;color:var(--lx-muted);font:700 12px system-ui;white-space:nowrap}
 .loox-guide-empty{grid-column:1/-1;padding:30px;border:1px dashed var(--lx-border);border-radius:15px;color:var(--lx-muted);text-align:center}
 @media(max-width:600px){.loox-guide-search{grid-template-columns:1fr}.loox-guide-search span{padding:0 3px}}
+
+
+/* Mobile homepage: full-width content and a retractable navigation drawer. */
+@media (max-width: 900px) {
+  html, body { max-width:100%; overflow-x:clip; }
+  .experience-shell, .experience-shell.rail-compact { --lx-rail:0px; }
+  .experience-shell:not(.experience-studio) .experience-content,
+  .experience-shell.experience-studio .studio-main,
+  .experience-shell > .loox-guide-host,
+  .experience-studio .loox-guide-host {
+    margin-left:0!important; width:100%!important; min-width:0!important;
+  }
+  .experience-shell.rail-compact .loox-rail {
+    width:0!important; border:0!important; box-shadow:none!important;
+    overflow:visible!important; pointer-events:none;
+  }
+  .experience-shell.rail-compact .loox-rail > :not(.loox-rail-head) { display:none!important; }
+  .experience-shell.rail-compact .loox-rail-head {
+    position:fixed; left:10px; bottom:16px; top:auto; z-index:60;
+    width:48px; min-height:48px; padding:0!important; border:0!important;
+    background:transparent!important; pointer-events:auto;
+  }
+  .experience-shell.rail-compact .loox-rail-toggle {
+    width:48px; height:48px; border-radius:15px;
+    box-shadow:0 6px 24px #0007; font-size:22px;
+  }
+  .experience-shell:not(.rail-compact) .loox-rail {
+    width:min(280px,84vw)!important; max-width:84vw;
+    box-shadow:18px 0 50px #0009; overflow:hidden;
+  }
+  .experience-shell .topbar, .experience-shell .topbar-inner { max-width:100%; min-width:0; }
+  .experience-shell .topbar-inner { gap:10px!important; padding-inline:14px!important; }
+  .experience-shell .brand { min-width:0; }
+  .experience-shell .brand-tag { letter-spacing:.08em; }
+  .experience-shell .container { max-width:100%; }
+  .experience-shell .hero, .experience-shell .hero * { min-width:0; }
+  .experience-shell .hero h1 { overflow-wrap:break-word; }
+}
+@media (max-width:600px) {
+  .experience-shell .topbar-inner { height:auto!important; min-height:64px; flex-wrap:wrap; }
+  .experience-shell .brand-name { font-size:18px; }
+  .experience-shell .brand-tag { font-size:8px; }
+  .experience-shell .hero { padding:34px 0!important; }
+  .experience-shell .hero h1 { font-size:clamp(30px,9vw,46px)!important; line-height:1.12!important; }
+  .experience-shell .hero .container { width:calc(100% - 32px)!important; }
+}
