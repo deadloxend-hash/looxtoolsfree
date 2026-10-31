@@ -130,3 +130,17 @@ body.info-page{margin:0;background:var(--info-bg);color:var(--info-text);font:15
    max-width:100%!important;box-sizing:border-box!important;
  }
 }
+
+
+/* Mobile information page header: real clickable menu in header, no floating duplicate */
+.loox-info-menu{display:none}
+@media(max-width:900px){
+ body.info-page.experience-shell .info-header-inner{width:100%!important;max-width:100%!important;display:flex!important;align-items:center!important;gap:8px!important;padding:0 12px!important}
+ body.info-page.experience-shell .loox-info-menu{display:grid!important;place-items:center!important;flex:0 0 36px!important;width:36px!important;height:40px!important;margin:0!important;padding:0!important;border:0!important;border-radius:8px!important;background:transparent!important;color:var(--info-text)!important;font-size:24px!important;cursor:pointer!important}
+ body.info-page.experience-shell .info-brand{margin:0!important;margin-right:auto!important;flex:0 1 auto!important;min-width:0!important}
+ body.info-page.experience-shell .loox-top-controls{margin-left:auto!important}
+ body.info-page.experience-shell .loox-rail-head{display:none!important}
+ body.info-page.experience-shell:not(.rail-compact) .loox-rail{top:64px!important;left:0!important;width:min(290px,82vw)!important;min-width:0!important;height:calc(100dvh - 64px)!important;overflow-y:auto!important;background:#121725!important;z-index:80!important}
+ body.info-page.experience-shell.rail-compact .loox-rail{width:0!important;pointer-events:none!important}
+ body.info-page.experience-shell:not(.rail-compact) .loox-rail-list,body.info-page.experience-shell:not(.rail-compact) .loox-rail-bottom{display:block!important}
+}
