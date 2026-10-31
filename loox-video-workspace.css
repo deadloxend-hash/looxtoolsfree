@@ -1,5 +1,6 @@
 /* Video-only layout: shared photo editor styles remain separate. */
 .video-studio-page{--accent:#4d8dff;--accent2:#7d6aff}
+.video-studio-page [hidden]{display:none!important}
 .video-studio-page .studio-main{grid-template-rows:36px minmax(260px,1fr) minmax(210px,32vh)}
 .video-studio-page .studio-workspace{grid-template-columns:68px 225px minmax(240px,1fr) 270px}
 .video-studio-page .studio-heading h1{font-size:16px}

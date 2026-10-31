@@ -287,7 +287,7 @@ function renderTimeline(){
  const root=$('tracks'),scroll=root.scrollLeft,top=root.scrollTop,width=Math.max(root.clientWidth-150,(total()+5)*pixelsPerSecond,600);
  clips.forEach(c=>{if(!tracks.some(t=>t.id===c.layer))tracks.push({id:c.layer,name:'Layer '+c.layer,kind:c.kind==='audio'?'audio':'video'})});
  root.innerHTML='';root.style.setProperty('--timeline-width',(width+150)+'px');
- tracks.slice().sort((a,b)=>b.id-a.id).forEach(t=>{
+ tracks.slice().sort((a,b)=>(a.kind==='audio')-(b.kind==='audio')||b.id-a.id).forEach(t=>{
   const state=trackState(t.id),row=document.createElement('div');row.className='studio-track';row.dataset.track=t.id;
   const label=document.createElement('div');label.className='studio-track-label';label.textContent=t.name;
   const buttons=document.createElement('div');buttons.className='track-buttons';
@@ -469,7 +469,7 @@ function stopExport(canceled=false){
  if(canceled){status('Export canceled.');$('exportInfo').textContent='Export canceled.'}
 }
 $('cancelExport').onclick=()=>stopExport(true);
-const selectMime=()=>['video/mp4;codecs=avc1.424028,mp4a.40.2','video/mp4','video/webm;codecs=vp8,opus','video/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m));
+const selectMime=()=>['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1','video/webm;codecs=vp8,opus','video/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m));
 
 async function convertWebMToMp4(webmBlob,onProgress){
   const mod=await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
