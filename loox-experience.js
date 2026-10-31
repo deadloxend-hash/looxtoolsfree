@@ -66,6 +66,11 @@
   const header=document.querySelector('.studio-top,.loox-appbar-inner,.suite-header,.work-header,.topbar-inner,.nav-inner,.info-header-inner')||document.querySelector('header');
   if(!header)return;let controls=document.querySelector('.loox-top-controls');
   if(!controls){controls=document.createElement('div');controls.className='loox-top-controls';(header.querySelector('.studio-top-actions,.loox-app-actions,.suite-header-actions,.work-head-actions')||header).append(controls)}
+  if(document.body.classList.contains('info-page') && !header.querySelector('.loox-info-menu')){
+   const menu=document.createElement('button');menu.type='button';menu.className='loox-info-menu';menu.textContent='☰';menu.setAttribute('aria-label','Open tool categories');menu.setAttribute('aria-expanded',String(!compact));
+   menu.addEventListener('click',()=>{const toggle=rail.querySelector('.loox-rail-toggle');if(toggle)toggle.click();menu.setAttribute('aria-expanded',String(!compact));});
+   header.prepend(menu);
+  }
   const l=labels[language];controls.innerHTML='<select class="loox-language" aria-label="Language / Idioma / Langue / Sprache">'+[['en','English'],['es','Español'],['fr','Français'],['de','Deutsch']].map(([value,name])=>'<option value="'+value+'" '+(value===language?'selected':'')+'>'+name+'</option>').join('')+'</select><button type="button" class="loox-header-settings" aria-label="'+l.settings+'" title="'+l.settings+'"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m9 3-.7 2.4-2.4.7L4 5l-1 2 1.7 1.8-.5 2.7L2 13l1 2 2.5-.1 1.9 1.9L7 19l2 1 1.8-1.7 2.7.5L15 21l2-1-.1-2.5 1.9-1.9L21 16l1-2-1.7-1.8.5-2.7L23 8l-1-2-2.5.1-1.9-1.9L18 2l-2-1-1.8 1.7-2.7-.5Z" transform="translate(1 1) scale(.85)" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="3.3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>';
   controls.querySelector('select').onchange=e=>changeLanguage(e.target.value);controls.querySelector('button').onclick=openSettings;
  }
