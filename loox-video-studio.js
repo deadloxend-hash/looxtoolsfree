@@ -5,10 +5,10 @@ const $ = id => document.getElementById(id);
 const canvas=$('preview'),ctx=canvas.getContext('2d',{alpha:false}),scrub=$('scrub');
 if(!ctx){$('status').textContent='Canvas rendering is unavailable in this browser.';return}
 const clips=[];let selected=null,playhead=0,playing=false,playStarted=0,exporting=false,recorder=null,exportStream=null,exportTimer=null;
-let viewSeconds=30,nextId=1,aspect='16:9',bg='#090916',audioCtx=null,audioDest=null,audioNodes=new Map();
+let viewSeconds=30,nextId=1,aspect='16:9',bg='#090916',audioCtx=null,audioDest=null,audioNodes=new Map(),cropMode=false,cropDraft=null,cropRatio='free';
 const history=[],future=[],urls=new Set(),maxHistory=30;
 const themes={none:'none',vivid:'saturate(1.7) contrast(1.16)',warm:'sepia(.3) saturate(1.35)',cool:'hue-rotate(22deg) saturate(1.2)',mono:'grayscale(1)',vintage:'sepia(.6) contrast(.9)',dream:'saturate(1.2) blur(1.5px)'};
-const icons={video:'▣',image:'▧',audio:'♫',text:'T',sticker:'✦'};
+const icons={video:'▣',image:'▧',audio:'♫',text:'T'};
 const esc=x=>String(x).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const fmt=t=>{t=Math.max(0,Number(t)||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+(t%60).toFixed(1).padStart(4,'0')};
@@ -25,7 +25,7 @@ function getSelected(){return clips.find(c=>c.id===selected)||null}
 function pick(id){selected=id;showLayers();showProperties();renderTimeline()}
 function createMedia(kind,url){if(kind==='image'){const img=new Image();img.src=url;return img}const m=document.createElement(kind==='audio'?'audio':'video');m.src=url;m.preload='auto';m.playsInline=true;m.loop=false;return m}
 function waitMeta(el,kind){return new Promise((resolve,reject)=>{if(kind==='image'&&el.complete&&el.naturalWidth)return resolve();if(kind!=='image'&&el.readyState>=1&&Number.isFinite(el.duration))return resolve();const ok=()=>{clean();resolve()},bad=()=>{clean();reject(new Error('Unsupported or corrupted media'))};function clean(){el.removeEventListener(kind==='image'?'load':'loadedmetadata',ok);el.removeEventListener('error',bad)}el.addEventListener(kind==='image'?'load':'loadedmetadata',ok,{once:true});el.addEventListener('error',bad,{once:true})})}
-const baseProps=(kind,name)=>({id:nextId++,kind,name,start:playhead,duration:5,trimStart:0,sourceDuration:5,layer:kind==='video'?0:kind==='audio'?1:kind==='image'?3:kind==='text'?5:6,x:.5,y:.5,w:kind==='video'?1:kind==='image'?.5:.65,h:kind==='video'?1:kind==='image'?.5:.3,scale:1,angle:0,opacity:1,volume:kind==='video'?1:kind==='audio'?1:0,zoom:1,panX:0,panY:0,rate:1,fit:'cover',filter:'none',fade:0,transition:'none',text:'Your title',font:'Arial',fontSize:64,color:'#ffffff',effect:'shadow',sticker:'✨'});
+const baseProps=(kind,name)=>({cropSource:{x:0,y:0,w:1,h:1},id:nextId++,kind,name,start:playhead,duration:5,trimStart:0,sourceDuration:5,layer:kind==='video'?0:kind==='audio'?1:kind==='image'?3:kind==='text'?5:6,x:.5,y:.5,w:kind==='video'?1:kind==='image'?.5:.65,h:kind==='video'?1:kind==='image'?.5:.3,scale:1,angle:0,opacity:1,volume:kind==='video'?1:kind==='audio'?1:0,zoom:1,panX:0,panY:0,rate:1,fit:'cover',filter:'none',fade:0,transition:'none',text:'Your title',font:'Arial',fontSize:64,color:'#ffffff',effect:'shadow'});
 async function addFiles(files,mode){
  const arr=Array.from(files||[]);if(!arr.length)return;
  snap();let errors=0;status('Importing '+arr.length+' file(s)…');
@@ -45,17 +45,16 @@ async function addFiles(files,mode){
  refresh();status(errors?'Imported with '+errors+' unsupported file(s) skipped.':'Media imported. Select or drag layers on the timeline.');
 }
 function addText(){snap();const c=baseProps('text','Text '+nextId);c.text='Your title';c.layer=7;clips.push(c);pick(c.id);refresh();status('Text added. Edit the title in Properties.')}
-function addSticker(sticker){snap();const c=baseProps('sticker','Sticker '+sticker);c.sticker=sticker;c.layer=8;c.w=.22;c.h=.25;clips.push(c);pick(c.id);refresh()}
 function setTab(mode){
- $('libraryTitle').textContent=({video:'Video clips',overlay:'Video overlays',image:'Images',audio:'Sound & music',text:'Titles & fonts',sticker:'Sticker library',project:'Canvas settings'})[mode]||'Your media';
- $('libraryHelp').textContent=({video:'Add one or more main-track video clips, in sequence.',overlay:'Layer a second video over your first video; drag it around the preview.',image:'Add an image over video or build a photo slideshow.',audio:'Mix music or sound effects. Source audio formats depend on your browser.',text:'Create titles with font, color, shadow and outline effects.',sticker:'Use stickers you can freely place and time on your canvas.',project:'Choose your aspect ratio, export resolution, background and frame rate.'})[mode];
+ $('libraryTitle').textContent=({video:'Video clips',overlay:'Video overlays',image:'Images',audio:'Sound & music',text:'Titles & fonts',crop:'Crop layer',project:'Canvas settings'})[mode]||'Your media';
+ $('libraryHelp').textContent=({video:'Add one or more main-track video clips, in sequence.',overlay:'Layer a second video over your first video; drag it around the preview.',image:'Add an image over video or build a photo slideshow.',audio:'Mix music or sound effects. Source audio formats depend on your browser.',text:'Create titles with font, color, shadow and outline effects.',crop:'Drag a crop box by its white handles, or type exact dimensions.',project:'Choose your aspect ratio, export resolution, background and frame rate.'})[mode];
  document.querySelectorAll('.studio-toolrail button').forEach(b=>b.classList.toggle('active',b.id==='tool'+mode[0].toUpperCase()+mode.slice(1)));
  if(mode==='video'||mode==='overlay'||mode==='image'||mode==='audio')$('file'+(mode==='overlay'?'Overlay':mode[0].toUpperCase()+mode.slice(1))).click();
  if(mode==='text')addText();
- if(mode==='sticker')showStickerPalette();
+ if(mode==='crop')enterCrop();
  if(mode==='project'){selected=null;showProperties();}
 }
-['Video','Overlay','Image','Audio','Text','Sticker','Project'].forEach(word=>{$('tool'+word).onclick=()=>setTab(word.toLowerCase())});
+['Video','Overlay','Image','Audio','Text','Crop','Project'].forEach(word=>{$('tool'+word).onclick=()=>setTab(word.toLowerCase())});
 let uploadMode='video';
 $('toolVideo').addEventListener('click',()=>uploadMode='video');$('toolOverlay').addEventListener('click',()=>uploadMode='overlay');$('toolImage').addEventListener('click',()=>uploadMode='image');$('toolAudio').addEventListener('click',()=>uploadMode='audio');
 $('uploadButton').onclick=()=>{const m=uploadMode==='overlay'?'Overlay':uploadMode[0].toUpperCase()+uploadMode.slice(1);$('file'+m).click()};
@@ -63,16 +62,11 @@ for(const [input,mode] of [['fileVideo','video'],['fileOverlay','overlay'],['fil
  $(input).addEventListener('change',async e=>{await addFiles(e.target.files,mode);e.target.value=''})
 }
 $('addTitle').onclick=addText;
-const stickerSet=['✨','⭐','💖','🔥','🌈','🎉','😎','⚡','💎','🎬','🎵','🌙','☀️','❤️','🌸','🏆','🚀','🎯','💬','👑'];
-function showStickerPalette(){
- const list=$('layerList');list.innerHTML='<div class="studio-stickers">'+stickerSet.map(s=>'<button type="button" title="Add sticker '+s+'" data-sticker="'+s+'">'+s+'</button>').join('')+'</div>';
- list.querySelectorAll('[data-sticker]').forEach(b=>b.onclick=()=>addSticker(b.dataset.sticker))
-}
 $('previewShell').addEventListener('dragover',e=>{e.preventDefault()});
 $('previewShell').addEventListener('drop',async e=>{e.preventDefault();const files=Array.from(e.dataTransfer.files);if(files.length)await addFiles(files,null)});
 function showLayers(){
  const list=$('layerList');list.innerHTML='';
- if(!clips.length){list.innerHTML='<p class="studio-section-note">No layers yet. Choose Video, Overlay, Image, Audio, Text or Sticker above.</p>';return}
+ if(!clips.length){list.innerHTML='<p class="studio-section-note">No layers yet. Choose Video, Overlay, Image, Audio or Text above.</p>';return}
  clips.slice().sort((a,b)=>b.layer-a.layer||a.start-b.start).forEach(c=>{
   const b=document.createElement('button');b.type='button';b.className='studio-list-item';b.setAttribute('aria-pressed',String(selected===c.id));
   b.innerHTML='<span class="symbol">'+icons[c.kind]+'</span><span><strong>'+esc(c.name)+'</strong><small>'+esc(c.kind)+' · '+fmt(c.start)+' · '+fmt(c.duration)+'</small></span>';
@@ -109,21 +103,21 @@ function showProperties(){
   html+='<div class="studio-field-grid">'+field('Size','fontSize',c.fontSize,'number',12,200,1)+field('Color','color',c.color,'color')+'</div>';
   html+=field('Text effect','effect',opts([['none','Clean'],['shadow','Shadow'],['outline','Outline'],['neon','Neon Glow']],c.effect),'select')
  }
- if(c.kind==='sticker')html+=field('Sticker','sticker',c.sticker,'text');
+ 
  html+='<div class="studio-button-row"><button class="studio-btn secondary" id="duplicate">Duplicate</button><button class="studio-btn danger" id="remove">Delete</button></div>';
  el.innerHTML=html;
  el.querySelectorAll('[data-prop]').forEach(input=>{
   const prop=input.dataset.prop;
   if(input.type==='range')input.onpointerdown=()=>snap();
   const change=()=>{if(input.type!=='range')snap();let v=input.value;
-   if(!['text','font','color','effect','fit','filter','sticker','transition'].includes(prop))v=Number(v);
+   if(!['text','font','color','effect','fit','filter','transition'].includes(prop))v=Number(v);
    if(['x','y','w','h','opacity','volume'].includes(prop))v/=100;
    if(prop==='duration')v=clamp(v,.1,c.kind==='video'||c.kind==='audio'?Math.max(.1,c.sourceDuration-c.trimStart):36000);
    if(prop==='trimStart'){v=clamp(v,0,Math.max(0,c.sourceDuration-.1));c.duration=Math.min(c.duration,(c.sourceDuration-v)/c.rate)}
    if(prop==='rate')c.duration=Math.max(.1,(c.sourceDuration-c.trimStart)/v);
    if(prop==='start')v=clamp(v,0,36000);
    if(prop==='zoom')v=clamp(v,1,4);
-   if(prop==='sticker')v=String(v).slice(0,8);
+   
    c[prop]=v;
    if(!playing)syncMedia();
    refresh(false);
@@ -229,7 +223,6 @@ function renderPreview(){
   ctx.filter=themes[c.filter]||'none';
   if(c.kind==='video'||c.kind==='image')drawMedia(c,w,h);
   else if(c.kind==='text')drawText(c,w,h);
-  else if(c.kind==='sticker'){ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=Math.floor(Math.min(w*c.w,h*c.h))+'px system-ui';ctx.fillText(c.sticker,0,0)}
   ctx.restore();
   if(!exporting&&selected===c.id){ctx.save();ctx.strokeStyle='#d1b5ff';ctx.lineWidth=Math.max(2,w/500);ctx.setLineDash([8,5]);const ww=w*c.w,hh=h*c.h;ctx.translate(c.x*w,c.y*h);ctx.rotate(c.angle*Math.PI/180);ctx.strokeRect(-ww/2,-hh/2,ww,hh);ctx.restore()}
  })
@@ -308,7 +301,9 @@ async function exportVideo(){
   status('Export failed: '+(error&&error.message||'Unsupported device settings')+'. Try 720p at 30 fps.')
  }
 }
-$('export').onclick=exportVideo;$('exportTop').onclick=exportVideo;
+$('export').onclick=exportVideo;
+$('exportTop').onclick=()=>{if(!$('exportDialog').open)$('exportDialog').showModal()};
+$('closeExport').onclick=()=>{$('exportDialog').close()};
 window.addEventListener('beforeunload',()=>{pause();urls.forEach(u=>URL.revokeObjectURL(u));if(audioCtx)audioCtx.close().catch(()=>{})});
 showLayers();showProperties();renderTimeline();status('Ready. Import a video, add an overlay or build a title sequence.');
 })();
