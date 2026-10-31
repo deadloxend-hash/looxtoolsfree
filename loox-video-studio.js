@@ -278,9 +278,10 @@ function duplicate(){const c=getSelected();if(!c||!editable())return;snap();cons
 function split(){
  if(!editable())return;
  const c=getSelected();if(!c||!['video','audio'].includes(c.kind)){status('Select a video or audio clip before splitting.');return}
- const delta=playhead-c.start;if(delta<=.06||delta>=c.duration-.06){status('Move the playhead inside the selected clip.');return}
+ const delta=playhead-c.start,frame=1/Number($('fps').value);if(delta<frame-.0001||delta>c.duration-frame+.0001){status('Leave at least one frame on each side of the cut.');return}
  snap();const right={...c,id:nextId++,name:c.name+' (part 2)',start:playhead,trimStart:c.trimStart+delta*(c.rate||1),duration:c.duration-delta,media:createMedia(c.kind,c.url)};
- c.duration=delta;clips.push(right);selected=right.id;pause();refresh();status('Clip split at '+fmt(playhead)+'.')
+ if(c.keys?.length){const boundary=volumeAt(c,delta);right.keys=[{t:0,v:boundary},...c.keys.filter(k=>k.t>delta).map(k=>({t:k.t-delta,v:k.v}))];c.keys=[...c.keys.filter(k=>k.t<delta),{t:delta,v:boundary}]}
+ c.duration=delta;clips.push(right);selected=right.id;pause();refresh();status('Clip split at '+tc(playhead)+'.')
 }
 $('split').onclick=split;
 function renderTimeline(){
