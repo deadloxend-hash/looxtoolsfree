@@ -1,0 +1,53 @@
+/* Video-only layout: shared photo editor styles remain separate. */
+.video-studio-page{--accent:#4d8dff;--accent2:#7d6aff}
+.video-studio-page .studio-main{grid-template-rows:36px minmax(260px,1fr) minmax(210px,32vh)}
+.video-studio-page .studio-workspace{grid-template-columns:68px 225px minmax(240px,1fr) 270px}
+.video-studio-page .studio-heading h1{font-size:16px}
+.video-studio-page .studio-kicker,.video-studio-page .studio-heading p,.video-studio-page .studio-heading>.studio-pill{display:none}
+.video-studio-page .studio-toolrail button{min-height:45px}
+.video-studio-page .studio-stage-top{flex-wrap:wrap}
+.video-studio-page select{background:#202431;color:#eff3ff;border:1px solid #41495d;border-radius:5px;padding:5px;max-width:100%}
+.video-studio-page .studio-preview-shell canvas{position:absolute;inset:0;margin:auto;width:100%;height:100%;object-fit:contain;box-shadow:none}
+.video-studio-page .studio-status{white-space:normal;min-height:25px;font-size:11px}
+.asset-choices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}
+.asset-choices button,.inspector-tabs button{color:#e5eafa;background:#222737;border:1px solid #3a435a;border-radius:7px;padding:10px 5px;cursor:pointer}
+.asset-choices button:hover,.inspector-tabs .active{border-color:#88aaff;background:#2c3c65}
+.inspector-tabs{display:flex;gap:4px;position:sticky;top:-10px;background:var(--panel);padding:4px 0;z-index:4}
+.inspector-tabs button{flex:1;font-size:10px;padding:8px 2px}
+.video-studio-page .studio-field>span{font-size:11px}
+.video-studio-page .studio-section-note{font-size:11px}
+.video-studio-page #mediaBin:empty::before{content:'Imported files stay here. Click a file to add another instance.';font-size:11px;color:var(--muted)}
+.video-studio-page .studio-timeline{overflow:hidden}
+.video-studio-page #tracks{overflow:auto;position:relative;min-height:100px}
+.video-studio-page .studio-track{display:block;position:relative;min-height:58px;width:var(--timeline-width);padding-left:150px}
+.video-studio-page .studio-track-label{position:sticky;left:0;float:left;margin-left:-150px;width:150px;height:58px;background:#1c202c;z-index:5;padding:5px;font-size:10px;white-space:normal}
+.track-buttons{display:flex;gap:3px;margin-top:4px}
+.track-buttons button{background:#2c3344;color:#d7dff0;border:1px solid #48516a;border-radius:4px;font-size:10px;cursor:pointer}
+.track-buttons button[aria-pressed=true]{background:#3e65a9;border-color:#89adff}
+.video-studio-page .studio-track-line{height:58px;min-height:58px}
+.video-studio-page .studio-clip{top:6px;bottom:6px;font-size:11px;border-radius:6px;padding:6px 12px;touch-action:none;cursor:grab}
+.clip-trim{position:absolute;top:0;bottom:0;width:8px;background:#ffffff35;cursor:ew-resize;z-index:2}
+.clip-trim.left{left:0}.clip-trim.right{right:0}
+.timeline-playhead{position:absolute;top:0;bottom:0;width:2px;background:#ffc87b;pointer-events:none;z-index:4}
+.volume-line{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.video-studio-page .studio-timeline-ruler{margin-left:150px;position:relative;overflow:hidden;cursor:crosshair;min-height:22px;display:block}
+.ruler-tick{position:absolute;white-space:nowrap}
+.video-studio-page #zoomSlider{width:80px}
+.video-studio-page #exportProgress{width:100%;accent-color:#8a75ff}
+.video-studio-page #exportResult a{display:block;background:#30589e;border:1px solid #83a9ff;border-radius:8px;padding:12px;margin:10px 0}
+.video-studio-page .studio-time{font-size:11px}
+@media(max-width:1100px){.video-studio-page .studio-workspace{grid-template-columns:58px 180px minmax(180px,1fr) 220px}}
+@media(max-width:900px){
+ body.video-studio-page{overflow:auto;height:auto}
+ .video-studio-page .studio-main{display:block;height:auto;overflow:visible}
+ .video-studio-page .studio-workspace{grid-template-columns:56px minmax(0,1fr);grid-template-rows:auto auto auto;overflow:visible}
+ .video-studio-page .studio-stage{grid-row:1;grid-column:2;height:48dvh;min-height:300px}
+ .video-studio-page .studio-assets{grid-row:2;grid-column:2;max-height:280px}
+ .video-studio-page .studio-inspector{grid-row:3;grid-column:2;max-height:380px}
+ .video-studio-page .studio-timeline{position:relative;bottom:auto;height:280px;margin-top:10px!important}
+ .video-studio-page .studio-timeline #tracks{max-height:none}
+ .video-studio-page .studio-timeline-head{align-items:flex-start}
+ .video-studio-page .studio-timeline-head .studio-button-row{justify-content:flex-end}
+ .video-studio-page .studio-heading{padding:10px}
+ .video-studio-page .studio-toolrail{grid-row:1 / span 3}
+}

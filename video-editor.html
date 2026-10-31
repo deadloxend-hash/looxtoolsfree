@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#0b0c14"><title>LOOX Video Studio — Layered Online Video Editor</title>
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/video-editor.html">
 <link rel="stylesheet" href="loox-studio.css?v=8">
+<link rel="stylesheet" href="loox-video-workspace.css?v=10">
 </head>
 <body class="studio-page video-studio-page">
 <header class="studio-top">
@@ -23,6 +24,10 @@
   <button type="button" id="toolText" title="Add text"><strong>T</strong>Text</button>
   <button type="button" id="toolCrop" title="Crop selected video or image with the mouse"><strong>⌗</strong>Crop</button>
   <button type="button" id="toolProject" title="Project settings"><strong>⚙</strong>Canvas</button>
+  <button type="button" id="toolTransitions"><strong>◩</strong>Transitions</button>
+  <button type="button" id="toolFilters"><strong>◐</strong>Filters</button>
+  <button type="button" id="toolStickers"><strong>☺</strong>Stickers</button>
+  <button type="button" id="toolEffects"><strong>✦</strong>Effects</button>
  </nav>
  <aside class="studio-panel studio-assets" aria-label="Media library">
   <h2 id="libraryTitle">Your media</h2>
@@ -32,21 +37,23 @@
   <input class="studio-hidden" id="fileOverlay" type="file" accept="video/*" multiple>
   <input class="studio-hidden" id="fileImage" type="file" accept="image/*" multiple>
   <input class="studio-hidden" id="fileAudio" type="file" accept="audio/*" multiple>
+  <div id="assetChoices" class="asset-choices"></div>
+  <h3>Media library</h3><div id="mediaBin" class="studio-list"></div>
   <h3>Project layers</h3><div id="layerList" class="studio-list" aria-live="polite"></div>
   <p class="studio-section-note">Select a layer to edit its position, timing and appearance. Drag timeline clips to reposition; choose Crop for handles.</p>
  </aside>
  <section class="studio-panel studio-stage" aria-label="Video preview">
-  <div class="studio-stage-top"><strong>Live preview</strong><span id="canvasInfo">16:9 • 960 × 540 preview</span></div>
+  <div class="studio-stage-top"><strong>Project monitor</strong><select id="previewQuality" aria-label="Preview resolution"><option value="540">540p · Faster</option><option value="720" selected>720p</option><option value="1080">1080p</option><option value="2160">4K</option></select><select id="previewAspect" aria-label="Project aspect ratio"><option>16:9</option><option>9:16</option><option>1:1</option><option>4:5</option></select><span id="canvasInfo">16:9</span></div>
   <div class="studio-preview-shell" id="previewShell"><canvas id="preview" width="960" height="540" aria-label="Edited video preview"></canvas><div class="studio-empty" id="empty"><span class="empty-icon">▶</span><strong>Start with your first video</strong><span>Drag a file into the workspace or use Add files</span></div></div>
-  <div class="studio-transport"><button class="studio-btn secondary" id="toStart" title="Beginning">|◀</button><button class="studio-btn" id="play" title="Play or pause">▶ Play</button><button class="studio-btn secondary" id="toEnd" title="End">▶|</button><button class="studio-btn secondary" id="split" title="Split selected clip at playhead">✂ Split</button><span id="time" class="studio-time">00:00.0 / 00:00.0</span></div>
+  <div class="studio-transport"><button class="studio-btn secondary" id="toStart" title="Beginning">|◀</button><button class="studio-btn secondary" id="frameBack" title="Previous frame (K)">◀▏</button><button class="studio-btn" id="play" title="Play or pause (Space)">▶ Play</button><button class="studio-btn secondary" id="frameNext" title="Next frame (M)">▏▶</button><button class="studio-btn secondary" id="toEnd" title="End">▶|</button><button class="studio-btn secondary" id="split" title="Split selected clip at playhead">✂ Split</button><span id="time" class="studio-time">00:00:00:00</span></div>
   <span id="status" class="studio-status" role="status">Import a file or add text to get started.</span>
  </section>
  <aside class="studio-panel studio-inspector" aria-label="Clip properties">
-  <h2>Properties</h2><div id="properties"><p class="studio-section-note">Select a clip or text layer to adjust it, or choose Canvas to change format and dimensions.</p></div>
+  <h2>Clip inspector</h2><div id="inspectorTabs" class="inspector-tabs"><button data-inspector="basic" class="active">Transform</button><button data-inspector="audio">Audio</button><button data-inspector="color">Color & effects</button></div><div id="properties"><p class="studio-section-note">Select a clip to edit.</p></div>
  </aside>
 </section>
 <section class="studio-panel studio-timeline" aria-label="Multitrack timeline">
-  <div class="studio-timeline-head"><h2>Timeline <small style="color:#aaa2c3;font-size:11px;font-weight:500">• layered media</small></h2><div class="studio-button-row"><button class="studio-btn secondary" id="timelineZoomOut">− Zoom</button><button class="studio-btn secondary" id="timelineZoomIn">+ Zoom</button><button class="studio-btn secondary" id="deleteClip">Delete layer</button></div></div>
+  <div class="studio-timeline-head"><h2>Timeline</h2><div class="studio-button-row"><label><input id="ripple" type="checkbox"> Ripple</label><label><input id="snapping" type="checkbox" checked> Snap</label><button class="studio-btn secondary" id="addVideoTrack">+ Video track</button><button class="studio-btn secondary" id="addAudioTrack">+ Audio track</button><button class="studio-btn secondary" id="timelineZoomOut">−</button><input id="zoomSlider" type="range" min="10" max="240" value="50" aria-label="Timeline zoom"><button class="studio-btn secondary" id="timelineZoomIn">+</button><button class="studio-btn secondary" id="deleteClip">Delete</button></div></div>
   <div class="studio-timeline-ruler" id="ruler"></div><div id="tracks"></div>
   <input class="studio-scrub" type="range" min="0" max="30" value="0" step=".01" id="scrub" aria-label="Seek video timeline">
 </section>
@@ -59,10 +66,11 @@
  <label class="studio-field"><span>Frame rate</span><select id="fps"><option value="24">24 fps</option><option value="30" selected>30 fps</option><option value="60">60 fps</option></select></label>
  <label class="studio-field"><span>Background</span><input type="color" id="background" value="#171827"></label>
  </div><div class="studio-button-row"><button class="studio-btn" id="export">Export MP4</button><button class="studio-btn secondary" id="cancelExport" disabled>Cancel export</button><span id="exportInfo" class="studio-section-note">Final dimensions adapt to aspect ratio. Export records in real time.</span></div>
- <p class="studio-footer-note">*4K is an output size option, not a promise of enhanced source detail. Large projects, 60 fps, 4K, codecs and audio export depend on browser and device capabilities. Export currently uses WebM, not MP4. Keep this tab open while recording; no files are uploaded by this editor.</p>
+ <progress id="exportProgress" max="100" value="0" aria-label="Export progress"></progress><div id="exportResult"></div>
+ <p class="studio-footer-note">MP4 export renders your timeline locally. Keep this tab visible during recording. Large projects need more memory; start with 720p. Your media stays on your device.</p>
 </section>
 </dialog>
 </main>
 <script src="loox-crop-controls.js?v=1"></script>
-<script src="loox-video-studio.js?v=9"></script>
+<script src="loox-video-studio.js?v=10"></script>
 </body></html>
