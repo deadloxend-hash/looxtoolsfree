@@ -148,6 +148,12 @@
   const stepCards=data.steps.map(([title,desc,num])=>'<article class="loox-guide-step"><span class="loox-step-num">'+num+'</span><div><h3>'+esc(title)+'</h3><p>'+esc(desc)+'</p></div></article>').join('');
   const benefits=data.benefits.map(item=>'<li>'+esc(item)+'</li>').join('');
   const questions=data.faq.map(([q,a])=>'<details class="loox-faq-item"><summary>'+esc(q)+'</summary><p>'+esc(a)+'</p></details>').join('');
+  const schema={ '@context':'https://schema.org','@type':'HowTo',name:'How to use '+data.title,description:data.intro,step:data.steps.map(([name,text],i)=>({'@type':'HowToStep',position:i+1,name,text}))};
+  const faqSchema={'@context':'https://schema.org','@type':'FAQPage',mainEntity:data.faq.map(([name,text])=>({'@type':'Question',name,acceptedAnswer:{'@type':'Answer',text}}))};
+  const safeJson=o=>JSON.stringify(o).replace(/</g,'\\u003c');
+  if(!document.querySelector('script[data-loox-schema]')){
+   const tag=document.createElement('script');tag.type='application/ld+json';tag.dataset.looxSchema='true';tag.textContent=safeJson([schema,faqSchema]);document.head.appendChild(tag);
+  }
   const privacyLabel=data.type==='cloud'?'Cloud processing':'Processing details';
   const privacyIcon=data.type==='cloud'?'☁':'⌑';
   return '<section class="loox-guide" id="loox-guide">'+
