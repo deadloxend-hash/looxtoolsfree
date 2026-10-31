@@ -7,7 +7,7 @@
 :root{--bg:#090b12;--panel:#111522;--panel2:#171c2b;--line:#293147;--pink:#f04b9b;--purple:#8b5cf6;--blue:#438bff;--text:#f5f6fb;--muted:#a3acc0;--green:#37d6a0}
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 body{background:radial-gradient(ellipse at 75% -10%,rgba(111,69,202,.2),transparent 38%),var(--bg);color:var(--text);min-height:100vh;display:flex}
-aside{width:250px;position:fixed;inset:0 auto 0 0;background:#080a10;border-right:1px solid var(--line);padding:20px 16px;overflow:auto;z-index:20}
+body>aside{width:250px;position:fixed;inset:0 auto 0 0;background:#080a10;border-right:1px solid var(--line);padding:20px 16px;overflow:auto;z-index:20}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;font-weight:900;font-size:1.12rem;margin:0 0 32px;white-space:nowrap}
 .brand-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--pink),var(--purple));display:grid;place-items:center;box-shadow:0 5px 22px #8b5cf644}
 .brand span{color:#fff!important;background:none!important;-webkit-text-fill-color:#fff!important}
@@ -72,8 +72,8 @@ input[type=color]{width:100%;height:38px;border:1px solid #303a51;border-radius:
 .status.error{background:#2a151e;color:#fecdd3}
 input[type=file]{display:none}
 @media(max-width:1120px){.studio{grid-template-columns:1fr}.editor-panel{position:static;max-height:none}.topline{align-items:flex-start}}
-@media(max-width:900px){aside{width:220px;padding:16px}main{margin-left:220px;width:calc(100% - 220px);padding:20px}}
-@media(max-width:650px){aside{width:66px;padding:12px 7px}aside .brand{justify-content:center}aside .brand span,aside .nav-section-title,aside .nav-item span+span{display:none}aside .nav-item{justify-content:center;padding:12px 4px}main{margin-left:66px;width:calc(100% - 66px);padding:12px}.pill{display:none}.guide-grid{grid-template-columns:1fr}.two{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){body>aside{width:220px;padding:16px}main{margin-left:220px;width:calc(100% - 220px);padding:20px}}
+@media(max-width:650px){body>aside{width:66px;padding:12px 7px}body>aside .brand{justify-content:center}body>aside .brand span,body>aside .nav-section-title,body>aside .nav-item span+span{display:none}body>aside .nav-item{justify-content:center;padding:12px 4px}main{margin-left:66px;width:calc(100% - 66px);padding:12px}.pill{display:none}.guide-grid{grid-template-columns:1fr}.two{grid-template-columns:1fr 1fr}}
 </style>  <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 </head>
 <body>
