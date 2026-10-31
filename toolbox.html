@@ -9,7 +9,7 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
-  <link rel="stylesheet" href="loox-tool-ui.css?v=1">
+  <link rel="stylesheet" href="loox-tool-ui.css?v=2">
 </head>
 <body>
 <aside><a class="brand" href="index.html"><i>⚡</i> LOOX Toolbox</a><div class="navlabel">MORE TOOLS</div><nav class="nav">
@@ -85,5 +85,6 @@ $('qrMake').onclick=async()=>{try{const val=$('qrText').value.trim();if(!val)thr
 function getVideoId(s){s=s.trim();if(/^[\w-]{11}$/.test(s))return s;try{const u=new URL(s);if(u.hostname.includes('youtu.be'))return u.pathname.slice(1,12);if(u.hostname.includes('youtube.com'))return u.searchParams.get('v')||u.pathname.split('/').filter(Boolean).pop()}catch{}return null}
 $('ytLoad').onclick=()=>{const id=getVideoId($('ytId').value);if(!id||!/^[\w-]{11}$/.test(id))return status('ytStatus','Enter a valid YouTube video URL or 11-character video ID.',true);const sizes=[['maxresdefault','Maximum resolution'],['sddefault','Standard definition'],['hqdefault','High quality'],['mqdefault','Medium quality']];$('ytResults').innerHTML=sizes.map(([s,n])=>'<div class="mini"><h3>'+n+'</h3><img src="https://img.youtube.com/vi/'+id+'/'+s+'.jpg" alt="'+n+'" style="width:100%;border-radius:8px;margin:8px 0" onerror="this.style.opacity=.35"><a class="toplink" href="https://img.youtube.com/vi/'+id+'/'+s+'.jpg" target="_blank" rel="noopener">Open image ↗</a></div>').join('');status('ytStatus','Thumbnail links loaded. Some videos do not provide every resolution.')};
 </script>
-  <script src="loox-tool-ui.js?v=1"></script>
+  <script src="loox-tool-guides.js?v=1"></script>
+  <script src="loox-tool-ui.js?v=2"></script>
 </body></html>
