@@ -117,7 +117,7 @@ function showInspector(){
  if(l.kind==='shape'){html+=field('Shape','shape',options([['rectangle','Rectangle'],['circle','Ellipse']],l.shape),'select');html+=field('Fill','color',l.color,'color')}
  if(l.kind==='sticker')html+=field('Sticker','sticker',l.sticker,'text');
  if(l.kind==='paint'||l.kind==='erase')html+='<p class="studio-section-note">This brush stroke is independently removable in the layer stack.</p>';
- html+='<div class="studio-button-row"><button class="studio-btn secondary" id="up">↑ Layer</button><button class="studio-btn secondary" id="down">↓ Layer</button><button class="studio-btn secondary" id="duplicate">Duplicate</button><button class="studio-btn danger" id="remove">Delete</button></div>';
+ html+='<div class="studio-button-row"><button class="studio-btn secondary" id="rotateLeft">↶ 90°</button><button class="studio-btn secondary" id="rotateRight">↷ 90°</button><button class="studio-btn secondary" id="flipH">⇋ Flip</button><button class="studio-btn secondary" id="up">↑ Layer</button><button class="studio-btn secondary" id="down">↓ Layer</button><button class="studio-btn secondary" id="duplicate">Duplicate</button><button class="studio-btn danger" id="remove">Delete</button></div>';
  root.innerHTML=html;
  root.querySelectorAll('[data-prop]').forEach(el=>{
   if(el.type==='range')el.onpointerdown=remember;
@@ -130,6 +130,9 @@ function showInspector(){
   };
   el.addEventListener(el.type==='range'?'input':'change',apply)
  });
+ root.querySelector('#rotateLeft').onclick=()=>{remember();l.rotation=(l.rotation-90)%360;refresh()};
+ root.querySelector('#rotateRight').onclick=()=>{remember();l.rotation=(l.rotation+90)%360;refresh()};
+ root.querySelector('#flipH').onclick=()=>{remember();l.flip*=-1;refresh()};
  root.querySelector('#up').onclick=()=>moveLayer(1);
  root.querySelector('#down').onclick=()=>moveLayer(-1);
  root.querySelector('#duplicate').onclick=duplicate;
