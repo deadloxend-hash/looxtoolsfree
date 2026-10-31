@@ -372,3 +372,10 @@ html{scroll-behavior:smooth;scroll-padding-top:92px}
  body.experience-shell .quick-card,
  body.experience-shell .personal-card{box-sizing:border-box;min-width:0;}
 }
+
+
+/* Keep the navigation trigger at the same compact left edge on mobile. */
+@media(max-width:900px){
+ body.experience-shell:has(.topbar) .topbar-inner{padding-left:48px!important;}
+ body.experience-shell:has(.topbar) .loox-rail-head{left:8px!important;}
+}
