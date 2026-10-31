@@ -90,4 +90,5 @@ $('undo').onclick=()=>{const h=history.pop();if(h)ctx.putImageData(h,0,0)};$('re
 $('download').onclick=()=>canvas.toBlob(b=>{if(!b)return;const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='loox-face-blur.png';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/png');</script>
   <script src="loox-tool-guides.js?v=1"></script>
   <script src="loox-tool-ui.js?v=2"></script>
+<script src="loox-navigation.js?v=1"></script>
 </body></html>
