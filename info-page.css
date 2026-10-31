@@ -107,3 +107,26 @@ body.info-page{margin:0;background:var(--info-bg);color:var(--info-text);font:15
  body.info-page.experience-shell .info-footer nav{min-width:0!important;}
  body.info-page.experience-shell .info-footer a{overflow-wrap:anywhere!important;}
 }
+
+
+/* Highest-priority mobile override for the collapsed drawer on every info page. */
+@media(max-width:900px){
+ html body.info-page.experience-shell.rail-compact .loox-rail-head,
+ html body.info-page.experience-shell:not(.rail-compact) .loox-rail-head{
+   position:fixed!important;left:8px!important;top:13px!important;right:auto!important;bottom:auto!important;
+   width:36px!important;height:36px!important;min-height:36px!important;
+   margin:0!important;padding:0!important;z-index:110!important;
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   background:transparent!important;border:0!important;pointer-events:auto!important;
+ }
+ html body.info-page.experience-shell.rail-compact .loox-rail{
+   width:0!important;min-width:0!important;border:0!important;overflow:visible!important;
+   box-shadow:none!important;background:transparent!important;
+ }
+ html body.info-page.experience-shell.rail-compact .loox-rail > :not(.loox-rail-head){display:none!important;}
+ html body.info-page.experience-shell .info-footer,
+ html body.info-page.experience-shell.rail-compact .info-footer{
+   margin-left:0!important;margin-right:0!important;width:100%!important;
+   max-width:100%!important;box-sizing:border-box!important;
+ }
+}
