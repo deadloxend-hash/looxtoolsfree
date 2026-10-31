@@ -75,7 +75,7 @@ function showLayers(){
 }
 function field(label,key,value,type='number',min='',max='',step='0.01'){
  const input=type==='select'?'<select data-prop="'+key+'">'+value+'</select>':type==='textarea'?'<textarea data-prop="'+key+'">'+esc(value)+'</textarea>':'<input data-prop="'+key+'" type="'+type+'" value="'+esc(value)+'" '+(min!==''?'min="'+min+'" ':'')+(max!==''?'max="'+max+'" ':'')+(step?'step="'+step+'"':'')+'>';
- return '<label class="studio-field"><span>'+label+'</span>'+input+'</label>'
+ return '<label class="studio-field"><span>'+label+(type==='range'?'<output class="studio-live-value">'+esc(value)+(['opacity','volume'].includes(key)?'%':'')+'</output>':'')+'</span>'+input+'</label>'
 }
 const opts=(values,current)=>values.map(([v,label])=>'<option value="'+esc(v)+'" '+(String(v)===String(current)?'selected':'')+'>'+esc(label)+'</option>').join('');
 function cropClipBox(c){return {x:c.x-c.w/2,y:c.y-c.h/2,w:c.w,h:c.h}}
@@ -156,8 +156,10 @@ function showProperties(){
  if(!c){el.innerHTML='<p class="studio-section-note">Choose a clip to edit, or use these project controls.</p><button class="studio-btn secondary" id="addTextInspector">+ New title layer</button>';el.querySelector('button').onclick=addText;return}
  let html='<strong style="overflow-wrap:anywhere">'+esc(c.name)+'</strong><p class="studio-section-note">Layer '+c.layer+' · '+esc(c.kind)+'</p>';
  html+='<div class="studio-field-grid">'+field('Start (s)','start',c.start,'number',0,36000,.1)+field('Length (s)','duration',c.duration,'number',.1,36000,.1)+'</div>';
- if(c.kind==='video'||c.kind==='audio')html+='<div class="studio-field-grid">'+field('Source in (s)','trimStart',c.trimStart,'number',0,c.sourceDuration,.1)+field('Volume %','volume',Math.round(c.volume*100),'range',0,200,1)+'</div>';
+ if(c.kind==='video'||c.kind==='audio'){
+  html+='<div class="studio-field-grid">'+field('Source in (s)','trimStart',c.trimStart,'number',0,c.sourceDuration,.1)+field('Volume %','volume',Math.round(c.volume*100),'range',0,200,1)+'</div>';
   html+=field('Playback speed','rate',opts([[.5,'0.5× Slow'],[.75,'0.75×'],[1,'1× Normal'],[1.25,'1.25×'],[1.5,'1.5×'],[2,'2× Fast']],c.rate),'select');
+ }
  if(c.kind!=='audio'){
   html+='<div class="studio-field-grid">'+field('Horizontal %','x',Math.round(c.x*100),'range',-50,150,1)+field('Vertical %','y',Math.round(c.y*100),'range',-50,150,1)+field('Width %','w',Math.round(c.w*100),'number',2,250,1)+field('Height %','h',Math.round(c.h*100),'number',2,250,1)+field('Rotation °','angle',c.angle,'number',-360,360,1)+field('Opacity %','opacity',Math.round(c.opacity*100),'range',0,100,1)+'</div>';
   html+=field('Layer order','layer',c.layer,'number',0,30,1);
@@ -168,7 +170,8 @@ function showProperties(){
   html+=field('Framing','fit',opts([['cover','Fill & crop'],['contain','Fit inside']],c.fit),'select');
   html+=field('Crop / zoom','zoom',c.zoom,'range',1,4,.05);
   html+='<div class="studio-field-grid">'+field('Crop pan X','panX',c.panX,'range',-100,100,1)+field('Crop pan Y','panY',c.panY,'range',-100,100,1)+'</div>';
-  html+=field('Filter','filter',opts(Object.keys(themes).map(v=>[v,v[0].toUpperCase()+v.slice(1)]),c.filter),'select')
+  html+=field('Filter','filter',opts(Object.keys(themes).map(v=>[v,v[0].toUpperCase()+v.slice(1)]),c.filter),'select');
+  html+='<div class="studio-button-row"><button class="studio-btn secondary" type="button" id="cropLayer">⌗ Crop with mouse</button></div>'
  }
  if(c.kind==='text'){
   html+=field('Title','text',c.text,'textarea');
@@ -180,25 +183,40 @@ function showProperties(){
  html+='<div class="studio-button-row"><button class="studio-btn secondary" id="duplicate">Duplicate</button><button class="studio-btn danger" id="remove">Delete</button></div>';
  el.innerHTML=html;
  el.querySelectorAll('[data-prop]').forEach(input=>{
-  const prop=input.dataset.prop;
-  if(input.type==='range')input.onpointerdown=()=>snap();
-  const change=()=>{if(input.type!=='range')snap();let v=input.value;
+  const prop=input.dataset.prop;let remembered=false;
+  const mark=()=>{if(!remembered){snap();remembered=true}};
+  input.addEventListener('focus',mark);
+  input.addEventListener('pointerdown',mark);
+  input.addEventListener('blur',()=>{remembered=false});
+  const change=()=>{
+   let v=input.value;
    if(!['text','font','color','effect','fit','filter','transition'].includes(prop))v=Number(v);
    if(['x','y','w','h','opacity','volume'].includes(prop))v/=100;
-   if(prop==='duration')v=clamp(v,.1,c.kind==='video'||c.kind==='audio'?Math.max(.1,c.sourceDuration-c.trimStart):36000);
-   if(prop==='trimStart'){v=clamp(v,0,Math.max(0,c.sourceDuration-.1));c.duration=Math.min(c.duration,(c.sourceDuration-v)/c.rate)}
+   if(prop==='duration')v=clamp(v,.1,c.kind==='video'||c.kind==='audio'?Math.max(.1,(c.sourceDuration-c.trimStart)/(c.rate||1)):36000);
+   if(prop==='trimStart'){v=clamp(v,0,Math.max(0,c.sourceDuration-.1));c.duration=Math.min(c.duration,(c.sourceDuration-v)/(c.rate||1))}
    if(prop==='rate')c.duration=Math.max(.1,(c.sourceDuration-c.trimStart)/v);
    if(prop==='start')v=clamp(v,0,36000);
    if(prop==='zoom')v=clamp(v,1,4);
-   
    c[prop]=v;
-   if(!playing)syncMedia();
-   refresh(false);
+   const output=input.closest('label')?.querySelector('.studio-live-value');
+   if(output)output.textContent=input.value+(['opacity','volume'].includes(prop)?'%':'');
+   if(['start','duration','trimStart','rate'].includes(prop))renderTimeline();
+   if(['volume','rate','trimStart','start','duration'].includes(prop))syncMedia();
+   renderPreview()
   };
-  input.addEventListener(input.type==='range'?'input':'change',change)
+  input.addEventListener(input.tagName==='SELECT'?'change':'input',change);
+  if(input.type==='range'){
+   input.addEventListener('wheel',e=>{
+    e.preventDefault();mark();
+    const step=Number(input.step)||1,delta=e.deltaY>0?-step:step;
+    input.value=clamp(Number(input.value)+delta,Number(input.min),Number(input.max));
+    input.dispatchEvent(new Event('input',{bubbles:true}))
+   },{passive:false})
+  }
  });
  el.querySelector('#remove').onclick=removeSelected;
  el.querySelector('#duplicate').onclick=duplicate;
+ if(c.kind==='video'||c.kind==='image')el.querySelector('#cropLayer').onclick=enterCrop;
 }
 function removeSelected(){const c=getSelected();if(!c)return;snap();clips.splice(clips.indexOf(c),1);selected=null;pause();refresh();status('Layer removed.')}
 $('deleteClip').onclick=removeSelected;
