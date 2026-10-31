@@ -78,8 +78,81 @@ function field(label,key,value,type='number',min='',max='',step='0.01'){
  return '<label class="studio-field"><span>'+label+'</span>'+input+'</label>'
 }
 const opts=(values,current)=>values.map(([v,label])=>'<option value="'+esc(v)+'" '+(String(v)===String(current)?'selected':'')+'>'+esc(label)+'</option>').join('');
+function cropClipBox(c){return {x:c.x-c.w/2,y:c.y-c.h/2,w:c.w,h:c.h}}
+function cropAbsolute(c){const b=cropClipBox(c);return {x:b.x+b.w*cropDraft.x,y:b.y+b.h*cropDraft.y,w:b.w*cropDraft.w,h:b.h*cropDraft.h}}
+function cropPixels(c){const m=c.media,src=c.cropSource||{x:0,y:0,w:1,h:1};return {w:Math.max(1,(c.kind==='image'?m?.naturalWidth:m?.videoWidth||960)*src.w),h:Math.max(1,(c.kind==='image'?m?.naturalHeight:m?.videoHeight||540)*src.h)}}
+function cropAspectValue(){if(cropRatio==='free')return 0;const [a,b]=cropRatio.split(':').map(Number);return a/b}
+function fitVideoCropRatio(changed=''){
+ const c=getSelected(),ratio=cropAspectValue();if(!c||!ratio||!cropDraft)return;
+ const b=cropClipBox(c),factor=ratio*canvas.height*b.h/(canvas.width*b.w);
+ const cx=cropDraft.x+cropDraft.w/2,cy=cropDraft.y+cropDraft.h/2;
+ let w=cropDraft.w,h=cropDraft.h;
+ if(changed==='w')h=w/factor;
+ else if(changed==='h')w=h*factor;
+ else if(w/h>factor)w=h*factor;
+ else h=w/factor;
+ if(w>1){w=1;h=w/factor}if(h>1){h=1;w=h*factor}
+ cropDraft={x:clamp(cx-w/2,0,1-w),y:clamp(cy-h/2,0,1-h),w,h}
+}
+function syncVideoCropFields(except=null){
+ if(!cropMode||!cropDraft)return;
+ const c=getSelected();if(!c)return;
+ const dims=cropPixels(c),inspector=$('properties');
+ const px={cropX:Math.round(cropDraft.x*dims.w),cropY:Math.round(cropDraft.y*dims.h),
+ cropW:Math.round(cropDraft.w*dims.w),cropH:Math.round(cropDraft.h*dims.h)};
+ Object.entries(px).forEach(([key,v])=>{const el=inspector.querySelector('[data-prop='+key+']');if(el&&el!==except)el.value=v});
+ const label=inspector.querySelector('#cropReadout');if(label)label.textContent='Selected source: '+Math.max(1,px.cropW)+' × '+Math.max(1,px.cropH)+' px • layer crop';
+}
+function enterCrop(){
+ const c=getSelected();
+ if(!c||!['video','image'].includes(c.kind)){status('Select a video or image clip before using Crop.');return}
+ pause();seek(Math.min(c.start+c.duration-.04,Math.max(c.start+.04,playhead)));
+ cropMode=true;cropRatio='free';cropDraft={x:.03,y:.03,w:.94,h:.94};
+ showProperties();status('Crop mode: drag the white handles to resize, or type exact pixel dimensions.');
+}
+function exitCrop(){cropMode=false;cropDraft=null;canvas.style.cursor='default';showProperties()}
+function showVideoCropInspector(c,el){
+ const dims=cropPixels(c);const px={cropX:Math.round(cropDraft.x*dims.w),cropY:Math.round(cropDraft.y*dims.h),cropW:Math.round(cropDraft.w*dims.w),cropH:Math.round(cropDraft.h*dims.h)};
+ el.innerHTML='<strong>Crop '+esc(c.name)+'</strong><p class="studio-crop-guide">Drag inside the crop to move it, or drag the corners and edges to resize. The preview shows the selected layer crop.</p>'+
+ field('Crop aspect ratio','cropRatio',opts([['free','Free crop'],['1:1','1:1 Square'],['16:9','16:9 Landscape'],['9:16','9:16 Portrait'],['4:3','4:3 Classic'],['4:5','4:5 Portrait']],cropRatio),'select')+
+ '<div class="studio-field-grid">'+field('X (px)','cropX',px.cropX,'number',0,dims.w,1)+field('Y (px)','cropY',px.cropY,'number',0,dims.h,1)+field('Width (px)','cropW',px.cropW,'number',8,dims.w,1)+field('Height (px)','cropH',px.cropH,'number',8,dims.h,1)+'</div>'+
+ '<p class="studio-section-note" id="cropReadout"></p><div class="studio-button-row"><button class="studio-btn" id="applyVideoCrop">✓ Apply crop</button><button class="studio-btn secondary" id="cancelVideoCrop">Cancel</button><button class="studio-btn ghost" id="resetVideoCrop">Reset</button></div>';
+ el.querySelector('[data-prop=cropRatio]').onchange=e=>{cropRatio=e.target.value;fitVideoCropRatio();syncVideoCropFields()};
+ ['cropX','cropY','cropW','cropH'].forEach(key=>{
+  const input=el.querySelector('[data-prop='+key+']');
+  input.oninput=()=>{
+   const value=Number(input.value),prop=key.slice(-1).toLowerCase();
+   if(!Number.isFinite(value))return;
+   const unit=(prop==='x'||prop==='w'?dims.w:dims.h);
+   cropDraft[prop]=clamp(value/unit,prop==='w'||prop==='h'?.01:0,1);
+   cropDraft.w=clamp(cropDraft.w,.01,1-cropDraft.x);cropDraft.h=clamp(cropDraft.h,.01,1-cropDraft.y);
+   cropDraft.x=clamp(cropDraft.x,0,1-cropDraft.w);cropDraft.y=clamp(cropDraft.y,0,1-cropDraft.h);
+   if(cropRatio!=='free'&&(prop==='w'||prop==='h'))fitVideoCropRatio(prop);
+   syncVideoCropFields(input)
+  }
+ });
+ el.querySelector('#applyVideoCrop').onclick=applyVideoCrop;
+ el.querySelector('#cancelVideoCrop').onclick=exitCrop;
+ el.querySelector('#resetVideoCrop').onclick=()=>{cropDraft={x:.03,y:.03,w:.94,h:.94};fitVideoCropRatio();syncVideoCropFields()};
+ syncVideoCropFields();
+}
+function applyVideoCrop(){
+ const c=getSelected();if(!c||!cropDraft)return;
+ snap();
+ const old={x:c.x,y:c.y,w:c.w,h:c.h};
+ c.x=old.x-old.w/2+old.w*(cropDraft.x+cropDraft.w/2);
+ c.y=old.y-old.h/2+old.h*(cropDraft.y+cropDraft.h/2);
+ c.w=old.w*cropDraft.w;c.h=old.h*cropDraft.h;
+ const oldSource=c.cropSource||{x:0,y:0,w:1,h:1};
+ c.cropSource={x:oldSource.x+oldSource.w*cropDraft.x,y:oldSource.y+oldSource.h*cropDraft.y,
+ w:oldSource.w*cropDraft.w,h:oldSource.h*cropDraft.h};
+ c.fit='cover';c.zoom=1;c.panX=0;c.panY=0;
+ cropMode=false;cropDraft=null;showProperties();renderPreview();
+ status('Crop applied. The selected video/image is now trimmed visually; Undo restores the original.');
+}
 function showProperties(){
  const el=$('properties'),c=getSelected();
+ if(cropMode&&c&&cropDraft){showVideoCropInspector(c,el);return}
  if(!c){el.innerHTML='<p class="studio-section-note">Choose a clip to edit, or use these project controls.</p><button class="studio-btn secondary" id="addTextInspector">+ New title layer</button>';el.querySelector('button').onclick=addText;return}
  let html='<strong style="overflow-wrap:anywhere">'+esc(c.name)+'</strong><p class="studio-section-note">Layer '+c.layer+' · '+esc(c.kind)+'</p>';
  html+='<div class="studio-field-grid">'+field('Start (s)','start',c.start,'number',0,36000,.1)+field('Length (s)','duration',c.duration,'number',.1,36000,.1)+'</div>';
