@@ -11,7 +11,7 @@ export const imageCategories=[
  ['video','Video & Animation Utilities','video-animation-tools']
 ].map(([id,name,slug])=>({id,name,slug}));
 const rows=[
- ['image-resizer','Image Resizer','resize','resize','Resize in pixels or by percentage, with an optional aspect lock.',{w:1600,h:900}],
+ ['image-resizer','Image Resizer','resize','resize','Resize in pixels or by percentage, with an optional aspect lock.',{w:1600,h:900,presets:[['Instagram Story',1080,1920],['Square Post',1080,1080],['Portrait Post',1080,1350],['Landscape',1200,630],['YouTube',1280,720],['LinkedIn Banner',1584,396]]}],
  ['resize-1920x1080','Resize to 1920 × 1080','resize','resize','Prepare a Full HD canvas with fit, fill or stretch controls.',{w:1920,h:1080}],
  ['resize-1080x1080','Resize to 1080 × 1080','resize','resize','Make a square social image without guessing the dimensions.',{w:1080,h:1080}],
  ['resize-512x512','Resize to 512 × 512','resize','resize','Prepare a compact square avatar or thumbnail.',{w:512,h:512}],

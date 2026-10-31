@@ -1,4 +1,4 @@
-import {imageTools} from './content/image-tool-definitions.mjs?v=40';
+import {imageTools} from './content/image-tool-definitions.mjs?v=41';
 import {canvas,clamp,decode,fit,background,encode,downloadable,formatBytes,extension,targetCompress,losslessPng,density,crop,grade,effect,masked,palette,sharpen,perspective,loadScript} from './tools/image-core.mjs?v=40';
 const tool=imageTools.find(t=>t.slug===document.body.dataset.imageTool);
 if(!tool)throw Error('Unknown image workspace.');
@@ -52,6 +52,14 @@ function controlsHTML(){
  return s;
 }
 controls.innerHTML=controlsHTML();
+if(tool.slug==='image-resizer'){
+ const preset=$('#opt-preset');
+ if(preset){
+  const gallery=document.createElement('div');gallery.className='resizer-preset-gallery work-wide';gallery.setAttribute('aria-label','Quick aspect ratio presets');
+  tool.config.presets.forEach((p,i)=>{const button=document.createElement('button');button.type='button';button.className='resizer-preset-card';button.innerHTML='<span class="resizer-preset-thumb" style="--preset-ratio:'+p[1]+'/'+p[2]+'"></span><strong>'+esc(p[0])+'</strong><small>'+p[1]+' × '+p[2]+'</small>';button.addEventListener('click',()=>{preset.value=String(i);preset.dispatchEvent(new Event('input',{bubbles:true}));gallery.querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===button))});gallery.append(button)});
+  preset.closest('label').after(gallery);
+ }
+}
 // Explicit conversion and file-limit routes keep their required output type.
 try{const p=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}'),format=$('#opt-format');if(p&&format&&!['convert','compress','dpi'].includes(tool.op)&&[...format.options].some(o=>o.value===p.imageFormat))format.value=p.imageFormat}catch{}
 function syncRect(){if(!rect)return;for(const [key,val]of Object.entries({x:rect.x,y:rect.y,cw:rect.w,ch:rect.h}))if($('#opt-'+key))$('#opt-'+key).value=Math.round(val)}

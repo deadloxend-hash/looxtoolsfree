@@ -66,6 +66,7 @@
     select, input[type="range"] { width: 100%; background: #08090d; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; outline: none; font-size: 0.9rem; }
     
     .file-info { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 5px; flex-wrap: wrap; gap: 10px; }
+    .live-preview-note { color: #86efcc; }
 
     .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
     .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
@@ -93,6 +94,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 <meta name="description" content="Make your image fit the workflow, without rebuilding it from scratch. Learn the workflow, choose useful settings, and review privacy details with LOOX Tools.">
 
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/imgformatconverter.html">
+
 
 
 
@@ -167,6 +169,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
             <span>Source Name: <strong id="fileNameDisplay" style="color:#fff;">-</strong></span>
             <span>Detected Format: <strong id="fileTypeDisplay" style="color:#ec4899;">-</strong></span>
             <span>Source File Size: <strong id="fileSizeDisplay" style="color:#fff;">-</strong></span>
+            <span class="live-preview-note">Live Output Size: <strong id="outputSizeDisplay">-</strong></span>
           </div>
         </div>
 
@@ -186,6 +189,9 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
     let loadedImage = new Image();
     let currentFile = null;
+    let previewUrl = null;
+    let previewTimer = null;
+    let previewGeneration = 0;
 
     dropZone.addEventListener('dragover', (e) => e.preventDefault());
     dropZone.addEventListener('drop', (e) => {
@@ -220,12 +226,14 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
         imagePreview.src = fileUrl;
         dropZone.style.display = 'none';
         converterLayout.style.display = 'flex';
+        scheduleLivePreview();
       };
       loadedImage.src = fileUrl;
     }
 
     function updateQualityText(val) {
       document.getElementById('qualityVal').textContent = val + '%';
+      scheduleLivePreview();
     }
 
     function toggleQualitySlider() {
@@ -233,21 +241,50 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       const supportsQuality = (selected === 'image/jpeg' || selected === 'image/webp');
       document.getElementById('qualityGroup').style.opacity = supportsQuality ? '1' : '0.3';
       qualityRange.disabled = !supportsQuality;
+      document.getElementById('qualityVal').textContent = supportsQuality ? qualityRange.value + '%' : 'Lossless';
+      scheduleLivePreview();
     }
 
-    function convertAndDownload() {
+    function createOutputCanvas() {
       const canvas = document.createElement('canvas');
       canvas.width = loadedImage.naturalWidth;
       canvas.height = loadedImage.naturalHeight;
-
       const ctx = canvas.getContext('2d');
-
       if (formatSelect.value === 'image/jpeg' || formatSelect.value === 'image/bmp') {
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-
       ctx.drawImage(loadedImage, 0, 0);
+      return canvas;
+    }
+
+    function browserOutputType() {
+      return ['image/x-icon', 'image/bmp', 'image/gif'].includes(formatSelect.value) ? 'image/png' : formatSelect.value;
+    }
+
+    function scheduleLivePreview() {
+      if (!currentFile || !loadedImage.naturalWidth) return;
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(renderLivePreview, 120);
+    }
+
+    function renderLivePreview() {
+      const generation = ++previewGeneration;
+      const quality = qualityRange.disabled ? undefined : Number(qualityRange.value) / 100;
+      document.getElementById('outputSizeDisplay').textContent = 'Calculating…';
+      createOutputCanvas().toBlob((blob) => {
+        if (!blob || generation !== previewGeneration) return;
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        previewUrl = URL.createObjectURL(blob);
+        imagePreview.src = previewUrl;
+        const delta = currentFile.size ? Math.round((1 - blob.size / currentFile.size) * 100) : 0;
+        const comparison = delta > 0 ? ` · ${delta}% smaller` : delta < 0 ? ` · ${Math.abs(delta)}% larger` : '';
+        document.getElementById('outputSizeDisplay').textContent = `${(blob.size / 1024).toFixed(1)} KB${comparison}`;
+      }, browserOutputType(), quality);
+    }
+
+    function convertAndDownload() {
+      const canvas = createOutputCanvas();
 
       const selectedFormat = formatSelect.value;
       const quality = parseFloat(qualityRange.value) / 100;
@@ -279,12 +316,18 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
     function resetConverter() {
       fileInput.value = '';
+      clearTimeout(previewTimer);
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
       converterLayout.style.display = 'none';
       dropZone.style.display = 'block';
+      document.getElementById('outputSizeDisplay').textContent = '-';
     }
   </script>
   
   <script src="loox-tool-ui.js?v=40"></script>
+
+
 
 
 
