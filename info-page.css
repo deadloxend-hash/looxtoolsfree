@@ -69,3 +69,41 @@ body.info-page{margin:0;background:var(--info-bg);color:var(--info-text);font:15
  body.info-page.experience-shell .info-footer-grid{gap:24px 16px!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;}
  body.info-page.experience-shell .info-footer-bottom{margin-top:24px!important;}
 }
+
+
+/* Shared mobile informational pages: consistent top navigation and full-bleed footer. */
+@media (max-width:900px){
+ html:has(body.info-page),body.info-page{max-width:100%;overflow-x:clip;}
+ body.info-page.experience-shell,body.info-page.experience-shell.rail-compact{--lx-rail:0px!important;}
+ body.info-page.experience-shell .info-header-inner{
+   padding-left:48px!important;padding-right:10px!important;gap:6px!important;
+ }
+ body.info-page.experience-shell .info-brand{margin:0!important;min-width:0!important;}
+ body.info-page.experience-shell .loox-rail{left:0!important;right:auto!important;transform:none!important;}
+ body.info-page.experience-shell.rail-compact .loox-rail{
+   width:0!important;min-width:0!important;overflow:visible!important;
+   background:transparent!important;border:0!important;box-shadow:none!important;
+ }
+ body.info-page.experience-shell.rail-compact .loox-rail>:not(.loox-rail-head){display:none!important;}
+ body.info-page.experience-shell .loox-rail-head{
+   position:fixed!important;top:77px!important;left:8px!important;bottom:auto!important;
+   height:36px!important;min-height:36px!important;width:36px!important;
+   padding:0!important;border:0!important;background:transparent!important;
+   pointer-events:auto!important;z-index:100!important;
+ }
+ body.info-page.experience-shell .loox-rail-toggle{
+   display:grid!important;place-items:center!important;
+   width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;
+   padding:0!important;background:transparent!important;border:0!important;box-shadow:none!important;
+ }
+ body.info-page.experience-shell .info-footer,
+ body.info-page.experience-shell.rail-compact .info-footer{
+   margin:0!important;width:100%!important;max-width:100%!important;
+   padding:28px 14px 24px!important;box-sizing:border-box!important;
+ }
+ body.info-page.experience-shell .info-footer-grid{
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:24px 12px!important;
+ }
+ body.info-page.experience-shell .info-footer nav{min-width:0!important;}
+ body.info-page.experience-shell .info-footer a{overflow-wrap:anywhere!important;}
+}
