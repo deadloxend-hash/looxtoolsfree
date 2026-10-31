@@ -422,7 +422,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
 <style>
 .loox-featured{padding:46px 0 10px}.loox-featured-head span{font-size:11px;font-weight:900;letter-spacing:2px;color:#a586ff}.loox-featured-head h2{font-size:clamp(25px,3.5vw,37px);margin:10px 0;letter-spacing:-1.2px}.loox-featured-head p{font-size:13px;color:var(--muted);margin:0 0 22px}.loox-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.loox-featured-card{display:flex;flex-direction:column;text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--white);min-width:0;transition:transform .2s,border-color .2s}.loox-featured-card:hover{transform:translateY(-4px);border-color:var(--purple)}.loox-featured-art{height:140px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:20px;font-size:60px;color:#fff;position:relative;overflow:hidden}.loox-featured-art i{font-style:normal;font-size:22px;letter-spacing:8px;opacity:.55}.loox-featured-art.video{background:linear-gradient(135deg,#2b215c,#7951d6,#bf69b2)}.loox-featured-art.remove{background:linear-gradient(135deg,#1c4758,#297d9e,#79b2bb)}.loox-featured-art.photo{background:linear-gradient(135deg,#53365d,#a25983,#e19a83)}.loox-featured-card strong{font-size:17px;margin:17px 3px 6px}.loox-featured-card small{font-size:12px;color:var(--muted);margin:0 3px 17px}.loox-featured-card b{font-size:12px;color:var(--purple);margin:0 3px 5px}.loox-featured-card:focus-visible{outline:3px solid var(--purple);outline-offset:3px}@media(max-width:760px){.loox-featured-grid{grid-template-columns:1fr}.loox-featured-art{height:115px}.loox-featured{padding-top:30px}}@media(prefers-reduced-motion:reduce){.loox-featured-card{transition:none}.loox-featured-card:hover{transform:none}}
 </style>
-<style>.loox-resources-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.loox-resources-grid a{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:16px 12px;text-decoration:none;font-size:12px;font-weight:750}.loox-resources-grid a:hover{border-color:var(--purple);color:var(--purple)}@media(max-width:900px){.loox-resources-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:480px){.loox-resources-grid{grid-template-columns:1fr 1fr}.loox-resources-grid a{font-size:11px;padding:13px 9px}}</style><link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/"><meta name="robots" content="index,follow"><meta property="og:type" content="website"><meta property="og:title" content="LOOXToolFree — Free Creative Tools"><meta property="og:description" content="Explore browser-based image, video, audio, PDF and design tools."><meta property="og:url" content="https://deadloxend-hash.github.io/looxtoolsfree/"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"LOOXToolFree","url":"https://deadloxend-hash.github.io/looxtoolsfree/","description":"Browser-based image, video, audio, PDF and creative tools."}</script>
+<link rel="stylesheet" href="loox-home-enhancements.css?v=41"><link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/"><meta name="robots" content="index,follow"><meta property="og:type" content="website"><meta property="og:title" content="LOOX — Browser-First Creative Tools"><meta property="og:description" content="Explore browser-based image, video, audio, PDF and design tools."><meta property="og:url" content="https://deadloxend-hash.github.io/looxtoolsfree/"><meta name="twitter:card" content="summary_large_image"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"LOOX","url":"https://deadloxend-hash.github.io/looxtoolsfree/","description":"Browser-based image, video, audio, PDF and creative tools."}</script>
+
 
 
 
@@ -561,22 +562,38 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
      <button class="filter" type="button" data-cat="Developer"><span class="filter-emoji">⌘</span> Developer</button>
     </nav>
     <div class="tool-grid" id="toolGrid"></div>
+    <div class="load-more-wrap" id="loadMoreWrap" aria-live="polite">
+     <span class="load-more-status" id="pageStatus">Showing 15 tools</span>
+     <button class="load-more-button" id="loadMore" type="button">Load More Tools</button>
+    </div>
    </div>
 
    <div class="privacy-card" id="privacy">
     <div class="privacy-icon">♢</div>
-    <div class="privacy-copy"><strong>Your files deserve respect.</strong><p>Many LOOX tools process files directly in your browser, so those files stay on your device. AI Face Swapper uses cloud processing, which means selected images are sent to its processing provider to complete the request. Some tools may load processing engines from trusted CDNs. Please read the privacy note shown on each tool before uploading sensitive files.</p></div>
+    <div class="privacy-copy"><strong>Your files deserve respect.</strong><p>The majority of LOOX tools process files directly inside your browser so your files stay on your device. For cloud-powered AI features, selected files are securely transmitted through encrypted connections only when you start processing. LOOX does not intentionally archive completed files after returning the result; connected service providers may apply their own operational retention terms.</p></div>
    </div>
   </div>
  </section>
-<section class="section" id="loox-resources"><div class="container"><div class="section-head"><div><div class="kicker">LOOX RESOURCES</div><h2>Learn, create and stay informed.</h2><p>Explore our guides, company information, support and transparent policies.</p></div></div><nav class="loox-resources-grid" aria-label="LOOX information and policies"><a href="products.html">Products</a><a href="guides.html">Education & guides</a><a href="help.html">Help center</a><a href="about.html">About us</a><a href="contact.html">Contact us</a><a href="pricing.html">Pricing</a><a href="terms.html">Terms of Use</a><a href="privacy-policy.html">Privacy Policy</a><a href="cookie-policy.html">Cookie Policy</a><a href="cookie-settings.html">Cookie settings</a></nav></div></section>
+<section class="loox-cta-section" aria-labelledby="loox-cta-title">
+ <div class="container">
+  <div class="loox-cta-card">
+   <div><span class="kicker">PRIVATE BY DESIGN</span><h2 id="loox-cta-title">Instant Local Editing. Zero Upload Delays.</h2><p>Experience fast, browser-first utilities built for privacy and performance.</p></div>
+   <div class="loox-cta-actions"><a class="loox-cta-primary" href="photo-editor.html">Launch Workspace</a><a class="loox-cta-secondary" href="#tools">View All Tools</a></div>
+  </div>
+ </div>
+</section>
 </main>
 
-<footer class="footer">
- <div class="container footer-inner">
-  <div class="footer-brand"><span class="brand-mark">L</span><strong>LOOX Tools</strong><span class="footer-copy">A little toolbox for big ideas.</span></div>
-  <div class="footer-links"><a href="#quickstart">Categories</a><a href="#tools">All tools</a><a href="#privacy">Privacy</a></div>
-  <span class="footer-copy">© <span id="year"></span> LOOX Tools. Made for the web.</span>
+<footer class="footer loox-site-footer">
+ <div class="container">
+  <div class="loox-footer-brand"><span class="brand-mark">L</span><div><strong>LOOX</strong><span>A clean toolbox for big ideas.</span></div></div>
+  <div class="loox-footer-grid">
+   <nav aria-label="Workspace"><h2>Workspace</h2><a href="index.html#tools">All Tools</a><a href="photo-editor.html">Photo Editor</a><a href="video-editor.html">Video Editor</a><a href="bg-remove.html">Background Remover</a><a href="faceswap.html">AI Face Swap</a></nav>
+   <nav aria-label="Products"><h2>Products</h2><a href="express.html">LOOX Express</a><a href="agent.html">LOOX Assistant</a><a href="mobile.html">LOOX Mobile</a><a href="desktop.html">LOOX Desktop</a></nav>
+   <nav aria-label="Resources"><h2>Resources</h2><a href="help.html">Help Center</a><a href="guides.html">Education &amp; Guides</a><a href="contact.html">Contact Us</a><a href="pricing.html">Pricing</a><a href="about.html">About Us</a></nav>
+   <nav aria-label="Legal and trust"><h2>Legal &amp; Trust</h2><a href="privacy-policy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="cookie-policy.html">Cookie Policy</a><a href="cookie-settings.html">Cookie Settings</a><a href="license.html">License Agreement</a></nav>
+  </div>
+  <div class="loox-footer-bottom"><span>LOOX - A clean toolbox for big ideas.</span><span>© <span id="year"></span> LOOX. All rights reserved.</span></div>
  </div>
 </footer>
 
@@ -638,16 +655,25 @@ function renderPersonal(){
  $('favGrid').innerHTML=favTools.length?favTools.map(personalCard).join(''):'<div class="empty-note">Your saved tools will appear here. Tap the heart on any tool to add it to favorites.</div>';
  $('recentGrid').innerHTML=recentTools.length?recentTools.map(personalCard).join(''):'<div class="empty-note">The tools you open will appear here, so you can find them again quickly.</div>';
 }
+const toolsPerPage=15;
+let visibleToolCount=toolsPerPage;
 function renderTools(){
- const list=tools.filter(t=>(category==='All'||t.cat===category)&&(!query||(t.name+' '+t.desc+' '+t.tags+' '+t.cat).toLowerCase().includes(query)));
+ const matches=tools.filter(t=>(category==='All'||t.cat===category)&&(!query||(t.name+' '+t.desc+' '+t.tags+' '+t.cat).toLowerCase().includes(query)));
+ const paginationActive=category==='All'&&!query;
+ const list=paginationActive?matches.slice(0,visibleToolCount):matches;
+ const remaining=Math.max(0,matches.length-list.length);
  $('toolGrid').innerHTML=list.length?list.map(toolCard).join(''):'<div class="empty-results">No tools found. Try another search or choose a different category.</div>';
- $('count').textContent=list.length+' '+(list.length===1?'tool':'tools');
+ $('count').textContent='Showing '+list.length+' of '+matches.length+' '+(matches.length===1?'tool':'tools');
+ $('pageStatus').textContent='Showing '+list.length+' of '+matches.length+' '+(matches.length===1?'tool':'tools');
+ $('loadMore').textContent=remaining?'Load More Tools ('+remaining+' remaining)':'All tools are visible';
+ $('loadMoreWrap').hidden=!paginationActive||remaining===0;
  $('toolsTitle').textContent=query?'Search results':category==='All'?'Explore all tools':category+' tools';
  document.querySelectorAll('.filter').forEach(button=>button.classList.toggle('active',button.dataset.cat===category));
 }
 function render(){renderPersonal();renderTools()}
 function chooseCategory(next){
  category=next;
+ visibleToolCount=toolsPerPage;
  const categoryURL=new URL(location.href);if(next==='All')categoryURL.searchParams.delete('category');else categoryURL.searchParams.set('category',next);history.replaceState(null,'',categoryURL);
  renderTools();
  $('tools').scrollIntoView({behavior:'smooth',block:'start'});
@@ -660,14 +686,20 @@ document.querySelectorAll('[data-quick-cat]').forEach(link=>link.addEventListene
 $('search').addEventListener('input',event=>{
  query=event.target.value.trim().toLowerCase();
  if(query)category='All';
+ else visibleToolCount=toolsPerPage;
  renderTools();
 });
 $('searchForm').addEventListener('submit',event=>{
  event.preventDefault();
  query=$('search').value.trim().toLowerCase();
  if(query)category='All';
+ else visibleToolCount=toolsPerPage;
  renderTools();
  $('tools').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('loadMore').addEventListener('click',()=>{
+ visibleToolCount=Math.min(visibleToolCount+toolsPerPage,tools.length);
+ renderTools();
 });
 document.addEventListener('click',event=>{
  const favorite=event.target.closest('[data-fav]');
@@ -702,7 +734,7 @@ document.addEventListener('keydown',event=>{
   event.preventDefault();$('search').focus();
  }
  if(event.key==='Escape'&&document.activeElement===$('search')){
-  $('search').value='';query='';category='All';renderTools();$('search').blur();
+  $('search').value='';query='';category='All';visibleToolCount=toolsPerPage;renderTools();$('search').blur();
  }
 });
 $('year').textContent=new Date().getFullYear();
@@ -784,6 +816,7 @@ try{savedTheme=localStorage.getItem(themeKey)||'dark'}catch{}
 applyTheme(savedTheme,readCustomTheme(),false);
 
 </script>
+
 
 
 
