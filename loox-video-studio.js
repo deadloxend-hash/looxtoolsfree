@@ -45,23 +45,26 @@ async function addFiles(files,mode){
  refresh();status(errors?'Imported with '+errors+' unsupported file(s) skipped.':'Media imported. Select or drag layers on the timeline.');
 }
 function addText(){snap();const c=baseProps('text','Text '+nextId);c.text='Your title';c.layer=7;clips.push(c);pick(c.id);refresh();status('Text added. Edit the title in Properties.')}
+let uploadMode='video';
 function setTab(mode){
- $('libraryTitle').textContent=({video:'Video clips',overlay:'Video overlays',image:'Images',audio:'Sound & music',text:'Titles & fonts',crop:'Crop layer',project:'Canvas settings'})[mode]||'Your media';
- $('libraryHelp').textContent=({video:'Add one or more main-track video clips, in sequence.',overlay:'Layer a second video over your first video; drag it around the preview.',image:'Add an image over video or build a photo slideshow.',audio:'Mix music or sound effects. Source audio formats depend on your browser.',text:'Create titles with font, color, shadow and outline effects.',crop:'Drag a crop box by its white handles, or type exact dimensions.',project:'Choose your aspect ratio, export resolution, background and frame rate.'})[mode];
+ $('libraryTitle').textContent=({video:'Media · Video',overlay:'Media · Overlay video',image:'Media · Images',audio:'Media · Audio',text:'Text',crop:'Crop selected layer',project:'Canvas'})[mode]||'Media';
+ $('libraryHelp').textContent=({video:'Import one or more main video clips. New main clips are placed after the previous clip.',overlay:'Import a video that should appear above another clip, then resize and move it in the preview.',image:'Import PNG, JPG, WebP or another browser-supported image as an overlay.',audio:'Import MP3, WAV, M4A or another audio format your browser can decode. Audio gets its own timeline track.',text:'Create a title, then type directly in Properties for a live preview.',crop:'Select a video or image first, then drag the crop handles in the preview.',project:'Project size, ratio and export settings are available from Export.'})[mode];
  document.querySelectorAll('.studio-toolrail button').forEach(b=>b.classList.toggle('active',b.id==='tool'+mode[0].toUpperCase()+mode.slice(1)));
- if(mode==='video'||mode==='overlay'||mode==='image'||mode==='audio')$('file'+(mode==='overlay'?'Overlay':mode[0].toUpperCase()+mode.slice(1))).click();
+ if(['video','overlay','image','audio'].includes(mode)){
+  uploadMode=mode;
+  $('uploadButton').textContent=({video:'+ Import video',overlay:'+ Import overlay',image:'+ Import image',audio:'+ Import audio'})[mode];
+ }
  if(mode==='text')addText();
  if(mode==='crop')enterCrop();
- if(mode==='project'){selected=null;showProperties();}
+ if(mode==='project'){selected=null;showProperties();$('exportDialog').showModal();}
 }
 ['Video','Overlay','Image','Audio','Text','Crop','Project'].forEach(word=>{$('tool'+word).onclick=()=>setTab(word.toLowerCase())});
-let uploadMode='video';
-$('toolVideo').addEventListener('click',()=>uploadMode='video');$('toolOverlay').addEventListener('click',()=>uploadMode='overlay');$('toolImage').addEventListener('click',()=>uploadMode='image');$('toolAudio').addEventListener('click',()=>uploadMode='audio');
 $('uploadButton').onclick=()=>{const m=uploadMode==='overlay'?'Overlay':uploadMode[0].toUpperCase()+uploadMode.slice(1);$('file'+m).click()};
 for(const [input,mode] of [['fileVideo','video'],['fileOverlay','overlay'],['fileImage','image'],['fileAudio','audio']]){
  $(input).addEventListener('change',async e=>{await addFiles(e.target.files,mode);e.target.value=''})
 }
 $('addTitle').onclick=addText;
+document.addEventListener('paste',async e=>{const files=Array.from(e.clipboardData?.files||[]);if(files.length){e.preventDefault();await addFiles(files,null);status('Pasted '+files.length+' media file(s) into the project.')}});
 $('previewShell').addEventListener('dragover',e=>{e.preventDefault()});
 $('previewShell').addEventListener('drop',async e=>{e.preventDefault();const files=Array.from(e.dataTransfer.files);if(files.length)await addFiles(files,null)});
 function showLayers(){
@@ -438,5 +441,5 @@ $('export').onclick=exportVideo;
 $('exportTop').onclick=()=>{if(!$('exportDialog').open)$('exportDialog').showModal()};
 $('closeExport').onclick=()=>{$('exportDialog').close()};
 window.addEventListener('beforeunload',()=>{pause();urls.forEach(u=>URL.revokeObjectURL(u));if(audioCtx)audioCtx.close().catch(()=>{})});
-showLayers();showProperties();renderTimeline();status('Ready. Import a video, add an overlay or build a title sequence.');
+showLayers();showProperties();renderTimeline();setTab('video');status('Ready. Import video, image or audio, or paste/drag media into the editor.');
 })();
