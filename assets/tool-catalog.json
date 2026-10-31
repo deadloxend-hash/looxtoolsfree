@@ -3,6 +3,8 @@
     "slug": "video-editor",
     "url": "video-editor.html",
     "kind": "video",
+    "category": "video",
+    "collection": "video",
     "names": {
       "en": "Video Editor",
       "es": "Editor de vídeo",
@@ -20,6 +22,8 @@
     "slug": "photo-editor",
     "url": "photo-editor.html",
     "kind": "image",
+    "category": "edit",
+    "collection": "image",
     "names": {
       "en": "Photo Editor",
       "es": "Editor de fotos",
@@ -37,6 +41,8 @@
     "slug": "design-studio",
     "url": "design-studio.html",
     "kind": "design",
+    "category": "edit",
+    "collection": "image",
     "names": {
       "en": "Design Studio",
       "es": "Estudio de diseño",
@@ -54,6 +60,8 @@
     "slug": "bg-remove",
     "url": "bg-remove.html",
     "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
     "names": {
       "en": "Background Remover",
       "es": "Eliminador de fondos",
@@ -71,6 +79,8 @@
     "slug": "faceswap",
     "url": "faceswap.html",
     "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
     "names": {
       "en": "AI Face Swap",
       "es": "Intercambio de rostros con IA",
@@ -88,6 +98,8 @@
     "slug": "face-blur",
     "url": "face-blur.html",
     "kind": "image",
+    "category": "edit",
+    "collection": "image",
     "names": {
       "en": "Face Blur",
       "es": "Desenfoque de rostros",
@@ -105,6 +117,8 @@
     "slug": "cropimage",
     "url": "cropimage.html",
     "kind": "image",
+    "category": "crop",
+    "collection": "image",
     "names": {
       "en": "Image Cropper",
       "es": "Recortador de imágenes",
@@ -122,6 +136,8 @@
     "slug": "image-compressor",
     "url": "image-compressor.html",
     "kind": "image",
+    "category": "compress",
+    "collection": "image",
     "names": {
       "en": "Image Compressor",
       "es": "Compresor de imágenes",
@@ -139,6 +155,8 @@
     "slug": "imgformatconverter",
     "url": "imgformatconverter.html",
     "kind": "image",
+    "category": "convert",
+    "collection": "image",
     "names": {
       "en": "Image Converter",
       "es": "Conversor de imágenes",
@@ -156,6 +174,8 @@
     "slug": "video-compressor",
     "url": "video-compressor.html",
     "kind": "video",
+    "category": "video",
+    "collection": "video",
     "names": {
       "en": "Video Compressor",
       "es": "Compresor de vídeo",
@@ -173,6 +193,8 @@
     "slug": "video-to-gif",
     "url": "video-to-gif.html",
     "kind": "video",
+    "category": "video",
+    "collection": "video",
     "names": {
       "en": "Video to GIF",
       "es": "Vídeo a GIF",
@@ -190,6 +212,8 @@
     "slug": "video-to-mp3",
     "url": "video-to-mp3.html",
     "kind": "audio",
+    "category": "video",
+    "collection": "video",
     "names": {
       "en": "Video to MP3",
       "es": "Vídeo a MP3",
@@ -207,6 +231,8 @@
     "slug": "video-trimmer",
     "url": "video-trimmer.html",
     "kind": "video",
+    "category": "video",
+    "collection": "video",
     "names": {
       "en": "Video Trimmer",
       "es": "Recortador de vídeo",
@@ -224,6 +250,8 @@
     "slug": "youtube-thumbnail-maker",
     "url": "youtube-thumbnail-maker.html",
     "kind": "design",
+    "category": "brand",
+    "collection": "image",
     "names": {
       "en": "Thumbnail Maker",
       "es": "Creador de miniaturas",
@@ -239,25 +267,29 @@
   },
   {
     "slug": "image-resizer",
-    "url": "toolbox.html#image-resizer",
+    "url": "image-resizer.html",
     "kind": "image",
+    "category": "resize",
+    "collection": "image",
     "names": {
       "en": "Image Resizer",
-      "es": "Redimensionador de imágenes",
-      "fr": "Redimensionnement d’image",
+      "es": "Cambiar tamaño de imagen",
+      "fr": "Redimensionner une image",
       "de": "Bildgröße ändern"
     },
     "lead": {
-      "en": "Give every image the dimensions its destination actually needs.",
-      "es": "Dale a cada imagen las dimensiones que necesita.",
-      "fr": "Donnez à chaque image les dimensions adaptées à sa destination.",
-      "de": "Gib jedem Bild die Maße, die am Ziel gebraucht werden."
+      "en": "Resize in pixels or by percentage, with an optional aspect lock.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
     }
   },
   {
     "slug": "audio-cutter",
     "url": "toolbox.html#audio-cutter",
     "kind": "audio",
+    "category": "video",
+    "collection": "video",
     "names": {
       "en": "Audio Cutter",
       "es": "Recortador de audio",
@@ -275,6 +307,8 @@
     "slug": "pdf-merge",
     "url": "toolbox.html#pdf-merge",
     "kind": "document",
+    "category": null,
+    "collection": "other",
     "names": {
       "en": "PDF Merger",
       "es": "Unir PDF",
@@ -292,6 +326,8 @@
     "slug": "pdf-split",
     "url": "toolbox.html#pdf-split",
     "kind": "document",
+    "category": null,
+    "collection": "other",
     "names": {
       "en": "PDF Splitter",
       "es": "Dividir PDF",
@@ -309,6 +345,8 @@
     "slug": "pdf-rotate",
     "url": "toolbox.html#pdf-rotate",
     "kind": "document",
+    "category": null,
+    "collection": "other",
     "names": {
       "en": "PDF Rotator",
       "es": "Girar PDF",
@@ -326,6 +364,8 @@
     "slug": "images-pdf",
     "url": "toolbox.html#images-pdf",
     "kind": "document",
+    "category": "convert",
+    "collection": "image",
     "names": {
       "en": "Images to PDF",
       "es": "Imágenes a PDF",
@@ -343,6 +383,8 @@
     "slug": "developer",
     "url": "toolbox.html#developer",
     "kind": "code",
+    "category": null,
+    "collection": "other",
     "names": {
       "en": "Developer & Text Utilities",
       "es": "Utilidades de desarrollo y texto",
@@ -360,6 +402,8 @@
     "slug": "qr",
     "url": "toolbox.html#qr",
     "kind": "code",
+    "category": null,
+    "collection": "other",
     "names": {
       "en": "QR Code Generator",
       "es": "Generador de códigos QR",
@@ -377,6 +421,8 @@
     "slug": "yt-thumb",
     "url": "toolbox.html#yt-thumb",
     "kind": "remote",
+    "category": "brand",
+    "collection": "image",
     "names": {
       "en": "Thumbnail Viewer",
       "es": "Visor de miniaturas",
@@ -394,6 +440,8 @@
     "slug": "fancy-fonts",
     "url": "fancy-fonts.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Fancy Unicode Styles",
       "es": "Estilos Unicode",
@@ -411,6 +459,8 @@
     "slug": "text-editor",
     "url": "text-editor.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Text Editor",
       "es": "Editor de texto",
@@ -428,6 +478,8 @@
     "slug": "case-converter",
     "url": "case-converter.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Case Converter",
       "es": "Conversor de mayúsculas",
@@ -445,6 +497,8 @@
     "slug": "concat-text",
     "url": "concat-text.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Concatenate Text",
       "es": "Concatenar texto",
@@ -462,6 +516,8 @@
     "slug": "split-text",
     "url": "split-text.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Split Text",
       "es": "Dividir texto",
@@ -479,6 +535,8 @@
     "slug": "extract-columns",
     "url": "extract-columns.html",
     "kind": "code",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Extract Columns",
       "es": "Extraer columnas",
@@ -496,6 +554,8 @@
     "slug": "remove-spaces",
     "url": "remove-spaces.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Remove Extra Spaces",
       "es": "Quitar espacios extra",
@@ -513,6 +573,8 @@
     "slug": "strip-html",
     "url": "strip-html.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Strip HTML Tags",
       "es": "Eliminar etiquetas HTML",
@@ -530,6 +592,8 @@
     "slug": "remove-emojis",
     "url": "remove-emojis.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Remove Emojis",
       "es": "Eliminar emojis",
@@ -547,6 +611,8 @@
     "slug": "remove-symbols",
     "url": "remove-symbols.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Remove Unicode Symbols",
       "es": "Eliminar símbolos Unicode",
@@ -564,6 +630,8 @@
     "slug": "upside-down",
     "url": "upside-down.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Upside Down Text",
       "es": "Texto al revés",
@@ -581,6 +649,8 @@
     "slug": "unicode-normalizer",
     "url": "unicode-normalizer.html",
     "kind": "code",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Normalize Unicode",
       "es": "Normalizar Unicode",
@@ -598,6 +668,8 @@
     "slug": "bold-text",
     "url": "bold-text.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Bold Unicode Text",
       "es": "Texto Unicode en negrita",
@@ -615,6 +687,8 @@
     "slug": "italic-text",
     "url": "italic-text.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Italic Unicode Text",
       "es": "Texto Unicode en cursiva",
@@ -632,6 +706,8 @@
     "slug": "blackletter-text",
     "url": "blackletter-text.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Old English Text",
       "es": "Texto gótico",
@@ -649,6 +725,8 @@
     "slug": "cursive-text",
     "url": "cursive-text.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Cursive Unicode Text",
       "es": "Texto manuscrito Unicode",
@@ -666,6 +744,8 @@
     "slug": "random-numbers",
     "url": "random-numbers.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Random Number Generator",
       "es": "Generador de números aleatorios",
@@ -683,6 +763,8 @@
     "slug": "random-emails",
     "url": "random-emails.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Random Example Emails",
       "es": "Correos de ejemplo aleatorios",
@@ -700,6 +782,8 @@
     "slug": "pronounceable-passwords",
     "url": "pronounceable-passwords.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Pronounceable Passphrases",
       "es": "Contraseñas pronunciables",
@@ -717,6 +801,8 @@
     "slug": "strong-passwords",
     "url": "strong-passwords.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Strong Password Generator",
       "es": "Generador de contraseñas",
@@ -734,6 +820,8 @@
     "slug": "usernames",
     "url": "usernames.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Username Generator",
       "es": "Generador de nombres de usuario",
@@ -751,6 +839,8 @@
     "slug": "random-strings",
     "url": "random-strings.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Random String Generator",
       "es": "Generador de cadenas",
@@ -768,6 +858,8 @@
     "slug": "email-extractor",
     "url": "email-extractor.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Email Extractor",
       "es": "Extractor de correos",
@@ -785,6 +877,8 @@
     "slug": "url-extractor",
     "url": "url-extractor.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "URL Extractor",
       "es": "Extractor de URL",
@@ -802,6 +896,8 @@
     "slug": "word-counter",
     "url": "word-counter.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Word & Character Counter",
       "es": "Contador de palabras",
@@ -819,6 +915,8 @@
     "slug": "find-replace",
     "url": "find-replace.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Find & Replace",
       "es": "Buscar y reemplazar",
@@ -836,6 +934,8 @@
     "slug": "text-diff",
     "url": "text-diff.html",
     "kind": "code",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Text Difference Checker",
       "es": "Comparador de textos",
@@ -853,6 +953,8 @@
     "slug": "json-formatter",
     "url": "json-formatter.html",
     "kind": "code",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "JSON Formatter",
       "es": "Formateador JSON",
@@ -870,6 +972,8 @@
     "slug": "base64-encoder",
     "url": "base64-encoder.html",
     "kind": "code",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "Base64 Encoder & Decoder",
       "es": "Codificar y decodificar Base64",
@@ -887,6 +991,8 @@
     "slug": "url-encoder",
     "url": "url-encoder.html",
     "kind": "code",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "URL Encoder & Decoder",
       "es": "Codificar y decodificar URL",
@@ -904,6 +1010,8 @@
     "slug": "prompt-builder",
     "url": "prompt-builder.html",
     "kind": "text",
+    "category": null,
+    "collection": "text",
     "names": {
       "en": "AI Writing Prompt Builder",
       "es": "Creador de prompts de escritura",
@@ -921,6 +1029,8 @@
     "slug": "watermark",
     "url": "watermark.html",
     "kind": "media",
+    "category": "brand",
+    "collection": "image",
     "names": {
       "en": "Image & Video Watermark",
       "es": "Marca de agua para imagen y vídeo",
@@ -932,6 +1042,1203 @@
       "es": "Añade texto o tu logotipo como marca visible y guarda una copia independiente.",
       "fr": "Ajoutez un texte ou votre logo comme filigrane visible et conservez une copie séparée.",
       "de": "Ergänze Text oder dein Logo als sichtbares Wasserzeichen und speichere eine separate Kopie."
+    }
+  },
+  {
+    "slug": "resize-1920x1080",
+    "url": "resize-1920x1080.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize to 1920 × 1080",
+      "es": "Cambiar tamaño a 1920 × 1080",
+      "fr": "Redimensionner à 1920 × 1080",
+      "de": "Bildgröße 1920 × 1080"
+    },
+    "lead": {
+      "en": "Prepare a Full HD canvas with fit, fill or stretch controls.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-1080x1080",
+    "url": "resize-1080x1080.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize to 1080 × 1080",
+      "es": "Cambiar tamaño a 1080 × 1080",
+      "fr": "Redimensionner à 1080 × 1080",
+      "de": "Bildgröße 1080 × 1080"
+    },
+    "lead": {
+      "en": "Make a square social image without guessing the dimensions.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-512x512",
+    "url": "resize-512x512.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize to 512 × 512",
+      "es": "Cambiar tamaño a 512 × 512",
+      "fr": "Redimensionner à 512 × 512",
+      "de": "Bildgröße 512 × 512"
+    },
+    "lead": {
+      "en": "Prepare a compact square avatar or thumbnail.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-youtube",
+    "url": "resize-youtube.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for YouTube",
+      "es": "Tamaño para YouTube",
+      "fr": "Format YouTube",
+      "de": "Bildgröße für YouTube"
+    },
+    "lead": {
+      "en": "Build a 1280 × 720 thumbnail canvas and choose how the photo fits.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-instagram",
+    "url": "resize-instagram.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for Instagram",
+      "es": "Tamaño para Instagram",
+      "fr": "Formats Instagram",
+      "de": "Bildgrößen für Instagram"
+    },
+    "lead": {
+      "en": "Switch between square posts, vertical stories and portrait canvases.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-website",
+    "url": "resize-website.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for Website",
+      "es": "Tamaño para sitios web",
+      "fr": "Format pour le Web",
+      "de": "Bildgröße für Websites"
+    },
+    "lead": {
+      "en": "Reduce oversized camera photos to practical website dimensions.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-facebook",
+    "url": "resize-facebook.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for Facebook",
+      "es": "Tamaño para Facebook",
+      "fr": "Formats Facebook",
+      "de": "Bildgrößen für Facebook"
+    },
+    "lead": {
+      "en": "Prepare cover and post canvases using editable size presets.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-linkedin",
+    "url": "resize-linkedin.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for LinkedIn",
+      "es": "Tamaño para LinkedIn",
+      "fr": "Formats LinkedIn",
+      "de": "Bildgrößen für LinkedIn"
+    },
+    "lead": {
+      "en": "Compose a wide profile banner or a company update image.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-tiktok",
+    "url": "resize-tiktok.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for TikTok / Shorts",
+      "es": "Tamaño para TikTok y Shorts",
+      "fr": "Format TikTok / Shorts",
+      "de": "Bildgröße für TikTok / Shorts"
+    },
+    "lead": {
+      "en": "Place your image on a 1080 × 1920 vertical canvas.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-twitter",
+    "url": "resize-twitter.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for X",
+      "es": "Tamaño para X",
+      "fr": "Formats pour X",
+      "de": "Bildgrößen für X"
+    },
+    "lead": {
+      "en": "Choose a wide header or landscape post canvas.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "resize-pinterest",
+    "url": "resize-pinterest.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Resize for Pinterest",
+      "es": "Tamaño para Pinterest",
+      "fr": "Format Pinterest",
+      "de": "Bildgröße für Pinterest"
+    },
+    "lead": {
+      "en": "Create a 1000 × 1500 vertical pin with balanced framing.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "canvas-enlarger",
+    "url": "canvas-enlarger.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "Image Canvas Enlarger",
+      "es": "Ampliar lienzo de imagen",
+      "fr": "Agrandir le canevas",
+      "de": "Bildleinwand vergrößern"
+    },
+    "lead": {
+      "en": "Add transparent, solid or blurred padding around a photo.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "dpi-converter",
+    "url": "dpi-converter.html",
+    "kind": "image",
+    "category": "resize",
+    "collection": "image",
+    "names": {
+      "en": "DPI Converter",
+      "es": "Conversor de PPP / DPI",
+      "fr": "Convertisseur de résolution DPI",
+      "de": "DPI-Konverter"
+    },
+    "lead": {
+      "en": "Write print-density metadata without pretending to add image detail.",
+      "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+      "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+      "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+    }
+  },
+  {
+    "slug": "compress-20kb",
+    "url": "compress-20kb.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Compress to 20 KB",
+      "es": "Comprimir a 20 KB",
+      "fr": "Compresser à 20 Ko",
+      "de": "Auf 20 KB komprimieren"
+    },
+    "lead": {
+      "en": "Reduce an image below a 20 KB upload limit, adapting quality and dimensions when necessary.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "compress-50kb",
+    "url": "compress-50kb.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Compress to 50 KB",
+      "es": "Comprimir a 50 KB",
+      "fr": "Compresser à 50 Ko",
+      "de": "Auf 50 KB komprimieren"
+    },
+    "lead": {
+      "en": "Reduce an image below a 50 KB upload limit, adapting quality and dimensions when necessary.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "compress-100kb",
+    "url": "compress-100kb.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Compress to 100 KB",
+      "es": "Comprimir a 100 KB",
+      "fr": "Compresser à 100 Ko",
+      "de": "Auf 100 KB komprimieren"
+    },
+    "lead": {
+      "en": "Reduce an image below a 100 KB upload limit, adapting quality and dimensions when necessary.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "compress-200kb",
+    "url": "compress-200kb.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Compress to 200 KB",
+      "es": "Comprimir a 200 KB",
+      "fr": "Compresser à 200 Ko",
+      "de": "Auf 200 KB komprimieren"
+    },
+    "lead": {
+      "en": "Reduce an image below a 200 KB upload limit, adapting quality and dimensions when necessary.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "compress-500kb",
+    "url": "compress-500kb.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Compress to 500 KB",
+      "es": "Comprimir a 500 KB",
+      "fr": "Compresser à 500 Ko",
+      "de": "Auf 500 KB komprimieren"
+    },
+    "lead": {
+      "en": "Reduce an image below a 500 KB upload limit, adapting quality and dimensions when necessary.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "lossless-png-compressor",
+    "url": "lossless-png-compressor.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Lossless PNG Compressor",
+      "es": "Comprimir PNG sin pérdida",
+      "fr": "Compression PNG sans perte",
+      "de": "PNG verlustfrei komprimieren"
+    },
+    "lead": {
+      "en": "Recompress PNG image data while preserving its pixels and metadata.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "batch-image-compressor",
+    "url": "batch-image-compressor.html",
+    "kind": "image",
+    "category": "compress",
+    "collection": "image",
+    "names": {
+      "en": "Batch Image Compressor",
+      "es": "Compresor de imágenes por lotes",
+      "fr": "Compression d’images par lot",
+      "de": "Bilder stapelweise komprimieren"
+    },
+    "lead": {
+      "en": "Optimize several photos with one shared quality setting.",
+      "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+      "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+      "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+    }
+  },
+  {
+    "slug": "circle-crop",
+    "url": "circle-crop.html",
+    "kind": "image",
+    "category": "crop",
+    "collection": "image",
+    "names": {
+      "en": "Circle Crop Image",
+      "es": "Recorte circular de imagen",
+      "fr": "Recadrage circulaire",
+      "de": "Bild kreisförmig zuschneiden"
+    },
+    "lead": {
+      "en": "Create a circular avatar with genuinely transparent corners.",
+      "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+      "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+      "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+    }
+  },
+  {
+    "slug": "aspect-ratio-cropper",
+    "url": "aspect-ratio-cropper.html",
+    "kind": "image",
+    "category": "crop",
+    "collection": "image",
+    "names": {
+      "en": "Aspect Ratio Cropper",
+      "es": "Recorte por relación de aspecto",
+      "fr": "Recadrage au format choisi",
+      "de": "Zuschnitt nach Seitenverhältnis"
+    },
+    "lead": {
+      "en": "Drag the crop box or enter exact edges, with common ratio presets.",
+      "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+      "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+      "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+    }
+  },
+  {
+    "slug": "perspective-crop",
+    "url": "perspective-crop.html",
+    "kind": "image",
+    "category": "crop",
+    "collection": "image",
+    "names": {
+      "en": "Perspective Crop & Straighten",
+      "es": "Corregir perspectiva y enderezar",
+      "fr": "Corriger la perspective",
+      "de": "Perspektive korrigieren"
+    },
+    "lead": {
+      "en": "Move four corner points to flatten an angled page or sign.",
+      "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+      "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+      "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+    }
+  },
+  {
+    "slug": "shape-cropper",
+    "url": "shape-cropper.html",
+    "kind": "image",
+    "category": "crop",
+    "collection": "image",
+    "names": {
+      "en": "Custom Shape Cropper",
+      "es": "Recorte con formas",
+      "fr": "Recadrage en formes",
+      "de": "Bild in Formen zuschneiden"
+    },
+    "lead": {
+      "en": "Clip a photo to a star, heart, triangle or hexagon.",
+      "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+      "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+      "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+    }
+  },
+  {
+    "slug": "passport-photo-maker",
+    "url": "passport-photo-maker.html",
+    "kind": "image",
+    "category": "crop",
+    "collection": "image",
+    "names": {
+      "en": "Passport / ID Photo Maker",
+      "es": "Creador de foto de identificación",
+      "fr": "Photo de passeport / identité",
+      "de": "Passfoto-Vorlage"
+    },
+    "lead": {
+      "en": "Compose a 600 × 600 pixel, 300 DPI photo template with an optional background fill.",
+      "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+      "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+      "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+    }
+  },
+  {
+    "slug": "png-to-jpg",
+    "url": "png-to-jpg.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "PNG to JPG",
+      "es": "PNG a JPG",
+      "fr": "PNG vers JPG",
+      "de": "PNG in JPG"
+    },
+    "lead": {
+      "en": "Convert your PNG source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "jpg-to-png",
+    "url": "jpg-to-png.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "JPG to PNG",
+      "es": "JPG a PNG",
+      "fr": "JPG vers PNG",
+      "de": "JPG in PNG"
+    },
+    "lead": {
+      "en": "Convert your JPG source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "jpg-to-webp",
+    "url": "jpg-to-webp.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "JPG to WebP",
+      "es": "JPG a WebP",
+      "fr": "JPG vers WebP",
+      "de": "JPG in WebP"
+    },
+    "lead": {
+      "en": "Convert your JPG source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "webp-to-png",
+    "url": "webp-to-png.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "WebP to PNG",
+      "es": "WebP a PNG",
+      "fr": "WebP vers PNG",
+      "de": "WebP in PNG"
+    },
+    "lead": {
+      "en": "Convert your WebP source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "webp-to-jpg",
+    "url": "webp-to-jpg.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "WebP to JPG",
+      "es": "WebP a JPG",
+      "fr": "WebP vers JPG",
+      "de": "WebP in JPG"
+    },
+    "lead": {
+      "en": "Convert your WebP source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "heic-to-jpg",
+    "url": "heic-to-jpg.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "HEIC to JPG",
+      "es": "HEIC a JPG",
+      "fr": "HEIC vers JPG",
+      "de": "HEIC in JPG"
+    },
+    "lead": {
+      "en": "Convert your HEIC source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "heic-to-png",
+    "url": "heic-to-png.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "HEIC to PNG",
+      "es": "HEIC a PNG",
+      "fr": "HEIC vers PNG",
+      "de": "HEIC in PNG"
+    },
+    "lead": {
+      "en": "Convert your HEIC source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "avif-to-jpg",
+    "url": "avif-to-jpg.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "AVIF to JPG",
+      "es": "AVIF a JPG",
+      "fr": "AVIF vers JPG",
+      "de": "AVIF in JPG"
+    },
+    "lead": {
+      "en": "Convert your AVIF source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "avif-to-png",
+    "url": "avif-to-png.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "AVIF to PNG",
+      "es": "AVIF a PNG",
+      "fr": "AVIF vers PNG",
+      "de": "AVIF in PNG"
+    },
+    "lead": {
+      "en": "Convert your AVIF source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "svg-to-png",
+    "url": "svg-to-png.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "SVG to PNG",
+      "es": "SVG a PNG",
+      "fr": "SVG vers PNG",
+      "de": "SVG in PNG"
+    },
+    "lead": {
+      "en": "Convert your SVG source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "bmp-tiff-converter",
+    "url": "bmp-tiff-converter.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "BMP / TIFF Converter",
+      "es": "Conversor BMP / TIFF",
+      "fr": "Convertisseur BMP / TIFF",
+      "de": "BMP-/TIFF-Konverter"
+    },
+    "lead": {
+      "en": "Convert your BMP / TIFF Converter source into a separate downloadable image.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "pdf-to-jpg",
+    "url": "pdf-to-jpg.html",
+    "kind": "image",
+    "category": "convert",
+    "collection": "image",
+    "names": {
+      "en": "PDF to JPG",
+      "es": "PDF a JPG",
+      "fr": "PDF vers JPG",
+      "de": "PDF in JPG"
+    },
+    "lead": {
+      "en": "Render selected PDF pages into individual high-resolution JPEG images.",
+      "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+      "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+      "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+    }
+  },
+  {
+    "slug": "color-extractor",
+    "url": "color-extractor.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Color Extractor",
+      "es": "Extractor de colores",
+      "fr": "Extraire une palette",
+      "de": "Farbpalette extrahieren"
+    },
+    "lead": {
+      "en": "Find dominant colors and copy a practical palette of hex codes.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "image-blur",
+    "url": "image-blur.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Image Blur Brush",
+      "es": "Pincel de desenfoque",
+      "fr": "Pinceau de flou",
+      "de": "Weichzeichner-Pinsel"
+    },
+    "lead": {
+      "en": "Paint Gaussian-style, radial or directional blur over selected areas.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "image-pixelator",
+    "url": "image-pixelator.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Image Pixelator",
+      "es": "Pixelar imagen",
+      "fr": "Pixelliser une image",
+      "de": "Bild verpixeln"
+    },
+    "lead": {
+      "en": "Paint a pixelated mosaic over faces, text or sensitive details.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "selective-color",
+    "url": "selective-color.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Selective Invert & Color Pop",
+      "es": "Invertir color y color selectivo",
+      "fr": "Inversion et couleur sélective",
+      "de": "Farben umkehren und hervorheben"
+    },
+    "lead": {
+      "en": "Paint an inverted region or reveal color over a monochrome photo.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "color-grading",
+    "url": "color-grading.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Color Grading & Adjustments",
+      "es": "Ajustes y gradación de color",
+      "fr": "Réglages et étalonnage couleur",
+      "de": "Farbkorrektur und Anpassungen"
+    },
+    "lead": {
+      "en": "Balance brightness, contrast, saturation, exposure, temperature and tint.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "cinematic-filters",
+    "url": "cinematic-filters.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Cinematic Photo Filters",
+      "es": "Filtros de fotografía",
+      "fr": "Filtres photo cinématiques",
+      "de": "Fotofilter mit Filmlook"
+    },
+    "lead": {
+      "en": "Explore vintage, monochrome, cyberpunk, retro and grain looks.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "photo-collage",
+    "url": "photo-collage.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Photo Collage Maker",
+      "es": "Creador de collages",
+      "fr": "Créer un collage photo",
+      "de": "Fotocollage erstellen"
+    },
+    "lead": {
+      "en": "Arrange two to nine photos in a grid with adjustable borders.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "screenshot-background",
+    "url": "screenshot-background.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Screenshot Background Changer",
+      "es": "Fondo para capturas de pantalla",
+      "fr": "Fond pour captures d’écran",
+      "de": "Screenshot-Hintergrund gestalten"
+    },
+    "lead": {
+      "en": "Set a screenshot on a gradient canvas with padding and a soft shadow.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "vignette-focus",
+    "url": "vignette-focus.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Vignette & Focus Blur",
+      "es": "Viñeta y desenfoque de enfoque",
+      "fr": "Vignette et flou de mise au point",
+      "de": "Vignette und Fokusunschärfe"
+    },
+    "lead": {
+      "en": "Guide attention with soft edge shading and an adjustable focus area.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "sharpen-clarity",
+    "url": "sharpen-clarity.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Sharpen & Clarity",
+      "es": "Nitidez y claridad",
+      "fr": "Netteté et clarté",
+      "de": "Schärfe und Klarheit"
+    },
+    "lead": {
+      "en": "Increase local edge contrast with an adjustable sharpening amount.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+    }
+  },
+  {
+    "slug": "add-text-to-image",
+    "url": "add-text-to-image.html",
+    "kind": "image",
+    "category": "brand",
+    "collection": "image",
+    "names": {
+      "en": "Add Text to Image",
+      "es": "Añadir texto a una imagen",
+      "fr": "Ajouter du texte à une image",
+      "de": "Text zu Bildern hinzufügen"
+    },
+    "lead": {
+      "en": "Add a caption with fonts, alignment, outline and shadow controls.",
+      "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+      "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+      "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+    }
+  },
+  {
+    "slug": "watermark-pattern",
+    "url": "watermark-pattern.html",
+    "kind": "image",
+    "category": "brand",
+    "collection": "image",
+    "names": {
+      "en": "Watermark Pattern Generator",
+      "es": "Patrón de marcas de agua",
+      "fr": "Motif de filigranes",
+      "de": "Wasserzeichenmuster"
+    },
+    "lead": {
+      "en": "Create a repeating diagonal text watermark across a photo.",
+      "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+      "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+      "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+    }
+  },
+  {
+    "slug": "whatsapp-dp",
+    "url": "whatsapp-dp.html",
+    "kind": "image",
+    "category": "brand",
+    "collection": "image",
+    "names": {
+      "en": "WhatsApp DP Maker",
+      "es": "Foto de perfil para WhatsApp",
+      "fr": "Photo de profil WhatsApp",
+      "de": "WhatsApp-Profilbild gestalten"
+    },
+    "lead": {
+      "en": "Fit your complete photo into a square with solid or blurred borders.",
+      "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+      "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+      "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+    }
+  },
+  {
+    "slug": "photo-frame",
+    "url": "photo-frame.html",
+    "kind": "image",
+    "category": "brand",
+    "collection": "image",
+    "names": {
+      "en": "Photo Border & Frame Maker",
+      "es": "Bordes y marcos de fotos",
+      "fr": "Bordures et cadres photo",
+      "de": "Fotorahmen und Ränder"
+    },
+    "lead": {
+      "en": "Finish a photo with a solid frame, shadow or polaroid border.",
+      "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+      "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+      "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+    }
+  },
+  {
+    "slug": "ai-watermark-remover",
+    "url": "ai-watermark-remover.html",
+    "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "AI Watermark Remover",
+      "es": "Eliminar marcas con IA",
+      "fr": "Suppression de filigrane par IA",
+      "de": "Wasserzeichen mit KI entfernen"
+    },
+    "lead": {
+      "en": "Paint a mask over an unwanted mark on media you own or may edit.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "ai-image-upscaler",
+    "url": "ai-image-upscaler.html",
+    "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "AI Image Upscaler",
+      "es": "Ampliación de imagen con IA",
+      "fr": "Agrandissement d’image par IA",
+      "de": "KI-Bildvergrößerung"
+    },
+    "lead": {
+      "en": "Request a genuine model-based 2× or 4× enlargement.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "image-to-text",
+    "url": "image-to-text.html",
+    "kind": "image",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "Image to Text · OCR",
+      "es": "Imagen a texto · OCR",
+      "fr": "Image en texte · OCR",
+      "de": "Bild in Text · OCR"
+    },
+    "lead": {
+      "en": "Recognize printed text locally with downloadable OCR language models.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "ai-generative-fill",
+    "url": "ai-generative-fill.html",
+    "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "AI Generative Fill & Erase",
+      "es": "Relleno y borrado con IA",
+      "fr": "Remplissage et effacement IA",
+      "de": "KI-Füllen und Entfernen"
+    },
+    "lead": {
+      "en": "Describe an edit and paint the region to replace or remove.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "ai-uncrop",
+    "url": "ai-uncrop.html",
+    "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "AI Generative Uncrop",
+      "es": "Expandir imagen con IA",
+      "fr": "Extension d’image par IA",
+      "de": "Bild mit KI erweitern"
+    },
+    "lead": {
+      "en": "Request an expanded image with a generated background.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "ai-photo-restorer",
+    "url": "ai-photo-restorer.html",
+    "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "AI Old Photo Restorer",
+      "es": "Restaurar fotos con IA",
+      "fr": "Restauration de photos par IA",
+      "de": "Alte Fotos mit KI restaurieren"
+    },
+    "lead": {
+      "en": "Send a damaged photo to a configured restoration model.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "ai-skin-retoucher",
+    "url": "ai-skin-retoucher.html",
+    "kind": "cloud",
+    "category": "ai",
+    "collection": "ai",
+    "names": {
+      "en": "AI Skin Retoucher",
+      "es": "Retoque de piel con IA",
+      "fr": "Retouche de peau par IA",
+      "de": "KI-Hautretusche"
+    },
+    "lead": {
+      "en": "Request subtle portrait retouching from a configured processing service.",
+      "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+      "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+      "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+    }
+  },
+  {
+    "slug": "video-splitter",
+    "url": "video-splitter.html",
+    "kind": "video",
+    "category": "video",
+    "collection": "video",
+    "names": {
+      "en": "Video Splitter",
+      "es": "Dividir vídeo en clips",
+      "fr": "Diviser une vidéo en clips",
+      "de": "Video in Clips teilen"
+    },
+    "lead": {
+      "en": "Split one video into several time ranges and download each MP4.",
+      "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+      "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+      "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+    }
+  },
+  {
+    "slug": "profile-animator",
+    "url": "profile-animator.html",
+    "kind": "video",
+    "category": "video",
+    "collection": "video",
+    "names": {
+      "en": "Profile Picture Animator",
+      "es": "Animar foto de perfil",
+      "fr": "Animer une photo de profil",
+      "de": "Profilbild animieren"
+    },
+    "lead": {
+      "en": "Turn a still image into a short looping pan-and-zoom GIF or MP4.",
+      "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+      "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+      "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+    }
+  },
+  {
+    "slug": "mute-video",
+    "url": "mute-video.html",
+    "kind": "video",
+    "category": "video",
+    "collection": "video",
+    "names": {
+      "en": "Mute Video",
+      "es": "Silenciar vídeo",
+      "fr": "Couper le son d’une vidéo",
+      "de": "Videoton entfernen"
+    },
+    "lead": {
+      "en": "Remove the audio track and save a separate video copy.",
+      "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+      "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+      "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+    }
+  },
+  {
+    "slug": "video-speed",
+    "url": "video-speed.html",
+    "kind": "video",
+    "category": "video",
+    "collection": "video",
+    "names": {
+      "en": "Video Speed Adjuster",
+      "es": "Cambiar velocidad de vídeo",
+      "fr": "Vitesse de lecture vidéo",
+      "de": "Videogeschwindigkeit ändern"
+    },
+    "lead": {
+      "en": "Create a slow-motion or fast-forward copy from 0.25× to 4× speed.",
+      "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+      "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+      "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+    }
+  },
+  {
+    "slug": "image-flip-rotate",
+    "url": "image-flip-rotate.html",
+    "kind": "image",
+    "category": "edit",
+    "collection": "image",
+    "names": {
+      "en": "Image Flip & Rotate",
+      "es": "Girar y voltear imagen",
+      "fr": "Pivoter et retourner une image",
+      "de": "Bild drehen und spiegeln"
+    },
+    "lead": {
+      "en": "Rotate by a precise angle or flip a photo horizontally or vertically.",
+      "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+      "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+      "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
     }
   }
 ]

@@ -17,3 +17,4 @@ Once an image is committed, reference it using a relative URL such as `assets/ed
 Before publishing, verify the file is not copied from an existing branded artwork or photo, inspect for mistaken logos, and check any applicable generator usage terms. AI-generated visuals cannot be guaranteed legally exclusive or immune to all copyright claims.
 
 If a generated image will be offered for others to reuse, state its permitted terms explicitly. Avoid publishing an empty gallery or advertising asset packs that are not yet available.
+

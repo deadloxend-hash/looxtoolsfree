@@ -72,7 +72,7 @@
   {
     "slug": "image-resizer",
     "path": "assets/tool-art/image-resizer.webp",
-    "prompt": "Use case: ads-marketing. Asset: original educational illustration for LOOX Tools image-resizer. Wide landscape composition around 16:10. Premium deep navy backdrop, rounded floating content cards, restrained lavender and teal accents, generous spacing, photorealistic subjects with natural textures and subtle dimensional lighting. Photorealistic pink tulips in a vase repeated inside a large landscape photo card and a smaller correctly proportioned card with precise dimension arrows and corner guides, no numbers. Entirely original composition, no existing company brands, no logos, no watermark, no readable words, no percentage or performance claims. This is a concept guide illustration, not an actual app screenshot."
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Image Resizer. Create a refined editorial composition demonstrating this purpose conceptually: Resize in pixels or by percentage, with an optional aspect lock. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
   },
   {
     "slug": "audio-cutter",
@@ -273,5 +273,320 @@
     "slug": "base64-encoder",
     "path": "assets/tool-art/base64-encoder.webp",
     "prompt": "Use case: ads-marketing. Create an original wide landscape concept illustration for a professional LOOX online tool guide. Premium deep navy background, restrained lavender and teal accents, elegant rounded floating interface cards, realistic photographic textures, calm editorial composition and generous space. Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters. Concept: Base64 Encoder & Decoder. For text or developer tools show a realistic creative desk or hands at a laptop alongside conceptual text panels, lines, letterforms and symbols relevant to the action, without readable paragraphs. No company logos, no third-party branding, no watermark except the intentional LOOX ownership markings in the watermark-tool illustration. Not a screenshot and not a factual data chart. No numeric performance claims."
+  },
+  {
+    "slug": "resize-instagram",
+    "path": "assets/tool-art/resize-instagram.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for Instagram. Create a refined editorial composition demonstrating this purpose conceptually: Switch between square posts, vertical stories and portrait canvases. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-1080x1080",
+    "path": "assets/tool-art/resize-1080x1080.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize to 1080 × 1080. Create a refined editorial composition demonstrating this purpose conceptually: Make a square social image without guessing the dimensions. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-website",
+    "path": "assets/tool-art/resize-website.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for Website. Create a refined editorial composition demonstrating this purpose conceptually: Reduce oversized camera photos to practical website dimensions. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-1920x1080",
+    "path": "assets/tool-art/resize-1920x1080.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize to 1920 × 1080. Create a refined editorial composition demonstrating this purpose conceptually: Prepare a Full HD canvas with fit, fill or stretch controls. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-facebook",
+    "path": "assets/tool-art/resize-facebook.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for Facebook. Create a refined editorial composition demonstrating this purpose conceptually: Prepare cover and post canvases using editable size presets. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-512x512",
+    "path": "assets/tool-art/resize-512x512.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize to 512 × 512. Create a refined editorial composition demonstrating this purpose conceptually: Prepare a compact square avatar or thumbnail. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-linkedin",
+    "path": "assets/tool-art/resize-linkedin.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for LinkedIn. Create a refined editorial composition demonstrating this purpose conceptually: Compose a wide profile banner or a company update image. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-youtube",
+    "path": "assets/tool-art/resize-youtube.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for YouTube. Create a refined editorial composition demonstrating this purpose conceptually: Build a 1280 × 720 thumbnail canvas and choose how the photo fits. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-pinterest",
+    "path": "assets/tool-art/resize-pinterest.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for Pinterest. Create a refined editorial composition demonstrating this purpose conceptually: Create a 1000 × 1500 vertical pin with balanced framing. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-tiktok",
+    "path": "assets/tool-art/resize-tiktok.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for TikTok / Shorts. Create a refined editorial composition demonstrating this purpose conceptually: Place your image on a 1080 × 1920 vertical canvas. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "canvas-enlarger",
+    "path": "assets/tool-art/canvas-enlarger.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Image Canvas Enlarger. Create a refined editorial composition demonstrating this purpose conceptually: Add transparent, solid or blurred padding around a photo. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "resize-twitter",
+    "path": "assets/tool-art/resize-twitter.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Resize for X. Create a refined editorial composition demonstrating this purpose conceptually: Choose a wide header or landscape post canvas. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "compress-200kb",
+    "path": "assets/tool-art/compress-200kb.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Compress to 200 KB. Create a refined editorial composition demonstrating this purpose conceptually: Reduce an image below a 200 KB upload limit, adapting quality and dimensions when necessary. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "dpi-converter",
+    "path": "assets/tool-art/dpi-converter.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX DPI Converter. Create a refined editorial composition demonstrating this purpose conceptually: Write print-density metadata without pretending to add image detail. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "compress-20kb",
+    "path": "assets/tool-art/compress-20kb.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Compress to 20 KB. Create a refined editorial composition demonstrating this purpose conceptually: Reduce an image below a 20 KB upload limit, adapting quality and dimensions when necessary. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "compress-500kb",
+    "path": "assets/tool-art/compress-500kb.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Compress to 500 KB. Create a refined editorial composition demonstrating this purpose conceptually: Reduce an image below a 500 KB upload limit, adapting quality and dimensions when necessary. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "compress-50kb",
+    "path": "assets/tool-art/compress-50kb.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Compress to 50 KB. Create a refined editorial composition demonstrating this purpose conceptually: Reduce an image below a 50 KB upload limit, adapting quality and dimensions when necessary. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "batch-image-compressor",
+    "path": "assets/tool-art/batch-image-compressor.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Batch Image Compressor. Create a refined editorial composition demonstrating this purpose conceptually: Optimize several photos with one shared quality setting. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "lossless-png-compressor",
+    "path": "assets/tool-art/lossless-png-compressor.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Lossless PNG Compressor. Create a refined editorial composition demonstrating this purpose conceptually: Recompress PNG image data while preserving its pixels and metadata. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "compress-100kb",
+    "path": "assets/tool-art/compress-100kb.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Compress to 100 KB. Create a refined editorial composition demonstrating this purpose conceptually: Reduce an image below a 100 KB upload limit, adapting quality and dimensions when necessary. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "circle-crop",
+    "path": "assets/tool-art/circle-crop.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Circle Crop Image. Create a refined editorial composition demonstrating this purpose conceptually: Create a circular avatar with genuinely transparent corners. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "aspect-ratio-cropper",
+    "path": "assets/tool-art/aspect-ratio-cropper.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Aspect Ratio Cropper. Create a refined editorial composition demonstrating this purpose conceptually: Drag the crop box or enter exact edges, with common ratio presets. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "perspective-crop",
+    "path": "assets/tool-art/perspective-crop.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Perspective Crop & Straighten. Create a refined editorial composition demonstrating this purpose conceptually: Move four corner points to flatten an angled page or sign. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "shape-cropper",
+    "path": "assets/tool-art/shape-cropper.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Custom Shape Cropper. Create a refined editorial composition demonstrating this purpose conceptually: Clip a photo to a star, heart, triangle or hexagon. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "passport-photo-maker",
+    "path": "assets/tool-art/passport-photo-maker.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Passport / ID Photo Maker. Create a refined editorial composition demonstrating this purpose conceptually: Compose a 600 × 600 pixel, 300 DPI photo template with an optional background fill. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "webp-to-png",
+    "path": "assets/tool-art/webp-to-png.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX WebP to PNG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your WebP source into a separate downloadable image. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "webp-to-jpg",
+    "path": "assets/tool-art/webp-to-jpg.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX WebP to JPG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your WebP source into a separate downloadable image. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "heic-to-jpg",
+    "path": "assets/tool-art/heic-to-jpg.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX HEIC to JPG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your HEIC source into a separate downloadable image. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "png-to-jpg",
+    "path": "assets/tool-art/png-to-jpg.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX PNG to JPG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your PNG source into a separate downloadable image. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "heic-to-png",
+    "path": "assets/tool-art/heic-to-png.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX HEIC to PNG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your HEIC source into a separate downloadable image. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "jpg-to-png",
+    "path": "assets/tool-art/jpg-to-png.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX JPG to PNG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your JPG source into a separate downloadable image. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "avif-to-jpg",
+    "path": "assets/tool-art/avif-to-jpg.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AVIF to JPG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your AVIF source into a separate downloadable image. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "jpg-to-webp",
+    "path": "assets/tool-art/jpg-to-webp.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX JPG to WebP. Create a refined editorial composition demonstrating this purpose conceptually: Convert your JPG source into a separate downloadable image. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "color-extractor",
+    "path": "assets/tool-art/color-extractor.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Color Extractor. Create a refined editorial composition demonstrating this purpose conceptually: Find dominant colors and copy a practical palette of hex codes. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "avif-to-png",
+    "path": "assets/tool-art/avif-to-png.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AVIF to PNG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your AVIF source into a separate downloadable image. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "image-blur",
+    "path": "assets/tool-art/image-blur.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Image Blur Brush. Create a refined editorial composition demonstrating this purpose conceptually: Paint Gaussian-style, radial or directional blur over selected areas. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "svg-to-png",
+    "path": "assets/tool-art/svg-to-png.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX SVG to PNG. Create a refined editorial composition demonstrating this purpose conceptually: Convert your SVG source into a separate downloadable image. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "image-pixelator",
+    "path": "assets/tool-art/image-pixelator.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Image Pixelator. Create a refined editorial composition demonstrating this purpose conceptually: Paint a pixelated mosaic over faces, text or sensitive details. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "selective-color",
+    "path": "assets/tool-art/selective-color.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Selective Invert & Color Pop. Create a refined editorial composition demonstrating this purpose conceptually: Paint an inverted region or reveal color over a monochrome photo. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "bmp-tiff-converter",
+    "path": "assets/tool-art/bmp-tiff-converter.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX BMP / TIFF Converter. Create a refined editorial composition demonstrating this purpose conceptually: Convert your BMP / TIFF Converter source into a separate downloadable image. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "color-grading",
+    "path": "assets/tool-art/color-grading.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Color Grading & Adjustments. Create a refined editorial composition demonstrating this purpose conceptually: Balance brightness, contrast, saturation, exposure, temperature and tint. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "photo-collage",
+    "path": "assets/tool-art/photo-collage.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Photo Collage Maker. Create a refined editorial composition demonstrating this purpose conceptually: Arrange two to nine photos in a grid with adjustable borders. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "pdf-to-jpg",
+    "path": "assets/tool-art/pdf-to-jpg.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX PDF to JPG. Create a refined editorial composition demonstrating this purpose conceptually: Render selected PDF pages into individual high-resolution JPEG images. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "cinematic-filters",
+    "path": "assets/tool-art/cinematic-filters.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Cinematic Photo Filters. Create a refined editorial composition demonstrating this purpose conceptually: Explore vintage, monochrome, cyberpunk, retro and grain looks. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "watermark-pattern",
+    "path": "assets/tool-art/watermark-pattern.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Watermark Pattern Generator. Create a refined editorial composition demonstrating this purpose conceptually: Create a repeating diagonal text watermark across a photo. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "screenshot-background",
+    "path": "assets/tool-art/screenshot-background.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Screenshot Background Changer. Create a refined editorial composition demonstrating this purpose conceptually: Set a screenshot on a gradient canvas with padding and a soft shadow. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "whatsapp-dp",
+    "path": "assets/tool-art/whatsapp-dp.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX WhatsApp DP Maker. Create a refined editorial composition demonstrating this purpose conceptually: Fit your complete photo into a square with solid or blurred borders. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "vignette-focus",
+    "path": "assets/tool-art/vignette-focus.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Vignette & Focus Blur. Create a refined editorial composition demonstrating this purpose conceptually: Guide attention with soft edge shading and an adjustable focus area. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "photo-frame",
+    "path": "assets/tool-art/photo-frame.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Photo Border & Frame Maker. Create a refined editorial composition demonstrating this purpose conceptually: Finish a photo with a solid frame, shadow or polaroid border. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "sharpen-clarity",
+    "path": "assets/tool-art/sharpen-clarity.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Sharpen & Clarity. Create a refined editorial composition demonstrating this purpose conceptually: Increase local edge contrast with an adjustable sharpening amount. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "image-to-text",
+    "path": "assets/tool-art/image-to-text.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Image to Text · OCR. Create a refined editorial composition demonstrating this purpose conceptually: Recognize printed text locally with downloadable OCR language models. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "ai-watermark-remover",
+    "path": "assets/tool-art/ai-watermark-remover.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AI Watermark Remover. Create a refined editorial composition demonstrating this purpose conceptually: Paint a mask over an unwanted mark on media you own or may edit. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "add-text-to-image",
+    "path": "assets/tool-art/add-text-to-image.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Add Text to Image. Create a refined editorial composition demonstrating this purpose conceptually: Add a caption with fonts, alignment, outline and shadow controls. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "ai-image-upscaler",
+    "path": "assets/tool-art/ai-image-upscaler.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AI Image Upscaler. Create a refined editorial composition demonstrating this purpose conceptually: Request a genuine model-based 2× or 4× enlargement. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "ai-generative-fill",
+    "path": "assets/tool-art/ai-generative-fill.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AI Generative Fill & Erase. Create a refined editorial composition demonstrating this purpose conceptually: Describe an edit and paint the region to replace or remove. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "video-splitter",
+    "path": "assets/tool-art/video-splitter.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Video Splitter. Create a refined editorial composition demonstrating this purpose conceptually: Split one video into several time ranges and download each MP4. Subject photo: a German Shepherd beside a lush mountain lake. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "ai-uncrop",
+    "path": "assets/tool-art/ai-uncrop.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AI Generative Uncrop. Create a refined editorial composition demonstrating this purpose conceptually: Request an expanded image with a generated background. Subject photo: an elegant fictional adult woman in a colorful spring garden. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "profile-animator",
+    "path": "assets/tool-art/profile-animator.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Profile Picture Animator. Create a refined editorial composition demonstrating this purpose conceptually: Turn a still image into a short looping pan-and-zoom GIF or MP4. Subject photo: a fictional adult woman wearing a colorful coat in a snowy town. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "mute-video",
+    "path": "assets/tool-art/mute-video.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Mute Video. Create a refined editorial composition demonstrating this purpose conceptually: Remove the audio track and save a separate video copy. Subject photo: emerald forest hills and a turquoise river. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "ai-photo-restorer",
+    "path": "assets/tool-art/ai-photo-restorer.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AI Old Photo Restorer. Create a refined editorial composition demonstrating this purpose conceptually: Send a damaged photo to a configured restoration model. Subject photo: a friendly Siberian Husky in fresh alpine snow. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "video-speed",
+    "path": "assets/tool-art/video-speed.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Video Speed Adjuster. Create a refined editorial composition demonstrating this purpose conceptually: Create a slow-motion or fast-forward copy from 0.25× to 4× speed. Subject photo: a fictional adult woman in a tasteful studio portrait with pastel background. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "image-flip-rotate",
+    "path": "assets/tool-art/image-flip-rotate.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX Image Flip & Rotate. Create a refined editorial composition demonstrating this purpose conceptually: Rotate by a precise angle or flip a photo horizontally or vertically. Subject photo: a fictional adult man hiking beneath snowy mountain peaks. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
+  },
+  {
+    "slug": "ai-skin-retoucher",
+    "path": "assets/tool-art/ai-skin-retoucher.webp",
+    "prompt": "Use case: ads-marketing. Asset type: original landscape website tool-guide banner for LOOX AI Skin Retoucher. Create a refined editorial composition demonstrating this purpose conceptually: Request subtle portrait retouching from a configured processing service. Subject photo: a fictional adult man in a bright modern creative office. Integrate the original photorealistic image into a distinctive premium dark charcoal editing-card composition with restrained lavender and mint controls, a clear before/after or canvas comparison appropriate to this specific tool, generous spacing, convincing image detail. Landscape 3:2. This is an illustrative editorial banner, not a screenshot or precise diagram. No brand names, no watermarks, no copied logos, no competitor elements, no long text, no celebrities, all people visibly adults. Make the layout and composition unique to this tool."
   }
 ]

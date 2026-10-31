@@ -955,8 +955,8 @@
   },
   "Crop aspect ratio": {
     "en": "Crop aspect ratio",
-    "es": "Proporción del recorte",
-    "fr": "Ratio du recadrage",
+    "es": "Proporción de recorte",
+    "fr": "Proportions du recadrage",
     "de": "Seitenverhältnis des Zuschnitts"
   },
   "Free crop": {
@@ -1187,11 +1187,269 @@
     "fr": "De bons outils. Un peu de savoir-faire.",
     "de": "Gute Werkzeuge. Ein wenig Know-how."
   },
+  "Choose a file or drop it here": {
+    "en": "Choose a file or drop it here",
+    "es": "Elige un archivo o arrástralo aquí",
+    "fr": "Choisissez un fichier ou déposez-le ici",
+    "de": "Wähle eine Datei oder ziehe sie hierher"
+  },
+  "Choose files or drop them here": {
+    "en": "Choose files or drop them here",
+    "es": "Elige archivos o arrástralos aquí",
+    "fr": "Choisissez des fichiers ou déposez-les ici",
+    "de": "Wähle Dateien oder ziehe sie hierher"
+  },
+  "Export result": {
+    "en": "Export result",
+    "es": "Exportar resultado",
+    "fr": "Exporter le résultat",
+    "de": "Ergebnis exportieren"
+  },
+  "Preview": {
+    "en": "Preview",
+    "es": "Vista previa",
+    "fr": "Aperçu",
+    "de": "Vorschau"
+  },
+  "Width · px": {
+    "en": "Width · px",
+    "es": "Anchura · px",
+    "fr": "Largeur · px",
+    "de": "Breite · px"
+  },
+  "Height · px": {
+    "en": "Height · px",
+    "es": "Altura · px",
+    "fr": "Hauteur · px",
+    "de": "Höhe · px"
+  },
+  "Left · px": {
+    "en": "Left · px",
+    "es": "Izquierda · px",
+    "fr": "Gauche · px",
+    "de": "Links · px"
+  },
+  "Top · px": {
+    "en": "Top · px",
+    "es": "Arriba · px",
+    "fr": "Haut · px",
+    "de": "Oben · px"
+  },
+  "Lock source aspect ratio": {
+    "en": "Lock source aspect ratio",
+    "es": "Bloquear proporción original",
+    "fr": "Verrouiller les proportions source",
+    "de": "Ursprüngliches Seitenverhältnis sperren"
+  },
+  "Image fit": {
+    "en": "Image fit",
+    "es": "Ajuste de imagen",
+    "fr": "Ajustement de l’image",
+    "de": "Bild einpassen"
+  },
+  "Fit · keep whole image": {
+    "en": "Fit · keep whole image",
+    "es": "Ajustar · imagen completa",
+    "fr": "Ajuster · image entière",
+    "de": "Einpassen · ganzes Bild"
+  },
+  "Fill · crop edges": {
+    "en": "Fill · crop edges",
+    "es": "Rellenar · recortar bordes",
+    "fr": "Remplir · rogner les bords",
+    "de": "Füllen · Ränder beschneiden"
+  },
+  "Stretch · change proportions": {
+    "en": "Stretch · change proportions",
+    "es": "Estirar · cambiar proporciones",
+    "fr": "Étirer · changer les proportions",
+    "de": "Strecken · Proportionen ändern"
+  },
+  "Size preset": {
+    "en": "Size preset",
+    "es": "Tamaño predefinido",
+    "fr": "Dimensions prédéfinies",
+    "de": "Größenvorgabe"
+  },
+  "Background color": {
+    "en": "Background color",
+    "es": "Color de fondo",
+    "fr": "Couleur d’arrière-plan",
+    "de": "Hintergrundfarbe"
+  },
+  "Blurred source": {
+    "en": "Blurred source",
+    "es": "Original desenfocado",
+    "fr": "Source floutée",
+    "de": "Unscharfes Original"
+  },
+  "Solid color": {
+    "en": "Solid color",
+    "es": "Color sólido",
+    "fr": "Couleur unie",
+    "de": "Einfarbig"
+  },
+  "Transparent": {
+    "en": "Transparent",
+    "es": "Transparente",
+    "fr": "Transparent",
+    "de": "Transparent"
+  },
+  "Crop shape": {
+    "en": "Crop shape",
+    "es": "Forma de recorte",
+    "fr": "Forme du recadrage",
+    "de": "Zuschnittform"
+  },
+  "Rectangle": {
+    "en": "Rectangle",
+    "es": "Rectángulo",
+    "fr": "Rectangle",
+    "de": "Rechteck"
+  },
+  "Circle": {
+    "en": "Circle",
+    "es": "Círculo",
+    "fr": "Cercle",
+    "de": "Kreis"
+  },
+  "Star": {
+    "en": "Star",
+    "es": "Estrella",
+    "fr": "Étoile",
+    "de": "Stern"
+  },
+  "Heart": {
+    "en": "Heart",
+    "es": "Corazón",
+    "fr": "Cœur",
+    "de": "Herz"
+  },
+  "Triangle": {
+    "en": "Triangle",
+    "es": "Triángulo",
+    "fr": "Triangle",
+    "de": "Dreieck"
+  },
+  "Hexagon": {
+    "en": "Hexagon",
+    "es": "Hexágono",
+    "fr": "Hexagone",
+    "de": "Sechseck"
+  },
+  "Number of colors": {
+    "en": "Number of colors",
+    "es": "Número de colores",
+    "fr": "Nombre de couleurs",
+    "de": "Anzahl der Farben"
+  },
+  "Brush effect": {
+    "en": "Brush effect",
+    "es": "Efecto de pincel",
+    "fr": "Effet du pinceau",
+    "de": "Pinseleffekt"
+  },
+  "Erase painted mask": {
+    "en": "Erase painted mask",
+    "es": "Borrar máscara pintada",
+    "fr": "Effacer le masque peint",
+    "de": "Gemalte Maske löschen"
+  },
+  "Undo last stroke": {
+    "en": "Undo last stroke",
+    "es": "Deshacer último trazo",
+    "fr": "Annuler le dernier trait",
+    "de": "Letzten Pinselstrich rückgängig machen"
+  },
+  "Clear mask": {
+    "en": "Clear mask",
+    "es": "Borrar máscara",
+    "fr": "Effacer le masque",
+    "de": "Maske löschen"
+  },
+  "Style preset": {
+    "en": "Style preset",
+    "es": "Estilo predefinido",
+    "fr": "Style prédéfini",
+    "de": "Stilvorgabe"
+  },
+  "Text color": {
+    "en": "Text color",
+    "es": "Color del texto",
+    "fr": "Couleur du texte",
+    "de": "Textfarbe"
+  },
+  "Text alignment": {
+    "en": "Text alignment",
+    "es": "Alineación del texto",
+    "fr": "Alignement du texte",
+    "de": "Textausrichtung"
+  },
+  "Drop shadow": {
+    "en": "Drop shadow",
+    "es": "Sombra",
+    "fr": "Ombre portée",
+    "de": "Schlagschatten"
+  },
+  "Recognize text": {
+    "en": "Recognize text",
+    "es": "Reconocer texto",
+    "fr": "Reconnaître le texte",
+    "de": "Text erkennen"
+  },
+  "Extract palette": {
+    "en": "Extract palette",
+    "es": "Extraer paleta",
+    "fr": "Extraire la palette",
+    "de": "Palette extrahieren"
+  },
+  "Recognition language": {
+    "en": "Recognition language",
+    "es": "Idioma de reconocimiento",
+    "fr": "Langue de reconnaissance",
+    "de": "Erkennungssprache"
+  },
+  "Search this collection": {
+    "en": "Search this collection",
+    "es": "Buscar en esta colección",
+    "fr": "Rechercher dans cette collection",
+    "de": "In dieser Sammlung suchen"
+  },
+  "All Image Tools": {
+    "en": "All Image Tools",
+    "es": "Todas las herramientas de imagen",
+    "fr": "Tous les outils image",
+    "de": "Alle Bildwerkzeuge"
+  },
+  "All Text Tools": {
+    "en": "All Text Tools",
+    "es": "Todas las herramientas de texto",
+    "fr": "Tous les outils texte",
+    "de": "Alle Textwerkzeuge"
+  },
+  "All Video Tools": {
+    "en": "All Video Tools",
+    "es": "Todas las herramientas de vídeo",
+    "fr": "Tous les outils vidéo",
+    "de": "Alle Videowerkzeuge"
+  },
+  "All AI Tools": {
+    "en": "All AI Tools",
+    "es": "Todas las herramientas de IA",
+    "fr": "Tous les outils IA",
+    "de": "Alle KI-Werkzeuge"
+  },
   "Video Editor": {
     "en": "Video Editor",
     "es": "Editor de vídeo",
     "fr": "Éditeur vidéo",
     "de": "Videoeditor"
+  },
+  "Give every clip a clear purpose. Bring pictures, sound and a few well-chosen words together in one timeline.": {
+    "en": "Give every clip a clear purpose. Bring pictures, sound and a few well-chosen words together in one timeline.",
+    "es": "Dale una intención a cada clip. Combina imágenes, sonido y unas palabras bien elegidas en una sola línea de tiempo.",
+    "fr": "Donnez une intention à chaque plan. Réunissez images, son et quelques mots bien choisis dans une seule timeline.",
+    "de": "Gib jedem Clip eine klare Aufgabe. Verbinde Bilder, Ton und passende Worte auf einer gemeinsamen Zeitleiste."
   },
   "Photo Editor": {
     "en": "Photo Editor",
@@ -1199,11 +1457,23 @@
     "fr": "Éditeur photo",
     "de": "Fotoeditor"
   },
+  "Make a photo feel like the moment you remember.": {
+    "en": "Make a photo feel like the moment you remember.",
+    "es": "Haz que una foto se sienta como el momento que recuerdas.",
+    "fr": "Retrouvez dans votre photo le souvenir du moment.",
+    "de": "Lass ein Foto so wirken wie den Moment in deiner Erinnerung."
+  },
   "Design Studio": {
     "en": "Design Studio",
     "es": "Estudio de diseño",
     "fr": "Studio de création",
     "de": "Designstudio"
+  },
+  "Turn one clear idea into a graphic people can understand at a glance.": {
+    "en": "Turn one clear idea into a graphic people can understand at a glance.",
+    "es": "Convierte una idea clara en un diseño que se entienda de un vistazo.",
+    "fr": "Transformez une idée claire en un visuel compris au premier regard.",
+    "de": "Mach aus einer klaren Idee eine Grafik, die sofort verständlich ist."
   },
   "Background Remover": {
     "en": "Background Remover",
@@ -1211,11 +1481,23 @@
     "fr": "Suppression d’arrière-plan",
     "de": "Hintergrundentferner"
   },
+  "Give your subject a clean stage, from a product listing to your next creative composition.": {
+    "en": "Give your subject a clean stage, from a product listing to your next creative composition.",
+    "es": "Dale a tu sujeto un escenario limpio para productos y diseños.",
+    "fr": "Offrez à votre sujet un fond net pour vos produits et compositions.",
+    "de": "Gib deinem Motiv einen klaren Auftritt für Produktbilder und Designs."
+  },
   "AI Face Swap": {
     "en": "AI Face Swap",
     "es": "Intercambio de rostros con IA",
     "fr": "Échange de visages IA",
     "de": "KI-Gesichtstausch"
+  },
+  "Explore a creative portrait idea with permission, care and a clear eye for the final result.": {
+    "en": "Explore a creative portrait idea with permission, care and a clear eye for the final result.",
+    "es": "Explora un retrato creativo con permiso, cuidado y atención al resultado.",
+    "fr": "Explorez un portrait créatif avec autorisation, soin et regard critique.",
+    "de": "Entdecke kreative Porträts mit Zustimmung, Sorgfalt und einem kritischen Blick."
   },
   "Face Blur": {
     "en": "Face Blur",
@@ -1223,11 +1505,23 @@
     "fr": "Floutage des visages",
     "de": "Gesichter weichzeichnen"
   },
+  "Share the moment while taking care of the people in it.": {
+    "en": "Share the moment while taking care of the people in it.",
+    "es": "Comparte el momento cuidando a quienes aparecen en él.",
+    "fr": "Partagez le moment en prenant soin des personnes présentes.",
+    "de": "Teile den Moment und achte auf die Menschen darin."
+  },
   "Image Cropper": {
     "en": "Image Cropper",
     "es": "Recortador de imágenes",
     "fr": "Recadrage d’image",
     "de": "Bild zuschneiden"
+  },
+  "A stronger frame can make the same photograph tell a clearer story.": {
+    "en": "A stronger frame can make the same photograph tell a clearer story.",
+    "es": "Un encuadre mejor puede contar una historia más clara con la misma foto.",
+    "fr": "Un meilleur cadrage peut rendre le même cliché plus expressif.",
+    "de": "Ein besserer Ausschnitt lässt dasselbe Foto mehr erzählen."
   },
   "Image Compressor": {
     "en": "Image Compressor",
@@ -1235,11 +1529,23 @@
     "fr": "Compression d’image",
     "de": "Bildkompressor"
   },
+  "Keep the detail people notice. Reduce the bytes they have to wait for.": {
+    "en": "Keep the detail people notice. Reduce the bytes they have to wait for.",
+    "es": "Conserva los detalles importantes y reduce los bytes que hacen esperar.",
+    "fr": "Gardez les détails utiles et réduisez les octets qui ralentissent.",
+    "de": "Bewahre sichtbare Details und reduziere unnötige Ladezeit."
+  },
   "Image Converter": {
     "en": "Image Converter",
     "es": "Conversor de imágenes",
     "fr": "Conversion d’image",
     "de": "Bildkonverter"
+  },
+  "Make your image fit the workflow, without rebuilding it from scratch.": {
+    "en": "Make your image fit the workflow, without rebuilding it from scratch.",
+    "es": "Adapta tu imagen al trabajo sin volver a crearla.",
+    "fr": "Adaptez votre image au bon usage sans la recréer.",
+    "de": "Passe dein Bild an den Arbeitsablauf an, ohne neu anzufangen."
   },
   "Video Compressor": {
     "en": "Video Compressor",
@@ -1247,11 +1553,23 @@
     "fr": "Compression vidéo",
     "de": "Videokompressor"
   },
+  "Make a video easier to send, upload and keep—while protecting the detail your audience needs.": {
+    "en": "Make a video easier to send, upload and keep—while protecting the detail your audience needs.",
+    "es": "Facilita el envío y la publicación del vídeo conservando los detalles importantes.",
+    "fr": "Facilitez le partage de vos vidéos en préservant les détails utiles.",
+    "de": "Mach Videos leichter teilbar und bewahre die wichtigen Details."
+  },
   "Video to GIF": {
     "en": "Video to GIF",
     "es": "Vídeo a GIF",
     "fr": "Vidéo en GIF",
     "de": "Video zu GIF"
+  },
+  "Turn one small moment into an animation worth replaying.": {
+    "en": "Turn one small moment into an animation worth replaying.",
+    "es": "Convierte un pequeño momento en una animación que merece repetirse.",
+    "fr": "Transformez un instant en une animation à revoir.",
+    "de": "Mach aus einem kleinen Moment eine sehenswerte Schleife."
   },
   "Video to MP3": {
     "en": "Video to MP3",
@@ -1259,11 +1577,23 @@
     "fr": "Vidéo en MP3",
     "de": "Video zu MP3"
   },
+  "Keep the sound when you do not need the screen.": {
+    "en": "Keep the sound when you do not need the screen.",
+    "es": "Quédate con el sonido cuando no necesitas la pantalla.",
+    "fr": "Gardez le son lorsque l’image n’est plus nécessaire.",
+    "de": "Behalte den Ton, wenn du das Bild nicht brauchst."
+  },
   "Video Trimmer": {
     "en": "Video Trimmer",
     "es": "Recortador de vídeo",
     "fr": "Découpage vidéo",
     "de": "Video kürzen"
+  },
+  "Start where it matters. Finish when the moment is complete.": {
+    "en": "Start where it matters. Finish when the moment is complete.",
+    "es": "Empieza donde importa y termina cuando el momento esté completo.",
+    "fr": "Commencez au bon moment et terminez au bon endroit.",
+    "de": "Beginne beim Wesentlichen und höre im richtigen Moment auf."
   },
   "Thumbnail Maker": {
     "en": "Thumbnail Maker",
@@ -1271,11 +1601,23 @@
     "fr": "Création de miniatures",
     "de": "Thumbnail-Gestalter"
   },
+  "Make the promise of your video clear in one small image.": {
+    "en": "Make the promise of your video clear in one small image.",
+    "es": "Expresa la idea de tu vídeo en una imagen pequeña.",
+    "fr": "Exprimez la promesse de votre vidéo dans une petite image.",
+    "de": "Zeige in einem kleinen Bild, worum es in deinem Video geht."
+  },
   "Image Resizer": {
     "en": "Image Resizer",
-    "es": "Redimensionador de imágenes",
-    "fr": "Redimensionnement d’image",
+    "es": "Cambiar tamaño de imagen",
+    "fr": "Redimensionner une image",
     "de": "Bildgröße ändern"
+  },
+  "Resize in pixels or by percentage, with an optional aspect lock.": {
+    "en": "Resize in pixels or by percentage, with an optional aspect lock.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
   },
   "Audio Cutter": {
     "en": "Audio Cutter",
@@ -1283,11 +1625,23 @@
     "fr": "Découpage audio",
     "de": "Audio schneiden"
   },
+  "Save the part worth listening to again.": {
+    "en": "Save the part worth listening to again.",
+    "es": "Guarda la parte que merece volver a escucharse.",
+    "fr": "Gardez le passage que vous souhaitez réécouter.",
+    "de": "Speichere den Ausschnitt, den du noch einmal hören möchtest."
+  },
   "PDF Merger": {
     "en": "PDF Merger",
     "es": "Unir PDF",
     "fr": "Fusion de PDF",
     "de": "PDF zusammenfügen"
+  },
+  "Bring separate documents into one clear reading order.": {
+    "en": "Bring separate documents into one clear reading order.",
+    "es": "Reúne documentos separados en un orden claro.",
+    "fr": "Rassemblez vos documents dans un ordre de lecture clair.",
+    "de": "Bringe einzelne Dokumente in eine klare Lesereihenfolge."
   },
   "PDF Splitter": {
     "en": "PDF Splitter",
@@ -1295,11 +1649,23 @@
     "fr": "Extraction de pages PDF",
     "de": "PDF teilen"
   },
+  "Share the pages that matter, with less to search through.": {
+    "en": "Share the pages that matter, with less to search through.",
+    "es": "Comparte las páginas importantes sin contenido innecesario.",
+    "fr": "Partagez les pages utiles sans imposer tout le document.",
+    "de": "Teile die wichtigen Seiten ohne unnötigen Ballast."
+  },
   "PDF Rotator": {
     "en": "PDF Rotator",
     "es": "Girar PDF",
     "fr": "Rotation de PDF",
     "de": "PDF drehen"
+  },
+  "Put sideways pages back into a comfortable reading position.": {
+    "en": "Put sideways pages back into a comfortable reading position.",
+    "es": "Devuelve las páginas giradas a una posición cómoda.",
+    "fr": "Remettez les pages dans le bon sens pour les lire.",
+    "de": "Bringe verdrehte Seiten wieder in eine lesbare Position."
   },
   "Images to PDF": {
     "en": "Images to PDF",
@@ -1307,11 +1673,23 @@
     "fr": "Images en PDF",
     "de": "Bilder zu PDF"
   },
+  "Turn a collection of images into a document people can follow.": {
+    "en": "Turn a collection of images into a document people can follow.",
+    "es": "Convierte una colección de imágenes en un documento ordenado.",
+    "fr": "Transformez vos images en un document facile à parcourir.",
+    "de": "Mach aus einer Bildsammlung ein übersichtliches Dokument."
+  },
   "Developer & Text Utilities": {
     "en": "Developer & Text Utilities",
     "es": "Utilidades de desarrollo y texto",
     "fr": "Outils de développement et de texte",
     "de": "Entwickler- und Textwerkzeuge"
+  },
+  "Small utilities for the details that interrupt a good workflow.": {
+    "en": "Small utilities for the details that interrupt a good workflow.",
+    "es": "Pequeñas utilidades para los detalles que interrumpen el trabajo.",
+    "fr": "Des outils simples pour les détails qui ralentissent votre travail.",
+    "de": "Kleine Helfer für die Details, die deinen Arbeitsfluss unterbrechen."
   },
   "QR Code Generator": {
     "en": "QR Code Generator",
@@ -1319,11 +1697,23 @@
     "fr": "Générateur de QR codes",
     "de": "QR-Code-Generator"
   },
+  "Make the next step easy to reach with a scan.": {
+    "en": "Make the next step easy to reach with a scan.",
+    "es": "Facilita el siguiente paso con un escaneo.",
+    "fr": "Rendez la prochaine étape accessible en un scan.",
+    "de": "Mach den nächsten Schritt mit einem Scan erreichbar."
+  },
   "Thumbnail Viewer": {
     "en": "Thumbnail Viewer",
     "es": "Visor de miniaturas",
     "fr": "Aperçu des miniatures",
     "de": "Thumbnail-Vorschau"
+  },
+  "Find the available preview image without searching through a video.": {
+    "en": "Find the available preview image without searching through a video.",
+    "es": "Encuentra la imagen disponible sin recorrer el vídeo.",
+    "fr": "Retrouvez l’image d’aperçu disponible sans parcourir la vidéo.",
+    "de": "Finde verfügbare Vorschaubilder, ohne das Video zu durchsuchen."
   },
   "Fancy Unicode Styles": {
     "en": "Fancy Unicode Styles",
@@ -1331,11 +1721,23 @@
     "fr": "Styles Unicode",
     "de": "Unicode-Stile"
   },
+  "Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels.": {
+    "en": "Explore more than 1,000 combinations of Unicode alphabets, accents and decorative frames for short bios, captions and creative labels.",
+    "es": "Una herramienta local para estilos unicode, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour styles unicode, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Unicode-Stile, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Text Editor": {
     "en": "Text Editor",
     "es": "Editor de texto",
     "fr": "Éditeur de texte",
     "de": "Texteditor"
+  },
+  "A focused place to draft, reorganize and save plain text without sending the document to a writing service.": {
+    "en": "A focused place to draft, reorganize and save plain text without sending the document to a writing service.",
+    "es": "Una herramienta local para editor de texto, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour éditeur de texte, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Texteditor, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Case Converter": {
     "en": "Case Converter",
@@ -1343,11 +1745,23 @@
     "fr": "Conversion de casse",
     "de": "Groß-/Kleinschreibung"
   },
+  "Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case.": {
+    "en": "Make headings, lists and copied paragraphs consistent with uppercase, lowercase, title case and sentence case.",
+    "es": "Una herramienta local para conversor de mayúsculas, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour conversion de casse, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Groß-/Kleinschreibung, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Concatenate Text": {
     "en": "Concatenate Text",
     "es": "Concatenar texto",
     "fr": "Concaténer du texte",
     "de": "Text verbinden"
+  },
+  "Bring separate pieces of text together with a separator you choose.": {
+    "en": "Bring separate pieces of text together with a separator you choose.",
+    "es": "Una herramienta local para concatenar texto, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour concaténer du texte, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Text verbinden, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Split Text": {
     "en": "Split Text",
@@ -1355,11 +1769,23 @@
     "fr": "Séparer du texte",
     "de": "Text aufteilen"
   },
+  "Turn a long block into useful parts with a literal delimiter or line breaks.": {
+    "en": "Turn a long block into useful parts with a literal delimiter or line breaks.",
+    "es": "Una herramienta local para dividir texto, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour séparer du texte, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Text aufteilen, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Extract Columns": {
     "en": "Extract Columns",
     "es": "Extraer columnas",
     "fr": "Extraire des colonnes",
     "de": "Spalten extrahieren"
+  },
+  "Keep the useful columns from a delimited table without rebuilding the whole file.": {
+    "en": "Keep the useful columns from a delimited table without rebuilding the whole file.",
+    "es": "Una herramienta local para extraer columnas, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour extraire des colonnes, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Spalten extrahieren, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Remove Extra Spaces": {
     "en": "Remove Extra Spaces",
@@ -1367,11 +1793,23 @@
     "fr": "Supprimer les espaces inutiles",
     "de": "Überflüssige Leerzeichen entfernen"
   },
+  "Clean up accidental gaps while deciding whether to preserve paragraph breaks.": {
+    "en": "Clean up accidental gaps while deciding whether to preserve paragraph breaks.",
+    "es": "Una herramienta local para quitar espacios extra, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour supprimer les espaces inutiles, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Überflüssige Leerzeichen entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Strip HTML Tags": {
     "en": "Strip HTML Tags",
     "es": "Eliminar etiquetas HTML",
     "fr": "Supprimer les balises HTML",
     "de": "HTML-Tags entfernen"
+  },
+  "Recover readable text from an HTML snippet without displaying the markup as a live page.": {
+    "en": "Recover readable text from an HTML snippet without displaying the markup as a live page.",
+    "es": "Una herramienta local para eliminar etiquetas html, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour supprimer les balises html, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für HTML-Tags entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Remove Emojis": {
     "en": "Remove Emojis",
@@ -1379,11 +1817,23 @@
     "fr": "Supprimer les emojis",
     "de": "Emojis entfernen"
   },
+  "Create a simpler text copy by removing emoji clusters, flags and common emoji sequences.": {
+    "en": "Create a simpler text copy by removing emoji clusters, flags and common emoji sequences.",
+    "es": "Una herramienta local para eliminar emojis, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour supprimer les emojis, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Emojis entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Remove Unicode Symbols": {
     "en": "Remove Unicode Symbols",
     "es": "Eliminar símbolos Unicode",
     "fr": "Supprimer les symboles Unicode",
     "de": "Unicode-Symbole entfernen"
+  },
+  "Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing.": {
+    "en": "Remove Unicode symbol characters while keeping letters, numbers, ordinary punctuation and spacing.",
+    "es": "Una herramienta local para eliminar símbolos unicode, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour supprimer les symboles unicode, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Unicode-Symbole entfernen, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Upside Down Text": {
     "en": "Upside Down Text",
@@ -1391,11 +1841,23 @@
     "fr": "Texte renversé",
     "de": "Text auf dem Kopf"
   },
+  "Give a short message a playful upside-down appearance using approximate Unicode counterparts.": {
+    "en": "Give a short message a playful upside-down appearance using approximate Unicode counterparts.",
+    "es": "Una herramienta local para texto al revés, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour texte renversé, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Text auf dem Kopf, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Normalize Unicode": {
     "en": "Normalize Unicode",
     "es": "Normalizar Unicode",
     "fr": "Normaliser Unicode",
     "de": "Unicode normalisieren"
+  },
+  "Make equivalent Unicode representations more consistent before comparison, storage or further text processing.": {
+    "en": "Make equivalent Unicode representations more consistent before comparison, storage or further text processing.",
+    "es": "Una herramienta local para normalizar unicode, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour normaliser unicode, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Unicode normalisieren, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Bold Unicode Text": {
     "en": "Bold Unicode Text",
@@ -1403,11 +1865,23 @@
     "fr": "Texte Unicode gras",
     "de": "Fetter Unicode-Text"
   },
+  "Create mathematical bold-style Unicode letters for a short label or caption.": {
+    "en": "Create mathematical bold-style Unicode letters for a short label or caption.",
+    "es": "Una herramienta local para texto unicode en negrita, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour texte unicode gras, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Fetter Unicode-Text, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Italic Unicode Text": {
     "en": "Italic Unicode Text",
     "es": "Texto Unicode en cursiva",
     "fr": "Texte Unicode italique",
     "de": "Kursiver Unicode-Text"
+  },
+  "Give supported Latin letters an italic-style appearance without a rich-text editor.": {
+    "en": "Give supported Latin letters an italic-style appearance without a rich-text editor.",
+    "es": "Una herramienta local para texto unicode en cursiva, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour texte unicode italique, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Kursiver Unicode-Text, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Old English Text": {
     "en": "Old English Text",
@@ -1415,11 +1889,23 @@
     "fr": "Texte gothique",
     "de": "Frakturtext"
   },
+  "Explore a blackletter-style alphabet for an ornamental heading or creative signature.": {
+    "en": "Explore a blackletter-style alphabet for an ornamental heading or creative signature.",
+    "es": "Una herramienta local para texto gótico, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour texte gothique, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Frakturtext, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Cursive Unicode Text": {
     "en": "Cursive Unicode Text",
     "es": "Texto manuscrito Unicode",
     "fr": "Texte Unicode cursif",
     "de": "Unicode-Schreibschrift"
+  },
+  "Turn a short phrase into a flowing script-style Unicode version.": {
+    "en": "Turn a short phrase into a flowing script-style Unicode version.",
+    "es": "Una herramienta local para texto manuscrito unicode, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour texte unicode cursif, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Unicode-Schreibschrift, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Random Number Generator": {
     "en": "Random Number Generator",
@@ -1427,11 +1913,23 @@
     "fr": "Générateur de nombres aléatoires",
     "de": "Zufallszahlengenerator"
   },
+  "Generate integers within an inclusive range using the browser’s cryptographic random source.": {
+    "en": "Generate integers within an inclusive range using the browser’s cryptographic random source.",
+    "es": "Una herramienta local para generador de números aleatorios, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour générateur de nombres aléatoires, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Zufallszahlengenerator, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Random Example Emails": {
     "en": "Random Example Emails",
     "es": "Correos de ejemplo aleatorios",
     "fr": "Adresses e-mail fictives",
     "de": "Zufällige Beispieladressen"
+  },
+  "Create clearly fictional email-shaped values for mockups, sample tables and development fixtures.": {
+    "en": "Create clearly fictional email-shaped values for mockups, sample tables and development fixtures.",
+    "es": "Una herramienta local para correos de ejemplo aleatorios, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour adresses e-mail fictives, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Zufällige Beispieladressen, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Pronounceable Passphrases": {
     "en": "Pronounceable Passphrases",
@@ -1439,11 +1937,23 @@
     "fr": "Phrases de passe prononçables",
     "de": "Aussprechbare Passphrasen"
   },
+  "Generate memorable-looking strings from randomized syllables, optional digits and separators.": {
+    "en": "Generate memorable-looking strings from randomized syllables, optional digits and separators.",
+    "es": "Una herramienta local para contraseñas pronunciables, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour phrases de passe prononçables, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Aussprechbare Passphrasen, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Strong Password Generator": {
     "en": "Strong Password Generator",
     "es": "Generador de contraseñas",
     "fr": "Générateur de mots de passe",
     "de": "Passwortgenerator"
+  },
+  "Create random passwords with selectable character groups and a length you control.": {
+    "en": "Create random passwords with selectable character groups and a length you control.",
+    "es": "Una herramienta local para generador de contraseñas, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour générateur de mots de passe, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Passwortgenerator, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Username Generator": {
     "en": "Username Generator",
@@ -1451,11 +1961,23 @@
     "fr": "Générateur de pseudonymes",
     "de": "Benutzernamengenerator"
   },
+  "Find a starting point for a handle without sharing your name or personal details.": {
+    "en": "Find a starting point for a handle without sharing your name or personal details.",
+    "es": "Una herramienta local para generador de nombres de usuario, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour générateur de pseudonymes, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Benutzernamengenerator, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Random String Generator": {
     "en": "Random String Generator",
     "es": "Generador de cadenas",
     "fr": "Générateur de chaînes aléatoires",
     "de": "Zufällige Zeichenfolgen"
+  },
+  "Generate sample identifiers and arbitrary character strings from a character set you define.": {
+    "en": "Generate sample identifiers and arbitrary character strings from a character set you define.",
+    "es": "Una herramienta local para generador de cadenas, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour générateur de chaînes aléatoires, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Zufällige Zeichenfolgen, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Email Extractor": {
     "en": "Email Extractor",
@@ -1463,11 +1985,23 @@
     "fr": "Extraction d’e-mails",
     "de": "E-Mail-Adressen extrahieren"
   },
+  "Pull email-shaped addresses out of a text document and remove repeated entries.": {
+    "en": "Pull email-shaped addresses out of a text document and remove repeated entries.",
+    "es": "Una herramienta local para extractor de correos, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour extraction d’e-mails, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für E-Mail-Adressen extrahieren, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "URL Extractor": {
     "en": "URL Extractor",
     "es": "Extractor de URL",
     "fr": "Extraction d’URL",
     "de": "URLs extrahieren"
+  },
+  "Collect HTTP and HTTPS links from a block of notes or copied text.": {
+    "en": "Collect HTTP and HTTPS links from a block of notes or copied text.",
+    "es": "Una herramienta local para extractor de url, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour extraction d’url, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für URLs extrahieren, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Word & Character Counter": {
     "en": "Word & Character Counter",
@@ -1475,11 +2009,23 @@
     "fr": "Compteur de mots",
     "de": "Wort- und Zeichenzähler"
   },
+  "Understand the length of a draft with live counts for words, characters, lines and paragraphs.": {
+    "en": "Understand the length of a draft with live counts for words, characters, lines and paragraphs.",
+    "es": "Una herramienta local para contador de palabras, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour compteur de mots, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Wort- und Zeichenzähler, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Find & Replace": {
     "en": "Find & Replace",
     "es": "Buscar y reemplazar",
     "fr": "Rechercher et remplacer",
     "de": "Suchen und Ersetzen"
+  },
+  "Make consistent changes across a draft without repeatedly editing the same phrase by hand.": {
+    "en": "Make consistent changes across a draft without repeatedly editing the same phrase by hand.",
+    "es": "Una herramienta local para buscar y reemplazar, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour rechercher et remplacer, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Suchen und Ersetzen, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Text Difference Checker": {
     "en": "Text Difference Checker",
@@ -1487,11 +2033,23 @@
     "fr": "Comparaison de textes",
     "de": "Textvergleich"
   },
+  "Compare two versions and see which lines were added, removed or kept.": {
+    "en": "Compare two versions and see which lines were added, removed or kept.",
+    "es": "Una herramienta local para comparador de textos, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour comparaison de textes, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Textvergleich, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "JSON Formatter": {
     "en": "JSON Formatter",
     "es": "Formateador JSON",
     "fr": "Formatage JSON",
     "de": "JSON formatieren"
+  },
+  "Turn valid JSON into a readable structure or a compact representation.": {
+    "en": "Turn valid JSON into a readable structure or a compact representation.",
+    "es": "Una herramienta local para formateador json, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour formatage json, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für JSON formatieren, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "Base64 Encoder & Decoder": {
     "en": "Base64 Encoder & Decoder",
@@ -1499,11 +2057,23 @@
     "fr": "Encodage et décodage Base64",
     "de": "Base64 kodieren und dekodieren"
   },
+  "Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters.": {
+    "en": "Convert UTF-8 text to Base64 and decode supported Base64 text back into readable characters.",
+    "es": "Una herramienta local para codificar y decodificar base64, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour encodage et décodage base64, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Base64 kodieren und dekodieren, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "URL Encoder & Decoder": {
     "en": "URL Encoder & Decoder",
     "es": "Codificar y decodificar URL",
     "fr": "Encodage et décodage d’URL",
     "de": "URL kodieren und dekodieren"
+  },
+  "Prepare a text value for a URL component or decode an encoded component into a readable form.": {
+    "en": "Prepare a text value for a URL component or decode an encoded component into a readable form.",
+    "es": "Una herramienta local para codificar y decodificar url, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour encodage et décodage d’url, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für URL kodieren und dekodieren, mit klaren Einstellungen und einer separaten Ausgabe."
   },
   "AI Writing Prompt Builder": {
     "en": "AI Writing Prompt Builder",
@@ -1511,10 +2081,754 @@
     "fr": "Créateur de prompts d’écriture",
     "de": "Schreibprompt-Generator"
   },
+  "Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints.": {
+    "en": "Build a clearer request for an AI writing assistant with a goal, audience, tone and useful constraints.",
+    "es": "Una herramienta local para creador de prompts de escritura, con ajustes claros y una copia del resultado.",
+    "fr": "Un outil local pour créateur de prompts d’écriture, avec des réglages clairs et un résultat à conserver.",
+    "de": "Ein lokales Werkzeug für Schreibprompt-Generator, mit klaren Einstellungen und einer separaten Ausgabe."
+  },
   "Image & Video Watermark": {
     "en": "Image & Video Watermark",
     "es": "Marca de agua para imagen y vídeo",
     "fr": "Filigrane image et vidéo",
     "de": "Wasserzeichen für Bild und Video"
+  },
+  "Add a visible ownership mark with repeating text or your own logo, then keep a separate image or video copy.": {
+    "en": "Add a visible ownership mark with repeating text or your own logo, then keep a separate image or video copy.",
+    "es": "Añade texto o tu logotipo como marca visible y guarda una copia independiente.",
+    "fr": "Ajoutez un texte ou votre logo comme filigrane visible et conservez une copie séparée.",
+    "de": "Ergänze Text oder dein Logo als sichtbares Wasserzeichen und speichere eine separate Kopie."
+  },
+  "Resize to 1920 × 1080": {
+    "en": "Resize to 1920 × 1080",
+    "es": "Cambiar tamaño a 1920 × 1080",
+    "fr": "Redimensionner à 1920 × 1080",
+    "de": "Bildgröße 1920 × 1080"
+  },
+  "Prepare a Full HD canvas with fit, fill or stretch controls.": {
+    "en": "Prepare a Full HD canvas with fit, fill or stretch controls.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize to 1080 × 1080": {
+    "en": "Resize to 1080 × 1080",
+    "es": "Cambiar tamaño a 1080 × 1080",
+    "fr": "Redimensionner à 1080 × 1080",
+    "de": "Bildgröße 1080 × 1080"
+  },
+  "Make a square social image without guessing the dimensions.": {
+    "en": "Make a square social image without guessing the dimensions.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize to 512 × 512": {
+    "en": "Resize to 512 × 512",
+    "es": "Cambiar tamaño a 512 × 512",
+    "fr": "Redimensionner à 512 × 512",
+    "de": "Bildgröße 512 × 512"
+  },
+  "Prepare a compact square avatar or thumbnail.": {
+    "en": "Prepare a compact square avatar or thumbnail.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for YouTube": {
+    "en": "Resize for YouTube",
+    "es": "Tamaño para YouTube",
+    "fr": "Format YouTube",
+    "de": "Bildgröße für YouTube"
+  },
+  "Build a 1280 × 720 thumbnail canvas and choose how the photo fits.": {
+    "en": "Build a 1280 × 720 thumbnail canvas and choose how the photo fits.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for Instagram": {
+    "en": "Resize for Instagram",
+    "es": "Tamaño para Instagram",
+    "fr": "Formats Instagram",
+    "de": "Bildgrößen für Instagram"
+  },
+  "Switch between square posts, vertical stories and portrait canvases.": {
+    "en": "Switch between square posts, vertical stories and portrait canvases.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for Website": {
+    "en": "Resize for Website",
+    "es": "Tamaño para sitios web",
+    "fr": "Format pour le Web",
+    "de": "Bildgröße für Websites"
+  },
+  "Reduce oversized camera photos to practical website dimensions.": {
+    "en": "Reduce oversized camera photos to practical website dimensions.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for Facebook": {
+    "en": "Resize for Facebook",
+    "es": "Tamaño para Facebook",
+    "fr": "Formats Facebook",
+    "de": "Bildgrößen für Facebook"
+  },
+  "Prepare cover and post canvases using editable size presets.": {
+    "en": "Prepare cover and post canvases using editable size presets.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for LinkedIn": {
+    "en": "Resize for LinkedIn",
+    "es": "Tamaño para LinkedIn",
+    "fr": "Formats LinkedIn",
+    "de": "Bildgrößen für LinkedIn"
+  },
+  "Compose a wide profile banner or a company update image.": {
+    "en": "Compose a wide profile banner or a company update image.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for TikTok / Shorts": {
+    "en": "Resize for TikTok / Shorts",
+    "es": "Tamaño para TikTok y Shorts",
+    "fr": "Format TikTok / Shorts",
+    "de": "Bildgröße für TikTok / Shorts"
+  },
+  "Place your image on a 1080 × 1920 vertical canvas.": {
+    "en": "Place your image on a 1080 × 1920 vertical canvas.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for X": {
+    "en": "Resize for X",
+    "es": "Tamaño para X",
+    "fr": "Formats pour X",
+    "de": "Bildgrößen für X"
+  },
+  "Choose a wide header or landscape post canvas.": {
+    "en": "Choose a wide header or landscape post canvas.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Resize for Pinterest": {
+    "en": "Resize for Pinterest",
+    "es": "Tamaño para Pinterest",
+    "fr": "Format Pinterest",
+    "de": "Bildgröße für Pinterest"
+  },
+  "Create a 1000 × 1500 vertical pin with balanced framing.": {
+    "en": "Create a 1000 × 1500 vertical pin with balanced framing.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Image Canvas Enlarger": {
+    "en": "Image Canvas Enlarger",
+    "es": "Ampliar lienzo de imagen",
+    "fr": "Agrandir le canevas",
+    "de": "Bildleinwand vergrößern"
+  },
+  "Add transparent, solid or blurred padding around a photo.": {
+    "en": "Add transparent, solid or blurred padding around a photo.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "DPI Converter": {
+    "en": "DPI Converter",
+    "es": "Conversor de PPP / DPI",
+    "fr": "Convertisseur de résolution DPI",
+    "de": "DPI-Konverter"
+  },
+  "Write print-density metadata without pretending to add image detail.": {
+    "en": "Write print-density metadata without pretending to add image detail.",
+    "es": "Elige dimensiones, proporciones y encuadre para exportar una imagen nueva.",
+    "fr": "Choisissez les dimensions, les proportions et le cadrage pour exporter une nouvelle image.",
+    "de": "Wähle Abmessungen, Proportionen und Bildausschnitt für eine neue Bilddatei."
+  },
+  "Compress to 20 KB": {
+    "en": "Compress to 20 KB",
+    "es": "Comprimir a 20 KB",
+    "fr": "Compresser à 20 Ko",
+    "de": "Auf 20 KB komprimieren"
+  },
+  "Reduce an image below a 20 KB upload limit, adapting quality and dimensions when necessary.": {
+    "en": "Reduce an image below a 20 KB upload limit, adapting quality and dimensions when necessary.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Compress to 50 KB": {
+    "en": "Compress to 50 KB",
+    "es": "Comprimir a 50 KB",
+    "fr": "Compresser à 50 Ko",
+    "de": "Auf 50 KB komprimieren"
+  },
+  "Reduce an image below a 50 KB upload limit, adapting quality and dimensions when necessary.": {
+    "en": "Reduce an image below a 50 KB upload limit, adapting quality and dimensions when necessary.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Compress to 100 KB": {
+    "en": "Compress to 100 KB",
+    "es": "Comprimir a 100 KB",
+    "fr": "Compresser à 100 Ko",
+    "de": "Auf 100 KB komprimieren"
+  },
+  "Reduce an image below a 100 KB upload limit, adapting quality and dimensions when necessary.": {
+    "en": "Reduce an image below a 100 KB upload limit, adapting quality and dimensions when necessary.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Compress to 200 KB": {
+    "en": "Compress to 200 KB",
+    "es": "Comprimir a 200 KB",
+    "fr": "Compresser à 200 Ko",
+    "de": "Auf 200 KB komprimieren"
+  },
+  "Reduce an image below a 200 KB upload limit, adapting quality and dimensions when necessary.": {
+    "en": "Reduce an image below a 200 KB upload limit, adapting quality and dimensions when necessary.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Compress to 500 KB": {
+    "en": "Compress to 500 KB",
+    "es": "Comprimir a 500 KB",
+    "fr": "Compresser à 500 Ko",
+    "de": "Auf 500 KB komprimieren"
+  },
+  "Reduce an image below a 500 KB upload limit, adapting quality and dimensions when necessary.": {
+    "en": "Reduce an image below a 500 KB upload limit, adapting quality and dimensions when necessary.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Lossless PNG Compressor": {
+    "en": "Lossless PNG Compressor",
+    "es": "Comprimir PNG sin pérdida",
+    "fr": "Compression PNG sans perte",
+    "de": "PNG verlustfrei komprimieren"
+  },
+  "Recompress PNG image data while preserving its pixels and metadata.": {
+    "en": "Recompress PNG image data while preserving its pixels and metadata.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Batch Image Compressor": {
+    "en": "Batch Image Compressor",
+    "es": "Compresor de imágenes por lotes",
+    "fr": "Compression d’images par lot",
+    "de": "Bilder stapelweise komprimieren"
+  },
+  "Optimize several photos with one shared quality setting.": {
+    "en": "Optimize several photos with one shared quality setting.",
+    "es": "Reduce el tamaño del archivo con controles claros y conserva el original.",
+    "fr": "Réduisez la taille du fichier avec des réglages explicites et conservez l’original.",
+    "de": "Verkleinere die Datei mit klaren Einstellungen und behalte das Original."
+  },
+  "Circle Crop Image": {
+    "en": "Circle Crop Image",
+    "es": "Recorte circular de imagen",
+    "fr": "Recadrage circulaire",
+    "de": "Bild kreisförmig zuschneiden"
+  },
+  "Create a circular avatar with genuinely transparent corners.": {
+    "en": "Create a circular avatar with genuinely transparent corners.",
+    "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+    "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+    "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+  },
+  "Aspect Ratio Cropper": {
+    "en": "Aspect Ratio Cropper",
+    "es": "Recorte por relación de aspecto",
+    "fr": "Recadrage au format choisi",
+    "de": "Zuschnitt nach Seitenverhältnis"
+  },
+  "Drag the crop box or enter exact edges, with common ratio presets.": {
+    "en": "Drag the crop box or enter exact edges, with common ratio presets.",
+    "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+    "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+    "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+  },
+  "Perspective Crop & Straighten": {
+    "en": "Perspective Crop & Straighten",
+    "es": "Corregir perspectiva y enderezar",
+    "fr": "Corriger la perspective",
+    "de": "Perspektive korrigieren"
+  },
+  "Move four corner points to flatten an angled page or sign.": {
+    "en": "Move four corner points to flatten an angled page or sign.",
+    "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+    "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+    "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+  },
+  "Custom Shape Cropper": {
+    "en": "Custom Shape Cropper",
+    "es": "Recorte con formas",
+    "fr": "Recadrage en formes",
+    "de": "Bild in Formen zuschneiden"
+  },
+  "Clip a photo to a star, heart, triangle or hexagon.": {
+    "en": "Clip a photo to a star, heart, triangle or hexagon.",
+    "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+    "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+    "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+  },
+  "Passport / ID Photo Maker": {
+    "en": "Passport / ID Photo Maker",
+    "es": "Creador de foto de identificación",
+    "fr": "Photo de passeport / identité",
+    "de": "Passfoto-Vorlage"
+  },
+  "Compose a 600 × 600 pixel, 300 DPI photo template with an optional background fill.": {
+    "en": "Compose a 600 × 600 pixel, 300 DPI photo template with an optional background fill.",
+    "es": "Ajusta el encuadre con controles visuales y medidas precisas.",
+    "fr": "Ajustez le cadrage avec des contrôles visuels et des dimensions précises.",
+    "de": "Passe den Ausschnitt mit sichtbaren Griffen und genauen Abmessungen an."
+  },
+  "PNG to JPG": {
+    "en": "PNG to JPG",
+    "es": "PNG a JPG",
+    "fr": "PNG vers JPG",
+    "de": "PNG in JPG"
+  },
+  "Convert your PNG source into a separate downloadable image.": {
+    "en": "Convert your PNG source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "JPG to PNG": {
+    "en": "JPG to PNG",
+    "es": "JPG a PNG",
+    "fr": "JPG vers PNG",
+    "de": "JPG in PNG"
+  },
+  "Convert your JPG source into a separate downloadable image.": {
+    "en": "Convert your JPG source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "JPG to WebP": {
+    "en": "JPG to WebP",
+    "es": "JPG a WebP",
+    "fr": "JPG vers WebP",
+    "de": "JPG in WebP"
+  },
+  "WebP to PNG": {
+    "en": "WebP to PNG",
+    "es": "WebP a PNG",
+    "fr": "WebP vers PNG",
+    "de": "WebP in PNG"
+  },
+  "Convert your WebP source into a separate downloadable image.": {
+    "en": "Convert your WebP source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "WebP to JPG": {
+    "en": "WebP to JPG",
+    "es": "WebP a JPG",
+    "fr": "WebP vers JPG",
+    "de": "WebP in JPG"
+  },
+  "HEIC to JPG": {
+    "en": "HEIC to JPG",
+    "es": "HEIC a JPG",
+    "fr": "HEIC vers JPG",
+    "de": "HEIC in JPG"
+  },
+  "Convert your HEIC source into a separate downloadable image.": {
+    "en": "Convert your HEIC source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "HEIC to PNG": {
+    "en": "HEIC to PNG",
+    "es": "HEIC a PNG",
+    "fr": "HEIC vers PNG",
+    "de": "HEIC in PNG"
+  },
+  "AVIF to JPG": {
+    "en": "AVIF to JPG",
+    "es": "AVIF a JPG",
+    "fr": "AVIF vers JPG",
+    "de": "AVIF in JPG"
+  },
+  "Convert your AVIF source into a separate downloadable image.": {
+    "en": "Convert your AVIF source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "AVIF to PNG": {
+    "en": "AVIF to PNG",
+    "es": "AVIF a PNG",
+    "fr": "AVIF vers PNG",
+    "de": "AVIF in PNG"
+  },
+  "SVG to PNG": {
+    "en": "SVG to PNG",
+    "es": "SVG a PNG",
+    "fr": "SVG vers PNG",
+    "de": "SVG in PNG"
+  },
+  "Convert your SVG source into a separate downloadable image.": {
+    "en": "Convert your SVG source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "BMP / TIFF Converter": {
+    "en": "BMP / TIFF Converter",
+    "es": "Conversor BMP / TIFF",
+    "fr": "Convertisseur BMP / TIFF",
+    "de": "BMP-/TIFF-Konverter"
+  },
+  "Convert your BMP / TIFF Converter source into a separate downloadable image.": {
+    "en": "Convert your BMP / TIFF Converter source into a separate downloadable image.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "PDF to JPG": {
+    "en": "PDF to JPG",
+    "es": "PDF a JPG",
+    "fr": "PDF vers JPG",
+    "de": "PDF in JPG"
+  },
+  "Render selected PDF pages into individual high-resolution JPEG images.": {
+    "en": "Render selected PDF pages into individual high-resolution JPEG images.",
+    "es": "Convierte el archivo en una imagen nueva con el formato que necesites.",
+    "fr": "Convertissez le fichier en une nouvelle image au format souhaité.",
+    "de": "Wandle die Datei in ein neues Bild im gewünschten Format um."
+  },
+  "Color Extractor": {
+    "en": "Color Extractor",
+    "es": "Extractor de colores",
+    "fr": "Extraire une palette",
+    "de": "Farbpalette extrahieren"
+  },
+  "Find dominant colors and copy a practical palette of hex codes.": {
+    "en": "Find dominant colors and copy a practical palette of hex codes.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Image Blur Brush": {
+    "en": "Image Blur Brush",
+    "es": "Pincel de desenfoque",
+    "fr": "Pinceau de flou",
+    "de": "Weichzeichner-Pinsel"
+  },
+  "Paint Gaussian-style, radial or directional blur over selected areas.": {
+    "en": "Paint Gaussian-style, radial or directional blur over selected areas.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Image Pixelator": {
+    "en": "Image Pixelator",
+    "es": "Pixelar imagen",
+    "fr": "Pixelliser une image",
+    "de": "Bild verpixeln"
+  },
+  "Paint a pixelated mosaic over faces, text or sensitive details.": {
+    "en": "Paint a pixelated mosaic over faces, text or sensitive details.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Selective Invert & Color Pop": {
+    "en": "Selective Invert & Color Pop",
+    "es": "Invertir color y color selectivo",
+    "fr": "Inversion et couleur sélective",
+    "de": "Farben umkehren und hervorheben"
+  },
+  "Paint an inverted region or reveal color over a monochrome photo.": {
+    "en": "Paint an inverted region or reveal color over a monochrome photo.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Color Grading & Adjustments": {
+    "en": "Color Grading & Adjustments",
+    "es": "Ajustes y gradación de color",
+    "fr": "Réglages et étalonnage couleur",
+    "de": "Farbkorrektur und Anpassungen"
+  },
+  "Balance brightness, contrast, saturation, exposure, temperature and tint.": {
+    "en": "Balance brightness, contrast, saturation, exposure, temperature and tint.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Cinematic Photo Filters": {
+    "en": "Cinematic Photo Filters",
+    "es": "Filtros de fotografía",
+    "fr": "Filtres photo cinématiques",
+    "de": "Fotofilter mit Filmlook"
+  },
+  "Explore vintage, monochrome, cyberpunk, retro and grain looks.": {
+    "en": "Explore vintage, monochrome, cyberpunk, retro and grain looks.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Photo Collage Maker": {
+    "en": "Photo Collage Maker",
+    "es": "Creador de collages",
+    "fr": "Créer un collage photo",
+    "de": "Fotocollage erstellen"
+  },
+  "Arrange two to nine photos in a grid with adjustable borders.": {
+    "en": "Arrange two to nine photos in a grid with adjustable borders.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Screenshot Background Changer": {
+    "en": "Screenshot Background Changer",
+    "es": "Fondo para capturas de pantalla",
+    "fr": "Fond pour captures d’écran",
+    "de": "Screenshot-Hintergrund gestalten"
+  },
+  "Set a screenshot on a gradient canvas with padding and a soft shadow.": {
+    "en": "Set a screenshot on a gradient canvas with padding and a soft shadow.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Vignette & Focus Blur": {
+    "en": "Vignette & Focus Blur",
+    "es": "Viñeta y desenfoque de enfoque",
+    "fr": "Vignette et flou de mise au point",
+    "de": "Vignette und Fokusunschärfe"
+  },
+  "Guide attention with soft edge shading and an adjustable focus area.": {
+    "en": "Guide attention with soft edge shading and an adjustable focus area.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Sharpen & Clarity": {
+    "en": "Sharpen & Clarity",
+    "es": "Nitidez y claridad",
+    "fr": "Netteté et clarté",
+    "de": "Schärfe und Klarheit"
+  },
+  "Increase local edge contrast with an adjustable sharpening amount.": {
+    "en": "Increase local edge contrast with an adjustable sharpening amount.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
+  },
+  "Add Text to Image": {
+    "en": "Add Text to Image",
+    "es": "Añadir texto a una imagen",
+    "fr": "Ajouter du texte à une image",
+    "de": "Text zu Bildern hinzufügen"
+  },
+  "Add a caption with fonts, alignment, outline and shadow controls.": {
+    "en": "Add a caption with fonts, alignment, outline and shadow controls.",
+    "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+    "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+    "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+  },
+  "Watermark Pattern Generator": {
+    "en": "Watermark Pattern Generator",
+    "es": "Patrón de marcas de agua",
+    "fr": "Motif de filigranes",
+    "de": "Wasserzeichenmuster"
+  },
+  "Create a repeating diagonal text watermark across a photo.": {
+    "en": "Create a repeating diagonal text watermark across a photo.",
+    "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+    "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+    "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+  },
+  "WhatsApp DP Maker": {
+    "en": "WhatsApp DP Maker",
+    "es": "Foto de perfil para WhatsApp",
+    "fr": "Photo de profil WhatsApp",
+    "de": "WhatsApp-Profilbild gestalten"
+  },
+  "Fit your complete photo into a square with solid or blurred borders.": {
+    "en": "Fit your complete photo into a square with solid or blurred borders.",
+    "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+    "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+    "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+  },
+  "Photo Border & Frame Maker": {
+    "en": "Photo Border & Frame Maker",
+    "es": "Bordes y marcos de fotos",
+    "fr": "Bordures et cadres photo",
+    "de": "Fotorahmen und Ränder"
+  },
+  "Finish a photo with a solid frame, shadow or polaroid border.": {
+    "en": "Finish a photo with a solid frame, shadow or polaroid border.",
+    "es": "Añade un acabado personal y exporta una copia separada de tu imagen.",
+    "fr": "Ajoutez une touche personnelle et exportez une copie séparée de l’image.",
+    "de": "Gestalte dein Bild und exportiere eine separate Kopie."
+  },
+  "AI Watermark Remover": {
+    "en": "AI Watermark Remover",
+    "es": "Eliminar marcas con IA",
+    "fr": "Suppression de filigrane par IA",
+    "de": "Wasserzeichen mit KI entfernen"
+  },
+  "Paint a mask over an unwanted mark on media you own or may edit.": {
+    "en": "Paint a mask over an unwanted mark on media you own or may edit.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "AI Image Upscaler": {
+    "en": "AI Image Upscaler",
+    "es": "Ampliación de imagen con IA",
+    "fr": "Agrandissement d’image par IA",
+    "de": "KI-Bildvergrößerung"
+  },
+  "Request a genuine model-based 2× or 4× enlargement.": {
+    "en": "Request a genuine model-based 2× or 4× enlargement.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "Image to Text · OCR": {
+    "en": "Image to Text · OCR",
+    "es": "Imagen a texto · OCR",
+    "fr": "Image en texte · OCR",
+    "de": "Bild in Text · OCR"
+  },
+  "Recognize printed text locally with downloadable OCR language models.": {
+    "en": "Recognize printed text locally with downloadable OCR language models.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "AI Generative Fill & Erase": {
+    "en": "AI Generative Fill & Erase",
+    "es": "Relleno y borrado con IA",
+    "fr": "Remplissage et effacement IA",
+    "de": "KI-Füllen und Entfernen"
+  },
+  "Describe an edit and paint the region to replace or remove.": {
+    "en": "Describe an edit and paint the region to replace or remove.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "AI Generative Uncrop": {
+    "en": "AI Generative Uncrop",
+    "es": "Expandir imagen con IA",
+    "fr": "Extension d’image par IA",
+    "de": "Bild mit KI erweitern"
+  },
+  "Request an expanded image with a generated background.": {
+    "en": "Request an expanded image with a generated background.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "AI Old Photo Restorer": {
+    "en": "AI Old Photo Restorer",
+    "es": "Restaurar fotos con IA",
+    "fr": "Restauration de photos par IA",
+    "de": "Alte Fotos mit KI restaurieren"
+  },
+  "Send a damaged photo to a configured restoration model.": {
+    "en": "Send a damaged photo to a configured restoration model.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "AI Skin Retoucher": {
+    "en": "AI Skin Retoucher",
+    "es": "Retoque de piel con IA",
+    "fr": "Retouche de peau par IA",
+    "de": "KI-Hautretusche"
+  },
+  "Request subtle portrait retouching from a configured processing service.": {
+    "en": "Request subtle portrait retouching from a configured processing service.",
+    "es": "Consulta dónde se procesa la imagen y la disponibilidad del servicio antes de comenzar.",
+    "fr": "Vérifiez le lieu de traitement de l’image et la disponibilité du service avant de commencer.",
+    "de": "Prüfe vor dem Start, wo das Bild verarbeitet wird und ob der Dienst verfügbar ist."
+  },
+  "Video Splitter": {
+    "en": "Video Splitter",
+    "es": "Dividir vídeo en clips",
+    "fr": "Diviser une vidéo en clips",
+    "de": "Video in Clips teilen"
+  },
+  "Split one video into several time ranges and download each MP4.": {
+    "en": "Split one video into several time ranges and download each MP4.",
+    "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+    "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+    "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+  },
+  "Profile Picture Animator": {
+    "en": "Profile Picture Animator",
+    "es": "Animar foto de perfil",
+    "fr": "Animer une photo de profil",
+    "de": "Profilbild animieren"
+  },
+  "Turn a still image into a short looping pan-and-zoom GIF or MP4.": {
+    "en": "Turn a still image into a short looping pan-and-zoom GIF or MP4.",
+    "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+    "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+    "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+  },
+  "Mute Video": {
+    "en": "Mute Video",
+    "es": "Silenciar vídeo",
+    "fr": "Couper le son d’une vidéo",
+    "de": "Videoton entfernen"
+  },
+  "Remove the audio track and save a separate video copy.": {
+    "en": "Remove the audio track and save a separate video copy.",
+    "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+    "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+    "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+  },
+  "Video Speed Adjuster": {
+    "en": "Video Speed Adjuster",
+    "es": "Cambiar velocidad de vídeo",
+    "fr": "Vitesse de lecture vidéo",
+    "de": "Videogeschwindigkeit ändern"
+  },
+  "Create a slow-motion or fast-forward copy from 0.25× to 4× speed.": {
+    "en": "Create a slow-motion or fast-forward copy from 0.25× to 4× speed.",
+    "es": "Prepara un vídeo o una animación y exporta el resultado en tu dispositivo.",
+    "fr": "Préparez une vidéo ou une animation et exportez le résultat sur votre appareil.",
+    "de": "Erstelle ein Video oder eine Animation und exportiere das Ergebnis auf deinem Gerät."
+  },
+  "Image Flip & Rotate": {
+    "en": "Image Flip & Rotate",
+    "es": "Girar y voltear imagen",
+    "fr": "Pivoter et retourner une image",
+    "de": "Bild drehen und spiegeln"
+  },
+  "Rotate by a precise angle or flip a photo horizontally or vertically.": {
+    "en": "Rotate by a precise angle or flip a photo horizontally or vertically.",
+    "es": "Personaliza la imagen, revisa la vista previa y descarga una copia.",
+    "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
+    "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
   }
 }

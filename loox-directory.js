@@ -1,0 +1,2 @@
+/* Collection contents are static HTML so links remain accessible without JavaScript. */
+(()=>{const search=document.querySelector('#directory-search'),cards=[...document.querySelectorAll('.work-tool-card')],count=document.querySelector('#directory-count');if(!search)return;search.addEventListener('input',()=>{const query=search.value.trim().toLocaleLowerCase();let visible=0;cards.forEach(card=>{card.hidden=!card.dataset.name.includes(query);if(!card.hidden)visible++});count.textContent=visible+' '+(visible===1?'tool':'tools')+(query?' matching your search':'')})})();
