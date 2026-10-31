@@ -4,12 +4,11 @@
 const $=id=>document.getElementById(id),canvas=$('canvas'),ctx=canvas.getContext('2d');
 if(!ctx){$('status').textContent='Canvas is unavailable in this browser';return}
 const layers=[],history=[],future=[],urls=new Set();
-let nextId=1,selected=null,tool='move',drag=null,comparison=false,crop={x:5,y:5,w:90,h:90};
+let nextId=1,selected=null,tool='move',drag=null,comparison=false,crop={x:5,y:5,w:90,h:90},cropRatio='free';
 let bg='#ffffff',transparent=false,baseImageId=null;
 const esc=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const colors={violet:'#a78bfa',pink:'#f48fc6'};
-const emoji=['✨','❤️','💖','🎉','🌸','🌈','🔥','⭐','💎','😎','⚡','🌙','☀️','🌺','🌿','🎬','💬','🎵','🚀','👑'];
 const snapshot=()=>({layers:layers.map(l=>({...l,points:l.points?l.points.map(p=>({...p})):undefined})),width:canvas.width,height:canvas.height,bg,transparent,baseImageId});
 function remember(){history.push(snapshot());if(history.length>35)history.shift();future.length=0}
 function restore(state){layers.splice(0,layers.length,...state.layers.map(l=>({...l,points:l.points?l.points.map(p=>({...p})):undefined})));canvas.width=state.width;canvas.height=state.height;bg=state.bg;transparent=state.transparent;baseImageId=state.baseImageId;selected=layers.some(l=>l.id===selected)?selected:null;$('background').value=bg;$('transparent').value=String(transparent);refresh()}
@@ -17,7 +16,7 @@ $('undo').onclick=()=>{if(!history.length)return;future.push(snapshot());restore
 $('redo').onclick=()=>{if(!future.length)return;history.push(snapshot());restore(future.pop())};
 document.addEventListener('keydown',e=>{if(!(e.ctrlKey||e.metaKey)||/input|textarea|select/i.test(e.target.tagName))return;const k=e.key.toLowerCase();if(k==='z'){e.preventDefault();e.shiftKey?$('redo').click():$('undo').click()}if(k==='y'){e.preventDefault();$('redo').click()}});
 const say=s=>$('status').textContent=s;
-const base=(kind,name)=>({id:nextId++,kind,name,x:.5,y:.5,w:.6,h:.5,rotation:0,scale:1,opacity:1,flip:1,color:'#ffffff',font:'Arial',fontSize:70,text:'Your title',effect:'shadow',filter:'none',brightness:100,contrast:100,saturation:100,blur:0,zoom:1,panX:0,panY:0,fit:'contain',sticker:'✨',shape:'rectangle',stroke:'#ffffff',points:[],brushWidth:16});
+const base=(kind,name)=>({id:nextId++,kind,name,x:.5,y:.5,w:.6,h:.5,rotation:0,scale:1,opacity:1,flip:1,color:'#ffffff',font:'Arial',fontSize:70,text:'Your title',effect:'shadow',filter:'none',brightness:100,contrast:100,saturation:100,blur:0,zoom:1,panX:0,panY:0,fit:'contain',shape:'rectangle',stroke:'#ffffff',points:[],brushWidth:16});
 const own=()=>layers.find(l=>l.id===selected)||null;
 function pick(id){selected=id;showLayers();showInspector();draw()}
 function updateEmpty(){$('empty').classList.toggle('studio-hidden',layers.length>0)}
@@ -44,19 +43,16 @@ $('upload').onclick=()=>$('file').click();
 $('shell').addEventListener('dragover',e=>e.preventDefault());
 $('shell').addEventListener('drop',e=>{e.preventDefault();addFiles(e.dataTransfer.files)});
 function addText(){remember();const l=base('text','Text '+nextId);l.text='Your title';l.w=.84;l.h=.28;layers.push(l);selected=l.id;tool='move';refresh();say('Title added. Edit font, color and effects in Inspector.')}
-function addSticker(icon){remember();const l=base('sticker','Sticker '+icon);l.sticker=icon;l.w=.24;l.h=.28;layers.push(l);selected=l.id;tool='move';refresh()}
 function addShape(shape){remember();const l=base('shape',shape+' shape');l.shape=shape;l.color=shape==='circle'?'#a78bfa':'#e45daa';l.w=.4;l.h=.38;layers.push(l);selected=l.id;tool='move';refresh()}
 $('addText').onclick=addText;
-const stickerBox=$('stickers');stickerBox.innerHTML=emoji.map(s=>'<button type="button" data-sticker="'+s+'" title="Add '+s+'">'+s+'</button>').join('');
-stickerBox.querySelectorAll('button').forEach(b=>b.onclick=()=>addSticker(b.dataset.sticker));
 function activate(t){
  tool=t;document.querySelectorAll('.studio-toolrail button').forEach(b=>b.classList.toggle('active',b.id==='tool'+t[0].toUpperCase()+t.slice(1)));
- $('libraryTitle').textContent=({move:'Layers & assets',upload:'Import images',text:'Text & typography',sticker:'Stickers',shape:'Shapes',draw:'Draw on canvas',eraser:'Erase with brush',crop:'Crop composition',canvas:'Canvas size'})[t]||'Layers & assets';
- $('libraryHelp').textContent=({move:'Select a layer and drag it around the canvas.',upload:'Add JPG, PNG, WebP and other browser-supported images.',text:'Add titles, choose fonts and create effects.',sticker:'Pick a sticker below and drag it into place.',shape:'Add rectangle and circle shapes with editable colors.',draw:'Drag across the canvas to paint with your chosen brush.',eraser:'Drag over the artwork to remove pixels in the composite.',crop:'Choose a crop rectangle then apply it to the entire composition.',canvas:'Change the width and height of your design.'})[t];
+ $('libraryTitle').textContent=({move:'Layers & assets',upload:'Import images',text:'Text & typography',shape:'Shapes',draw:'Draw on canvas',eraser:'Erase with brush',crop:'Crop composition',canvas:'Canvas size'})[t]||'Layers & assets';
+ $('libraryHelp').textContent=({move:'Select a layer and drag it around the canvas.',upload:'Add JPG, PNG, WebP and other browser-supported images.',text:'Add titles, choose fonts and create effects.',shape:'Add rectangle and circle shapes with editable colors.',draw:'Drag across the canvas to paint with your chosen brush.',eraser:'Drag over the artwork to remove pixels in the composite.',crop:'Choose a crop rectangle then apply it to the entire composition.',canvas:'Change the width and height of your design.'})[t];
  showInspector();draw();
 }
-['Move','Upload','Text','Sticker','Shape','Draw','Eraser','Crop','Canvas'].forEach(t=>{$('tool'+t).onclick=()=>{
- activate(t.toLowerCase());if(t==='Upload')$('file').click();if(t==='Text')addText();if(t==='Shape')showShapePalette();if(t==='Sticker')stickerBox.scrollIntoView({block:'nearest'})
+['Move','Upload','Text','Shape','Draw','Eraser','Crop','Canvas'].forEach(t=>{$('tool'+t).onclick=()=>{
+ activate(t.toLowerCase());if(t==='Upload')$('file').click();if(t==='Text')addText();if(t==='Shape')showShapePalette();
 }});
 function showShapePalette(){
  $('libraryTitle').textContent='Add shapes';
@@ -69,7 +65,7 @@ function showLayers(){
  if(!layers.length){list.innerHTML='<p class="studio-section-note">No layers yet.</p>';return}
  [...layers].reverse().forEach(l=>{
   const b=document.createElement('button');b.className='studio-list-item';b.type='button';b.setAttribute('aria-pressed',String(selected===l.id));
-  const symbol=({image:'▧',text:'T',sticker:'✦',shape:'⬡',paint:'✎',erase:'◌'})[l.kind]||'◈';
+  const symbol=({image:'▧',text:'T',shape:'⬡',paint:'✎',erase:'◌'})[l.kind]||'◈';
   b.innerHTML='<span class="symbol">'+symbol+'</span><span><strong>'+esc(l.name)+'</strong><small>'+esc(l.kind)+' layer</small></span>';b.onclick=()=>{activate('move');pick(l.id)};list.appendChild(b)
  })
 }
@@ -98,7 +94,7 @@ function showInspector(){
   root.innerHTML='<p class="studio-section-note">Use the canvas to '+(tool==='draw'?'paint on a new brush layer.':'erase visible pixels. Transparent parts appear when exported as PNG or WebP.')+'</p><p class="studio-section-note">Color and brush size are available in the left panel.</p>';
   return
  }
- if(!l){root.innerHTML='<p class="studio-section-note">Select a layer to edit it, or add text, shapes, stickers or a photo.</p><button class="studio-btn secondary" id="inspectorText">+ Add title</button>';root.querySelector('button').onclick=addText;return}
+ if(!l){root.innerHTML='<p class="studio-section-note">Select a layer to edit it, or add text, shapes or a photo.</p><button class="studio-btn secondary" id="inspectorText">+ Add title</button>';root.querySelector('button').onclick=addText;return}
  let html='<strong style="overflow-wrap:anywhere">'+esc(l.name)+'</strong><p class="studio-section-note">Editable '+l.kind+' layer</p>';
  if(l.kind!=='paint'&&l.kind!=='erase')html+='<div class="studio-field-grid">'+field('X position %','x',Math.round(l.x*100),'number',-100,200)+field('Y position %','y',Math.round(l.y*100),'number',-100,200)+field('Width %','w',Math.round(l.w*100),'number',1,400)+field('Height %','h',Math.round(l.h*100),'number',1,400)+field('Rotation','rotation',l.rotation,'number',-360,360)+field('Opacity %','opacity',Math.round(l.opacity*100),'range',0,100)+'</div>';
  if(l.kind==='image'){
@@ -115,17 +111,16 @@ function showInspector(){
   html+=field('Text effect','effect',options([['none','Plain'],['shadow','Soft Shadow'],['outline','Bold Outline'],['neon','Neon Glow']],l.effect),'select')
  }
  if(l.kind==='shape'){html+=field('Shape','shape',options([['rectangle','Rectangle'],['circle','Ellipse']],l.shape),'select');html+=field('Fill','color',l.color,'color')}
- if(l.kind==='sticker')html+=field('Sticker','sticker',l.sticker,'text');
+ 
  if(l.kind==='paint'||l.kind==='erase')html+='<p class="studio-section-note">This brush stroke is independently removable in the layer stack.</p>';
  html+='<div class="studio-button-row"><button class="studio-btn secondary" id="rotateLeft">↶ 90°</button><button class="studio-btn secondary" id="rotateRight">↷ 90°</button><button class="studio-btn secondary" id="flipH">⇋ Flip</button><button class="studio-btn secondary" id="up">↑ Layer</button><button class="studio-btn secondary" id="down">↓ Layer</button><button class="studio-btn secondary" id="duplicate">Duplicate</button><button class="studio-btn danger" id="remove">Delete</button></div>';
  root.innerHTML=html;
  root.querySelectorAll('[data-prop]').forEach(el=>{
   if(el.type==='range')el.onpointerdown=remember;
   const apply=()=>{if(el.type!=='range')remember();let value=el.value,prop=el.dataset.prop;
-   if(!['text','font','color','effect','fit','filter','shape','sticker'].includes(prop))value=Number(value);
+   if(!['text','font','color','effect','fit','filter','shape'].includes(prop))value=Number(value);
    if(['x','y','w','h','opacity'].includes(prop))value/=100;
    if(prop==='zoom')value=clamp(value,1,4);
-   if(prop==='sticker')value=String(value).slice(0,10);
    l[prop]=value;draw();if(prop==='text')l.name='Text '+value.slice(0,14);
   };
   el.addEventListener(el.type==='range'?'input':'change',apply)
@@ -172,7 +167,6 @@ function render(withSelection=true,onlyOriginal=false){
    ctx.filter='brightness('+l.brightness+'%) contrast('+l.contrast+'%) saturate('+l.saturation+'%) blur('+l.blur+'px) '+(presets[l.filter]||'');
    drawImageLayer(l,w,h)
   }else if(l.kind==='text')drawTextLayer(l,w);
-  else if(l.kind==='sticker'){ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=Math.floor(Math.min(w*l.w,h*l.h))+'px system-ui';ctx.fillText(l.sticker,0,0)}
   else if(l.kind==='shape'){ctx.fillStyle=l.color;if(l.shape==='circle'){ctx.beginPath();ctx.ellipse(0,0,w*l.w/2,h*l.h/2,0,0,Math.PI*2);ctx.fill()}else ctx.fillRect(-w*l.w/2,-h*l.h/2,w*l.w,h*l.h)}
   ctx.restore();
   if(withSelection&&!comparison&&tool==='move'&&selected===l.id){
@@ -219,7 +213,7 @@ $('background').oninput=e=>{bg=e.target.value;draw()};
 $('transparent').onchange=e=>{transparent=e.target.value==='true';draw()};
 $('quality').oninput=e=>$('qualityValue').textContent=e.target.value+'%';
 function download(){
- if(!layers.length){say('Add a photo, text, sticker or shape first.');return}
+ if(!layers.length){say('Add a photo, text or shape first.');return}
  render(false,false);
  const mime=$('format').value,quality=Number($('quality').value)/100;
  const save=()=>{
