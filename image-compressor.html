@@ -62,7 +62,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 @media(max-width:620px){aside{width:68px!important;padding:12px 8px!important}aside .brand{justify-content:center}aside .brand span,aside .nav-section-title,aside .nav-item span+span{display:none!important}aside .nav-item{justify-content:center!important;padding:12px 4px!important}main{margin-left:68px!important;padding:14px!important}}
 
 </style>
-  <link rel="stylesheet" href="loox-tool-ui.css?v=1">
+  <link rel="stylesheet" href="loox-tool-ui.css?v=2">
 </head><body>
 <aside><a href="index.html" class="brand"><div class="brand-icon">⚡</div><span>LOOX Tools</span></a><div class="nav-section-title">Tools Hub</div><nav class="nav-links"><a href="index.html" class="nav-item "><span>🏠</span><span>Dashboard Hub</span></a>
 <a href="bg-remove.html" class="nav-item "><span>✂️</span><span>Background Remover</span></a>
@@ -83,5 +83,6 @@ async function load(f){if(!f)return;if(!/^image\/(jpeg|png|webp)$/.test(f.type)|
 $('quality').oninput=e=>$('qualityOut').textContent=e.target.value;
 $('compress').onclick=()=>{if(!bitmap)return;const type=$('format').value,c=document.createElement('canvas');c.width=bitmap.width;c.height=bitmap.height;c.getContext('2d').drawImage(bitmap,0,0);c.toBlob(blob=>{if(!blob){$('result').textContent='This format is not supported by your browser.';$('result').className='status error';$('result').style.display='block';return}if(outUrl)URL.revokeObjectURL(outUrl);outUrl=URL.createObjectURL(blob);const before=Number($('file').files[0]?.size||0),saved=before?Math.max(0,Math.round((1-blob.size/before)*100)):0;$('result').textContent='Done: '+(blob.size/1024).toFixed(1)+' KB. Original: '+(before/1024).toFixed(1)+' KB. '+(blob.size<before?saved+'% smaller.':'The converted file is not smaller than the original.');$('result').className='status success';$('result').style.display='block';$('download').href=outUrl;$('download').download=originalName+'.'+(type==='image/webp'?'webp':type==='image/jpeg'?'jpg':'png');$('download').style.display='inline-block'},type,type==='image/png'?undefined:Number($('quality').value)/100)};
 $('reset').onclick=()=>{if(outUrl)URL.revokeObjectURL(outUrl);bitmap?.close();bitmap=null;$('file').value='';$('editor').style.display='none';$('drop').style.display='block';$('status').style.display='none'};</script>
-  <script src="loox-tool-ui.js?v=1"></script>
+  <script src="loox-tool-guides.js?v=1"></script>
+  <script src="loox-tool-ui.js?v=2"></script>
 </body></html>
