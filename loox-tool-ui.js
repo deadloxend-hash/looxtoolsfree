@@ -6,7 +6,7 @@
  const themeKey='loox-theme-v1',customKey='loox-custom-theme-v1';
  const fallbackCustom={background:'#f3f0fa',accent:'#7957e8'};
  const readCustom=()=>{try{return Object.assign({},fallbackCustom,JSON.parse(localStorage.getItem(customKey)||'{}'))}catch(_){return Object.assign({},fallbackCustom)}};
- const titleFromDocument=document.title.replace(/\s*[—-]\s*LOOX.*$/i,'').trim();
+ const titleFromDocument=document.title.replace(/\s*[—-]\s*.*$/,'').trim();
  const titleNode=document.querySelector('main h1, .app h1, .topline h1');
  const pageTitle=titleFromDocument|| (titleNode?(titleNode.textContent||'').replace(/\s+/g,' ').trim():'Online tool');
  const header=document.createElement('header');
