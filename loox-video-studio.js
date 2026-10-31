@@ -25,7 +25,7 @@ function getSelected(){return clips.find(c=>c.id===selected)||null}
 function pick(id){selected=id;showLayers();showProperties();renderTimeline()}
 function createMedia(kind,url){if(kind==='image'){const img=new Image();img.src=url;return img}const m=document.createElement(kind==='audio'?'audio':'video');m.src=url;m.preload='auto';m.playsInline=true;m.loop=false;return m}
 function waitMeta(el,kind){return new Promise((resolve,reject)=>{if(kind==='image'&&el.complete&&el.naturalWidth)return resolve();if(kind!=='image'&&el.readyState>=1&&Number.isFinite(el.duration))return resolve();const ok=()=>{clean();resolve()},bad=()=>{clean();reject(new Error('Unsupported or corrupted media'))};function clean(){el.removeEventListener(kind==='image'?'load':'loadedmetadata',ok);el.removeEventListener('error',bad)}el.addEventListener(kind==='image'?'load':'loadedmetadata',ok,{once:true});el.addEventListener('error',bad,{once:true})})}
-const baseProps=(kind,name)=>({id:nextId++,kind,name,start:playhead,duration:5,trimStart:0,sourceDuration:5,layer:kind==='video'?0:kind==='audio'?1:kind==='image'?3:kind==='text'?5:6,x:.5,y:.5,w:kind==='video'?1:kind==='image'?.5:.65,h:kind==='video'?1:kind==='image'?.5:.3,scale:1,angle:0,opacity:1,volume:kind==='video'?1:kind==='audio'?1:0,zoom:1,fit:'cover',filter:'none',fade:0,transition:'none',text:'Your title',font:'Arial',fontSize:64,color:'#ffffff',effect:'shadow',sticker:'✨'});
+const baseProps=(kind,name)=>({id:nextId++,kind,name,start:playhead,duration:5,trimStart:0,sourceDuration:5,layer:kind==='video'?0:kind==='audio'?1:kind==='image'?3:kind==='text'?5:6,x:.5,y:.5,w:kind==='video'?1:kind==='image'?.5:.65,h:kind==='video'?1:kind==='image'?.5:.3,scale:1,angle:0,opacity:1,volume:kind==='video'?1:kind==='audio'?1:0,zoom:1,panX:0,panY:0,rate:1,fit:'cover',filter:'none',fade:0,transition:'none',text:'Your title',font:'Arial',fontSize:64,color:'#ffffff',effect:'shadow',sticker:'✨'});
 async function addFiles(files,mode){
  const arr=Array.from(files||[]);if(!arr.length)return;
  snap();let errors=0;status('Importing '+arr.length+' file(s)…');
@@ -35,7 +35,7 @@ async function addFiles(files,mode){
   if(!valid){errors++;continue}
   const url=URL.createObjectURL(file);urls.add(url);const media=createMedia(kind,url);
   try{await waitMeta(media,kind)}catch{errors++;URL.revokeObjectURL(url);urls.delete(url);continue}
-  const c=baseProps(kind,file.name);c.media=media;c.url=url;c.sourceDuration=kind==='image'?5:Math.max(.1,Number(media.duration)||5);c.duration=kind==='image'?5:Math.min(900,c.sourceDuration);
+  const c=baseProps(kind,file.name);c.media=media;c.url=url;c.sourceDuration=kind==='image'?5:Math.max(.1,Number(media.duration)||5);c.duration=kind==='image'?5:c.sourceDuration;
   if(kind==='video'&&mode!=='overlay'){c.start=clips.filter(t=>t.kind==='video'&&t.layer===0).reduce((m,t)=>Math.max(m,t.start+t.duration),0);c.x=.5;c.y=.5;c.w=1;c.h=1;c.volume=1}
   if(mode==='overlay'){c.layer=4;c.w=.46;c.h=.46;c.volume=0;c.start=playhead;c.fit='contain'}
   if(kind==='image'){c.layer=4;c.w=.46;c.h=.46;c.fit='contain'}
@@ -90,6 +90,7 @@ function showProperties(){
  let html='<strong style="overflow-wrap:anywhere">'+esc(c.name)+'</strong><p class="studio-section-note">Layer '+c.layer+' · '+esc(c.kind)+'</p>';
  html+='<div class="studio-field-grid">'+field('Start (s)','start',c.start,'number',0,36000,.1)+field('Length (s)','duration',c.duration,'number',.1,36000,.1)+'</div>';
  if(c.kind==='video'||c.kind==='audio')html+='<div class="studio-field-grid">'+field('Source in (s)','trimStart',c.trimStart,'number',0,c.sourceDuration,.1)+field('Volume %','volume',Math.round(c.volume*100),'range',0,200,1)+'</div>';
+  html+=field('Playback speed','rate',opts([[.5,'0.5× Slow'],[.75,'0.75×'],[1,'1× Normal'],[1.25,'1.25×'],[1.5,'1.5×'],[2,'2× Fast']],c.rate),'select');
  if(c.kind!=='audio'){
   html+='<div class="studio-field-grid">'+field('Horizontal %','x',Math.round(c.x*100),'range',-50,150,1)+field('Vertical %','y',Math.round(c.y*100),'range',-50,150,1)+field('Width %','w',Math.round(c.w*100),'number',2,250,1)+field('Height %','h',Math.round(c.h*100),'number',2,250,1)+field('Rotation °','angle',c.angle,'number',-360,360,1)+field('Opacity %','opacity',Math.round(c.opacity*100),'range',0,100,1)+'</div>';
   html+=field('Layer order','layer',c.layer,'number',0,30,1);
@@ -99,6 +100,7 @@ function showProperties(){
   html+=field('Transition','transition',opts([['none','None'],['fade','Fade in'],['slide-left','Slide from right'],['slide-right','Slide from left'],['zoom-in','Zoom in']],c.transition),'select');
   html+=field('Framing','fit',opts([['cover','Fill & crop'],['contain','Fit inside']],c.fit),'select');
   html+=field('Crop / zoom','zoom',c.zoom,'range',1,4,.05);
+  html+='<div class="studio-field-grid">'+field('Crop pan X','panX',c.panX,'range',-100,100,1)+field('Crop pan Y','panY',c.panY,'range',-100,100,1)+'</div>';
   html+=field('Filter','filter',opts(Object.keys(themes).map(v=>[v,v[0].toUpperCase()+v.slice(1)]),c.filter),'select')
  }
  if(c.kind==='text'){
@@ -117,7 +119,8 @@ function showProperties(){
    if(!['text','font','color','effect','fit','filter','sticker','transition'].includes(prop))v=Number(v);
    if(['x','y','w','h','opacity','volume'].includes(prop))v/=100;
    if(prop==='duration')v=clamp(v,.1,c.kind==='video'||c.kind==='audio'?Math.max(.1,c.sourceDuration-c.trimStart):36000);
-   if(prop==='trimStart'){v=clamp(v,0,Math.max(0,c.sourceDuration-.1));c.duration=Math.min(c.duration,c.sourceDuration-v)}
+   if(prop==='trimStart'){v=clamp(v,0,Math.max(0,c.sourceDuration-.1));c.duration=Math.min(c.duration,(c.sourceDuration-v)/c.rate)}
+   if(prop==='rate')c.duration=Math.max(.1,(c.sourceDuration-c.trimStart)/v);
    if(prop==='start')v=clamp(v,0,36000);
    if(prop==='zoom')v=clamp(v,1,4);
    if(prop==='sticker')v=String(v).slice(0,8);
@@ -138,7 +141,7 @@ function duplicate(){const c=getSelected();if(!c)return;snap();const copy={...c,
 function split(){
  const c=getSelected();if(!c||!['video','audio'].includes(c.kind)){status('Select a video or audio clip before splitting.');return}
  const delta=playhead-c.start;if(delta<=.06||delta>=c.duration-.06){status('Move the playhead inside the selected clip.');return}
- snap();const right={...c,id:nextId++,name:c.name+' (part 2)',start:playhead,trimStart:c.trimStart+delta,duration:c.duration-delta,media:createMedia(c.kind,c.url)};
+ snap();const right={...c,id:nextId++,name:c.name+' (part 2)',start:playhead,trimStart:c.trimStart+delta*(c.rate||1),duration:c.duration-delta,media:createMedia(c.kind,c.url)};
  c.duration=delta;clips.push(right);selected=right.id;pause();refresh();status('Clip split at '+fmt(playhead)+'.')
 }
 $('split').onclick=split;
@@ -167,7 +170,8 @@ function renderTimeline(){
 function syncMedia(){
  for(const c of clips){if(!c.media||c.kind==='image')continue;
   const local=playhead-c.start,should=local>=0&&local<c.duration;
-  const desired=clamp(c.trimStart+local,0,Math.max(0,c.sourceDuration-.05));
+  const desired=clamp(c.trimStart+local*(c.rate||1),0,Math.max(0,c.sourceDuration-.05));
+  c.media.playbackRate=c.rate||1;
   if(should&&c.media.readyState>=1&&Math.abs(c.media.currentTime-desired)>.24){try{c.media.currentTime=desired}catch{}}
   if(should&&playing){if(c.media.paused&&!c._starting){c._starting=true;const p=c.media.play();Promise.resolve(p).catch(()=>{}).finally(()=>c._starting=false)}}
   else if(!c.media.paused)c.media.pause();
@@ -197,7 +201,7 @@ function drawMedia(c,w,h){
  const dw=w*c.w,dh=h*c.h;if(dw<=0||dh<=0)return;
  const fit=c.fit==='contain'?Math.min(dw/sw,dh/sh):Math.max(dw/sw,dh/sh);
  const scale=fit*c.zoom;
- ctx.save();ctx.beginPath();ctx.rect(-dw/2,-dh/2,dw,dh);ctx.clip();ctx.drawImage(m,-sw*scale/2,-sh*scale/2,sw*scale,sh*scale);ctx.restore()
+ ctx.save();ctx.beginPath();ctx.rect(-dw/2,-dh/2,dw,dh);ctx.clip();const offsetX=-Math.max(0,sw*scale-dw)*(c.panX||0)/200,offsetY=-Math.max(0,sh*scale-dh)*(c.panY||0)/200;ctx.drawImage(m,-sw*scale/2+offsetX,-sh*scale/2+offsetY,sw*scale,sh*scale);ctx.restore()
 }
 function drawText(c,w,h){
  const lines=String(c.text||'').split('\n').slice(0,8);
