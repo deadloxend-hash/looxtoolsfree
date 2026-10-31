@@ -1,0 +1,287 @@
+/* LOOX Tools shared workspace skin */
+:root{
+ --loox-paper:#f7f6fb;--loox-surface:#fff;--loox-surface-soft:#faf9fd;
+ --loox-ink:#211d35;--loox-muted:#827d96;--loox-line:#e9e6f1;
+ --loox-accent:#7957e8;--loox-accent-2:#e85aa8;
+ --loox-shadow:0 16px 42px rgba(39,27,75,.07);
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:88px}
+body{
+ display:block!important;min-height:100vh;overflow-x:hidden;
+ background:var(--loox-paper)!important;color:var(--loox-ink)!important;
+ font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+}
+body a{color:inherit}
+body>aside{display:none!important}
+body>header.top{display:none!important}
+body>main{
+ width:min(1180px,calc(100% - 48px))!important;max-width:1180px!important;
+ margin:0 auto!important;padding:34px 0 72px!important;
+}
+body>.app{
+ width:min(1360px,calc(100% - 48px))!important;max-width:1360px!important;
+ margin:0 auto!important;padding:28px 0 64px!important;
+}
+body main .hero,body main .topline{
+ margin:0 0 24px!important;padding:12px 0 24px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;
+}
+body main .hero h1,body main .topline h1{
+ color:var(--loox-ink)!important;font-size:clamp(30px,4vw,43px)!important;
+ letter-spacing:-1.7px!important;line-height:1.08!important;font-weight:900!important;
+ margin:0 0 11px!important;
+}
+body main .hero p,body main .topline .intro,body main .hero .muted{
+ color:var(--loox-muted)!important;font-size:14px!important;line-height:1.7!important;
+ max-width:760px;
+}
+body .gradient-text,body .gradient{
+ background:linear-gradient(105deg,var(--loox-accent),var(--loox-accent-2))!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;
+}
+body main .workspace-card,body main .info-card,body main .card,body main .panel,
+body main .stage-panel,body main .editor-panel,body>.app>.tools,body>.app>.stage,
+body main>.preview,body main>.controls{
+ background:var(--loox-surface)!important;color:var(--loox-ink)!important;
+ border:1px solid var(--loox-line)!important;border-radius:21px!important;
+ box-shadow:var(--loox-shadow)!important;
+}
+body main .workspace-card,body main .info-card,body main .card,body main .panel,
+body main .stage-panel,body main .editor-panel,body>.app>.tools,body>.app>.stage{
+ padding:clamp(17px,3vw,28px)!important;
+}
+body main .info-card,body main .card,body main .panel{margin-top:18px!important}
+body main h1,body main h2,body main h3,body main h4,
+body>.app h1,body>.app h2,body>.app h3{color:var(--loox-ink)!important}
+body main h2,body main h3,body>.app h2,body>.app h3{letter-spacing:-.35px}
+body main p,body main .muted,body main .hint,body main small,
+body>.app .hint{color:var(--loox-muted)!important}
+body main .upload-area,body main .upload-box,body main .drop{
+ display:block;position:relative;min-height:150px;padding:28px 20px!important;
+ border:2px dashed color-mix(in srgb,var(--loox-accent) 40%,var(--loox-line))!important;
+ border-radius:17px!important;background:var(--loox-surface-soft)!important;
+ color:var(--loox-ink)!important;text-align:center!important;
+ transition:border-color .2s,background .2s,transform .2s;
+}
+body main .upload-area:hover,body main .upload-box:hover,body main .drop:hover{
+ border-color:var(--loox-accent)!important;background:color-mix(in srgb,var(--loox-accent) 5%,var(--loox-surface))!important;
+}
+body main .upload-area h3,body main .upload-box h3,body main .drop h3{
+ color:var(--loox-ink)!important;font-size:16px!important;margin:0 0 7px!important;
+}
+body main .upload-area p,body main .upload-box p,body main .drop p{font-size:12px!important;line-height:1.6}
+body main input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=range]),
+body main select,body main textarea,body>.app input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=range]),
+body>.app select{
+ min-height:42px;padding:10px 12px!important;border:1px solid var(--loox-line)!important;
+ border-radius:10px!important;background:var(--loox-surface-soft)!important;
+ color:var(--loox-ink)!important;box-shadow:none!important;font:inherit;
+}
+body main textarea{min-height:125px}
+body main input[type=file],body>.app input[type=file]{max-width:100%;color:var(--loox-muted)!important;font-size:12px}
+body main input[type=range],body>.app input[type=range]{accent-color:var(--loox-accent)!important}
+body main input[type=checkbox],body>.app input[type=checkbox]{accent-color:var(--loox-accent)!important}
+body main label,body>.app label{color:var(--loox-ink)!important;font-size:12px;font-weight:750}
+body main .field,body main .setting-group,body main .control-group{min-width:0}
+body main .controls,body main .settings-grid{
+ display:flex;gap:13px;flex-wrap:wrap;align-items:flex-end;
+ margin:16px 0!important;padding:15px!important;border:1px solid var(--loox-line)!important;
+ border-radius:14px!important;background:var(--loox-surface-soft)!important;color:var(--loox-ink)!important;
+}
+body main .controls>*{min-width:0}
+body main .btn,body main button.btn,body>.app .btn,body main button.primary,
+body main button.btn-primary,body main .btn-primary,body>.app button.btn{
+ min-height:41px;padding:10px 16px!important;border:1px solid transparent!important;
+ border-radius:11px!important;background:linear-gradient(115deg,var(--loox-accent),color-mix(in srgb,var(--loox-accent) 65%,var(--loox-accent-2)))!important;
+ color:#fff!important;font-size:12px!important;font-weight:850!important;
+ box-shadow:0 6px 15px color-mix(in srgb,var(--loox-accent) 22%,transparent)!important;
+ cursor:pointer;transition:transform .18s,filter .18s;
+}
+body main .btn:hover,body main button.primary:hover,body main .btn-primary:hover,
+body>.app .btn:hover{transform:translateY(-1px);filter:brightness(1.04)}
+body main .btn-secondary,body main button.secondary,body main .secondary,
+body main .btn.secondary,body>.app .btn.alt{
+ background:var(--loox-surface-soft)!important;color:var(--loox-ink)!important;
+ border:1px solid var(--loox-line)!important;box-shadow:none!important;
+}
+body main .status,body main #status{
+ border:1px solid #d7eadf!important;border-radius:12px!important;
+ background:#effaf3!important;color:#246344!important;padding:13px 15px!important;
+}
+body main .status.error,body main #status.error{
+ background:#fff1f2!important;color:#9f3143!important;border-color:#f3ccd2!important;
+}
+body main .notice,body main .privacy-note{
+ border-left:3px solid var(--loox-accent)!important;border-radius:0 12px 12px 0!important;
+ background:color-mix(in srgb,var(--loox-accent) 7%,var(--loox-surface))!important;
+ color:var(--loox-muted)!important;padding:13px 15px!important;font-size:12px!important;line-height:1.7!important;
+}
+body main .preview-wrap,body main .canvas-wrapper,body main .canvas-container,
+body main .canvas-shell,body main .canvaswrap,body main .preview-box,
+body main .canvaswrap,body main .canvas-area{
+ background:#f0eef5!important;border:1px solid var(--loox-line)!important;
+ border-radius:15px!important;padding:12px!important;max-width:100%;overflow:auto;
+}
+body main img.preview,body main .preview-wrap img,body main .preview-box img{
+ max-width:100%;height:auto;object-fit:contain;border-radius:12px;
+}
+body main video,body main audio{max-width:100%;border-radius:13px}
+body main progress{accent-color:var(--loox-accent)!important;max-width:100%}
+body main .steps,body main .guide-grid,body main .split{gap:12px}
+body main .step,body main .guide-card,body main .mini{
+ background:var(--loox-surface-soft)!important;border:1px solid var(--loox-line)!important;
+ border-radius:13px!important;color:var(--loox-ink)!important;padding:14px!important;
+}
+body main .step b,body main .guide-card strong{color:var(--loox-ink)!important}
+body main .step,body main .guide-card p,body main .mini p{color:var(--loox-muted)!important}
+body main .toolbar{gap:9px;flex-wrap:wrap}
+body main .toolbar button,body main .toolbar .primary{
+ border-radius:10px!important;font-weight:750!important;
+}
+body main .tabs{display:flex;gap:7px;flex-wrap:wrap;padding:5px;background:var(--loox-surface-soft);border:1px solid var(--loox-line);border-radius:12px}
+body main .tabs button,body main button.tab,body main button.tab-btn{
+ border-radius:9px!important;color:var(--loox-muted)!important;background:transparent!important;
+ border:1px solid transparent!important;padding:9px 13px!important;font-weight:750!important;
+}
+body main .tabs button.active,body main button.tab.active,body main button.tab-btn.active{
+ background:var(--loox-surface)!important;color:var(--loox-accent)!important;border-color:var(--loox-line)!important;
+ box-shadow:0 3px 8px rgba(30,20,55,.06)!important;
+}
+body main .tool-group,body main .control-group,body main .group{
+ border-color:var(--loox-line)!important;
+}
+body main .result-container,body main .result-preview,body main .result{
+ background:var(--loox-surface-soft)!important;border:1px solid var(--loox-line)!important;
+ border-radius:14px!important;color:var(--loox-ink)!important;
+}
+body main a:not(.btn){color:var(--loox-accent)}
+body>.app>.tools h2,body>.app>.stage h1{color:var(--loox-ink)!important}
+body>.app .stagehead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+body>.app .stagehead h1{font-size:20px!important}
+body main .qr{border-radius:12px}
+body .loox-appbar{
+ position:sticky;top:0;z-index:1000;width:100%;
+ background:rgba(255,255,255,.9);backdrop-filter:blur(18px);
+ border-bottom:1px solid var(--loox-line);
+}
+body .loox-appbar-inner{
+ width:min(1180px,calc(100% - 48px));min-height:70px;margin:0 auto;
+ display:flex;align-items:center;gap:22px;
+}
+body .loox-app-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex:0 0 auto}
+body .loox-app-mark{
+ width:36px;height:36px;display:grid;place-items:center;border-radius:12px;
+ background:linear-gradient(145deg,#a06af4,#6f4ce0 58%,#e35ba5);color:#fff;font-weight:950;font-size:19px;
+ box-shadow:0 7px 18px #8056df28;
+}
+body .loox-app-brand-name{font-size:18px;letter-spacing:-.7px;font-weight:900;color:var(--loox-ink)}
+body .loox-app-brand-name em{font-style:normal;color:var(--loox-accent)}
+body .loox-app-sub{display:block;color:var(--loox-muted);font-size:8px;letter-spacing:1.65px;font-weight:850;margin-top:1px}
+body .loox-page-name{min-width:0;margin-left:auto;padding-left:22px;border-left:1px solid var(--loox-line)}
+body .loox-page-name small{display:block;color:var(--loox-muted);font-size:8px;letter-spacing:1.45px;font-weight:850;text-transform:uppercase;margin-bottom:3px}
+body .loox-page-name strong{display:block;color:var(--loox-ink);font-size:12px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
+body .loox-app-actions{display:flex;align-items:center;gap:9px;margin-left:16px}
+body .loox-back-link{
+ display:inline-flex;align-items:center;gap:7px;min-height:39px;padding:0 13px;
+ border:1px solid var(--loox-line);border-radius:11px;background:var(--loox-surface);
+ color:var(--loox-ink)!important;text-decoration:none;font-size:11px;font-weight:800;white-space:nowrap;
+}
+body .loox-back-link:hover{border-color:var(--loox-accent);color:var(--loox-accent)!important}
+body .loox-theme{position:relative}
+body .loox-theme-trigger{
+ display:inline-flex;align-items:center;gap:7px;min-height:39px;padding:0 12px;
+ border:1px solid var(--loox-line);border-radius:11px;background:var(--loox-surface);
+ color:var(--loox-ink);font-size:11px;font-weight:800;cursor:pointer;
+}
+body .loox-theme-trigger:hover,body .loox-theme-trigger[aria-expanded=true]{border-color:var(--loox-accent);color:var(--loox-accent)}
+body .loox-theme-menu{
+ position:absolute;right:0;top:calc(100% + 11px);width:276px;padding:14px;
+ background:#fff!important;color:#211d35!important;border:1px solid #e8e3f0;border-radius:16px;
+ box-shadow:0 20px 52px rgba(34,25,62,.19);z-index:1010;
+}
+body .loox-theme-menu[hidden],body .loox-custom-fields[hidden]{display:none!important}
+body .loox-theme-menu h3{font-size:12px;margin:0 0 3px;color:#211d35!important}
+body .loox-theme-menu>p{font-size:9px;color:#918ba1!important;margin:0 0 10px}
+body .loox-theme-choice{
+ width:100%;display:flex;align-items:center;gap:10px;padding:8px;margin:3px 0;
+ border:1px solid transparent;border-radius:10px;background:#fff!important;color:#29243d!important;text-align:left;cursor:pointer;
+}
+body .loox-theme-choice:hover{background:#faf9fd!important}
+body .loox-theme-choice[aria-pressed=true]{background:#f8f5ff!important;border-color:#d8cdf7!important}
+body .loox-swatch{width:35px;height:28px;border:1px solid #e3dfeb;border-radius:7px;flex:0 0 auto}
+body .loox-swatch.white{background:linear-gradient(90deg,#fff 0 50%,#eeeafa 50%)}
+body .loox-swatch.grey{background:linear-gradient(90deg,#e5e6e9 0 50%,#cbd0d8 50%)}
+body .loox-swatch.dark{background:linear-gradient(90deg,#15161d 0 50%,#393144 50%);border-color:#454151}
+body .loox-swatch.custom{background:linear-gradient(135deg,#f4d9f3,#8b6ce8,#6fb8c9)}
+body .loox-theme-choice span:nth-child(2){flex:1;font-size:10px;font-weight:800}
+body .loox-theme-choice small{display:block;font-size:9px;font-weight:500;color:#928ca1;margin-top:2px}
+body .loox-theme-choice b{color:#7654d7;opacity:0}
+body .loox-theme-choice[aria-pressed=true] b{opacity:1}
+body .loox-custom-fields{padding:10px;margin-top:8px;border:1px solid #ebe7f2;border-radius:11px;background:#f8f7fb}
+body .loox-color-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 9px;color:#373148;font-size:10px;font-weight:750}
+body .loox-color-row input{width:38px;height:28px;padding:2px;border:1px solid #ded8e9;border-radius:7px;background:#fff}
+body .loox-custom-reset{width:100%;padding:8px;border:1px solid #e2dced;border-radius:8px;background:#fff;color:#6e59b5;font-size:9px;font-weight:800;cursor:pointer}
+body .loox-app-footer{
+ width:min(1180px,calc(100% - 48px));margin:0 auto 26px;padding:14px 0;
+ display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+ border-top:1px solid var(--loox-line);color:var(--loox-muted);font-size:10px;
+}
+body .loox-app-footer a{color:var(--loox-accent);text-decoration:none;font-weight:800}
+/* Grey preset */
+:root[data-theme=grey]{--loox-paper:#e9eaee;--loox-surface:#f9fafb;--loox-surface-soft:#f0f1f4;--loox-ink:#292b34;--loox-muted:#777b87;--loox-line:#d9dce3;--loox-accent:#6f59c9}
+:root[data-theme=grey] body .loox-appbar{background:rgba(249,250,252,.93)}
+:root[data-theme=grey] body main .upload-area,:root[data-theme=grey] body main .drop,:root[data-theme=grey] body main .upload-box{background:#f1f2f5!important}
+:root[data-theme=grey] body main .preview-wrap,:root[data-theme=grey] body main .canvas-wrapper,:root[data-theme=grey] body main .canvas-container,:root[data-theme=grey] body main .canvas-shell{background:#e3e5e9!important}
+/* Black preset */
+:root[data-theme=dark]{color-scheme:dark;--loox-paper:#101116;--loox-surface:#1b1c25;--loox-surface-soft:#22232d;--loox-ink:#f2effb;--loox-muted:#aaa4b9;--loox-line:#30313e;--loox-accent:#aa91ff;--loox-accent-2:#e78cbf;--loox-shadow:0 16px 42px rgba(0,0,0,.28)}
+:root[data-theme=dark] body .loox-appbar{background:rgba(20,20,28,.92)}
+:root[data-theme=dark] body .loox-app-brand-name,:root[data-theme=dark] body .loox-page-name strong{color:#f2effb}
+:root[data-theme=dark] body .loox-back-link,:root[data-theme=dark] body .loox-theme-trigger{background:#22232d;border-color:#3a3b49;color:#eeeaf8!important}
+:root[data-theme=dark] body main .workspace-card,:root[data-theme=dark] body main .info-card,:root[data-theme=dark] body main .card,:root[data-theme=dark] body main .panel,:root[data-theme=dark] body main .stage-panel,:root[data-theme=dark] body main .editor-panel,:root[data-theme=dark] body>.app>.tools,:root[data-theme=dark] body>.app>.stage,:root[data-theme=dark] body main>.preview,:root[data-theme=dark] body main>.controls{background:#1b1c25!important;border-color:#30313e!important;color:#f2effb!important}
+:root[data-theme=dark] body main .hero h1,:root[data-theme=dark] body main h2,:root[data-theme=dark] body main h3,:root[data-theme=dark] body main h4,:root[data-theme=dark] body main label{color:#f2effb!important}
+:root[data-theme=dark] body main .hero p,:root[data-theme=dark] body main .muted,:root[data-theme=dark] body main .hint,:root[data-theme=dark] body main small{color:#aaa4b9!important}
+:root[data-theme=dark] body main .upload-area,:root[data-theme=dark] body main .drop,:root[data-theme=dark] body main .upload-box{background:#22232d!important;border-color:#61518d!important;color:#f2effb!important}
+:root[data-theme=dark] body main input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=range]),:root[data-theme=dark] body main select,:root[data-theme=dark] body main textarea{background:#242530!important;border-color:#424350!important;color:#f5f2fc!important}
+:root[data-theme=dark] body main .controls,:root[data-theme=dark] body main .settings-grid{background:#20212b!important;border-color:#393a48!important;color:#f2effb!important}
+:root[data-theme=dark] body main .btn-secondary,:root[data-theme=dark] body main button.secondary,:root[data-theme=dark] body>.app .btn.alt{background:#282936!important;color:#f0ecf8!important;border-color:#444452!important}
+:root[data-theme=dark] body main .notice{background:#29233b!important;color:#c8bddf!important}
+:root[data-theme=dark] body main .preview-wrap,:root[data-theme=dark] body main .canvas-wrapper,:root[data-theme=dark] body main .canvas-container,:root[data-theme=dark] body main .canvas-shell,:root[data-theme=dark] body main .canvaswrap{background:#292a34!important;border-color:#41424f!important}
+:root[data-theme=dark] body main .step,:root[data-theme=dark] body main .guide-card,:root[data-theme=dark] body main .mini{background:#22232d!important;border-color:#3a3b49!important;color:#f2effb!important}
+:root[data-theme=dark] body main .status{background:#173326!important;border-color:#28553e!important;color:#b9f0d0!important}
+:root[data-theme=dark] body main .status.error{background:#3a2028!important;border-color:#6e3544!important;color:#ffd1da!important}
+:root[data-theme=dark] body main a:not(.btn){color:#b8a4ff}
+:root[data-theme=dark] body .loox-app-footer{border-color:#30313e}
+/* User-selected custom palette */
+:root[data-theme=custom]{--loox-paper:var(--loox-user-bg,#f3f0fa);--loox-surface:var(--loox-user-surface,#fff);--loox-surface-soft:var(--loox-user-surface-soft,#faf9fd);--loox-accent:var(--loox-user-accent,#7957e8);--loox-accent-2:var(--loox-user-accent,#7957e8)}
+:root[data-theme=custom][data-tone=dark]{--loox-ink:#f2effb;--loox-muted:#bcb5ca;--loox-line:#45404f;--loox-shadow:0 16px 42px rgba(0,0,0,.28)}
+:root[data-theme=custom][data-tone=light]{--loox-ink:#272238;--loox-muted:#756f82;--loox-line:#ded8e8}
+:root[data-theme=custom][data-tone=dark] body .loox-appbar{background:color-mix(in srgb,var(--loox-paper),#fff 7%)}
+:root[data-theme=custom][data-tone=dark] body main .workspace-card,:root[data-theme=custom][data-tone=dark] body main .info-card,:root[data-theme=custom][data-tone=dark] body main .card,:root[data-theme=custom][data-tone=dark] body main .panel,:root[data-theme=custom][data-tone=dark] body main .stage-panel,:root[data-theme=custom][data-tone=dark] body main .editor-panel,:root[data-theme=custom][data-tone=dark] body>.app>.tools,:root[data-theme=custom][data-tone=dark] body>.app>.stage{background:var(--loox-surface)!important;border-color:var(--loox-line)!important;color:var(--loox-ink)!important}
+:root[data-theme=custom][data-tone=dark] body main .hero h1,:root[data-theme=custom][data-tone=dark] body main h2,:root[data-theme=custom][data-tone=dark] body main h3,:root[data-theme=custom][data-tone=dark] body main label{color:var(--loox-ink)!important}
+:root[data-theme=custom][data-tone=dark] body main .upload-area,:root[data-theme=custom][data-tone=dark] body main .drop,:root[data-theme=custom][data-tone=dark] body main .upload-box{background:var(--loox-surface-soft)!important;color:var(--loox-ink)!important}
+@media(max-width:760px){
+ body main{width:calc(100% - 30px)!important;padding:25px 0 54px!important}
+ body>.app{width:calc(100% - 24px)!important;padding:15px 0 48px!important;grid-template-columns:1fr!important}
+ body>.app .tools{order:2}
+ body>.app .stage{order:1}
+ body .loox-appbar-inner{width:calc(100% - 28px);min-height:62px;gap:10px}
+ body .loox-page-name{display:none}
+ body .loox-app-actions{margin-left:auto;gap:6px}
+ body .loox-back-link{font-size:10px;padding:0 10px}
+ body .loox-theme-trigger{font-size:0;width:39px;padding:0;justify-content:center}
+ body .loox-theme-trigger .theme-label{display:none}
+ body .loox-theme-trigger .theme-glyph{font-size:17px}
+ body .loox-theme-menu{right:0;width:min(276px,calc(100vw - 28px))}
+ body main .controls{gap:10px;padding:12px!important}
+ body main .controls>*{flex:1 1 145px}
+ body main .upload-area,body main .drop,body main .upload-box{min-height:125px;padding:23px 13px!important}
+ body main .workspace-card,body main .info-card,body main .card,body main .panel{padding:16px!important}
+}
+@media(max-width:420px){
+ body .loox-app-brand-name{font-size:16px}
+ body .loox-app-mark{width:33px;height:33px}
+ body .loox-back-link{min-height:36px;padding:0 8px}
+ body main .hero h1,body main .topline h1{font-size:29px!important}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
