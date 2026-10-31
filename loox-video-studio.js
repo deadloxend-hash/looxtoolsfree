@@ -398,6 +398,21 @@ function stopExport(canceled=false){
 }
 $('cancelExport').onclick=()=>stopExport(true);
 const selectMime=()=>['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm;codecs=vp8','video/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m));
+
+async function convertWebMToMp4(webmBlob,onProgress){
+  const mod=await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+  const util=await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+  const ff=new mod.FFmpeg();
+  ff.on('progress',p=>onProgress?.(Math.round((p.progress||0)*100)));
+  const base='https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
+  await ff.load({coreURL:await util.toBlobURL(base+'/ffmpeg-core.js','text/javascript'),wasmURL:await util.toBlobURL(base+'/ffmpeg-core.wasm','application/wasm')});
+  await ff.writeFile('input.webm',await util.fetchFile(webmBlob));
+  const code=await ff.exec(['-i','input.webm','-c:v','libx264','-pix_fmt','yuv420p','-c:a','aac','-movflags','+faststart','output.mp4']);
+  if(code!==0)throw new Error('FFmpeg could not encode MP4');
+  const data=await ff.readFile('output.mp4');
+  await ff.deleteFile('input.webm');await ff.deleteFile('output.mp4');await ff.terminate();
+  return new Blob([data.buffer],{type:'video/mp4'});
+}
 async function exportVideo(){
  if(exporting||!clips.length)return status('Add at least one layer before exporting.');
  if(!canvas.captureStream||!window.MediaRecorder)return status('This browser does not support canvas video recording. Try recent Chrome or Edge.');
@@ -423,7 +438,7 @@ async function exportVideo(){
    exporting=false;pause();canvas.width=original[0];canvas.height=original[1];
    if(exportStream){exportStream.getVideoTracks().forEach(t=>t.stop());exportStream=null}
    $('export').disabled=false;$('exportTop').disabled=false;$('cancelExport').disabled=true;$('cancelExport').onclick=oldCancel;
-   if(!canceled&&chunks.length){const file=new Blob(chunks,{type:mime});const url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download='loox-video-'+w+'x'+h+'.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),120000);status('Export complete! Saved '+(file.size/1048576).toFixed(1)+' MB WebM.')}
+   if(!canceled&&chunks.length){const webm=new Blob(chunks,{type:mime});try{status('Recording complete. Converting to MP4…');const file=await convertWebMToMp4(webm,p=>{$('exportInfo').textContent='Converting to MP4 '+p+'%'});const url=URL.createObjectURL(file),a=document.createElement('a');a.href=url;a.download='loox-video-'+w+'x'+h+'.mp4';a.click();setTimeout(()=>URL.revokeObjectURL(url),120000);status('Export complete! Saved '+(file.size/1048576).toFixed(1)+' MB MP4.')}catch(error){const url=URL.createObjectURL(webm),a=document.createElement('a');a.href=url;a.download='loox-video-'+w+'x'+h+'.webm';a.click();setTimeout(()=>URL.revokeObjectURL(url),120000);status('MP4 conversion failed, so the WebM recording was downloaded instead: '+(error?.message||'unknown error'))}}
    else if(!canceled)status('No recorded data. Try a lower resolution or a different browser.');
    getRatio();seek(0)
   };
