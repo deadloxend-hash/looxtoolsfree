@@ -419,6 +419,9 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
 }
 
 </style>
+<style>
+.loox-featured{padding:46px 0 10px}.loox-featured-head span{font-size:11px;font-weight:900;letter-spacing:2px;color:#a586ff}.loox-featured-head h2{font-size:clamp(25px,3.5vw,37px);margin:10px 0;letter-spacing:-1.2px}.loox-featured-head p{font-size:13px;color:var(--muted);margin:0 0 22px}.loox-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.loox-featured-card{display:flex;flex-direction:column;text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--white);min-width:0;transition:transform .2s,border-color .2s}.loox-featured-card:hover{transform:translateY(-4px);border-color:var(--purple)}.loox-featured-art{height:140px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:20px;font-size:60px;color:#fff;position:relative;overflow:hidden}.loox-featured-art i{font-style:normal;font-size:22px;letter-spacing:8px;opacity:.55}.loox-featured-art.video{background:linear-gradient(135deg,#2b215c,#7951d6,#bf69b2)}.loox-featured-art.remove{background:linear-gradient(135deg,#1c4758,#297d9e,#79b2bb)}.loox-featured-art.photo{background:linear-gradient(135deg,#53365d,#a25983,#e19a83)}.loox-featured-card strong{font-size:17px;margin:17px 3px 6px}.loox-featured-card small{font-size:12px;color:var(--muted);margin:0 3px 17px}.loox-featured-card b{font-size:12px;color:var(--purple);margin:0 3px 5px}.loox-featured-card:focus-visible{outline:3px solid var(--purple);outline-offset:3px}@media(max-width:760px){.loox-featured-grid{grid-template-columns:1fr}.loox-featured-art{height:115px}.loox-featured{padding-top:30px}}@media(prefers-reduced-motion:reduce){.loox-featured-card{transition:none}.loox-featured-card:hover{transform:none}}
+</style>
 </head>
 <body>
 <header class="topbar">
@@ -505,7 +508,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
   </div>
  </div>
 
- <section class="section" id="quickstart">
+ <section class="loox-featured" aria-label="Featured creative tools"><div class="container"><div class="loox-featured-head"><span>FEATURED WORKSPACES</span><h2>Start with your next big idea.</h2><p>Fast, focused tools for creators, editors and everyday projects.</p></div><div class="loox-featured-grid"><a href="video-editor.html" class="loox-featured-card"><span class="loox-featured-art video">▶ <i>▰ ▰ ▰ ▰</i></span><strong>LOOX Video Editor</strong><small>Trim video, add titles and export clips</small><b>Open editor ↗</b></a><a href="bg-remove.html" class="loox-featured-card"><span class="loox-featured-art remove">✂ <i>◌ ◇ ◌</i></span><strong>AI Background Remover</strong><small>Create clean transparent cutouts</small><b>Remove background ↗</b></a><a href="photo-editor.html" class="loox-featured-card"><span class="loox-featured-art photo">◈ <i>▦ ◉ ▦</i></span><strong>LOOX Photo Editor</strong><small>Edit and enhance images in your browser</small><b>Edit an image ↗</b></a></div></div></section>
+<section class="section" id="quickstart">
   <div class="container">
    <div class="section-head">
     <div><div class="kicker">START CREATING</div><h2>What are you working on?</h2><p>Jump into a category and find the right tool for the job.</p></div>
