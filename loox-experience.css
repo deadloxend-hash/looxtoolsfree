@@ -652,3 +652,32 @@ body.loox-home-rail .topbar .loox-overflow-trigger{display:flex!important;align-
 
 /* Tools and supporting pages have no theme/settings header controls; homepage menu only. */
 body.loox-no-rail .loox-top-controls,body.loox-no-rail .loox-theme,body.loox-no-rail #themeControl,body.loox-no-rail .theme-control,body.loox-no-rail .loox-header-settings{display:none!important}
+
+/* 2026-11 mobile header: only the primary CTA and Quick start stay in the bar. */
+body.loox-home-rail .topbar .topbar-inner{display:flex!important;flex-wrap:nowrap!important;overflow:visible!important}
+body.loox-home-rail .topbar .main-nav{display:flex!important;position:static!important;flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;gap:clamp(6px,1.1vw,16px)!important;flex:1 1 auto!important;min-width:0!important;margin-left:0!important;overflow:visible!important;box-shadow:none!important;border:0!important;padding:0!important;background:transparent!important}
+body.loox-home-rail .topbar .main-nav .nav-cta{display:inline-flex!important;flex:0 0 auto!important;white-space:nowrap!important}
+body.loox-home-rail .topbar .main-nav .nav-quickstart{display:inline-flex!important;white-space:nowrap!important;flex:0 0 auto!important}
+body.loox-home-rail .topbar .loox-overflow-controls{flex:0 0 auto!important;margin-left:0!important}
+body.loox-home-rail .loox-overflow-links{display:grid;gap:3px;border-bottom:1px solid var(--lx-border,#464354);padding-bottom:9px}
+body.loox-home-rail .loox-overflow-links a{display:flex;align-items:center;min-height:40px;padding:9px 12px;border-radius:9px;text-decoration:none!important;color:inherit!important;font:650 13px system-ui}
+body.loox-home-rail .loox-overflow-links a:hover,body.loox-home-rail .loox-overflow-links a:focus-visible{background:rgba(145,120,230,.18)}
+@media(max-width:900px){
+ body.loox-home-rail .topbar .topbar-inner{gap:5px!important;padding-inline:5px!important}
+ body.loox-home-rail .topbar .brand{gap:4px!important}
+ body.loox-home-rail .topbar .brand-tag{letter-spacing:0!important;font-size:6px!important;white-space:nowrap!important}
+ body.loox-home-rail .topbar .brand-name{font-size:14px!important;white-space:nowrap!important}
+ body.loox-home-rail .topbar .brand-mark{width:29px!important;height:29px!important;font-size:17px!important}
+ body.loox-home-rail .topbar .main-nav{min-width:0!important;gap:5px!important;overflow:visible!important}
+ body.loox-home-rail .topbar .main-nav .nav-cta{display:inline-flex!important;font-size:10px!important;line-height:1.15!important;padding:9px 8px!important}
+ body.loox-home-rail .topbar .main-nav .nav-quickstart{font-size:10px!important;padding:7px 2px!important}
+ body.loox-home-rail .topbar .loox-overflow-trigger{width:33px!important;height:35px!important;min-width:33px!important}
+}
+@media(max-width:480px){
+ body.loox-home-rail .topbar .brand-mark{width:26px!important;height:26px!important}
+ body.loox-home-rail .topbar .brand-name{font-size:12px!important}
+ body.loox-home-rail .topbar .brand-tag{font-size:5px!important}
+ body.loox-home-rail .topbar .main-nav .nav-cta{font-size:9px!important;padding:8px 6px!important}
+ body.loox-home-rail .topbar .main-nav .nav-quickstart{font-size:9px!important}
+ body.loox-home-rail .topbar .loox-home-rail-button{width:30px!important;min-width:30px!important;flex-basis:30px!important;padding:0!important}
+}
