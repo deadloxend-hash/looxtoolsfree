@@ -14,10 +14,10 @@
   let original = null, sourceName = 'loox-face-blurred', history = [], future = [];
   let editing = false, lastPoint = null, strokeLayer = null, activePointer = null;
   let detectorPromise = null, fallbackPromise = null, detecting = false, currentLoad = 0;
-  // Limit full-resolution canvas snapshots, especially on memory-constrained phones.
+  const mobile = () => window.matchMedia('(max-width:800px)').matches;
+  // Define mobile() before it is called: otherwise the entire editor fails to initialize.
   const HISTORY_LIMIT = mobile() ? 3 : 5;
   const allowPointer = e => e.pointerType !== 'mouse' || e.button === 0;
-  const mobile = () => matchMedia('(max-width:800px)').matches;
 
   function feedback(text, kind = '') {
     status.textContent = text;
