@@ -23,3 +23,59 @@
 .resizer-live-stats span{display:grid;gap:3px;font-size:11px;color:var(--lx-muted,#aeb8cb)}.resizer-live-stats strong{font-size:18px;color:var(--lx-text,#fff)}.resizer-live-stats span:nth-child(2) strong{color:#85dfc5}.resizer-live-stats small{grid-column:1/-1;color:#85dfc5}.resizer-live-stats button{grid-column:1/-1}
 @media(max-width:900px){.work-page-resizer .work-layout{grid-template-columns:1fr}.work-page-resizer .work-controls{position:static}.work-page-resizer .work-stage{min-height:430px}}
 @media(max-width:520px){.work-page-resizer .work-stage{min-height:310px}.resizer-preset-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Focused editing mode: the full guide remains on the landing page, and the
+   image receives the viewport once a file is opened. */
+body.work-editing{height:100dvh;overflow:hidden}
+body.work-editing .work-header{min-height:54px;height:54px;padding:5px 16px}
+body.work-editing .work-main{height:calc(100dvh - 54px);min-height:0;padding:10px 14px 8px;display:flex;flex-direction:column;overflow:hidden}
+body.work-editing .work-main>.work-note:first-child,
+body.work-editing .work-main>.loox-eyebrow,
+body.work-editing .work-main>h1,
+body.work-editing .work-main>.work-lead,
+body.work-editing .work-main>.work-notice,
+body.work-editing .loox-guide-host,
+body.work-editing .work-upload{display:none!important}
+body.work-editing .work-layout{flex:1;min-height:0;align-items:stretch;overflow:hidden;grid-template-columns:minmax(0,1fr) minmax(270px,320px)}
+body.work-editing .work-preview-panel{display:flex;flex-direction:column;min-height:0;overflow:hidden;padding:10px}
+body.work-editing .work-preview-panel>h2{font-size:13px;margin:0 0 5px}
+body.work-editing .work-stage{flex:1;min-height:0;overflow:hidden}
+body.work-editing .work-stage canvas{max-height:100%;max-width:100%;object-fit:contain}
+body.work-editing .work-video{max-height:100%;height:100%;object-fit:contain}
+body.work-editing .work-controls{overflow-y:auto;min-height:0;align-content:start;overscroll-behavior:contain}
+body.work-editing .work-actions{margin:7px 0;flex:none}
+body.work-editing .work-progress{height:5px;flex:none}
+body.work-editing .work-status{margin:4px 0;min-height:18px}
+body.work-editing .work-results{max-height:90px;overflow:auto;margin:3px 0;flex:none}
+.work-editor-toolbar{display:none}
+@media(max-width:760px){
+ body.work-editing .work-header{height:48px;min-height:48px}
+ body.work-editing .work-main{height:calc(100dvh - 48px);padding:5px 6px 0}
+ body.work-editing .work-layout{display:flex;flex-direction:column;gap:0;position:relative}
+ body.work-editing .work-preview-panel{flex:1;padding:5px;min-height:0}
+ body.work-editing .work-preview-panel>h2,body.work-editing .work-preview-panel>.work-note{display:none}
+ body.work-editing .work-stage{flex:1;min-height:0}
+ body.work-editing .work-stage canvas{max-height:100%}
+ body.work-editing .work-controls{display:none;position:absolute;z-index:10;left:2px;right:2px;bottom:2px;max-height:min(38dvh,340px);overflow:auto;box-shadow:0 -12px 38px #0009;background:var(--lx-card,#181d2a)}
+ body.work-editing.work-settings-open .work-controls{display:grid}
+ body.work-editing .work-main>.work-actions{display:none}
+ body.work-editing .work-results{max-height:55px}
+ body.work-editing .work-status{font-size:11px}
+ body.work-editing .work-editor-toolbar{display:flex;align-items:center;gap:4px;min-height:62px;max-height:62px;margin:0 -6px;background:var(--lx-card,#181d2a);border-top:1px solid var(--lx-border,#30394c);padding:5px 6px calc(5px + env(safe-area-inset-bottom))}
+ .work-tool-strip{display:flex;gap:4px;min-width:0;flex:1;overflow-x:auto;scrollbar-width:thin;overscroll-behavior-x:contain;touch-action:pan-x}
+ .work-editor-toolbar button{border:0;border-radius:9px;padding:5px 8px;min-height:42px;background:#302b47;color:#f7f2ff;font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
+ .work-tool-strip button{flex:0 0 auto;min-width:68px}
+ .work-tool-strip button[aria-selected=true]{background:#7454bb}
+ .work-editor-toolbar .work-new-photo,.work-editor-toolbar .work-save-mobile{flex:0 0 auto;background:#7755bc}
+}
+
+.work-editor-toolbar[hidden]{display:none!important}
+body.work-editing .work-editor-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none;min-height:46px}
+body.work-editing .work-editor-toolbar button{border:1px solid var(--lx-border,#30394c);background:var(--lx-card,#181d2a);color:var(--lx-text,#fff);border-radius:9px;padding:8px 12px;cursor:pointer}
+body.work-editing .work-tool-strip{display:none}
+body.work-editing .work-save-mobile{display:none}
+@media(max-width:760px){
+ body.work-editing .work-editor-toolbar{display:flex;min-height:62px;max-height:62px}
+ body.work-editing .work-tool-strip{display:flex}
+ body.work-editing .work-save-mobile{display:block;background:#7755bc}
+}
