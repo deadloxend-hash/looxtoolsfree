@@ -165,8 +165,20 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar button{touch-action:manipulation}
 }
 
-/* The mobile dock is not shown on desktop or before a photo is loaded. */
-.loox-crop-mobile-bar{display:none!important}
+/* Mobile toolbar only appears while an image is loaded.
+   Keep the base rule non-important so the mobile open state can override it. */
+.loox-crop-mobile-bar{display:none}
+@media(max-width:760px){
+ body.loox-crop-active .loox-crop-mobile-bar{
+  display:flex!important;
+  position:fixed!important;
+  bottom:env(safe-area-inset-bottom)!important;
+  left:0!important;right:0!important;
+  z-index:9999!important;
+  visibility:visible!important;
+  opacity:1!important;
+ }
+}
 
 /* Mobile adjustment panels share the workspace with the photo, rather than
    floating above it and obscuring the crop frame. */
@@ -374,6 +386,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       img.onload = () => {
         dropZone.style.display = 'none';
         cropperLayout.style.display = 'grid';
+        document.body.classList.add('loox-crop-active');
 
         canvas.width = img.width;
         canvas.height = img.height;
@@ -634,6 +647,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       activePointers.clear();cropGesture=null;pinchGesture=null;
       fileInput.value = '';
       cropperLayout.style.display = 'none';
+      document.body.classList.remove('loox-crop-active');
       dropZone.style.display = 'block';
     }
   </script>
