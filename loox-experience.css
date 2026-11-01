@@ -681,3 +681,15 @@ body.loox-home-rail .loox-overflow-links a:hover,body.loox-home-rail .loox-overf
  body.loox-home-rail .topbar .main-nav .nav-quickstart{font-size:9px!important}
  body.loox-home-rail .topbar .loox-home-rail-button{width:30px!important;min-width:30px!important;flex-basis:30px!important;padding:0!important}
 }
+
+/* Restore full-size LOOX homepage branding without shrinking it for mobile. */
+body.loox-home-rail .topbar .brand-name{font-size:21px!important;line-height:1.1!important;letter-spacing:-.8px!important}
+body.loox-home-rail .topbar .brand-mark{width:39px!important;height:39px!important;min-width:39px!important;font-size:21px!important}
+body.loox-home-rail .topbar .brand-tag{font-size:9px!important;letter-spacing:1.4px!important;line-height:1.2!important;white-space:nowrap!important}
+body.loox-home-rail .topbar .brand{gap:11px!important;flex-shrink:0!important;white-space:nowrap!important}
+@media(max-width:900px){
+ body.loox-home-rail .topbar .brand-name{font-size:19px!important}
+ body.loox-home-rail .topbar .brand-mark{width:36px!important;height:36px!important;min-width:36px!important;font-size:19px!important}
+ body.loox-home-rail .topbar .brand-tag{font-size:8px!important;letter-spacing:1px!important}
+ body.loox-home-rail .topbar .brand{gap:8px!important}
+}
