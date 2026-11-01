@@ -293,7 +293,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       <!-- Cropper Layout -->
       <div class="cropper-layout" id="cropperLayout">
         <div class="canvas-container">
-          <div class="loox-crop-gesture-hint" aria-hidden="true">Spread fingers to expand crop · pinch inward to shrink</div>
+          <div class="loox-crop-gesture-hint" aria-hidden="true">Drag inside crop to move · pinch inside crop to resize</div>
           <div class="canvas-wrapper" id="canvasWrapper">
             <canvas id="sourceCanvas"></canvas>
             
@@ -567,7 +567,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       const inside=cropBox.contains(e.target);
       cropGesture={
         id:e.pointerId,
-        mode:handle?.dataset.handle||(inside?'move':'new'),
+        mode:handle?.dataset.handle||'move',
         from:p,
         original:{x:crop.x/img.width,y:crop.y/img.height,w:crop.w/img.width,h:crop.h/img.height}
       };
@@ -578,10 +578,12 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     cropBox.style.touchAction='none';
     canvasWrapper.tabIndex=0;
     cropBox.tabIndex=0;
-    cropBox.setAttribute('aria-label','Crop frame. Drag its edges, or use two fingers to zoom the crop area.');
+    cropBox.setAttribute('aria-label','Crop frame. Drag inside to move, use handles to resize, or pinch inside the frame to zoom. Outside taps are ignored.');
     canvasWrapper.addEventListener('pointerdown',e=>{
       if(!img.naturalWidth||(e.pointerType==='mouse'&&e.button!==0))return;
       e.preventDefault();
+      // Ignore any touch or click outside the existing crop frame.
+      if(!cropBox.contains(e.target))return;
       activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
       try{canvasWrapper.setPointerCapture(e.pointerId)}catch{}
       if(activePointers.size===2){beginPinch();return}
@@ -594,21 +596,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       if(activePointers.size>=2){movePinch();return}
       if(!cropGesture||cropGesture.id!==e.pointerId)return;
       const p=imagePoint(e),g=cropGesture,origin=g.original;
-      if(g.mode==='new'){
-        let x=Math.min(g.from.x,p.x),y=Math.min(g.from.y,p.y);
-        let w=Math.max(10/img.width,Math.abs(p.x-g.from.x));
-        let h=Math.max(10/img.height,Math.abs(p.y-g.from.y));
-        const ratio=cropRatio();
-        if(ratio){
-          const factor=img.width/img.height/ratio;
-          h=w*factor;
-          if(y+h>1){h=1-y;w=h/factor}
-        }
-        setNormalizedCrop({x,y,w,h});
-      }else{
-        const r=LOOXCrop.drag(origin,g.mode,g.from,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height,cropRatio());
-        setNormalizedCrop(r);
-      }
+       const r=LOOXCrop.drag(origin,g.mode,g.from,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height,cropRatio());
+       setNormalizedCrop(r);
     },{passive:false});
     function finishPointer(e){
       if(!activePointers.has(e.pointerId))return;
