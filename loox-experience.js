@@ -15,7 +15,7 @@
  document.body.classList.toggle('rail-hidden',!sidebarVisible);
  const studio=document.body.classList.contains('studio-page');
  const main=document.querySelector('main')||document.querySelector('.app');
- let compact=matchMedia('(max-width:900px)').matches||read('loox-rail-collapsed','true')!=='false';
+ let compact=homePage?false:(matchMedia('(max-width:900px)').matches||read('loox-rail-collapsed','true')!=='false');
  document.body.classList.add('experience-shell');document.body.classList.toggle('rail-compact',compact);
  if(studio)document.body.classList.add('experience-studio');
  if(main)main.classList.add('experience-content');
