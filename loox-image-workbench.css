@@ -79,3 +79,14 @@ body.work-editing .work-save-mobile{display:none}
  body.work-editing .work-tool-strip{display:flex}
  body.work-editing .work-save-mobile{display:block;background:#7755bc}
 }
+
+
+/* Safe-area and viewport guards shared by image workbench mobile toolbars. */
+@media(max-width:760px){
+ body.work-editing{max-height:100dvh;overflow:hidden}
+ body.work-editing .work-main{min-height:0!important;overflow:hidden!important}
+ body.work-editing .work-layout{flex:1 1 auto;min-height:0!important;overflow:hidden}
+ body.work-editing .work-editor-toolbar{flex:0 0 auto!important;box-sizing:border-box;min-height:60px!important;max-height:none!important;padding-bottom:max(6px,env(safe-area-inset-bottom))!important}
+ body.work-editing .work-tool-strip{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+ body.work-editing .work-controls{max-height:min(48dvh,390px);overflow-y:auto;overscroll-behavior:contain}
+}
