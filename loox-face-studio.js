@@ -14,7 +14,8 @@
   let original = null, sourceName = 'loox-face-blurred', history = [], future = [];
   let editing = false, lastPoint = null, strokeLayer = null, activePointer = null;
   let detectorPromise = null, fallbackPromise = null, detecting = false, currentLoad = 0;
-  const HISTORY_LIMIT = 5;
+  // Limit full-resolution canvas snapshots, especially on memory-constrained phones.
+  const HISTORY_LIMIT = mobile() ? 3 : 5;
   const allowPointer = e => e.pointerType !== 'mouse' || e.button === 0;
   const mobile = () => matchMedia('(max-width:800px)').matches;
 
@@ -174,7 +175,7 @@
     document.body.classList.toggle('loox-face-brush-mode',mode==='brush');
     $('faceMobileBrush').classList.toggle('active',mode==='brush');
     $('faceToolBrush').classList.toggle('active',mode==='brush');
-    if(mode==='brush')feedback('Brush enabled. Drag a finger or mouse over any area to blur it.');
+    if(mode==='brush' && original)feedback('Brush enabled. Drag a finger or mouse over any area to blur it.');
     else preview.hidden=true;
   }
   canvas.addEventListener('pointerdown',e => {
@@ -270,8 +271,6 @@
     if(!faces.length)return;
     saveUndo();
     const starting=snapshot();
-    const source=ctx.getImageData(0,0,1,1); // Confirm the editable canvas context is active.
-    void source;
     const temp=document.createElement('canvas');temp.width=canvas.width;temp.height=canvas.height;
     const overlay=temp.getContext('2d');
     // Increase the blur radius in proportion to face width for strong anonymization.
