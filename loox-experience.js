@@ -108,7 +108,7 @@
    button.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden))};
    controls.querySelector('.loox-overflow-settings').onclick=()=>{close();openSettings()};
    if(!controls.dataset.menuBound){controls.dataset.menuBound='true';document.addEventListener('click',e=>{if(!controls.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})}
-  }else{controls.innerHTML='<button type="button" class="loox-header-settings" aria-label="'+l.settings+'" title="'+l.settings+'">⚙</button>';controls.querySelector('button').onclick=openSettings;}
+   }else{controls.replaceChildren();controls.hidden=true;}
  }
  function groupFor(t){
   if(t.kind==='cloud'||t.slug==='prompt-builder')return 2;
