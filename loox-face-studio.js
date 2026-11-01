@@ -82,6 +82,7 @@
       history = [];future = []; updateButtons();
       upload.hidden = true; editor.hidden = false;
       document.body.classList.add('loox-face-ready');
+      requestAnimationFrame(fitCanvas);
       closeSheet();
       fitHeader();
       feedback('Photo ready. Tap AI Faces to automatically blur every detected face, or select Brush for manual edits.', 'success');
@@ -110,6 +111,19 @@
   strengthSlider.addEventListener('input',e => strengthOut.textContent = e.target.value);
   setBrush(70);
 
+  function fitCanvas() {
+    if (!original || editor.hidden) return;
+    const styles = getComputedStyle(stage);
+    const availableWidth = stage.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
+    const availableHeight = stage.clientHeight - parseFloat(styles.paddingTop) - parseFloat(styles.paddingBottom);
+    if (availableWidth <= 0 || availableHeight <= 0) return;
+    const scale = Math.min(availableWidth / canvas.width, availableHeight / canvas.height);
+    canvas.style.width = Math.floor(canvas.width * scale) + 'px';
+    canvas.style.height = Math.floor(canvas.height * scale) + 'px';
+    movePreview(null);
+  }
+  new ResizeObserver(() => requestAnimationFrame(fitCanvas)).observe(stage);
+
   function point(e) {
     const r = canvas.getBoundingClientRect();
     return {x:Math.max(0,Math.min(canvas.width,(e.clientX-r.left)*canvas.width/Math.max(1,r.width))),
@@ -122,13 +136,17 @@
     const scale=canvas.width/Math.max(1,canvas.getBoundingClientRect().width);
     return Math.max(4,Math.min(160,+strengthSlider.value*Math.sqrt(Math.max(1,scale))));
   }
-  function blurSnapshot(source, radius) {
-    const c=document.createElement('canvas');
-    c.width=canvas.width;c.height=canvas.height;
-    const cctx=c.getContext('2d');
-    cctx.filter='blur('+Math.round(radius)+'px)';
-    cctx.drawImage(source,0,0);
-    cctx.filter='none';
+  function blurSnapshot(source, intensity) {
+    const c = document.createElement('canvas');
+    c.width = canvas.width; c.height = canvas.height;
+    const block = Math.max(12, Math.round(intensity / 2));
+    const small = document.createElement('canvas');
+    small.width = Math.max(1, Math.ceil(canvas.width / block));
+    small.height = Math.max(1, Math.ceil(canvas.height / block));
+    small.getContext('2d').drawImage(source, 0, 0, small.width, small.height);
+    const cctx = c.getContext('2d');
+    cctx.imageSmoothingEnabled = false;
+    cctx.drawImage(small, 0, 0, canvas.width, canvas.height);
     return c;
   }
   function paintSegment(a,b) {
@@ -281,26 +299,37 @@
     return {faces,engine,errors};
   }
   function autoBlurFaces(faces) {
-    if(!faces.length)return;
+    if (!faces.length) return;
     saveUndo();
-    const starting=snapshot();
-    const temp=document.createElement('canvas');temp.width=canvas.width;temp.height=canvas.height;
-    const overlay=temp.getContext('2d');
-    // Increase the blur radius in proportion to face width for strong anonymization.
-    // Each face uses the same source snapshot so multiple faces do not reintroduce details.
-    for(const box of faces){
-      const bx=Math.max(0,box.x),by=Math.max(0,box.y);
-      const bw=Math.max(1,box.w),bh=Math.max(1,box.h);
-      const cx=bx+bw/2,cy=by+bh/2;
-      const rx=bw*.82,ry=bh*.87;
-      const strength=Math.min(180,Math.max(22,+strengthSlider.value*1.5,Math.max(bw,bh)*.37));
-      overlay.clearRect(0,0,canvas.width,canvas.height);
-      overlay.filter='blur('+Math.round(strength)+'px)';
-      overlay.drawImage(starting,0,0);overlay.filter='none';
-      ctx.save();ctx.beginPath();ctx.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);ctx.clip();
-      const l=Math.max(0,Math.floor(cx-rx)),t=Math.max(0,Math.floor(cy-ry));
-      const rr=Math.min(canvas.width,Math.ceil(cx+rx)),bb=Math.min(canvas.height,Math.ceil(cy+ry));
-      if(rr>l&&bb>t)ctx.drawImage(temp,l,t,rr-l,bb-t,l,t,rr-l,bb-t);
+    // Work from the unedited snapshot for every detection. Reducing a face to
+    // roughly eight samples across removes identifying detail even when canvas
+    // filters are unavailable on the device.
+    const starting = snapshot();
+    for (const box of faces) {
+      if (![box.x, box.y, box.w, box.h].every(Number.isFinite) || box.w <= 0 || box.h <= 0) continue;
+      const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
+      const rx = box.w * .86, ry = box.h * .93;
+      const left = Math.max(0, Math.floor(cx - rx)), top = Math.max(0, Math.floor(cy - ry));
+      const right = Math.min(canvas.width, Math.ceil(cx + rx));
+      const bottom = Math.min(canvas.height, Math.ceil(cy + ry));
+      const width = right - left, height = bottom - top;
+      if (width <= 0 || height <= 0) continue;
+      const samplesX = Math.max(1, Math.ceil(box.w / Math.max(12, box.w / 8)));
+      const samplesY = Math.max(1, Math.round(samplesX * height / width));
+      const small = document.createElement('canvas');
+      small.width = samplesX; small.height = samplesY;
+      small.getContext('2d').drawImage(starting, left, top, width, height, 0, 0, samplesX, samplesY);
+      const mosaic = document.createElement('canvas');
+      mosaic.width = width; mosaic.height = height;
+      const mc = mosaic.getContext('2d');
+      mc.imageSmoothingEnabled = false;
+      mc.drawImage(small, 0, 0, width, height);
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(mosaic, left, top);
       ctx.restore();
     }
   }
@@ -365,7 +394,7 @@
   $('faceSheetClose').addEventListener('click',closeSheet);
   sheetBackdrop.addEventListener('click',closeSheet);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
-  window.addEventListener('resize',()=>{fitHeader();if(!mobile())closeSheet()});
+  window.addEventListener('resize',()=>{fitHeader();requestAnimationFrame(fitCanvas);if(!mobile())closeSheet()});
   window.addEventListener('orientationchange',fitHeader);
   setMode('blur');updateButtons();fitHeader();
 })();
