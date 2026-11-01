@@ -2240,5 +2240,24 @@
       "fr": "Personnalisez l’image, vérifiez l’aperçu et téléchargez une copie.",
       "de": "Bearbeite das Bild, prüfe die Vorschau und lade eine Kopie herunter."
     }
+  },
+  {
+    "slug": "chart-maker",
+    "url": "chart-maker.html",
+    "kind": "image",
+    "category": "design",
+    "collection": "image",
+    "names": {
+      "en": "Chart Maker",
+      "es": "Creador de gráficos",
+      "fr": "Créateur de graphiques",
+      "de": "Diagramm-Ersteller"
+    },
+    "lead": {
+      "en": "Create pie, donut, bar and line charts with live editing and PNG downloads.",
+      "es": "Crea gráficos circulares, de barras y líneas y descárgalos en PNG.",
+      "fr": "Créez des graphiques circulaires, à barres et en courbes et exportez-les en PNG.",
+      "de": "Erstelle Kreis-, Balken- und Liniendiagramme und exportiere sie als PNG."
+    }
   }
 ]
