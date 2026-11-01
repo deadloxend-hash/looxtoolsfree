@@ -9,6 +9,10 @@
  const file=location.pathname.split('/').pop()||'index.html';
  let language=supportedCodes.has(new URLSearchParams(location.search).get('lang'))?new URLSearchParams(location.search).get('lang'):read('loox-language','en');
  if(!supportedCodes.has(language))language='en';
+ const homePage=file==='index.html';
+ let sidebarVisible=homePage&&read('loox-home-sidebar-visible','true')!=='false';
+ document.body.classList.add(homePage?'loox-home-rail':'loox-no-rail');
+ document.body.classList.toggle('rail-hidden',!sidebarVisible);
  const studio=document.body.classList.contains('studio-page');
  const main=document.querySelector('main')||document.querySelector('.app');
  let compact=matchMedia('(max-width:900px)').matches||read('loox-rail-collapsed','true')!=='false';
@@ -40,14 +44,18 @@
   if(p.theme&&window.LOOXApplyTheme)window.LOOXApplyTheme(light?'white':'dark');
   if(p.imageFormat){const select=document.querySelector('#exportFormat,#format,#watermark-format');if(select&&[...select.options].some(o=>o.value===p.imageFormat))select.value=p.imageFormat}
  }
- const rail=document.createElement('aside');rail.className='loox-rail';rail.setAttribute('aria-label','LOOX tools');document.body.append(rail);
+ const rail=document.createElement('aside');rail.className='loox-rail';rail.setAttribute('aria-label','LOOX tools');if(homePage)document.body.append(rail);
+ let sidebarButton=null;
+ function toggleHomeRail(){if(!homePage)return;sidebarVisible=!sidebarVisible;save('loox-home-sidebar-visible',String(sidebarVisible));document.body.classList.toggle('rail-hidden',!sidebarVisible);if(sidebarButton){sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar'} }
+ if(homePage){sidebarButton=document.createElement('button');sidebarButton.type='button';sidebarButton.className='loox-home-rail-button';sidebarButton.textContent='☰';sidebarButton.setAttribute('aria-controls','loox-home-rail');sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar';sidebarButton.addEventListener('click',toggleHomeRail);rail.id='loox-home-rail';document.body.append(sidebarButton)} 
  const localizedURL=href=>{const u=new URL(href,location.href);if(language!=='en')u.searchParams.set('lang',language);return u.pathname+u.search+u.hash};
  function current(){return catalog.find(t=>t.url===(file+(file==='toolbox.html'?(location.hash||'#image-resizer'):'')))}
  function drawRail(){
+  if(!homePage){mountHeader();return}
   const w=(words[language]||words.en),active=current();
   const primary=['video-editor','photo-editor','bg-remove','faceswap','design-studio','watermark','fancy-fonts'].map(s=>catalog.find(t=>t.slug===s)).filter(Boolean),l=(labels[language]||labels.en);
   rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">'+w.tools+'</span><button class="loox-rail-toggle" aria-label="'+(compact?w.expand:w.collapse)+'" aria-expanded="'+!compact+'">☰</button></div><nav class="loox-rail-list" aria-label="'+w.tools+'"><a class="loox-rail-link" href="'+localizedURL('index.html')+'"><span class="loox-rail-icon" aria-hidden="true">⌂</span><span class="loox-rail-label">'+w.home+'</span></a>'+primary.map(t=>'<a class="loox-rail-link" href="'+esc(localizedURL(t.url))+'" title="'+esc((t.names[language]||t.names.en))+'" '+(active?.slug===t.slug?'aria-current="page"':'')+'><span class="loox-rail-icon"><img src="assets/icons/'+t.slug+'.svg" alt="" width="27" height="27"></span><span class="loox-rail-label">'+esc((t.names[language]||t.names.en))+'</span></a>').join('')+'<button class="loox-rail-link loox-more-trigger" aria-haspopup="dialog"><span class="loox-rail-icon" aria-hidden="true">•••</span><span class="loox-rail-label">'+l.more+'</span></button></nav><div class="loox-rail-bottom"><a class="loox-rail-policy" href="'+localizedURL('guides.html')+'">'+w.help+'</a><a class="loox-rail-policy" href="'+localizedURL('privacy-policy.html')+'">'+w.privacy+'</a></div>';
-  rail.querySelector('.loox-rail-toggle').onclick=()=>{compact=!compact;save('loox-rail-collapsed',String(compact));document.body.classList.toggle('rail-compact',compact);drawRail()};
+  rail.querySelector('.loox-rail-toggle').onclick=toggleHomeRail;
   rail.querySelector('.loox-more-trigger').onclick=openMore;
   rail.querySelector('.loox-more-trigger').setAttribute('aria-label',l.more);
   rail.querySelector('.loox-more-trigger').title=l.more;
@@ -56,11 +64,8 @@
  }
  // On mobile, tapping the page outside the open tools drawer closes it.
  document.addEventListener('pointerdown',event=>{
-  if(!matchMedia('(max-width:900px)').matches || compact || !rail.contains || rail.contains(event.target) || event.target.closest?.('.loox-tool-menu,.loox-info-menu'))return;
-  compact=true;
-  save('loox-rail-collapsed','true');
-  document.body.classList.add('rail-compact');
-  drawRail();
+  if(!homePage||!matchMedia('(max-width:900px)').matches || !sidebarVisible || !rail.contains || rail.contains(event.target) || event.target.closest?.('.loox-home-rail-button'))return;
+  toggleHomeRail();
  });
  function changeLanguage(value){language=value;save('loox-language',language);const u=new URL(location.href);u.searchParams.set('lang',language);history.replaceState(null,'',u);drawRail();applyLanguage();brandCards();loadGuide()}
  function mountHeader(){
@@ -87,7 +92,7 @@
   }
   let controls=document.querySelector('.loox-top-controls');
   if(!controls){controls=document.createElement('div');controls.className='loox-top-controls';(header.querySelector('.studio-top-actions,.loox-app-actions,.suite-header-actions,.work-head-actions')||header).append(controls)}
-  if(document.body.classList.contains('info-page') && !header.querySelector('.loox-info-menu')){
+  if(false && document.body.classList.contains('info-page') && !header.querySelector('.loox-info-menu')){
    const menu=document.createElement('button');menu.type='button';menu.className='loox-info-menu';menu.textContent='☰';menu.setAttribute('aria-label','Open tool categories');menu.setAttribute('aria-expanded',String(!compact));
    menu.addEventListener('click',()=>{const toggle=rail.querySelector('.loox-rail-toggle');if(toggle)toggle.click();menu.setAttribute('aria-expanded',String(!compact));});
    header.prepend(menu);
@@ -164,7 +169,7 @@
   catalog=c;dictionary=d;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
   const grid=document.querySelector('#toolGrid');if(grid)new MutationObserver(()=>brandCards(grid)).observe(grid,{childList:true});
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
- }).catch(()=>{rail.innerHTML='<a class="loox-rail-link" href="index.html">LOOX ↗</a>'});
+ }).catch(()=>{if(homePage)rail.innerHTML='<a class="loox-rail-link" href="index.html">LOOX ↗</a>';else mountHeader()});
  window.addEventListener('hashchange',()=>{drawRail();chooseToolbox();loadGuide()});
  matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>{if(preferences().theme==='system')applyPreferences()});
 })();
