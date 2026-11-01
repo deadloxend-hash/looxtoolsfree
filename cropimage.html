@@ -249,6 +249,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
             </div>
           </div>
 
+          <button class="btn btn-secondary" type="button" onclick="fullImageCrop()">▣ Full Image · 100%</button>
           <button class="btn btn-primary" onclick="cropAndDownload()">✂️ Crop & Download Image</button>
           <button class="btn btn-secondary" onclick="resetCrop()">🔄 Reset Selection</button>
           <button class="btn btn-secondary" onclick="chooseNewImage()">📁 Choose New Image</button>
@@ -316,23 +317,19 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       img.src = fileUrl;
     }
 
-    function resetCrop() {
-      const defaultW = Math.round(img.width * 0.7);
-      const defaultH = Math.round(img.height * 0.7);
-      crop = {
-        x: Math.round((img.width - defaultW) / 2),
-        y: Math.round((img.height - defaultH) / 2),
-        w: defaultW,
-        h: defaultH
-      };
+    function fullImageCrop() {
+      if (!img.naturalWidth) return;
+      crop = {x:0,y:0,w:img.width,h:img.height};
       aspectSelect.value = 'free';
       updateUI();
     }
+    // Reset returns to the complete picture; crop handles can sit on all four edges.
+    function resetCrop() { fullImageCrop(); }
 
     function updateScale() {
-      const rect = canvas.getBoundingClientRect();
-      scaleX = canvas.width / rect.width;
-      scaleY = canvas.height / rect.height;
+      const r = canvas.getBoundingClientRect();
+      scaleX = canvas.width / Math.max(r.width,1);
+      scaleY = canvas.height / Math.max(r.height,1);
     }
 
     function updateUI() {
@@ -343,8 +340,11 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       const displayW = crop.w / scaleX;
       const displayH = crop.h / scaleY;
 
-      cropBox.style.left = displayX + 'px';
-      cropBox.style.top = displayY + 'px';
+      // The mobile canvas can be centered inside its wrapper. Align to the
+      // visible image edges, never to the larger surrounding container.
+      const canvasBounds=canvas.getBoundingClientRect(),wrapperBounds=canvasWrapper.getBoundingClientRect();
+      cropBox.style.left = (canvasBounds.left-wrapperBounds.left+displayX) + 'px';
+      cropBox.style.top = (canvasBounds.top-wrapperBounds.top+displayY) + 'px';
       cropBox.style.width = displayW + 'px';
       cropBox.style.height = displayH + 'px';
 
@@ -385,29 +385,128 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       updateUI();
     }
 
-    // Pointer capture supports a mouse, pen or touchscreen without losing the drag.
-    let cropGesture = null;
-    cropBox.style.touchAction = 'none';
-    cropBox.tabIndex = 0;
-    cropBox.setAttribute('aria-label','Crop frame. Drag the edges or use arrow keys to move.');
-    cropBox.addEventListener('pointerdown', e => {
-      if (e.button !== 0) return;
-      updateScale();
-      cropGesture = {
-        mode:e.target.dataset.handle || 'move',
-        from:{x:e.clientX/(img.width/scaleX),y:e.clientY/(img.height/scaleY)},
+    // Precision crop gestures: mouse, stylus and one- or two-finger touch.
+    // Pinching fingers together zooms OUT of the selection (expands crop).
+    // Spreading fingers apart zooms IN (tightens crop).
+    const activePointers = new Map();
+    let cropGesture = null, pinchGesture = null, cropFrame = 0;
+    const clamp01=n=>Math.max(0,Math.min(1,n));
+    function imagePoint(e) {
+      const r=canvas.getBoundingClientRect();
+      return {x:clamp01((e.clientX-r.left)/Math.max(1,r.width)),y:clamp01((e.clientY-r.top)/Math.max(1,r.height))};
+    }
+    function cropRatio() {
+      if(aspectSelect.value==='free')return 0;
+      const [a,b]=aspectSelect.value.split(':').map(Number);
+      return a>0&&b>0?a/b:0;
+    }
+    function setNormalizedCrop(r) {
+      const minW=Math.min(1,10/img.width),minH=Math.min(1,10/img.height);
+      const w=Math.max(minW,Math.min(1,r.w)),h=Math.max(minH,Math.min(1,r.h));
+      crop={x:clamp01(Math.min(r.x,1-w))*img.width,
+        y:clamp01(Math.min(r.y,1-h))*img.height,w:w*img.width,h:h*img.height};
+      queueCropUI();
+    }
+    function queueCropUI() {
+      if(cropFrame)return;
+      cropFrame=requestAnimationFrame(()=>{cropFrame=0;updateUI()});
+    }
+    function pinchStats() {
+      const [a,b]=[...activePointers.values()];
+      return {
+        distance:Math.max(8,Math.hypot(a.x-b.x,a.y-b.y)),
+        x:(a.x+b.x)/2,y:(a.y+b.y)/2
+      };
+    }
+    function beginPinch() {
+      const p=pinchStats();
+      pinchGesture={
+        origin:p,
         rect:{x:crop.x/img.width,y:crop.y/img.height,w:crop.w/img.width,h:crop.h/img.height}
       };
-      cropBox.setPointerCapture(e.pointerId);cropBox.focus();e.preventDefault();
+      cropGesture=null;
+      canvasWrapper.classList.add('pinching');
+    }
+    function movePinch() {
+      if(!pinchGesture||activePointers.size<2)return;
+      const p=pinchStats(),original=pinchGesture.rect;
+      const factor=pinchGesture.origin.distance/p.distance;
+      const ratio=cropRatio();
+      let w=original.w*factor,h=original.h*factor;
+      if(ratio){
+        // Preserve the locked source-pixel aspect ratio.
+        const maxFactor=Math.min(1/original.w,1/original.h);
+        const safeFactor=Math.min(factor,maxFactor);
+        w=original.w*safeFactor;h=original.h*safeFactor;
+      }else{
+        w=Math.min(1,w);h=Math.min(1,h);
+      }
+      const r=canvas.getBoundingClientRect();
+      const dx=(p.x-pinchGesture.origin.x)/Math.max(1,r.width);
+      const dy=(p.y-pinchGesture.origin.y)/Math.max(1,r.height);
+      const cx=original.x+original.w/2+dx;
+      const cy=original.y+original.h/2+dy;
+      setNormalizedCrop({x:cx-w/2,y:cy-h/2,w,h});
+    }
+    function startCropGesture(e){
+      const p=imagePoint(e);
+      const handle=e.target.closest?.('[data-handle]');
+      const inside=cropBox.contains(e.target);
+      cropGesture={
+        id:e.pointerId,
+        mode:handle?.dataset.handle||(inside?'move':'new'),
+        from:p,
+        original:{x:crop.x/img.width,y:crop.y/img.height,w:crop.w/img.width,h:crop.h/img.height}
+      };
+      if(cropGesture.mode==='new') {
+        setNormalizedCrop({x:p.x,y:p.y,w:Math.max(10/img.width,.001),h:Math.max(10/img.height,.001)});
+      }
+    }
+    canvasWrapper.style.touchAction='none';
+    cropBox.style.touchAction='none';
+    canvasWrapper.tabIndex=0;
+    cropBox.tabIndex=0;
+    cropBox.setAttribute('aria-label','Crop frame. Drag its edges, or use two fingers to zoom the crop area.');
+    canvasWrapper.addEventListener('pointerdown',e=>{
+      if(!img.naturalWidth||(e.pointerType==='mouse'&&e.button!==0))return;
+      e.preventDefault();
+      activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      try{canvasWrapper.setPointerCapture(e.pointerId)}catch{}
+      if(activePointers.size===2){beginPinch();return}
+      if(activePointers.size===1){startCropGesture(e)}
     });
-    cropBox.addEventListener('pointermove', e => {
-      if (!cropGesture) return;
-      const displayW=img.width/scaleX,displayH=img.height/scaleY;
-      const ratio=aspectSelect.value==='free'?0:aspectSelect.value.split(':').map(Number).reduce((a,b)=>a/b);
-      const r=LOOXCrop.drag(cropGesture.rect,cropGesture.mode,cropGesture.from,{x:e.clientX/displayW,y:e.clientY/displayH},displayW,displayH,ratio);
-      crop={x:r.x*img.width,y:r.y*img.height,w:r.w*img.width,h:r.h*img.height};updateUI();
-    });
-    ['pointerup','pointercancel','lostpointercapture'].forEach(type=>cropBox.addEventListener(type,()=>cropGesture=null));
+    canvasWrapper.addEventListener('pointermove',e=>{
+      if(!activePointers.has(e.pointerId))return;
+      e.preventDefault();
+      activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(activePointers.size>=2){movePinch();return}
+      if(!cropGesture||cropGesture.id!==e.pointerId)return;
+      const p=imagePoint(e),g=cropGesture,origin=g.original;
+      if(g.mode==='new'){
+        let x=Math.min(g.from.x,p.x),y=Math.min(g.from.y,p.y);
+        let w=Math.max(10/img.width,Math.abs(p.x-g.from.x));
+        let h=Math.max(10/img.height,Math.abs(p.y-g.from.y));
+        const ratio=cropRatio();
+        if(ratio){
+          const factor=img.width/img.height/ratio;
+          h=w*factor;
+          if(y+h>1){h=1-y;w=h/factor}
+        }
+        setNormalizedCrop({x,y,w,h});
+      }else{
+        const r=LOOXCrop.drag(origin,g.mode,g.from,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height,cropRatio());
+        setNormalizedCrop(r);
+      }
+    },{passive:false});
+    function finishPointer(e){
+      if(!activePointers.has(e.pointerId))return;
+      activePointers.delete(e.pointerId);
+      if(activePointers.size<2){pinchGesture=null;canvasWrapper.classList.remove('pinching')}
+      if(cropGesture?.id===e.pointerId||activePointers.size===1)cropGesture=null;
+      if(cropFrame){cancelAnimationFrame(cropFrame);cropFrame=0}
+      updateUI();
+    }
+    for(const type of ['pointerup','pointercancel','lostpointercapture'])canvasWrapper.addEventListener(type,finishPointer);
     cropBox.addEventListener('keydown',e=>{
       const moves={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]};
       if(!moves[e.key])return;e.preventDefault();const step=e.shiftKey?10:1;
@@ -437,6 +536,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     }
 
     function chooseNewImage() {
+      activePointers.clear();cropGesture=null;pinchGesture=null;
       fileInput.value = '';
       cropperLayout.style.display = 'none';
       dropZone.style.display = 'block';
@@ -445,7 +545,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
   
 
 <script>
-(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>↶</b>Reset</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){resetCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));if(opening){panel.querySelector(action==='ratio'?'#aspectRatioSelect':'#cropXInput')?.focus({preventScroll:true})}}});})();
+(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>⛶</b>Full</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){fullImageCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));if(opening){panel.querySelector(action==='ratio'?'#aspectRatioSelect':'#cropXInput')?.focus({preventScroll:true})}}});})();
 </script>
   <script src="loox-tool-ui.js?v=40"></script>
 
