@@ -131,6 +131,34 @@ body.converter-editing .converter-layout{display:flex!important;flex:1;min-heigh
  .converter-mobile-bar button.converter-mobile-save{background:#7554bc;color:white}
 }
 @media(max-height:540px) and (min-width:651px){.converter-stage .preview-box img{max-height:calc(100dvh - 120px)}}
+
+/* Layout stabilization: reserve real header height and mobile safe area */
+body.converter-editing main{
+  height:var(--converter-editor-height,calc(100dvh - 70px))!important;
+  max-height:var(--converter-editor-height,calc(100dvh - 70px))!important;
+  min-height:0!important;
+  box-sizing:border-box!important;
+}
+body.converter-editing .workspace-card,body.converter-editing .converter-layout,body.converter-editing .converter-workspace{min-height:0!important;min-width:0}
+.converter-inspector .settings-grid{width:100%;box-sizing:border-box}
+.converter-inspector .setting-group{display:flex;flex-direction:column;align-items:stretch;width:100%;gap:8px}
+.converter-inspector .setting-group label{width:100%;line-height:1.45}
+.converter-inspector #qualityRange{display:block;width:100%;max-width:100%;height:28px;padding:0;margin:0;box-sizing:border-box;accent-color:#ac70f2}
+.converter-inspector #formatSelect{width:100%;max-width:100%;min-width:0}
+@media(max-width:650px){
+ body.converter-editing main{padding:5px!important}
+ body.converter-editing .workspace-card{padding:4px!important}
+ body.converter-editing .converter-topbar{min-height:37px;flex-shrink:0}
+ body.converter-editing .converter-mobile-bar{
+   display:grid!important;position:relative;z-index:20;
+   flex:0 0 auto!important;min-height:60px;
+   padding:5px 3px max(7px,env(safe-area-inset-bottom))!important;
+   width:100%;box-sizing:border-box;margin:0;
+ }
+ body.converter-editing .converter-mobile-bar button{min-height:49px;padding:5px 2px}
+ body.converter-editing .converter-stage{min-height:0!important}
+ body.converter-editing .converter-stage .preview-box img{max-height:calc(var(--converter-editor-height,100dvh) - 155px)}
+}
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 
@@ -282,6 +310,7 @@ body.converter-editing .converter-layout{display:flex!important;flex:1;min-heigh
         dropZone.style.display = 'none';
         converterLayout.style.display = 'flex';
         document.body.classList.add('converter-editing');
+        requestAnimationFrame(updateConverterViewport);
         document.getElementById('converterInspector').classList.remove('open');
         scheduleLivePreview();
       };
@@ -381,11 +410,23 @@ body.converter-editing .converter-layout{display:flex!important;flex:1;min-heigh
       imagePreview.removeAttribute('src');
       converterLayout.style.display = 'none';
       document.body.classList.remove('converter-editing');
+      document.documentElement.style.removeProperty('--converter-editor-height');
       document.getElementById('converterInspector').classList.remove('open');
       dropZone.style.display = 'block';
       document.getElementById('outputSizeDisplay').textContent = '-';
     }
 
+    function updateConverterViewport(){
+      if(!document.body.classList.contains('converter-editing'))return;
+      const main=document.querySelector('main');
+      if(!main)return;
+      // Header/nav occupies real viewport space. Measure it instead of assuming 100dvh.
+      const top=Math.max(0,main.getBoundingClientRect().top);
+      const available=Math.max(220,window.innerHeight-top);
+      document.documentElement.style.setProperty('--converter-editor-height',available+'px');
+    }
+    window.addEventListener('resize',()=>requestAnimationFrame(updateConverterViewport));
+    window.addEventListener('orientationchange',()=>requestAnimationFrame(updateConverterViewport));
     // Compact mobile controls: show only the requested settings drawer.
     document.getElementById('converterNew').addEventListener('click',resetConverter);
     const converterInspector=document.getElementById('converterInspector');
