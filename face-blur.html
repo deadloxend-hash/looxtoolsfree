@@ -73,7 +73,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
 
 <link rel="stylesheet" href="loox-experience.css?v=93">
-<link rel="stylesheet" href="loox-face-studio.css?v=3">
+<link rel="stylesheet" href="loox-face-studio.css?v=4">
 </head><body>
 
 <main class="loox-face-main">
@@ -91,6 +91,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       <div class="loox-face-body">
         <section id="faceStage" class="loox-face-stage" aria-label="Editable photo">
           <canvas id="faceCanvas" aria-label="Photo editing canvas. Paint to blur areas."></canvas>
+          <div id="faceCropFrame" class="loox-face-crop-frame" hidden aria-label="Crop selection. Drag inside to move or drag an edge to resize."><i data-edge="nw"></i><i data-edge="n"></i><i data-edge="ne"></i><i data-edge="e"></i><i data-edge="se"></i><i data-edge="s"></i><i data-edge="sw"></i><i data-edge="w"></i></div>
           <div id="faceBrushPreview" class="loox-face-brush-preview" hidden></div>
         </section>
         <div id="faceSheetBackdrop" class="loox-face-sheet-backdrop" hidden></div>
@@ -123,6 +124,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
             <input id="faceBlurStrength" class="loox-face-range" type="range" min="8" max="85" value="44" step="1">
             <p>Higher values increase the brush pixelation. AI strongly pixelates detected faces.</p>
           </section>
+          <section class="loox-face-section loox-face-crop-actions"><h3>Crop photo</h3><button id="faceCropStart" type="button" class="loox-face-secondary">⌗ Crop image</button><div id="faceCropActions" hidden><button type="button" id="faceCropApply" class="loox-face-primary">✓ Apply crop</button><button type="button" id="faceCropCancel" class="loox-face-secondary">Cancel crop</button></div><p>Drag inside the frame to move it. Drag an edge or corner with your finger to resize.</p></section>
           <section class="loox-face-section loox-face-desktop-actions">
             <div class="loox-face-action-row">
               <button type="button" id="faceUndo" class="loox-face-secondary" disabled>↶ Undo</button>
@@ -137,6 +139,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
         <button id="faceMobileAuto" class="loox-face-auto-mobile" type="button"><b>✦</b><span>AI Faces</span></button>
         <button id="faceMobileBrush" class="active" type="button" aria-pressed="true"><b>✎</b><span>Brush</span></button>
         <button id="faceMobileErase" type="button" aria-pressed="false"><b>⌫</b><span>Erase</span></button>
+        <button id="faceMobileCrop" type="button"><b>⌗</b><span>Crop</span></button>
         <button id="faceMobileAdjust" type="button"><b>◐</b><span>Adjust</span></button>
         <button id="faceMobileUndo" type="button" disabled><b>↶</b><span>Undo</span></button>
         <button id="faceMobileSave" class="loox-face-save-mobile" type="button"><b>↓</b><span>Save</span></button>
@@ -154,7 +157,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     <div class="notice"><b>Privacy:</b> Image pixels are processed locally; the tool does not upload your photo to LOOX. AI detection downloads model/code files from third-party CDNs and may send technical requests/metrics. Face detection may miss people, so always review the entire image before sharing.</div>
   </section>
 </main>
-<script src="loox-face-studio.js?v=6" defer></script>
+<script src="loox-face-studio.js?v=7" defer></script>
   
   <script src="loox-tool-ui.js?v=40"></script>
 
