@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true}),panel=$('panelContent');
 const keys=['brightness','contrast','exposure','highlights','shadows','saturation','vibrance','temperature','tint','fade','gamma'];
 const definitions={brightness:['Brightness',-100,100,0],contrast:['Contrast',-100,100,0],saturation:['Saturation',-100,100,0],vibrance:['Vibrance',-100,100,0],highlights:['Highlights',-100,100,0],shadows:['Shadows',-100,100,0],exposure:['Exposure',-3,3,0],temperature:['Temperature',-100,100,0],tint:['Tint',-100,100,0],fade:['Fade',0,100,0],gamma:['Gamma',-100,100,0]};
-let overlays=[],selectedOverlay=-1,overlayDrag=null,cropRatio='free',frame={style:'none',color:'#ffffff',width:20},drawColor='#ff52ad',drawSize=16,resizeMode='fit',resizeBackground='#ffffff';let cropTarget='canvas',cropIndex=-1;let source=null,base=null,mask=null,filename='photo',tab='tools',brushSize=44,intensity=85,brushActive=false,zoom=1,fitScale=1,crop=null,drag=null,history=[],future=[],busy=false,renderToken=0;
+let overlays=[],selectedOverlay=-1,overlayDrag=null,cropRatio='free',frame={style:'none',color:'#ffffff',width:20},drawColor='#ff52ad',drawSize=16,resizeMode='fit',resizeBackground='#ffffff';let cropTarget='canvas',cropIndex=-1;let resizeAnchor=null,resizePlacement=null,resizeLast=null;let source=null,base=null,mask=null,filename='photo',tab='tools',brushSize=44,intensity=85,brushActive=false,zoom=1,fitScale=1,crop=null,drag=null,history=[],future=[],busy=false,renderToken=0;
 const adjustments=()=>Object.fromEntries(keys.map(k=>[k,definitions[k][3]]));let values=adjustments(),preset='original';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const setStatus=s=>$('status').textContent=s;
 const makeCanvas=(w,h)=>{let c=document.createElement('canvas');c.width=w;c.height=h;return c};
@@ -28,9 +28,9 @@ function cropPhoto(o,r,shiftX=0,shiftY=0){
  return {...o,image,blurMask,cache:null,x:x-shiftX,y:y-shiftY,w:right-x,h:bottom-y}
 }
 function cloneOverlay(o){return {...o,values:o.values?{...o.values}:undefined,blurMask:o.blurMask?clone(o.blurMask):undefined,points:o.points?.map(p=>({...p})),cache:null}}
-function snapshot(){return {base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(cloneOverlay),selectedOverlay}}
+function snapshot(){return {base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(cloneOverlay),selectedOverlay,resizeAnchor,resizePlacement:resizePlacement?{...resizePlacement}:null,resizeLast}}
 function saveHistory(){if(!base)return;history.push(snapshot());while(history.length>Math.max(1,Math.min(10,Math.floor(24000000/(base.width*base.height)))))history.shift();future=[];updateHistory()}
-function restore(s){base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(cloneOverlay);selectedOverlay=Math.min(s.selectedOverlay??-1,overlays.length-1);crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();updateHistory()}
+function restore(s){base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(cloneOverlay);selectedOverlay=Math.min(s.selectedOverlay??-1,overlays.length-1);resizeAnchor=s.resizeAnchor||null;resizePlacement=s.resizePlacement?{...s.resizePlacement}:null;resizeLast=s.resizeLast||null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();updateHistory()}
 function updateHistory(){$('undo').disabled=!history.length;$('redo').disabled=!future.length}
 function undo(){if(!history.length||!base)return;future.push(snapshot());restore(history.pop())}
 function redo(){if(!future.length||!base)return;history.push(snapshot());restore(future.pop())}
@@ -100,7 +100,7 @@ function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(
 function syncCanvas(){canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
 function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop()}
 function positionCrop(){if(!crop||!base){$('cropOverlay').hidden=true;return}const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');el.hidden=false;Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',width:crop.w*sx+'px',height:crop.h*sy+'px'})}
-function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;history=[];future=[];crop=null;cropTarget='canvas';cropIndex=-1;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
+function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;cropTarget='canvas';cropIndex=-1;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
 function triggerUpload(){$('fileInput').click()}
 function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);return b}
 function heading(s){const h=document.createElement('h3');h.textContent=s;panel.append(h)}
@@ -140,7 +140,7 @@ function showPanel(){
   const modes=actions([['Blur brush',()=>{brushActive=true;showPanel()}],['Erase blur',()=>{brushActive='erase';showPanel()}],['Stop painting',()=>{brushActive=false;showPanel()}]]);
   [...modes.children].forEach((b,i)=>b.classList.toggle('selected',brushActive===(i===0?true:i===1?'erase':false)));
   control('Brush size',10,100,1,brushSize,v=>brushSize=v);control('Blur intensity',10,100,1,intensity,v=>intensity=v);
-  actions([['Clear blur',()=>{if(!base)return;saveHistory();const target=editTarget();const m=target?.blurMask||mask;m.getContext('2d').clearRect(0,0,m.width,m.height);if(target)target.cache=null;render()}]]);
+  actions([['Clear blur',()=>{if(!base)return;saveHistory();const target=editTarget();const m=target?.blurMask||mask;m.getContext('2d').clearRect(0,0,m.width,m.height);if(target)target.cache=null;else if(resizeAnchor){resizeAnchor={...resizeAnchor,mask:makeCanvas(resizeAnchor.mask.width,resizeAnchor.mask.height)}}render()}]]);
 
  }
  if(tab==='text'){
@@ -175,7 +175,7 @@ function filterThumbnail(name){
  tc.putImageData(out,0,0);return thumb.toDataURL('image/jpeg',.65);
 }
 function addAdjustment(k){const [name,min,max]=definitions[k],target=editTarget();control(name,min,max,k==='exposure'?.1:1,target?.values?.[k]??values[k],v=>{const current=editTarget();if(current){current.values={...current.values,[k]:v};current.cache=null}else values[k]=v;render()})}
-function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
+function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
 function addText(text,scale,textKind='text'){if(!base||!requireRoom(textKind))return;saveHistory();overlays.push({type:'text',textKind,text,x:Math.round(base.width*.12),y:Math.round(base.height*.2),size:Math.max(20,Math.round(base.width*scale)),color:'#ffffff',opacity:1,font:'system-ui,Arial,sans-serif',weight:'bold',outlineWidth:0,outlineColor:'#111111',shadowBlur:0,visible:true,locked:false});selectedOverlay=overlays.length-1;brushActive=false;render();showPanel()}
 function addShape(shape){if(!base||!requireRoom('shape'))return;saveHistory();overlays.push({type:'shape',shape,x:Math.round(base.width*.3),y:Math.round(base.height*.3),w:Math.round(base.width*.35),h:Math.round(base.height*.25),color:'#ff62ad',opacity:1,visible:true,locked:false});selectedOverlay=overlays.length-1;brushActive=false;render();showPanel()}
 function removeOverlay(){if(selectedOverlay<0||!overlays[selectedOverlay])return;saveHistory();overlays.splice(selectedOverlay,1);selectedOverlay=overlays.length?Math.min(selectedOverlay,overlays.length-1):-1;render();showPanel()}
@@ -236,17 +236,53 @@ function colorField(name,value,onChange){const color=document.createElement('inp
 function setBrush(s){brushSize=s;brushActive=true;showPanel();setStatus('Blur brush active')}
 function selectTab(t){if(t==='export'){openExport();return}tab=t;document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));if(t!=='retouch'&&t!=='draw')brushActive=false;showPanel();if(innerWidth<768){$('inspector').classList.add('open');document.querySelector('.app').classList.add('drawer-open');layoutCanvas()}}
 function closeDrawer(){$('inspector').classList.remove('open');document.querySelector('.app').classList.remove('drawer-open');layoutCanvas()}
-function transform(draw,w,h){if(!base)return;saveHistory();for(const name of ['base','mask']){const old=name==='base'?base:mask,n=makeCanvas(w,h),c=n.getContext('2d');draw(c,old);if(name==='base')base=n;else mask=n}crop=null;syncCanvas();render();setStatus('Transform applied')}
+function transform(draw,w,h){if(!base)return;saveHistory();resizeAnchor=null;resizePlacement=null;resizeLast=null;for(const name of ['base','mask']){const old=name==='base'?base:mask,n=makeCanvas(w,h),c=n.getContext('2d');draw(c,old);if(name==='base')base=n;else mask=n}crop=null;syncCanvas();render();setStatus('Transform applied')}
 function resizeTo(w,h){
  if(!base)return;
  w=Math.round(w);h=Math.round(h);
- if(!Number.isFinite(w)||!Number.isFinite(h)||w<1||h<1||w>8000||h>8000||w*h>24000000){setStatus('Choose dimensions from 1 to 8000 px and under 24 megapixels');return}
- saveHistory();const oldW=base.width,oldH=base.height;
- const scale=resizeMode==='fill'?Math.max(w/oldW,h/oldH):Math.min(w/oldW,h/oldH),drawW=oldW*scale,drawH=oldH*scale,dx=(w-drawW)/2,dy=(h-drawH)/2;
- const newBase=makeCanvas(w,h),bc=newBase.getContext('2d');bc.fillStyle=resizeBackground;bc.fillRect(0,0,w,h);bc.imageSmoothingQuality='high';bc.drawImage(base,dx,dy,drawW,drawH);
- const newMask=makeCanvas(w,h);newMask.getContext('2d').drawImage(mask,dx,dy,drawW,drawH);
- base=newBase;mask=newMask;overlays=overlays.map(o=>{const n={...o,x:(o.x||0)*scale+dx,y:(o.y||0)*scale+dy};if(o.w)n.w=o.w*scale;if(o.h)n.h=o.h*scale;if(o.size)n.size=o.size*scale;if(o.points)n.points=o.points.map(p=>({x:p.x*scale+dx,y:p.y*scale+dy}));return n});
- frame.width=Math.round(frame.width*scale);crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Resized to '+w+' × '+h);
+ if(!Number.isFinite(w)||!Number.isFinite(h)||w<1||h<1||w>8000||h>8000||w*h>24000000){
+  setStatus('Choose dimensions from 1 to 8000 px and under 24 megapixels');return;
+ }
+ const key=[w,h,resizeMode,resizeMode==='fit'?resizeBackground:''].join('|');
+ if(resizeLast===key&&base.width===w&&base.height===h){
+  setStatus('Already '+w+' × '+h+' — no additional resize applied');return;
+ }
+ // Keep the unpadded, full-quality source for the entire resize session.
+ // Repeated Fit/Fill selections must never resize previously added white bars.
+ if(!resizeAnchor){
+  resizeAnchor={base:clone(base),mask:clone(mask)};
+  resizePlacement={scale:1,dx:0,dy:0};
+ }
+ const original=resizeAnchor.base,srcMask=resizeAnchor.mask;
+ const old=resizePlacement;
+ const scale=resizeMode==='fill'?
+  Math.max(w/original.width,h/original.height):
+  Math.min(w/original.width,h/original.height);
+ const drawW=original.width*scale,drawH=original.height*scale;
+ const dx=(w-drawW)/2,dy=(h-drawH)/2;
+ saveHistory();
+ const newBase=makeCanvas(w,h),bc=newBase.getContext('2d');
+ bc.fillStyle=resizeBackground;bc.fillRect(0,0,w,h);
+ bc.imageSmoothingEnabled=true;bc.imageSmoothingQuality='high';
+ bc.drawImage(original,dx,dy,drawW,drawH);
+ const newMask=makeCanvas(w,h),mc=newMask.getContext('2d');
+ mc.imageSmoothingEnabled=true;mc.imageSmoothingQuality='high';
+ mc.drawImage(srcMask,dx,dy,drawW,drawH);
+ const factor=scale/old.scale;
+ overlays=overlays.map(o=>{
+  const n={...o,x:((o.x??0)-old.dx)*factor+dx,y:((o.y??0)-old.dy)*factor+dy};
+  if(o.w!==undefined)n.w=o.w*factor;
+  if(o.h!==undefined)n.h=o.h*factor;
+  if(o.size!==undefined)n.size=o.size*factor;
+  if(o.points)n.points=o.points.map(p=>({x:(p.x-old.dx)*factor+dx,y:(p.y-old.dy)*factor+dy}));
+  return n;
+ });
+ frame.width=Math.max(1,Math.round(frame.width*factor));
+ base=newBase;mask=newMask;
+ resizePlacement={scale,dx,dy};
+ resizeLast=key;
+ crop=null;zoom=1;syncCanvas();render();showPanel();
+ setStatus('Resized to '+w+' × '+h+' from original photo content');
 }
 function rotate(dir){if(!base)return;const oldW=base.width,oldH=base.height;transform((c,old)=>{c.translate(dir>0?old.height:0,dir>0?0:old.width);c.rotate(dir*Math.PI/2);c.drawImage(old,0,0)},base.height,base.width);overlays.forEach(o=>{let x=o.x,y=o.y;o.x=dir>0?oldH-y:y;o.y=dir>0?x:oldW-x});render()}
 function flip(horizontal){if(!base)return;transform((c,old)=>{c.translate(horizontal?old.width:0,horizontal?0:old.height);c.scale(horizontal?-1:1,horizontal?1:-1);c.drawImage(old,0,0)},base.width,base.height);overlays.forEach(o=>{if(horizontal)o.x=base.width-o.x;else o.y=base.height-o.y});render()}
@@ -272,7 +308,7 @@ function applyCrop(){
  const previousSelected=selectedOverlay,next=[];let nextSelected=-1;
  overlays.forEach((o,i)=>{let layer;if(o.type==='image')layer=cropPhoto(o,r,x,y);else if(o.type==='stroke'){layer=cloneOverlay(o);layer.points=(o.points||[]).map(p=>({x:p.x-x,y:p.y-y}))}else layer={...o,x:(o.x||0)-x,y:(o.y||0)-y};
  if(layer){if(i===previousSelected)nextSelected=next.length;next.push(layer)}});
- base=newBase;mask=newMask;overlays=next;selectedOverlay=nextSelected;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();setStatus('Canvas and photo overlays cropped');
+ base=newBase;mask=newMask;overlays=next;selectedOverlay=nextSelected;resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();setStatus('Canvas and photo overlays cropped');
 }
 function pointerPosition(e){const r=canvas.getBoundingClientRect();return {x:clamp((e.clientX-r.left)*base.width/r.width,0,base.width),y:clamp((e.clientY-r.top)*base.height/r.height,0,base.height)}}
 let painting=false,lastPoint=null,activeStroke=null,activePaintTarget=null;
@@ -286,7 +322,7 @@ function paint(p){
  const target=activePaintTarget,m=target?.blurMask||mask;
  const q=target?{x:clamp((p.x-target.x)*m.width/target.w,0,m.width),y:clamp((p.y-target.y)*m.height/target.h,0,m.height)}:p;
  const scale=canvas.width/Math.max(1,canvas.getBoundingClientRect().width),s=Math.max(3,brushSize*scale*(target?m.width/base.width*base.width/target.w:1));
- const c=m.getContext('2d');c.lineCap='round';c.lineJoin='round';c.lineWidth=s;c.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';c.strokeStyle='rgba(255,255,255,'+(intensity/100)+')';c.beginPath();c.moveTo(lastPoint?.x??q.x,lastPoint?.y??q.y);c.lineTo(q.x,q.y);c.stroke();c.beginPath();c.arc(q.x,q.y,s/2,0,Math.PI*2);c.fillStyle=c.strokeStyle;c.fill();c.globalCompositeOperation='source-over';lastPoint=q;if(target)target.cache=null
+ const c=m.getContext('2d');c.lineCap='round';c.lineJoin='round';c.lineWidth=s;c.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';c.strokeStyle='rgba(255,255,255,'+(intensity/100)+')';c.beginPath();c.moveTo(lastPoint?.x??q.x,lastPoint?.y??q.y);c.lineTo(q.x,q.y);c.stroke();c.beginPath();c.arc(q.x,q.y,s/2,0,Math.PI*2);c.fillStyle=c.strokeStyle;c.fill();c.globalCompositeOperation='source-over';if(!target&&resizeAnchor&&resizePlacement){const r=resizePlacement,a={x:(q.x-r.dx)/r.scale,y:(q.y-r.dy)/r.scale},b=lastPoint?{x:(lastPoint.x-r.dx)/r.scale,y:(lastPoint.y-r.dy)/r.scale}:a;const ac=resizeAnchor.mask.getContext('2d');ac.lineCap='round';ac.lineJoin='round';ac.lineWidth=s/r.scale;ac.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';ac.strokeStyle=c.strokeStyle;ac.fillStyle=c.fillStyle;ac.beginPath();ac.moveTo(b.x,b.y);ac.lineTo(a.x,a.y);ac.stroke();ac.beginPath();ac.arc(a.x,a.y,ac.lineWidth/2,0,Math.PI*2);ac.fill();ac.globalCompositeOperation='source-over'}lastPoint=q;if(target)target.cache=null
 }
 canvas.addEventListener('pointerdown',e=>{
  if(!base)return;const p=pointerPosition(e);
@@ -298,7 +334,7 @@ canvas.addEventListener('pointerdown',e=>{
  if(!brushActive)return;
  e.preventDefault();if(brushActive==='draw'&&!requireRoom('drawing'))return;saveHistory();painting=true;lastPoint=null;canvas.setPointerCapture(e.pointerId);
  if(brushActive==='draw'){activeStroke={type:'stroke',points:[p],size:drawSize*base.width/Math.max(1,canvas.getBoundingClientRect().width),color:drawColor,opacity:1,visible:true,locked:false};overlays.push(activeStroke);selectedOverlay=overlays.length-1}
- else{activePaintTarget=hit>=0?overlays[hit]:null;paint(p)}
+ else{activePaintTarget=hit>=0?overlays[hit]:null;if(!activePaintTarget&&resizeAnchor)resizeAnchor={...resizeAnchor,mask:clone(resizeAnchor.mask)};paint(p)}
  render();
 });
 canvas.addEventListener('pointermove',e=>{
