@@ -7,7 +7,7 @@ const adjustments=()=>Object.fromEntries(keys.map(k=>[k,definitions[k][3]]));let
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const setStatus=s=>$('status').textContent=s;
 const makeCanvas=(w,h)=>{let c=document.createElement('canvas');c.width=w;c.height=h;return c};
 const clone=c=>{let x=makeCanvas(c.width,c.height);x.getContext('2d').drawImage(c,0,0);return x};
-function saveHistory(){if(!base)return;history.push({base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(o=>({...o}))});if(history.length>15)history.shift();future=[];updateHistory()}
+function saveHistory(){if(!base)return;history.push({base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(o=>({...o}))});while(history.length>Math.max(1,Math.min(10,Math.floor(24000000/(base.width*base.height)))))history.shift();future=[];updateHistory()}
 function snapshot(){return {base:clone(base),mask:clone(mask),values:{...values},preset,overlays:overlays.map(o=>({...o}))}}
 function restore(s){base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(o=>({...o}));selectedOverlay=-1;crop=null;syncCanvas();render();showPanel();updateHistory()}
 function updateHistory(){$('undo').disabled=!history.length;$('redo').disabled=!future.length}
@@ -63,7 +63,7 @@ function showPanel(){
   heading('Custom dimensions');const row=document.createElement('div');row.className='dimension-row';
   const w=document.createElement('input'),h=document.createElement('input');for(const [el,v]of [[w,base?.width||1280],[h,base?.height||720]]){el.type='number';el.min='1';el.max='8000';el.value=v;el.setAttribute('aria-label',el===w?'Width in pixels':'Height in pixels')}
   const apply=button('Apply size',()=>resizeTo(Number(w.value),Number(h.value)));row.append(w,h,apply);panel.append(row);
-  hint('Maximum 24 megapixels. Fit adds a solid background; PNG retains transparency if you choose it below.');
+  hint('Maximum 24 megapixels. Fit adds the selected solid background; Fill crops to the preset shape.');
   const color=document.createElement('input');color.type='color';color.value=resizeBackground;const label=document.createElement('label');label.className='field';label.textContent='Fit background ';label.append(color);panel.append(label);color.oninput=()=>resizeBackground=color.value;
  }
  if(tab==='adjust'){
