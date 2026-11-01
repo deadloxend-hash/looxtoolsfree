@@ -163,7 +163,7 @@
   let badge=document.querySelector('.loox-tool-banner');
   if(!badge){badge=document.createElement('div');badge.className='loox-tool-banner';const hero=document.querySelector('.hero,.studio-heading');hero?.append(badge)}
   if(badge)badge.innerHTML='<img src="assets/icons/'+active.slug+'.svg" alt="" width="46" height="46"><span>'+(words[language]||words.en)[active.kind==='cloud'?'cloud':active.kind==='remote'?'remote':'local']+'</span>';
-  try{const guideLang=['en','es','fr','de'].includes(language)?language:'en';if(guideLang==='en'&&host.dataset.guideInline==='1')return;const response=await fetch('assets/guides/'+guideLang+'/'+active.slug+'.html?v=40');if(!response.ok)throw Error('Guide unavailable');const html=await response.text();if(request===guideRequest)host.innerHTML=html}catch{/* The server-rendered English guide remains readable if a request fails. */}
+  try{const guideLang=['en','es','fr','de'].includes(language)?language:'en';if(host.dataset.guideInline==='1'){host.__looxOriginalGuide??=host.innerHTML;if(guideLang==='en'){host.innerHTML=host.__looxOriginalGuide;return}}const response=await fetch('assets/guides/'+guideLang+'/'+active.slug+'.html?v=40');if(!response.ok)throw Error('Guide unavailable');const html=await response.text();if(request===guideRequest)host.innerHTML=html}catch{/* The server-rendered English guide remains readable if a request fails. */}
  }
  function brandCards(root=document){
   root.querySelectorAll?.('a[data-tool],.loox-featured-card').forEach(a=>{
