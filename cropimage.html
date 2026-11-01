@@ -165,6 +165,9 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar button{touch-action:manipulation}
 }
 
+/* The mobile dock is not shown on desktop or before a photo is loaded. */
+.loox-crop-mobile-bar{display:none!important}
+
 /* Mobile adjustment panels share the workspace with the photo, rather than
    floating above it and obscuring the crop frame. */
 @media(max-width:760px){
