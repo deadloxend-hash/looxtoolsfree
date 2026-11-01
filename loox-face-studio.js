@@ -13,6 +13,7 @@
   const preview = $('faceBrushPreview'), stage = $('faceStage');
   let original = null, sourceName = 'loox-face-blurred', history = [], future = [];
   let editing = false, lastPoint = null, strokeLayer = null, activePointer = null;
+  let editMode = "blur"; // "blur" paints a softened image; "erase" restores original pixels.
   let detectorPromise = null, fallbackPromise = null, detecting = false, currentLoad = 0;
   const mobile = () => window.matchMedia('(max-width:800px)').matches;
   // Define mobile() before it is called: otherwise the entire editor fails to initialize.
@@ -172,17 +173,28 @@
     preview.style.top=(e.clientY-container.top)+'px';
   }
   function setMode(mode) {
-    document.body.classList.toggle('loox-face-brush-mode',mode==='brush');
-    $('faceMobileBrush').classList.toggle('active',mode==='brush');
-    $('faceToolBrush').classList.toggle('active',mode==='brush');
-    if(mode==='brush' && original)feedback('Brush enabled. Drag a finger or mouse over any area to blur it.');
-    else preview.hidden=true;
+    editMode = mode === 'erase' ? 'erase' : 'blur';
+    document.body.classList.add('loox-face-brush-mode');
+    document.body.classList.toggle('loox-face-erase-mode',editMode === 'erase');
+    const selection = [
+      ['faceMobileBrush','blur'],['faceMobileErase','erase'],
+      ['faceToolBrush','blur'],['faceToolErase','erase']
+    ];
+    for(const [id,action] of selection){
+      const b=$(id),selected=editMode===action;
+      b.classList.toggle('active',selected);
+      b.setAttribute('aria-pressed',String(selected));
+    }
+    preview.hidden=true;
+    if(original)feedback(editMode==='erase'
+      ? 'Erase Blur selected. Paint on blurred areas to restore the original details.'
+      : 'Blur Brush selected. Paint over areas to blur them.');
   }
   canvas.addEventListener('pointerdown',e => {
     if(!original||detecting||!allowPointer(e)||!document.body.classList.contains('loox-face-brush-mode'))return;
     e.preventDefault(); if(editing)return;
     saveUndo();
-    strokeLayer=blurSnapshot(canvas,blurPx());
+    strokeLayer=editMode==='erase' ? original : blurSnapshot(canvas,blurPx());
     editing=true;activePointer=e.pointerId;lastPoint=point(e);
     try{canvas.setPointerCapture(e.pointerId)}catch{}
     paintSegment(lastPoint,lastPoint);movePreview(e);
@@ -195,12 +207,13 @@
   function endStroke(e) {
     if(activePointer!==e.pointerId)return;
     editing=false;activePointer=null;lastPoint=null;strokeLayer=null;movePreview(e);
-    feedback('Blur applied. Brush another area or download the image.', 'success');
+    feedback(editMode==='erase' ? 'Blur erased in the selected area. Undo is available.' : 'Blur applied. Brush another area or download the image.', 'success');
   }
   for(const type of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(type,endStroke);
   canvas.addEventListener('pointerleave',()=>movePreview(null));
   canvas.addEventListener('pointerenter',movePreview);
-  $('faceToolBrush').addEventListener('click',()=>setMode('brush'));
+  $('faceToolBrush').addEventListener('click',()=>setMode('blur'));
+  $('faceToolErase').addEventListener('click',()=>setMode('erase'));
   undoButton.addEventListener('click',undo);redoButton.addEventListener('click',redo);
   mobileUndo.addEventListener('click',undo);
   $('faceReset').addEventListener('click',reset);
@@ -329,17 +342,21 @@
     if(!mobile()){tools.classList.remove('open');return}
     tools.dataset.active=section; tools.classList.add('open');
     sheetBackdrop.hidden=false;
-    $('faceMobileBrush').classList.toggle('active',section==='brush');
     $('faceMobileAdjust').classList.toggle('active',section==='adjust');
-    if(section==='brush')setMode('brush');
   }
   function closeSheet(){
     tools.classList.remove('open');sheetBackdrop.hidden=true;
     $('faceMobileAdjust').classList.remove('active');
   }
-  $('faceMobileBrush').addEventListener('click',()=> {
-    if(tools.classList.contains('open')&&tools.dataset.active==='brush'){closeSheet();setMode('brush')}
-    else openSheet('brush');
+  $('faceMobileBrush').addEventListener('click',()=>{
+    const wasOpen=tools.classList.contains('open')&&tools.dataset.active==='brush'&&editMode==='blur';
+    setMode('blur');
+    if(wasOpen)closeSheet(); else openSheet('brush');
+  });
+  $('faceMobileErase').addEventListener('click',()=>{
+    const wasOpen=tools.classList.contains('open')&&tools.dataset.active==='brush'&&editMode==='erase';
+    setMode('erase');
+    if(wasOpen)closeSheet(); else openSheet('brush');
   });
   $('faceMobileAdjust').addEventListener('click',()=>{
     if(tools.classList.contains('open')&&tools.dataset.active==='adjust')closeSheet();
@@ -350,5 +367,5 @@
   document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
   window.addEventListener('resize',()=>{fitHeader();if(!mobile())closeSheet()});
   window.addEventListener('orientationchange',fitHeader);
-  setMode('brush');updateButtons();fitHeader();
+  setMode('blur');updateButtons();fitHeader();
 })();
