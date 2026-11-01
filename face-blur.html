@@ -73,7 +73,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
 
 <link rel="stylesheet" href="loox-experience.css?v=93">
-<link rel="stylesheet" href="loox-face-studio.css?v=1">
+<link rel="stylesheet" href="loox-face-studio.css?v=2">
 </head><body>
 
 <main class="loox-face-main">
@@ -103,8 +103,11 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
             <p>MediaPipe detection first, face-api.js fallback. Works locally after model files download.</p>
           </section>
           <section class="loox-face-section loox-face-brush-controls">
-            <h3>Manual brush</h3>
-            <button id="faceToolBrush" class="loox-face-secondary active" type="button">✎ Paint blur on the photo</button>
+            <h3>Brush &amp; erase</h3>
+            <div class="loox-face-mode-buttons" role="group" aria-label="Brush mode">
+              <button id="faceToolBrush" class="loox-face-secondary active" type="button" aria-pressed="true">✎ Blur brush</button>
+              <button id="faceToolErase" class="loox-face-secondary" type="button" aria-pressed="false">⌫ Erase blur</button>
+            </div>
             <label for="faceBrushSize" class="loox-face-form-label">Brush size <output id="faceBrushOut" for="faceBrushSize">70</output> px</label>
             <input id="faceBrushSize" class="loox-face-range" type="range" min="12" max="280" value="70" step="1">
             <div class="loox-face-brush-presets" aria-label="Brush size presets">
@@ -112,7 +115,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
               <button type="button" data-face-brush-preset="70" aria-pressed="true"><i style="width:13px;height:13px"></i>Medium</button>
               <button type="button" data-face-brush-preset="140" aria-pressed="false"><i style="width:21px;height:21px"></i>Large</button>
             </div>
-            <p>Drag a finger or mouse over areas that need additional blur.</p>
+            <p>Blur to hide details. Use Erase Blur to paint back the original photo only where you choose. Brush size works for both.</p>
           </section>
           <section class="loox-face-section loox-face-adjust-controls">
             <h3>Blur strength</h3>
@@ -132,7 +135,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       </div>
       <nav class="loox-face-mobile-bar" aria-label="Mobile face blur tools">
         <button id="faceMobileAuto" class="loox-face-auto-mobile" type="button"><b>✦</b><span>AI Faces</span></button>
-        <button id="faceMobileBrush" class="active" type="button"><b>✎</b><span>Brush</span></button>
+        <button id="faceMobileBrush" class="active" type="button" aria-pressed="true"><b>✎</b><span>Brush</span></button>
+        <button id="faceMobileErase" type="button" aria-pressed="false"><b>⌫</b><span>Erase</span></button>
         <button id="faceMobileAdjust" type="button"><b>◐</b><span>Adjust</span></button>
         <button id="faceMobileUndo" type="button" disabled><b>↶</b><span>Undo</span></button>
         <button id="faceMobileSave" class="loox-face-save-mobile" type="button"><b>↓</b><span>Save</span></button>
@@ -145,12 +149,12 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     <div class="steps">
       <div class="step"><b>1. Choose a photo</b>Upload JPG, PNG or WebP (maximum 20 MB, 20 megapixels).</div>
       <div class="step"><b>2. AI blur or brush</b>Tap AI Blur All Faces for automatic detection or manually paint any area.</div>
-      <div class="step"><b>3. Review and download</b>Use Undo, fine-tune the brush, then save your result as PNG.</div>
+      <div class="step"><b>3. Review and download</b>Use the Erase Blur brush to restore selected areas, Undo mistakes, and save PNG.</div>
     </div>
     <div class="notice"><b>Privacy:</b> Image pixels are processed locally; the tool does not upload your photo to LOOX. AI detection downloads model/code files from third-party CDNs and may send technical requests/metrics. Face detection may miss people, so always review the entire image before sharing.</div>
   </section>
 </main>
-<script src="loox-face-studio.js?v=2" defer></script>
+<script src="loox-face-studio.js?v=3" defer></script>
   
   <script src="loox-tool-ui.js?v=40"></script>
 
