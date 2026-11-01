@@ -628,3 +628,21 @@ body.loox-home-rail .topbar .loox-language,body.loox-home-rail .topbar select.lo
 
 /* Keep Explore the toolkit as the final navigable header link on phones. */
 @media(max-width:900px){body.loox-home-rail .topbar .main-nav .nav-cta{display:inline-flex!important;white-space:nowrap!important;padding:8px 12px!important;color:#fff!important;background:#6f4ce0!important;border-radius:10px!important}}
+
+/* Header-integrated workspace sidebar toggle, Adobe-style and responsive. */
+body.loox-home-rail .topbar .loox-home-rail-button,
+body.loox-home-rail:not(.rail-hidden) .topbar .loox-home-rail-button,
+body.loox-home-rail.rail-hidden .topbar .loox-home-rail-button{
+ position:static!important;left:auto!important;top:auto!important;z-index:auto!important;
+ width:40px!important;height:40px!important;min-width:40px!important;flex:0 0 40px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ margin:0!important;border:1px solid transparent!important;border-radius:10px!important;
+ background:transparent!important;color:var(--lx-text,#eae6f5)!important;
+ box-shadow:none!important;font-size:21px!important;cursor:pointer!important;
+}
+body.loox-home-rail .topbar .loox-home-rail-button:hover,
+body.loox-home-rail .topbar .loox-home-rail-button:focus-visible{background:rgba(144,123,205,.18)!important;border-color:rgba(144,123,205,.3)!important}
+@media(max-width:900px){
+ body.loox-home-rail .topbar .loox-home-rail-button,
+ body.loox-home-rail:not(.rail-hidden) .topbar .loox-home-rail-button{position:static!important;left:auto!important;top:auto!important;width:36px!important;height:36px!important;min-width:36px!important;flex-basis:36px!important}
+}
