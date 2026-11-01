@@ -121,7 +121,27 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
 
 <link rel="stylesheet" href="loox-experience.css?v=93">
-</head>
+
+<style id="loox-mobile-crop-studio">
+@media(max-width:760px){
+ body:has(#cropperLayout[style*="grid"]){height:100dvh;overflow:hidden!important;display:block!important}
+ body:has(#cropperLayout[style*="grid"]) main{margin:0!important;padding:4px 8px 0!important;height:calc(100dvh - 64px);min-height:0!important;display:flex;flex-direction:column;overflow:hidden}
+ body:has(#cropperLayout[style*="grid"]) .hero{display:none}
+ body:has(#cropperLayout[style*="grid"]) .workspace-card{padding:5px!important;min-height:0;flex:1;overflow:hidden}
+ body:has(#cropperLayout[style*="grid"]) #cropperLayout{display:flex!important;flex-direction:column;flex:1;min-height:0;margin:0;gap:0;overflow:hidden}
+ body:has(#cropperLayout[style*="grid"]) .canvas-container{flex:1 1 0;min-height:0!important;height:auto;overflow:hidden;padding:10px 6px 74px;touch-action:pan-y}
+ body:has(#cropperLayout[style*="grid"]) .canvas-wrapper{max-width:100%;max-height:100%;display:flex;align-items:center;justify-content:center}
+ body:has(#cropperLayout[style*="grid"]) #sourceCanvas{max-width:100%;max-height:calc(100dvh - 235px);width:auto;height:auto;object-fit:contain}
+ body:has(#cropperLayout[style*="grid"]) .controls-panel{position:fixed!important;left:8px;right:8px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:85;max-height:min(43dvh,340px);overflow-y:auto;display:none!important;border:1px solid #44405a;border-radius:15px;background:#15141f;padding:12px;box-shadow:0 -12px 45px #000a}
+ body:has(#cropperLayout[style*="grid"]) .controls-panel.loox-crop-drawer-open{display:flex!important}
+ .loox-crop-mobile-bar{display:none}
+ body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar{position:fixed;bottom:env(safe-area-inset-bottom);left:0;right:0;z-index:90;display:flex;align-items:stretch;justify-content:space-around;gap:5px;padding:9px 8px 13px;border-top:1px solid #343044;background:#15141e;box-shadow:0 -8px 30px #0008}
+ .loox-crop-mobile-bar button{flex:1;min-width:0;min-height:49px;border:0;border-radius:11px;background:#272535;color:#f5f2ff;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+ .loox-crop-mobile-bar button b{font-size:19px}
+ .loox-crop-mobile-bar button.primary{background:#7957e8;color:#fff}
+ body:has(#cropperLayout[style*="grid"]) .loox-guide-host,body:has(#cropperLayout[style*="grid"]) .loox-app-footer{display:none!important}
+}
+</style></head>
 <body>
 
   <!-- Left Sidebar Navigation -->
@@ -423,6 +443,10 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     }
   </script>
   
+
+<script>
+(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>↶</b>Reset</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){resetCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));if(opening){panel.querySelector(action==='ratio'?'#aspectRatioSelect':'#cropXInput')?.focus({preventScroll:true})}}});})();
+</script>
   <script src="loox-tool-ui.js?v=40"></script>
 
 
