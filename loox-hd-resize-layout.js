@@ -1,0 +1,1 @@
+(()=>{'use strict';const header=document.querySelector('.work-header');const update=()=>{const h=header?.getBoundingClientRect().height||54;document.documentElement.style.setProperty('--hd-resizer-header',Math.ceil(h)+'px')};update();window.addEventListener('resize',update);window.addEventListener('orientationchange',update);})();
