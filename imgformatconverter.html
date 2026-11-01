@@ -203,11 +203,17 @@ html:has(body.converter-editing){scroll-behavior:auto!important;scroll-padding-t
 body.converter-editing{position:fixed!important;inset:0!important;width:100%!important;margin:0!important}
 body.converter-editing main{margin-top:0!important}
 
-/* Neutral photo preview, not a decorative checkerboard or a visible frame. */
-body.converter-editing .converter-stage{background:#fff!important;background-image:none!important;border-color:#dfdfe8!important}
+/* Transparent PNG-style viewer on desktop and mobile; never add a decorative frame. */
+body.converter-editing .converter-stage{
+ background-color:#10131f!important;
+ background-image:linear-gradient(45deg,#191d2d 25%,transparent 25%),linear-gradient(-45deg,#191d2d 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#191d2d 75%),linear-gradient(-45deg,transparent 75%,#191d2d 75%)!important;
+ background-size:22px 22px!important;
+ background-position:0 0,0 11px,11px -11px,-11px 0!important;
+ border-color:#30364b!important;
+}
 body.converter-editing .converter-stage .preview-box{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
-body.converter-editing .converter-stage #imagePreview{border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;border-radius:0!important}
-body.converter-editing .converter-preview-note{color:#41465b!important;background:#f2f3f6!important}
+body.converter-editing .converter-stage #imagePreview{background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;border-radius:0!important}
+body.converter-editing .converter-preview-note{color:#b1bad1!important;background:#111827dd!important}
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 
@@ -267,7 +273,7 @@ body.converter-editing .converter-preview-note{color:#41465b!important;backgroun
         <div class="converter-workspace">
           <div class="converter-stage"><div class="preview-box">
             <img id="imagePreview" alt="Uploaded Image Preview">
-          </div><p class="converter-preview-note">Preview on white · transparency remains unchanged in PNG/WebP</p></div>
+          </div><p class="converter-preview-note">Checkerboard preview · transparency stays intact in PNG/WebP</p></div>
           <div class="converter-inspector" id="converterInspector">
             <h2>Convert image</h2><p>Choose a format and download your image.</p>
         <div class="settings-grid">
@@ -528,7 +534,7 @@ body.converter-editing .converter-preview-note{color:#41465b!important;backgroun
 <section class="loox-story-row" data-reveal>
 <figure class="loox-figure"><img src="assets/tool-art/imgformatconverter.webp" alt="LOOX Image Converter workflow illustration" width="1000" height="625" loading="lazy"><figcaption>Choose your image, format and quality, then download a separate file.</figcaption></figure>
 <div><span class="loox-eyebrow">LOOX GUIDE</span><h2>How to use the Image Converter</h2>
-<p>Convert images directly in your browser. The large preview shows the original picture against a plain white viewing surface, without adding a border or changing the image dimensions. Transparent pixels may look white in this preview but stay transparent in supported output formats.</p>
+<p>Convert images directly in your browser. The preview shows the original picture over a checkerboard transparency indicator, without adding a border or changing the image dimensions. Transparent pixels reveal the checkerboard in this preview but stay transparent in supported output formats.</p>
 <p>Select the target format in the settings panel on desktop, or use the bottom Format button on mobile. Adjust quality where supported, check the estimated output size, then save your converted file.</p>
 <a class="loox-story-link" href="#loox-how-to">View every control ↓</a></div></section>
 <section id="loox-how-to"><span class="loox-eyebrow">Step-by-step</span><h2>Every tool and control explained</h2><div class="loox-steps">
@@ -537,10 +543,10 @@ body.converter-editing .converter-preview-note{color:#41465b!important;backgroun
 <article class="loox-step-card"><span class="loox-step-count">03</span><img src="assets/guides/steps/imgformatconverter-3.svg" width="520" height="230" alt="Adjust conversion quality"><h3>Quality slider</h3><p>For JPG and WebP, move Compression Quality from 10% to 100%. Higher values generally preserve more detail at the cost of larger files. PNG is lossless, so its quality slider is disabled.</p></article>
 <article class="loox-step-card"><span class="loox-step-count">04</span><img src="assets/guides/steps/imgformatconverter-4.svg" width="520" height="230" alt="Download converted image"><h3>Info and Save</h3><p>Info shows the filename, source format, source size, and an estimated output size. Save or Convert &amp; Download Image produces a new file. On mobile, tap Format, Quality, Info or Save in the bottom toolbar.</p></article>
 </div></section>
-<section class="loox-story-row reverse" data-reveal><figure class="loox-figure"><img src="assets/tool-art/imgformatconverter.webp" alt="Image file conversion illustration" width="1000" height="625" loading="lazy"><figcaption>The displayed white area is only the preview surface, not part of the photo.</figcaption></figure><div><span class="loox-eyebrow">FORMAT BASICS</span><h2>What changes when converting?</h2><ul class="loox-feature-list"><li><strong>PNG:</strong> Good for screenshots, illustrations and transparent designs; lossless encoding.</li><li><strong>WebP:</strong> Good for web delivery; supports transparency and adjustable lossy compression.</li><li><strong>JPG:</strong> Good for regular photographs; does not support transparency, so transparent areas are flattened onto white.</li><li><strong>BMP, ICO and GIF:</strong> Not genuinely encoded by this browser-only converter yet. Choose PNG if you need a reliable file from these options, or use a dedicated converter for those formats.</li></ul><p>Conversion does not automatically enlarge your image. Exported files may not preserve original metadata. Check the file before uploading it elsewhere.</p></div></section>
-<aside class="loox-trust-note"><span class="loox-eyebrow">PRIVATE PROCESSING</span><h2>Images stay on your device</h2><p>The converter uses browser-based image and canvas operations. Your selected photo is not uploaded to a LOOX processing server. A white preview background is only for display; it does not turn transparent PNG or WebP pixels white.</p></aside>
+<section class="loox-story-row reverse" data-reveal><figure class="loox-figure"><img src="assets/tool-art/imgformatconverter.webp" alt="Image file conversion illustration" width="1000" height="625" loading="lazy"><figcaption>The checkerboard is only a transparency indicator, not part of the photo.</figcaption></figure><div><span class="loox-eyebrow">FORMAT BASICS</span><h2>What changes when converting?</h2><ul class="loox-feature-list"><li><strong>PNG:</strong> Good for screenshots, illustrations and transparent designs; lossless encoding.</li><li><strong>WebP:</strong> Good for web delivery; supports transparency and adjustable lossy compression.</li><li><strong>JPG:</strong> Good for regular photographs; does not support transparency, so transparent areas are flattened onto white.</li><li><strong>BMP, ICO and GIF:</strong> Not genuinely encoded by this browser-only converter yet. Choose PNG if you need a reliable file from these options, or use a dedicated converter for those formats.</li></ul><p>Conversion does not automatically enlarge your image. Exported files may not preserve original metadata. Check the file before uploading it elsewhere.</p></div></section>
+<aside class="loox-trust-note"><span class="loox-eyebrow">PRIVATE PROCESSING</span><h2>Images stay on your device</h2><p>The converter uses browser-based image and canvas operations. Your selected photo is not uploaded to a LOOX processing server. The checkerboard preview is only for display and is not added to exported PNG or WebP files.</p></aside>
 <section class="loox-faq-original"><span class="loox-eyebrow">HELP</span><h2>Frequently asked questions</h2>
-<details><summary>Why is the image shown on white?</summary><p>White is only the preview background. It makes the picture easier to inspect without suggesting a decorative frame is part of the saved image.</p></details>
+<details><summary>Why is the image shown on white?</summary><p>The checkerboard is just the editor background to help identify transparency. It is never part of the saved file.</p></details>
 <details><summary>Will my PNG transparency disappear?</summary><p>No when exporting to PNG or a WebP format that supports transparency. JPG cannot contain transparency and transparent areas become white in the output.</p></details>
 <details><summary>Why does the quality slider turn off for PNG?</summary><p>PNG is exported losslessly by this tool. JPEG and WebP use adjustable quality settings.</p></details>
 <details><summary>Why is the new file bigger?</summary><p>Lossless PNG can be larger than compressed JPG or WebP, depending on the original picture and its complexity. Review Live Output Size before saving.</p></details>
