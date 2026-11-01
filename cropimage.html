@@ -185,6 +185,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       <!-- Cropper Layout -->
       <div class="cropper-layout" id="cropperLayout">
         <div class="canvas-container">
+          <div class="loox-crop-gesture-hint" aria-hidden="true">Pinch inward to expand crop · drag handles to the edges</div>
           <div class="canvas-wrapper" id="canvasWrapper">
             <canvas id="sourceCanvas"></canvas>
             
@@ -458,9 +459,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
         from:p,
         original:{x:crop.x/img.width,y:crop.y/img.height,w:crop.w/img.width,h:crop.h/img.height}
       };
-      if(cropGesture.mode==='new') {
-        setNormalizedCrop({x:p.x,y:p.y,w:Math.max(10/img.width,.001),h:Math.max(10/img.height,.001)});
-      }
+      // Delay creating a new selection until the finger actually moves.
+      // Otherwise the first finger of a pinch outside the frame would erase it.
     }
     canvasWrapper.style.touchAction='none';
     cropBox.style.touchAction='none';
