@@ -164,6 +164,46 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  body:has(#cropperLayout[style*="grid"]) #sourceCanvas{display:block!important;max-width:100%!important;max-height:calc(100dvh - 225px)!important;object-fit:contain!important}
  body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar button{touch-action:manipulation}
 }
+
+/* Mobile adjustment panels share the workspace with the photo, rather than
+   floating above it and obscuring the crop frame. */
+@media(max-width:760px){
+ body:has(#cropperLayout[style*="grid"]) main{
+   box-sizing:border-box!important;
+   padding-bottom:calc(78px + env(safe-area-inset-bottom))!important;
+   overflow:hidden!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) .workspace-card{
+   min-height:0!important;overflow:hidden!important;display:flex!important;flex-direction:column!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) #cropperLayout{
+   display:flex!important;flex:1 1 0!important;height:100%!important;min-height:0!important;
+   flex-direction:column!important;gap:8px!important;overflow:hidden!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) .canvas-container{
+   flex:1 1 0!important;min-height:90px!important;height:auto!important;
+   padding:26px 10px 10px!important;overflow:hidden!important;touch-action:none!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) .controls-panel{
+   position:relative!important;left:auto!important;right:auto!important;
+   top:auto!important;bottom:auto!important;width:100%!important;
+   flex:0 0 auto!important;height:auto!important;min-height:0!important;
+   max-height:min(32dvh,235px)!important;overflow-y:auto!important;
+   overscroll-behavior:contain!important;display:none!important;
+   padding:10px!important;gap:8px!important;margin:0!important;
+   box-shadow:none!important;border:1px solid #514967!important;
+   border-radius:12px!important;background:#1d1a2a!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) .controls-panel.loox-crop-drawer-open{
+   display:flex!important;flex-direction:column!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) .controls-panel .control-group{
+   padding:10px!important;gap:7px!important;flex-shrink:0!important;
+ }
+ body:has(#cropperLayout[style*="grid"]) .controls-panel input,
+ body:has(#cropperLayout[style*="grid"]) .controls-panel select{font-size:16px!important}
+ body:has(#cropperLayout[style*="grid"]) .controls-panel .btn{flex:0 0 auto!important}
+}
 </style></head>
 <body>
 
@@ -208,7 +248,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       <!-- Cropper Layout -->
       <div class="cropper-layout" id="cropperLayout">
         <div class="canvas-container">
-          <div class="loox-crop-gesture-hint" aria-hidden="true">Pinch inward to expand crop · drag handles to the edges</div>
+          <div class="loox-crop-gesture-hint" aria-hidden="true">Spread fingers to expand crop · pinch inward to shrink</div>
           <div class="canvas-wrapper" id="canvasWrapper">
             <canvas id="sourceCanvas"></canvas>
             
@@ -337,6 +377,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
         ctx.drawImage(img, 0, 0);
 
         resetCrop();
+        requestAnimationFrame(fitCropCanvas);
       };
       img.src = fileUrl;
     }
@@ -454,7 +495,9 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     function movePinch() {
       if(!pinchGesture||activePointers.size<2)return;
       const p=pinchStats(),original=pinchGesture.rect;
-      const factor=pinchGesture.origin.distance/p.distance;
+      // Match natural pinch-to-zoom: spreading fingers expands the selection;
+      // bringing them together reduces the selection.
+      const factor=p.distance/pinchGesture.origin.distance;
       const ratio=cropRatio();
       let w=original.w*factor,h=original.h*factor;
       if(ratio){
@@ -536,8 +579,32 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       crop.x=Math.max(0,Math.min(img.width-crop.w,crop.x+moves[e.key][0]*step));
       crop.y=Math.max(0,Math.min(img.height-crop.h,crop.y+moves[e.key][1]*step));updateUI();
     });
-    window.addEventListener('resize',()=>{if(img.naturalWidth)updateUI()});
-    new ResizeObserver(()=>{if(img.naturalWidth)updateUI()}).observe(canvasWrapper);
+    // Fit the *actual canvas pixels* inside the remaining workspace height.
+    // Using CSS object-fit alone would letterbox the canvas and misalign handles.
+    function fitCropCanvas() {
+      if(!img.naturalWidth)return;
+      if(!window.matchMedia('(max-width:760px)').matches){
+        canvas.style.width='';canvas.style.height='';
+        canvasWrapper.style.width='';canvasWrapper.style.height='';
+        updateUI();return;
+      }
+      const stage=canvasWrapper.parentElement,cs=getComputedStyle(stage);
+      const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
+      const padY=(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0);
+      const availW=Math.max(16,stage.clientWidth-padX-2);
+      const availH=Math.max(16,stage.clientHeight-padY-2);
+      const scale=Math.min(availW/img.width,availH/img.height,1);
+      const w=Math.max(1,Math.floor(img.width*scale));
+      const h=Math.max(1,Math.floor(img.height*scale));
+      if(canvas.style.width!==w+'px')canvas.style.width=w+'px';
+      if(canvas.style.height!==h+'px')canvas.style.height=h+'px';
+      if(canvasWrapper.style.width!==w+'px')canvasWrapper.style.width=w+'px';
+      if(canvasWrapper.style.height!==h+'px')canvasWrapper.style.height=h+'px';
+      updateUI();
+    }
+    window.addEventListener('resize',fitCropCanvas);
+    window.addEventListener('loox-crop-layout',()=>requestAnimationFrame(fitCropCanvas));
+    new ResizeObserver(()=>{if(img.naturalWidth)fitCropCanvas()}).observe(canvasWrapper.parentElement);
 
     function cropAndDownload() {
       if (!currentFile || !img.naturalWidth) return;
@@ -570,7 +637,11 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
   
 
 <script>
-(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>⛶</b>Full</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){fullImageCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));if(opening){panel.querySelector(action==='ratio'?'#aspectRatioSelect':'#cropXInput')?.focus({preventScroll:true})}}});})();
+(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>⛶</b>Full</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){fullImageCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));// Avoid opening the mobile keyboard until the user actually taps a field.
+    }
+    window.dispatchEvent(new Event('loox-crop-layout'));
+  });
+  })();
 </script>
   <script src="loox-tool-ui.js?v=40"></script>
 
