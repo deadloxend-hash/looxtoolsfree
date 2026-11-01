@@ -197,6 +197,11 @@ body.converter-editing .converter-stage #imagePreview{display:block;max-height:1
  body.converter-editing .converter-stage{flex:1 1 0!important;height:auto!important;min-height:0!important}
  body.converter-editing .converter-mobile-bar{flex-shrink:0!important}
 }
+
+/* Editor starts from the top, regardless of how far the landing page was scrolled. */
+html:has(body.converter-editing){scroll-behavior:auto!important;scroll-padding-top:0!important}
+body.converter-editing{position:fixed!important;inset:0!important;width:100%!important;margin:0!important}
+body.converter-editing main{margin-top:0!important}
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 
@@ -347,8 +352,17 @@ body.converter-editing .converter-stage #imagePreview{display:block;max-height:1
         imagePreview.src = fileUrl;
         dropZone.style.display = 'none';
         converterLayout.style.display = 'flex';
+        // Return the page to its top BEFORE enabling scroll lock.
+        // Otherwise a previously scrolled page stays visually offset and clips the toolbar.
+        document.documentElement.style.scrollBehavior = 'auto';
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+        window.scrollTo(0, 0);
         document.body.classList.add('converter-editing');
-        requestAnimationFrame(updateConverterViewport);
+        requestAnimationFrame(() => {
+          window.scrollTo(0, 0);
+          updateConverterViewport();
+        });
         document.getElementById('converterInspector').classList.remove('open');
         scheduleLivePreview();
       };
@@ -460,9 +474,10 @@ body.converter-editing .converter-stage #imagePreview{display:block;max-height:1
       if(!document.body.classList.contains('converter-editing'))return;
       const main=document.querySelector('main');
       if(!main)return;
-      // Header/nav occupies real viewport space. Measure it instead of assuming 100dvh.
-      const top=Math.max(0,main.getBoundingClientRect().top);
-      const available=Math.max(220,window.innerHeight-top);
+      // Use the fixed header height, not the scrolled document position.
+      const header=document.querySelector('.loox-unified-header, .loox-tool-nav-header, .work-header, header');
+      const headerHeight=Math.max(0,Math.ceil(header?.getBoundingClientRect().height||0));
+      const available=Math.max(220,window.innerHeight-headerHeight);
       document.documentElement.style.setProperty('--converter-editor-height',available+'px');
     }
     window.addEventListener('resize',()=>requestAnimationFrame(updateConverterViewport));
