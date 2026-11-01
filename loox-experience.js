@@ -55,7 +55,7 @@
  }
  // On mobile, tapping the page outside the open tools drawer closes it.
  document.addEventListener('pointerdown',event=>{
-  if(!matchMedia('(max-width:900px)').matches || compact || !rail.contains || rail.contains(event.target))return;
+  if(!matchMedia('(max-width:900px)').matches || compact || !rail.contains || rail.contains(event.target) || event.target.closest?.('.loox-tool-menu,.loox-info-menu'))return;
   compact=true;
   save('loox-rail-collapsed','true');
   document.body.classList.add('rail-compact');
@@ -81,7 +81,7 @@
   if(!document.body.classList.contains('info-page') && file!=='index.html'){
    header.classList.add('loox-tool-nav-header');
    if(!header.querySelector('.loox-tool-menu')){
-    const button=document.createElement('button');button.type='button';button.className='loox-tool-menu';button.textContent='☰';button.setAttribute('aria-label','Toggle tools menu');button.onclick=()=>rail.querySelector('.loox-rail-toggle')?.click();header.prepend(button);
+    const button=document.createElement('button');button.type='button';button.className='loox-tool-menu';button.textContent='☰';button.setAttribute('aria-label','Toggle tools menu');button.onclick=event=>{event.stopPropagation();compact=!compact;save('loox-rail-collapsed',String(compact));document.body.classList.toggle('rail-compact',compact);drawRail();};header.prepend(button);
    }
   }
   let controls=document.querySelector('.loox-top-controls');
