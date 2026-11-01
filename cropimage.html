@@ -469,6 +469,11 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       inputBottom.value=Math.round(Math.max(0,img.height-crop.y-crop.h));
     }
 
+    // Preserve history for numeric, ratio, and preset edits before they change the crop.
+    document.querySelectorAll('.controls-panel input,.controls-panel select').forEach(el=>{
+      el.addEventListener('focus',()=>window.rememberCropState?.());
+      el.addEventListener('pointerdown',()=>window.rememberCropState?.());
+    });
     // Manual input listeners
     inputWidth.addEventListener('change', () => { crop.w = Math.min(Math.max(10, parseInt(inputWidth.value) || 10), img.width - crop.x); applyAspectRatio('width'); updateUI(); });
     inputHeight.addEventListener('change', () => { crop.h = Math.min(Math.max(10, parseInt(inputHeight.value) || 10), img.height - crop.y); applyAspectRatio('height'); updateUI(); });
@@ -585,6 +590,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       e.preventDefault();
       // Ignore any touch or click outside the existing crop frame.
       if(!cropBox.contains(e.target))return;
+      if(activePointers.size===0)window.rememberCropState?.();
       activePointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
       try{canvasWrapper.setPointerCapture(e.pointerId)}catch{}
       if(activePointers.size===2){beginPinch();return}
@@ -668,11 +674,15 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 const actions=document.createElement('div');actions.id='looxCropTopActions';actions.innerHTML='<button type="button" aria-label="Cancel crop" id="looxCropCancel">✕</button><span class="loox-crop-bar-label">Crop</span><button type="button" aria-label="Undo" id="looxCropUndo">↶</button><button type="button" aria-label="Redo" id="looxCropRedo">↷</button><button type="button" aria-label="Apply crop" id="looxCropApply">✓</button>';document.body.append(actions);
 const undoHistory=[],redoHistory=[];
 const undoButton=document.getElementById('looxCropUndo'),redoButton=document.getElementById('looxCropRedo');
+function snapshot(){return {image:canvas.toDataURL('image/png'),crop:{...crop},ratio:aspectSelect.value}}
 function refreshHistory(){undoButton.disabled=!undoHistory.length;redoButton.disabled=!redoHistory.length}
-function restoreImage(data){const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.height=next.height;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(next,0,0);resetCrop();setCropEditing(false);requestAnimationFrame(fitCropCanvas)};next.src=data}
-undoButton.onclick=()=>{if(!undoHistory.length)return;redoHistory.push(canvas.toDataURL('image/png'));restoreImage(undoHistory.pop());refreshHistory()};
-redoButton.onclick=()=>{if(!redoHistory.length)return;undoHistory.push(canvas.toDataURL('image/png'));restoreImage(redoHistory.pop());refreshHistory()};
+let restoring=false;
+function restoreState(state){restoring=true;const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.height=next.height;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(next,0,0);crop={...state.crop};aspectSelect.value=state.ratio;updateUI();requestAnimationFrame(fitCropCanvas);restoring=false;refreshHistory()};next.src=state.image}
+function remember(){if(restoring||!img.naturalWidth)return;const state=snapshot(),last=undoHistory.at(-1);if(last&&last.image===state.image&&JSON.stringify(last.crop)===JSON.stringify(state.crop)&&last.ratio===state.ratio)return;undoHistory.push(state);if(undoHistory.length>30)undoHistory.shift();redoHistory.length=0;refreshHistory()}
+undoButton.onclick=()=>{if(!undoHistory.length)return;redoHistory.push(snapshot());restoreState(undoHistory.pop());refreshHistory()};
+redoButton.onclick=()=>{if(!redoHistory.length)return;undoHistory.push(snapshot());restoreState(redoHistory.pop());refreshHistory()};
 window.resetCropHistory=()=>{undoHistory.length=0;redoHistory.length=0;refreshHistory()};
+window.rememberCropState=remember;
 refreshHistory();
 window.setCropEditing=function(on){document.body.classList.toggle('loox-crop-editing',!!on);if(!on){document.querySelector('.controls-panel')?.classList.remove('loox-crop-drawer-open')}};
 document.getElementById('looxCropCancel').onclick=()=>{resetCrop();setCropEditing(false)};
@@ -680,7 +690,7 @@ document.getElementById('looxCropApply').onclick=()=>{
 if(!img.naturalWidth)return;
 const left=Math.max(0,Math.min(img.width-1,Math.round(crop.x))),top=Math.max(0,Math.min(img.height-1,Math.round(crop.y)));
 const right=Math.max(left+1,Math.min(img.width,Math.round(crop.x+crop.w))),bottom=Math.max(top+1,Math.min(img.height,Math.round(crop.y+crop.h)));
-undoHistory.push(canvas.toDataURL('image/png'));if(undoHistory.length>15)undoHistory.shift();redoHistory.length=0;refreshHistory();
+remember();
 const cut=document.createElement('canvas');cut.width=right-left;cut.height=bottom-top;cut.getContext('2d').drawImage(img,left,top,cut.width,cut.height,0,0,cut.width,cut.height);
 const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.height=next.height;ctx.drawImage(next,0,0);resetCrop();setCropEditing(false);requestAnimationFrame(fitCropCanvas)};next.src=cut.toDataURL('image/png');
 };
@@ -699,7 +709,7 @@ const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.
   
 
 <script>
-(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="crop"><b>▣</b>Crop</button><button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>⛶</b>Full</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='crop'){panel.classList.remove('loox-crop-drawer-open');setCropEditing(true)}else if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){fullImageCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else if(!document.body.classList.contains('loox-crop-editing')){setCropEditing(true);panel.classList.add('loox-crop-drawer-open');panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=action==='ratio'?i!==0:i===0)}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));// Avoid opening the mobile keyboard until the user actually taps a field.
+(()=>{const layout=document.getElementById('cropperLayout'),panel=layout.querySelector('.controls-panel');const bar=document.createElement('nav');bar.className='loox-crop-mobile-bar';bar.setAttribute('aria-label','Mobile crop editing tools');bar.innerHTML='<button type="button" data-crop-action="crop"><b>▣</b>Crop</button><button type="button" data-crop-action="image"><b>▧</b>Image</button><button type="button" data-crop-action="ratio"><b>▣</b>Ratio</button><button type="button" data-crop-action="adjust"><b>⚙</b>Adjust</button><button type="button" data-crop-action="reset"><b>⛶</b>Full</button><button type="button" class="primary" data-crop-action="save"><b>↓</b>Save</button>';document.body.append(bar);bar.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;const action=button.dataset.cropAction;if(action==='crop'){panel.classList.remove('loox-crop-drawer-open');setCropEditing(true)}else if(action==='image'){panel.classList.remove('loox-crop-drawer-open');chooseNewImage()}else if(action==='reset'){window.rememberCropState?.();fullImageCrop();panel.classList.remove('loox-crop-drawer-open')}else if(action==='save'){cropAndDownload()}else if(!document.body.classList.contains('loox-crop-editing')){setCropEditing(true);panel.classList.add('loox-crop-drawer-open');panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=action==='ratio'?i!==0:i===0)}else{const opening=!panel.classList.contains('loox-crop-drawer-open')||panel.dataset.mode!==action;panel.classList.toggle('loox-crop-drawer-open',opening);panel.dataset.mode=action;panel.querySelectorAll('.control-group').forEach((group,i)=>group.hidden=opening&&(action==='ratio'?i!==0:i===0));// Avoid opening the mobile keyboard until the user actually taps a field.
     }
     window.dispatchEvent(new Event('loox-crop-layout'));
   });
