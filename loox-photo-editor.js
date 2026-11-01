@@ -72,7 +72,7 @@ function showPanel(){
   actions([['Auto enhance',()=>{if(!base)return;saveHistory();values={...values,contrast:14,shadows:18,highlights:-14,vibrance:22};render();showPanel()}],['Reset adjustments',()=>{if(!base)return;saveHistory();values=adjustments();render();showPanel()}]]);
  }
  if(tab==='effects'){
-  heading('Looks & filters');const names=Object.keys(presets);const g=actions(names.map(k=>[k==='bw'?'B&W':k.charAt(0).toUpperCase()+k.slice(1),()=>{if(!base)return;saveHistory();preset=k;render();showPanel()}]),'preset-grid');[...g.children].forEach((b,i)=>b.classList.toggle('selected',names[i]===preset));hint('Layer a look over the adjustments. Original removes the filter.');
+  heading('Looks & filters');const names=Object.keys(presets);const g=actions(names.map(k=>[k==='bw'?'B&W':k.charAt(0).toUpperCase()+k.slice(1),()=>{if(!base)return;saveHistory();preset=k;render();showPanel()}]),'preset-grid');[...g.children].forEach((b,i)=>{b.classList.toggle('selected',names[i]===preset);const preview=filterThumbnail(names[i]);if(preview)b.style.backgroundImage='linear-gradient(to top,rgba(11,12,22,.95),rgba(11,12,22,.02) 75%),url('+preview+')'});hint('Layer a look over the adjustments. Original removes the filter.');
  }
  if(tab==='retouch'){
   heading('Selective blur');hint('Paint directly on the photo. Erase restores only the masked blur.');
@@ -102,6 +102,15 @@ function showPanel(){
   control('Border width',2,150,1,frame.width,v=>{frame.width=v;render()});const color=document.createElement('input');color.type='color';color.value=frame.color;color.onfocus=()=>base&&saveHistory();color.oninput=()=>{frame.color=color.value;render()};const label=document.createElement('label');label.className='field';label.textContent='Frame color ';label.append(color);panel.append(label);
  }
  if(tab==='export'){heading('Download');hint('PNG, JPEG and WebP at the edited canvas dimensions.');actions([['Export image',openExport],['Reset photo',resetImage]])}
+}
+function filterThumbnail(name){
+ if(!base)return '';
+ const thumb=makeCanvas(96,72),tc=thumb.getContext('2d',{willReadFrequently:true});tc.drawImage(base,0,0,96,72);
+ const src=tc.getImageData(0,0,96,72),out=tc.createImageData(96,72),v={...values};
+ for(const [k,n] of Object.entries(presets[name]||{}))v[k]+=n;
+ tone(src.data,out.data,v);
+ if(name==='sepia')for(let i=0;i<out.data.length;i+=4){const r=out.data[i],g=out.data[i+1],b=out.data[i+2];out.data[i]=clamp(r*.393+g*.769+b*.189,0,255);out.data[i+1]=clamp(r*.349+g*.686+b*.168,0,255);out.data[i+2]=clamp(r*.272+g*.534+b*.131,0,255)}
+ tc.putImageData(out,0,0);return thumb.toDataURL('image/jpeg',.65);
 }
 function addAdjustment(k){const [name,min,max]=definitions[k];control(name,min,max,k==='exposure'?.1:1,values[k],v=>{values[k]=v;render()})}
 function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
@@ -158,7 +167,7 @@ canvas.addEventListener('pointermove',e=>{
  if(overlayDrag&&base){e.preventDefault();const p=pointerPosition(e),o=overlays[selectedOverlay];if(o){o.x=Math.round(clamp(p.x-overlayDrag.dx,0,base.width));o.y=Math.round(clamp(p.y-overlayDrag.dy,0,base.height));render()}return}
  if(!painting||!base)return;e.preventDefault();if(activeStroke)activeStroke.points.push(pointerPosition(e));else paint(pointerPosition(e));render();
 });
-const endPaint=()=>{overlayDrag=null;if(painting){painting=false;activeStroke=null;lastPoint=null;render();setStatus('Edit applied')}};canvas.addEventListener('pointerup',endPaint);canvas.addEventListener('pointercancel',endPaint);
+const endPaint=()=>{overlayDrag=null;if(painting){painting=false;activeStroke=null;lastPoint=null;render();if(tab==='draw')showPanel();setStatus('Edit applied')}};canvas.addEventListener('pointerup',endPaint);canvas.addEventListener('pointercancel',endPaint);
 $('cropBox').addEventListener('pointerdown',e=>{if(!crop||!base)return;e.preventDefault();e.stopPropagation();const r=$('cropOverlay').getBoundingClientRect(),sx=base.width/r.width,sy=base.height/r.height;drag={startX:e.clientX,startY:e.clientY,start:{...crop},sx,sy,resize:e.target.tagName==='I'};$('cropBox').setPointerCapture(e.pointerId)});
 $('cropBox').addEventListener('pointermove',e=>{if(!drag||!crop)return;const dx=(e.clientX-drag.startX)*drag.sx,dy=(e.clientY-drag.startY)*drag.sy,r=drag.start;if(drag.resize){crop.w=Math.round(clamp(r.w+dx,10,base.width-r.x));crop.h=Math.round(clamp(r.h+dy,10,base.height-r.y));if(cropRatio!=='free'){const [a,b]=cropRatio.split(':').map(Number);crop.h=Math.round(Math.min(base.height-r.y,crop.w*b/a));crop.w=Math.round(crop.h*a/b)}}else{crop.x=Math.round(clamp(r.x+dx,0,base.width-r.w));crop.y=Math.round(clamp(r.y+dy,0,base.height-r.h))}positionCrop()});
 $('cropBox').addEventListener('pointerup',()=>drag=null);$('cropBox').addEventListener('pointercancel',()=>drag=null);
