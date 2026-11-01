@@ -98,3 +98,19 @@
  body.loox-face-ready .loox-face-mobile-bar button span{white-space:nowrap}
  body.loox-face-ready .loox-face-mobile-bar button#faceMobileErase.active{background:#174d4c!important;color:#bffcf4!important}
 }
+
+/* Finger-friendly crop selection anchored exactly to image pixels */
+.loox-face-crop-frame{position:absolute;z-index:7;border:2px solid #fff;box-shadow:0 0 0 9999px #0007,0 0 0 1px #111;cursor:move;touch-action:none;user-select:none}
+.loox-face-crop-frame[hidden],#faceCropActions[hidden]{display:none!important}
+.loox-face-crop-frame i{position:absolute;display:block;width:19px;height:19px;background:#fff;border:2px solid #815ee1;border-radius:5px;touch-action:none}
+.loox-face-crop-frame [data-edge="nw"]{top:-10px;left:-10px;cursor:nwse-resize}
+.loox-face-crop-frame [data-edge="ne"]{top:-10px;right:-10px;cursor:nesw-resize}
+.loox-face-crop-frame [data-edge="sw"]{bottom:-10px;left:-10px;cursor:nesw-resize}
+.loox-face-crop-frame [data-edge="se"]{bottom:-10px;right:-10px;cursor:nwse-resize}
+.loox-face-crop-frame [data-edge="n"]{top:-10px;left:calc(50% - 9px);cursor:ns-resize}
+.loox-face-crop-frame [data-edge="s"]{bottom:-10px;left:calc(50% - 9px);cursor:ns-resize}
+.loox-face-crop-frame [data-edge="e"]{right:-10px;top:calc(50% - 9px);cursor:ew-resize}
+.loox-face-crop-frame [data-edge="w"]{left:-10px;top:calc(50% - 9px);cursor:ew-resize}
+.loox-face-crop-actions #faceCropActions{display:flex;flex-wrap:wrap;gap:7px}
+.loox-face-crop-actions #faceCropActions button{flex:1 1 100px}
+body.loox-face-cropping #faceCanvas{cursor:default}
