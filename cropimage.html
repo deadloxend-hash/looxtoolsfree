@@ -662,6 +662,20 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       link.click();
     }
 
+
+(function(){
+const actions=document.createElement('div');actions.id='looxCropTopActions';actions.innerHTML='<button type="button" aria-label="Cancel crop" id="looxCropCancel">✕</button><strong style="color:white;background:#181824c9;padding:8px 12px;border-radius:9px">Crop</strong><button type="button" aria-label="Apply crop" id="looxCropApply">✓</button>';document.body.append(actions);
+window.setCropEditing=function(on){document.body.classList.toggle('loox-crop-editing',!!on);if(!on){document.querySelector('.controls-panel')?.classList.remove('loox-crop-drawer-open')}};
+document.getElementById('looxCropCancel').onclick=()=>{resetCrop();setCropEditing(false)};
+document.getElementById('looxCropApply').onclick=()=>{
+if(!img.naturalWidth)return;
+const left=Math.max(0,Math.min(img.width-1,Math.round(crop.x))),top=Math.max(0,Math.min(img.height-1,Math.round(crop.y)));
+const right=Math.max(left+1,Math.min(img.width,Math.round(crop.x+crop.w))),bottom=Math.max(top+1,Math.min(img.height,Math.round(crop.y+crop.h)));
+const cut=document.createElement('canvas');cut.width=right-left;cut.height=bottom-top;cut.getContext('2d').drawImage(img,left,top,cut.width,cut.height,0,0,cut.width,cut.height);
+const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.height=next.height;ctx.drawImage(next,0,0);resetCrop();setCropEditing(false);requestAnimationFrame(fitCropCanvas)};next.src=cut.toDataURL('image/png');
+};
+})();
+
     function chooseNewImage() {
       setCropEditing(false);
       activePointers.clear();cropGesture=null;pinchGesture=null;
@@ -694,20 +708,7 @@ body.loox-crop-active:not(.loox-crop-editing) #looxCropTopActions{display:none!i
 body.loox-crop-active:not(.loox-crop-editing) .controls-panel{display:none!important}
 }
 </style>
-<script>
-(function(){
-const actions=document.createElement('div');actions.id='looxCropTopActions';actions.innerHTML='<button type="button" aria-label="Cancel crop" id="looxCropCancel">✕</button><strong style="color:white;background:#181824c9;padding:8px 12px;border-radius:9px">Crop</strong><button type="button" aria-label="Apply crop" id="looxCropApply">✓</button>';document.body.append(actions);
-window.setCropEditing=function(on){document.body.classList.toggle('loox-crop-editing',!!on);if(!on){document.querySelector('.controls-panel')?.classList.remove('loox-crop-drawer-open')}};
-document.getElementById('looxCropCancel').onclick=()=>{resetCrop();setCropEditing(false)};
-document.getElementById('looxCropApply').onclick=()=>{
-if(!img.naturalWidth)return;
-const left=Math.max(0,Math.min(img.width-1,Math.round(crop.x))),top=Math.max(0,Math.min(img.height-1,Math.round(crop.y)));
-const right=Math.max(left+1,Math.min(img.width,Math.round(crop.x+crop.w))),bottom=Math.max(top+1,Math.min(img.height,Math.round(crop.y+crop.h)));
-const cut=document.createElement('canvas');cut.width=right-left;cut.height=bottom-top;cut.getContext('2d').drawImage(img,left,top,cut.width,cut.height,0,0,cut.width,cut.height);
-const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.height=next.height;ctx.drawImage(next,0,0);resetCrop();setCropEditing(false);requestAnimationFrame(fitCropCanvas)};next.src=cut.toDataURL('image/png');
-};
-})();
-</script><script src="loox-tool-ui.js?v=40"></script>
+<script src="loox-tool-ui.js?v=40"></script>
 
 
 
