@@ -625,3 +625,6 @@ body.loox-home-rail .topbar .loox-language,body.loox-home-rail .topbar select.lo
  body.loox-home-rail .topbar .brand{gap:5px!important}
  body.loox-home-rail .topbar .loox-overflow-trigger{width:36px;height:36px}
 }
+
+/* Keep Explore the toolkit as the final navigable header link on phones. */
+@media(max-width:900px){body.loox-home-rail .topbar .main-nav .nav-cta{display:inline-flex!important;white-space:nowrap!important;padding:8px 12px!important;color:#fff!important;background:#6f4ce0!important;border-radius:10px!important}}
