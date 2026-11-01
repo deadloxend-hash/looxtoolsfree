@@ -4,3 +4,48 @@
 /* v2 mobile editing tray: reserve visible canvas above controls */
 .upload-placeholder[hidden],.empty[hidden]{display:none!important}.action-grid button.selected{outline:2px solid var(--accent)}.text-select,.panel-content textarea{display:block;width:100%;background:#101321;color:white;border:1px solid var(--line);border-radius:10px;padding:11px;margin:10px 0 18px}.panel-content textarea{resize:vertical}.stage .viewport{min-height:0}
 @media(max-width:767px){.mobile-bar{grid-template-columns:repeat(6,minmax(0,1fr))}.mobile-bar button{font-size:9px;min-width:0}.mobile-bar span{font-size:19px}.app.drawer-open .stage{padding-bottom:min(35dvh,260px)}.inspector{height:min(35dvh,260px);min-height:170px;bottom:calc(64px + env(safe-area-inset-bottom));z-index:12}.inspector-head{padding:10px 17px 8px}.inspector-head h2{font-size:18px;margin:0}.panel-content{padding:10px 17px 16px}.drawer-backdrop{display:none!important}.app.drawer-open .viewport{min-height:100px}.app.drawer-open .stage-head{display:none}.app.drawer-open .stage-foot{min-height:39px}.app.drawer-open .stage .viewport{flex:1}}
+
+/* Photo Studio v3: fixed stage, distinct desktop inspector and mobile tool tray. */
+.rail{overflow-y:auto;scrollbar-width:thin;gap:4px;padding:9px 6px}
+.rail .tool{min-height:58px;padding:7px 4px}
+.rail .tool span{font-size:21px}
+.viewport{align-items:safe center;justify-content:safe center;overscroll-behavior:contain}
+#canvas{image-rendering:auto}
+.stage-head{background:#101320}
+.stage-foot{background:#101320}
+.inspector{background:#181c2c}
+.panel-content{scrollbar-width:thin}
+.panel-content h3:not(:first-child){margin-top:23px}
+.preset-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.preset-grid button{min-height:62px;padding:8px;letter-spacing:.2px}
+.preset-grid button.selected,.action-grid button.selected{background:linear-gradient(135deg,#694bab,#342750);border-color:#bf9aff}
+.size-grid button{font-size:11px;line-height:1.35}
+.sticker-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 22px}
+.sticker-grid button{min-height:48px;background:#292d42;border:1px solid #454860;border-radius:11px;color:white;font-size:24px}
+.dimension-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0 18px}
+.dimension-row input{width:100%;min-width:0;border-radius:8px;border:1px solid #424862;background:#101321;color:white;padding:10px}
+.dimension-row button{grid-column:1/-1;border:0;border-radius:10px;padding:11px;color:white;background:#7957d8}
+.panel-link{display:block;border:1px solid #7658b7;background:#302644;border-radius:11px;padding:12px;color:#e6d8ff;margin:16px 0;text-align:center}
+.panel-content .field input[type=color]{width:100%;height:38px;margin-top:7px;background:transparent;border:0;cursor:pointer}
+@media(max-width:767px){
+ .app{height:100dvh;min-height:0}
+ .topbar{height:54px;min-height:54px}
+ .workspace{overflow:hidden}
+ .stage{min-height:0;overflow:hidden}
+ .stage-head{min-height:42px}
+ .stage-foot{min-height:42px}
+ .mobile-bar{display:flex!important;height:calc(68px + env(safe-area-inset-bottom));overflow-x:auto;overflow-y:hidden;scrollbar-width:none;scroll-snap-type:x proximity;padding:4px 7px calc(3px + env(safe-area-inset-bottom))}
+ .mobile-bar::-webkit-scrollbar{display:none}
+ .mobile-bar button{min-width:64px;flex:0 0 64px;scroll-snap-align:start;padding:4px 2px}
+ .mobile-bar span{font-size:20px}
+ .inspector{height:min(42dvh,360px);min-height:190px;bottom:calc(68px + env(safe-area-inset-bottom));border-radius:18px 18px 0 0}
+ .app.drawer-open .stage{padding-bottom:min(42dvh,360px)}
+ .app.drawer-open .stage-head{display:flex}
+ .app.drawer-open .stage-foot{min-height:42px}
+ .app.drawer-open .viewport{min-height:90px}
+ .panel-content{padding:12px 16px 20px}
+ .panel-content h3:not(:first-child){margin-top:18px}
+ .preset-grid button{min-height:52px}
+ .stage-head .privacy{display:none}
+ .stage-head b{max-width:calc(100vw - 80px)}
+}
