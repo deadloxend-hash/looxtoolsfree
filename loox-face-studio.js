@@ -243,7 +243,7 @@
         const files=await vision.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm');
         return vision.FaceDetector.createFromOptions(files,{
           baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite'},
-          runningMode:'IMAGE',minDetectionConfidence:0.35,minSuppressionThreshold:0.3
+          runningMode:'IMAGE',minDetectionConfidence:0.5,minSuppressionThreshold:0.3
         });
       })().catch(e=>{detectorPromise=null;throw e});
     }
@@ -296,7 +296,7 @@
     if(!faces.length){
       try{
         const api=await faceApiDetector();
-        const detections=await api.detectAllFaces(small,new api.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:0.35}));
+        const detections=await api.detectAllFaces(small,new api.TinyFaceDetectorOptions({inputSize:416,scoreThreshold:0.65}));
         faces=detections.map(d=>({x:d.box.x*sx,y:d.box.y*sy,w:d.box.width*sx,h:d.box.height*sy}));
         engine='face-api.js';
       }catch(e){errors.push('face-api.js: '+(e?.message||'unavailable'))}
@@ -313,7 +313,7 @@
     for (const box of faces) {
       if (![box.x, box.y, box.w, box.h].every(Number.isFinite) || box.w <= 0 || box.h <= 0) continue;
       const cx = box.x + box.w / 2, cy = box.y + box.h / 2;
-      const rx = box.w * .86, ry = box.h * .93;
+      const rx = box.w * .7, ry = box.h * .78;
       const left = Math.max(0, Math.floor(cx - rx)), top = Math.max(0, Math.floor(cy - ry));
       const right = Math.min(canvas.width, Math.ceil(cx + rx));
       const bottom = Math.min(canvas.height, Math.ceil(cy + ry));
