@@ -499,3 +499,16 @@ body.experience-shell .tool-breadcrumbs a:hover{background:#59458c!important;col
  body.experience-shell .breadcrumb a,
  body.experience-shell .tool-breadcrumbs a{font-size:12px!important}
 }
+
+
+/* Match the mobile tool drawer toggle to the homepage hamburger exactly. */
+@media(max-width:900px){
+ body.experience-shell:not(.loox-home) .loox-tool-nav-header .loox-tool-menu{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important;
+  flex:0 0 36px!important;margin:0 8px 0 0!important;padding:0!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+  color:#f3f0fb!important;font:normal 25px/1 system-ui!important;
+  transform:none!important;letter-spacing:0!important;
+ }
+}
