@@ -575,3 +575,25 @@ body.experience-shell:not(.loox-home) .loox-rail-toggle,
 body.experience-shell:not(.loox-home) .loox-rail-head,
 body.experience-shell:not(.loox-home) .loox-info-menu{display:none!important}
 @media(max-width:900px){body.experience-shell:not(.loox-home) .loox-rail{display:none!important}body.experience-shell:not(.loox-home) .loox-standard-tool-header{justify-content:space-between!important}}
+
+/* Homepage-only sidebar: fully absent on every tool and information page. */
+.experience-shell.loox-no-rail{--lx-rail:0px!important}
+.experience-shell.loox-no-rail .loox-rail,.experience-shell.loox-no-rail .loox-rail-toggle,.experience-shell.loox-no-rail .loox-info-menu,.experience-shell.loox-no-rail .loox-tool-menu{display:none!important}
+.experience-shell.loox-no-rail .experience-content,.experience-shell.loox-no-rail.experience-studio .studio-main,.experience-shell.loox-no-rail>.loox-guide-host,.experience-shell.loox-no-rail .loox-guide-host{margin-left:0!important;width:100%!important;max-width:100%!important}
+.experience-shell.loox-home-rail.rail-hidden{--lx-rail:0px!important}
+.experience-shell.loox-home-rail.rail-hidden .loox-rail{display:none!important}
+.experience-shell.loox-home-rail .loox-home-rail-button{position:fixed;left:12px;top:84px;z-index:65;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid #60607a;border-radius:10px;background:#242237;color:#fff;font-size:19px;cursor:pointer;box-shadow:0 4px 12px #0006}
+.experience-shell.loox-home-rail:not(.rail-hidden) .loox-home-rail-button{left:calc(var(--lx-rail) + 10px)}
+.experience-shell.loox-home-rail .loox-home-rail-button:hover{background:#50417f}
+.experience-shell.loox-home-rail:not(.rail-hidden){--lx-rail:232px!important}
+.experience-shell.loox-home-rail .loox-rail-toggle{display:none!important}
+@media(max-width:900px){
+ .experience-shell.loox-home-rail,.experience-shell.loox-home-rail:not(.rail-hidden),.experience-shell.loox-home-rail.rail-hidden{--lx-rail:0px!important}
+ .experience-shell.loox-home-rail .experience-content,.experience-shell.loox-home-rail>.loox-guide-host{margin-left:0!important;width:100%!important}
+ .experience-shell.loox-home-rail:not(.rail-hidden) .loox-rail{display:flex!important;width:min(280px,84vw)!important;z-index:63;overflow:auto!important;pointer-events:auto!important}
+ .experience-shell.loox-home-rail:not(.rail-hidden) .loox-rail>:not(.loox-rail-head){display:revert!important}
+ .experience-shell.loox-home-rail:not(.rail-hidden) .loox-rail-head{position:static!important;width:auto!important;min-height:56px!important;pointer-events:auto!important}
+ .experience-shell.loox-home-rail .loox-home-rail-button,.experience-shell.loox-home-rail:not(.rail-hidden) .loox-home-rail-button{left:12px!important;top:76px!important;z-index:65}
+ .experience-shell.loox-home-rail:not(.rail-hidden) .loox-home-rail-button{left:min(calc(280px + 10px),calc(84vw + 10px))!important}
+ .experience-shell.loox-home-rail.rail-hidden .loox-rail{display:none!important}
+}
