@@ -19,12 +19,18 @@ function layout(){
 const mobileBar=$('resizerMobileBar');
 const cropActions=document.createElement('div');
 cropActions.id='resizerCropTopActions';
-cropActions.innerHTML='<button type="button" id="resizerCropTopCancel" aria-label="Cancel crop">✕</button><span>Crop</span><button type="button" id="resizerCropTopApply" aria-label="Apply crop">✓</button>';
+cropActions.innerHTML='<button type="button" id="resizerCropTopCancel" aria-label="Cancel crop">✕</button><span>Crop</span><button type="button" id="resizerCropUndo" aria-label="Undo crop">↶</button><button type="button" id="resizerCropRedo" aria-label="Redo crop">↷</button><button type="button" id="resizerCropTopApply" aria-label="Apply crop">✓</button>';
 bar.append(cropActions);
 function cropActive(){const button=$('resizer-crop-apply');return !!button&&!button.hidden}
 function refreshCropUI(){const active=cropActive();document.body.classList.toggle('resizer-cropping',active);cropActions.hidden=!active;topActions?.classList.toggle('resizer-crop-hide',active)}
 $('resizerCropTopCancel').onclick=()=>{$('resizer-crop-cancel')?.click();refreshCropUI()};
 $('resizerCropTopApply').onclick=()=>{$('resizer-crop-apply')?.click();refreshCropUI()};
+const undo=$('resizerCropUndo'),redo=$('resizerCropRedo');
+undo.onclick=()=>window.looxResizerUndo?.();
+redo.onclick=()=>window.looxResizerRedo?.();
+function updateHistory(){const h=window.looxResizerHistory?.()||{undo:0,redo:0};undo.disabled=!h.undo;redo.disabled=!h.redo}
+window.addEventListener('loox-resizer-history',updateHistory);
+updateHistory();
 new MutationObserver(refreshCropUI).observe($('resizer-crop-apply'),{attributes:true,attributeFilter:['hidden']});
 
 const panelTitle=document.createElement('div');panelTitle.className='resizer-panel-title';panelTitle.innerHTML='<strong id="resizerPanelName">Resize</strong><button type="button" id="resizerPanelClose" aria-label="Close settings">✕</button>';
