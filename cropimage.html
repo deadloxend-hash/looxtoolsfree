@@ -219,6 +219,36 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  body:has(#cropperLayout[style*="grid"]) .controls-panel select{font-size:16px!important}
  body:has(#cropperLayout[style*="grid"]) .controls-panel .btn{flex:0 0 auto!important}
 }
+
+/* Lock the mobile crop workspace to the viewport without clipping its toolbar. */
+@media(max-width:760px){
+ html:has(body.loox-crop-active){height:100%!important;overflow:hidden!important}
+ body.loox-crop-active{height:100dvh!important;min-height:0!important;max-height:100dvh!important;overflow:hidden!important}
+ body.loox-crop-active main{
+   height:calc(100dvh - 64px)!important;min-height:0!important;max-height:calc(100dvh - 64px)!important;
+   overflow:hidden!important;box-sizing:border-box!important;
+   padding:4px 8px calc(78px + env(safe-area-inset-bottom))!important;
+ }
+ body.loox-crop-active .workspace-card{
+   flex:1 1 0!important;height:auto!important;min-height:0!important;
+   overflow:hidden!important;box-sizing:border-box!important;
+ }
+ body.loox-crop-active #cropperLayout{
+   flex:1 1 0!important;height:auto!important;min-height:0!important;
+   max-height:100%!important;overflow:hidden!important;box-sizing:border-box!important;
+ }
+ body.loox-crop-active .canvas-container{
+   flex:1 1 0!important;min-height:0!important;height:auto!important;
+   max-height:100%!important;overflow:hidden!important;box-sizing:border-box!important;
+ }
+ body.loox-crop-active #canvasWrapper{overflow:visible!important;box-sizing:border-box!important}
+ body.loox-crop-active #sourceCanvas{margin:0!important;display:block!important}
+ body.loox-crop-active .controls-panel.loox-crop-drawer-open{
+   flex:0 1 auto!important;max-height:min(30dvh,220px)!important;
+   overflow-x:hidden!important;overflow-y:auto!important;
+ }
+ body.loox-crop-active .loox-crop-mobile-bar{display:flex!important;z-index:9999!important}
+}
 </style></head>
 <body>
 
@@ -607,8 +637,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       const stage=canvasWrapper.parentElement,cs=getComputedStyle(stage);
       const padX=(parseFloat(cs.paddingLeft)||0)+(parseFloat(cs.paddingRight)||0);
       const padY=(parseFloat(cs.paddingTop)||0)+(parseFloat(cs.paddingBottom)||0);
-      const availW=Math.max(16,stage.clientWidth-padX-2);
-      const availH=Math.max(16,stage.clientHeight-padY-2);
+      const availW=Math.max(16,stage.clientWidth-padX-8);
+      const availH=Math.max(16,stage.clientHeight-padY-8);
       const scale=Math.min(availW/img.width,availH/img.height,1);
       const w=Math.max(1,Math.floor(img.width*scale));
       const h=Math.max(1,Math.floor(img.height*scale));
