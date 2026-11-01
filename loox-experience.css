@@ -568,3 +568,10 @@ body.experience-shell .loox-standard-tool-header .loox-header-settings{
   width:38px!important;height:38px!important;min-width:38px!important
  }
 }
+
+/* Tool pages: no sidebar hamburger on desktop or mobile. Homepage navigation remains unchanged. */
+body.experience-shell:not(.loox-home) .loox-tool-menu,
+body.experience-shell:not(.loox-home) .loox-rail-toggle,
+body.experience-shell:not(.loox-home) .loox-rail-head,
+body.experience-shell:not(.loox-home) .loox-info-menu{display:none!important}
+@media(max-width:900px){body.experience-shell:not(.loox-home) .loox-rail{display:none!important}body.experience-shell:not(.loox-home) .loox-standard-tool-header{justify-content:space-between!important}}
