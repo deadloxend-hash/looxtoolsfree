@@ -134,12 +134,35 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  body:has(#cropperLayout[style*="grid"]) #sourceCanvas{max-width:100%;max-height:calc(100dvh - 235px);width:auto;height:auto;object-fit:contain}
  body:has(#cropperLayout[style*="grid"]) .controls-panel{position:fixed!important;left:8px;right:8px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:85;max-height:min(43dvh,340px);overflow-y:auto;display:none!important;border:1px solid #44405a;border-radius:15px;background:#15141f;padding:12px;box-shadow:0 -12px 45px #000a}
  body:has(#cropperLayout[style*="grid"]) .controls-panel.loox-crop-drawer-open{display:flex!important}
- .loox-crop-mobile-bar{display:none}\n .controls-panel .control-group[hidden]{display:none!important}
+ .loox-crop-mobile-bar{display:none}
+ .controls-panel .control-group[hidden]{display:none!important}
  body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar{position:fixed;bottom:env(safe-area-inset-bottom);left:0;right:0;z-index:90;display:flex;align-items:stretch;justify-content:space-around;gap:5px;padding:9px 8px 13px;border-top:1px solid #343044;background:#15141e;box-shadow:0 -8px 30px #0008}
  .loox-crop-mobile-bar button{flex:1;min-width:0;min-height:49px;border:0;border-radius:11px;background:#272535;color:#f5f2ff;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
  .loox-crop-mobile-bar button b{font-size:19px}
  .loox-crop-mobile-bar button.primary{background:#7957e8;color:#fff}
  body:has(#cropperLayout[style*="grid"]) .loox-guide-host,body:has(#cropperLayout[style*="grid"]) .loox-app-footer{display:none!important}
+}
+
+/* Mobile precision cropping: touch-safe edge handles and visible pinch guidance. */
+.loox-crop-gesture-hint{display:none}
+#canvasWrapper{touch-action:none!important;-webkit-user-select:none;user-select:none}
+#canvasWrapper.pinching .crop-box{cursor:zoom-out}
+.crop-box{touch-action:none!important;border:2px solid #fff!important;outline:1px solid #1117;outline-offset:-3px}
+.crop-box .handle{touch-action:none;z-index:2}
+@media(hover:none),(pointer:coarse){
+ .crop-box .handle{width:20px;height:20px;border-radius:6px;border-width:2px;box-shadow:0 0 0 2px #111a}
+ .crop-box .handle.nw{top:-10px;left:-10px}.crop-box .handle.ne{top:-10px;right:-10px}
+ .crop-box .handle.sw{bottom:-10px;left:-10px}.crop-box .handle.se{bottom:-10px;right:-10px}
+ .crop-box .handle.n{top:-10px;left:calc(50% - 10px)}.crop-box .handle.s{bottom:-10px;left:calc(50% - 10px)}
+ .crop-box .handle.w{left:-10px;top:calc(50% - 10px)}.crop-box .handle.e{right:-10px;top:calc(50% - 10px)}
+ .crop-box .handle::after{content:"";position:absolute;inset:-8px}
+}
+@media(max-width:760px){
+ body:has(#cropperLayout[style*="grid"]) .loox-crop-gesture-hint{display:block;position:absolute;left:50%;top:5px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 22px);padding:5px 9px;border-radius:9px;background:#171426e8;color:#f2ecff;font:600 10px/1.4 system-ui;text-align:center;z-index:3;pointer-events:none}
+ body:has(#cropperLayout[style*="grid"]) .canvas-container{touch-action:none!important;padding:24px 16px 74px!important}
+ body:has(#cropperLayout[style*="grid"]) #canvasWrapper{display:inline-block!important;position:relative!important;max-width:100%!important;max-height:100%!important;touch-action:none!important}
+ body:has(#cropperLayout[style*="grid"]) #sourceCanvas{display:block!important;max-width:100%!important;max-height:calc(100dvh - 225px)!important;object-fit:contain!important}
+ body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar button{touch-action:manipulation}
 }
 </style></head>
 <body>
@@ -517,16 +540,18 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
     new ResizeObserver(()=>{if(img.naturalWidth)updateUI()}).observe(canvasWrapper);
 
     function cropAndDownload() {
+      if (!currentFile || !img.naturalWidth) return;
+      // Round edges independently, then clamp: exact edge selections never
+      // add an out-of-bounds transparent pixel in the downloaded image.
+      const left = Math.max(0,Math.min(img.width-1,Math.round(crop.x)));
+      const top = Math.max(0,Math.min(img.height-1,Math.round(crop.y)));
+      const right = Math.max(left+1,Math.min(img.width,Math.round(crop.x+crop.w)));
+      const bottom = Math.max(top+1,Math.min(img.height,Math.round(crop.y+crop.h)));
+      const width = right-left,height=bottom-top;
       const exportCanvas = document.createElement('canvas');
-      exportCanvas.width = Math.round(crop.w);
-      exportCanvas.height = Math.round(crop.h);
-
-      const exportCtx = exportCanvas.getContext('2d');
-      exportCtx.drawImage(
-        img,
-        Math.round(crop.x), Math.round(crop.y), Math.round(crop.w), Math.round(crop.h),
-        0, 0, Math.round(crop.w), Math.round(crop.h)
-      );
+      exportCanvas.width = width;
+      exportCanvas.height = height;
+      exportCanvas.getContext('2d').drawImage(img,left,top,width,height,0,0,width,height);
 
       const baseName = currentFile.name.substring(0, currentFile.name.lastIndexOf('.')) || 'cropped';
       const link = document.createElement('a');
