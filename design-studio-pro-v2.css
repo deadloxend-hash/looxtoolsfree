@@ -68,3 +68,18 @@ body.ds-pro-active .ds-properties{display:none!important}
 body.ds-pro-active.ds-mobile-properties-open .ds-properties{display:block!important;order:2!important;max-height:38dvh!important;overflow:auto!important}
 body.ds-pro-active .ds-canvas-frame{max-width:none!important}
 }
+
+/* Reference-style phone layout: uncluttered photo stage and bottom navigation. */
+@media(max-width:760px){
+body.ds-pro-active .ds-shell{background:#222!important}
+body.ds-pro-active .ds-workspace{background:#242424!important}
+body.ds-pro-active .ds-canvas-viewport{background:#252525!important;background-image:none!important;overflow:auto!important;overscroll-behavior:contain!important}
+body.ds-pro-active .ds-canvas-frame{flex:0 0 auto!important;transform:none!important;max-width:100%!important;max-height:100%!important;transition:none!important}
+body.ds-pro-active .ds-canvas-frame canvas{display:block!important;width:100%!important;height:100%!important;max-width:100%!important;max-height:100%!important;object-fit:contain!important}
+body.ds-pro-active .ds-rail{background:#141414!important;border-top:1px solid #454545!important}
+body.ds-pro-active .ds-rail button{background:transparent!important;color:#c5c5c5!important}
+body.ds-pro-active .ds-rail button.active{background:#343039!important;color:#fff!important}
+body.ds-pro-active .ds-library{border:0!important;border-top:1px solid #4d4d4d!important;border-radius:14px 14px 0 0!important;max-height:min(32dvh,245px)!important;background:#1c1c20!important}
+body.ds-pro-active .ds-toolbar{background:#171717!important;border-bottom:1px solid #3b3b3b!important}
+body.ds-pro-active .ds-statusbar{background:#171717!important;border-top:1px solid #3b3b3b!important}
+}
