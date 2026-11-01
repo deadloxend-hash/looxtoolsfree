@@ -182,6 +182,21 @@ body.converter-editing .workspace-card,body.converter-editing .converter-layout,
  width:14px;height:14px;border:3px solid #eee7ff;border-radius:50%;
  background:#9668e9;box-shadow:0 1px 6px #0009;cursor:grab;
 }
+
+/* Fix: after uploading, the photo workspace must stay fixed without page/canvas scrollbars. */
+html:has(body.converter-editing){height:100%!important;overflow:hidden!important;overscroll-behavior:none}
+body.converter-editing{height:100dvh!important;max-height:100dvh!important;min-height:0!important;overflow:hidden!important;overscroll-behavior:none}
+body.converter-editing main{overflow:hidden!important;min-height:0!important}
+body.converter-editing .workspace-card{min-height:0!important;overflow:hidden!important}
+body.converter-editing .converter-layout,body.converter-editing .converter-workspace{min-height:0!important;overflow:hidden!important}
+body.converter-editing .converter-stage{min-height:0!important;max-height:100%!important;overflow:hidden!important;overscroll-behavior:none}
+body.converter-editing .converter-stage .preview-box{display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;max-height:100%;max-width:100%;overflow:hidden!important}
+body.converter-editing .converter-stage #imagePreview{display:block;max-height:100%!important;max-width:100%!important;object-fit:contain}
+@media(max-width:650px){
+ body.converter-editing .converter-workspace{height:100%!important;min-height:0!important}
+ body.converter-editing .converter-stage{flex:1 1 0!important;height:auto!important;min-height:0!important}
+ body.converter-editing .converter-mobile-bar{flex-shrink:0!important}
+}
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 
