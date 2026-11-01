@@ -195,9 +195,22 @@ function layerManager(){
 }
 function moveLayer(dir){const i=selectedOverlay,j=i+dir;if(i<0||j<0||j>=overlays.length)return;saveHistory();[overlays[i],overlays[j]]=[overlays[j],overlays[i]];selectedOverlay=j;render();showPanel()}
 function cropFields(){
- const fields=document.createElement('div');fields.className='crop-fields';
- const specs=[['X',()=>crop.x,v=>crop.x=clamp(v,0,base.width-crop.w)],['Y',()=>crop.y,v=>crop.y=clamp(v,0,base.height-crop.h)],['Width',()=>crop.w,v=>{crop.w=clamp(v,10,base.width-crop.x)}],['Height',()=>crop.h,v=>{crop.h=clamp(v,10,base.height-crop.y)}],['Right inset',()=>base.width-crop.x-crop.w,v=>crop.x=clamp(base.width-crop.w-v,0,base.width-crop.w)],['Bottom inset',()=>base.height-crop.y-crop.h,v=>crop.y=clamp(base.height-crop.h-v,0,base.height-crop.h)]];
- for(const [name,get,set]of specs){const label=document.createElement('label');label.textContent=name+' (px)';const input=document.createElement('input');input.type='number';input.min='0';input.value=Math.round(get());input.onchange=()=>{set(Number(input.value)||0);positionCrop();showPanel()};label.append(input);fields.append(label)}panel.append(fields)
+ const b=cropBounds(),fields=document.createElement('div');fields.className='crop-fields';
+ const specs=[
+  ['X',()=>crop.x,v=>crop.x=clamp(v,b.x,b.x+b.w-crop.w)],
+  ['Y',()=>crop.y,v=>crop.y=clamp(v,b.y,b.y+b.h-crop.h)],
+  ['Width',()=>crop.w,v=>crop.w=clamp(v,1,b.x+b.w-crop.x)],
+  ['Height',()=>crop.h,v=>crop.h=clamp(v,1,b.y+b.h-crop.y)],
+  ['Right inset',()=>b.x+b.w-crop.x-crop.w,v=>crop.x=clamp(b.x+b.w-crop.w-v,b.x,b.x+b.w-crop.w)],
+  ['Bottom inset',()=>b.y+b.h-crop.y-crop.h,v=>crop.y=clamp(b.y+b.h-crop.h-v,b.y,b.y+b.h-crop.h)]
+ ];
+ for(const [name,get,set]of specs){
+  const label=document.createElement('label');label.textContent=name+' (px)';
+  const input=document.createElement('input');input.type='number';input.min='0';input.value=Math.round(get());
+  input.onchange=()=>{set(Number(input.value)||0);positionCrop();showPanel()};
+  label.append(input);fields.append(label)
+ }
+ panel.append(fields)
 }
 function showLayerControls(kind){
  if(!overlays.length){hint('Add an element to edit its position, color and layer order.');return}
