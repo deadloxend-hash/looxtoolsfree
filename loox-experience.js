@@ -97,8 +97,17 @@
    menu.addEventListener('click',()=>{const toggle=rail.querySelector('.loox-rail-toggle');if(toggle)toggle.click();menu.setAttribute('aria-expanded',String(!compact));});
    header.prepend(menu);
   }
-  const l=(labels[language]||labels.en);controls.innerHTML='<button type="button" class="loox-header-settings" aria-label="'+l.settings+'" title="'+l.settings+'">⚙</button>';
-  controls.querySelector('button').onclick=openSettings;
+  const l=(labels[language]||labels.en);
+  if(homePage){
+   controls.classList.add('loox-overflow-controls');
+   controls.innerHTML='<button type="button" class="loox-overflow-trigger" aria-label="Open appearance and settings menu" aria-expanded="false" aria-controls="loox-overflow-menu">⋮</button><div class="loox-overflow-menu" id="loox-overflow-menu" hidden><div class="loox-overflow-theme"></div><button type="button" class="loox-overflow-settings">⚙ '+l.settings+'</button></div>';
+   const menu=controls.querySelector('.loox-overflow-menu'),button=controls.querySelector('.loox-overflow-trigger');
+   const theme=document.querySelector('#themeControl');if(theme)controls.querySelector('.loox-overflow-theme').append(theme);
+   const close=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false')};
+   button.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden))};
+   controls.querySelector('.loox-overflow-settings').onclick=()=>{close();openSettings()};
+   if(!controls.dataset.menuBound){controls.dataset.menuBound='true';document.addEventListener('click',e=>{if(!controls.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})}
+  }else{controls.innerHTML='<button type="button" class="loox-header-settings" aria-label="'+l.settings+'" title="'+l.settings+'">⚙</button>';controls.querySelector('button').onclick=openSettings;}
  }
  function groupFor(t){
   if(t.kind==='cloud'||t.slug==='prompt-builder')return 2;
