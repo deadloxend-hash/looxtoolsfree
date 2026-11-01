@@ -19,10 +19,10 @@ function layout(){
 const mobileBar=$('resizerMobileBar');
 const cropActions=document.createElement('div');
 cropActions.id='resizerCropTopActions';
-cropActions.innerHTML='<button type="button" id="resizerCropTopCancel">✕ Cancel</button><button type="button" id="resizerCropTopApply">✓ Apply crop</button>';
+cropActions.innerHTML='<button type="button" id="resizerCropTopCancel" aria-label="Cancel crop">✕</button><span>Crop</span><button type="button" id="resizerCropTopApply" aria-label="Apply crop">✓</button>';
 bar.append(cropActions);
-function cropActive(){return !$('resizer-crop-apply')?.hidden}
-function refreshCropUI(){const active=cropActive();document.body.classList.toggle('resizer-cropping',active);cropActions.hidden=!active;bar.querySelector('.resizer-top-actions')?.classList.toggle('resizer-crop-hide',active)}
+function cropActive(){const button=$('resizer-crop-apply');return !!button&&!button.hidden}
+function refreshCropUI(){const active=cropActive();document.body.classList.toggle('resizer-cropping',active);cropActions.hidden=!active;topActions?.classList.toggle('resizer-crop-hide',active)}
 $('resizerCropTopCancel').onclick=()=>{$('resizer-crop-cancel')?.click();refreshCropUI()};
 $('resizerCropTopApply').onclick=()=>{$('resizer-crop-apply')?.click();refreshCropUI()};
 new MutationObserver(refreshCropUI).observe($('resizer-crop-apply'),{attributes:true,attributeFilter:['hidden']});
@@ -47,7 +47,8 @@ function showPanel(name){
   const visible=ids.some(id=>child.id===id||child.querySelector('#'+id));
   child.classList.toggle('resizer-section-hidden',!visible);
  });
- if(name==='crop'){closePanel();$('resizer-crop-start')?.click();refreshCropUI();return}\n controls.classList.add('resizer-panel-open');
+ if(name==='crop'){closePanel();if(!cropActive())$('resizer-crop-start')?.click();refreshCropUI();return}
+ controls.classList.add('resizer-panel-open');
  controls.scrollTop=0;
  mobileBar?.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.panel===name));
 }
