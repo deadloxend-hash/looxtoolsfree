@@ -63,8 +63,20 @@
  });
  function changeLanguage(value){language=value;save('loox-language',language);const u=new URL(location.href);u.searchParams.set('lang',language);history.replaceState(null,'',u);drawRail();applyLanguage();brandCards();loadGuide()}
  function mountHeader(){
-  const header=document.querySelector('.studio-top,.loox-appbar-inner,.suite-header,.work-header,.topbar-inner,.nav-inner,.info-header-inner')||document.querySelector('header');
-  if(!header)return;let controls=document.querySelector('.loox-top-controls');
+  let header=document.querySelector('.studio-top,.loox-appbar-inner,.suite-header,.work-header,.topbar-inner,.nav-inner,.info-header-inner')||document.querySelector('header');
+  if(!header && !document.body.classList.contains('info-page') && file!=='index.html'){
+   header=document.createElement('header');header.className='loox-unified-header';
+   header.innerHTML='<a class="loox-unified-brand" href="index.html"><span class="loox-unified-mark">L</span><span>LOOX <b>Tools</b></span></a>';
+   document.body.prepend(header);document.body.classList.add('loox-has-unified-header');
+  }
+  if(!header)return;
+  if(!document.body.classList.contains('info-page') && file!=='index.html'){
+   header.classList.add('loox-tool-nav-header');
+   if(!header.querySelector('.loox-tool-menu')){
+    const button=document.createElement('button');button.type='button';button.className='loox-tool-menu';button.textContent='☰';button.setAttribute('aria-label','Toggle tools menu');button.onclick=()=>rail.querySelector('.loox-rail-toggle')?.click();header.prepend(button);
+   }
+  }
+  let controls=document.querySelector('.loox-top-controls');
   if(!controls){controls=document.createElement('div');controls.className='loox-top-controls';(header.querySelector('.studio-top-actions,.loox-app-actions,.suite-header-actions,.work-head-actions')||header).append(controls)}
   if(document.body.classList.contains('info-page') && !header.querySelector('.loox-info-menu')){
    const menu=document.createElement('button');menu.type='button';menu.className='loox-info-menu';menu.textContent='☰';menu.setAttribute('aria-label','Open tool categories');menu.setAttribute('aria-expanded',String(!compact));
