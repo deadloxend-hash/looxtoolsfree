@@ -13,6 +13,7 @@
   const preview = $('faceBrushPreview'), stage = $('faceStage');
   let original = null, sourceName = 'loox-face-blurred', history = [], future = [];
   let editing = false, lastPoint = null, strokeLayer = null, activePointer = null;
+  let cropRect=null,cropDrag=null;
   let editMode = "blur"; // "blur" paints a softened image; "erase" restores original pixels.
   let detectorPromise = null, fallbackPromise = null, detecting = false, currentLoad = 0;
   const mobile = () => window.matchMedia('(max-width:800px)').matches;
@@ -77,6 +78,7 @@
       canvas.width = bitmap.width; canvas.height = bitmap.height;
       ctx.drawImage(bitmap,0,0);
       original = snapshot();
+      cropRect=null;$('faceCropFrame').hidden=true;document.body.classList.remove('loox-face-cropping');
       if (typeof bitmap.close === 'function') bitmap.close();
       sourceName = (file.name.replace(/\.[^.]+$/,'') || 'loox-face-blurred').slice(0,90);
       history = [];future = []; updateButtons();
@@ -121,6 +123,7 @@
     canvas.style.width = Math.floor(canvas.width * scale) + 'px';
     canvas.style.height = Math.floor(canvas.height * scale) + 'px';
     movePreview(null);
+    positionFaceCrop();
   }
   new ResizeObserver(() => requestAnimationFrame(fitCanvas)).observe(stage);
 
@@ -209,6 +212,7 @@
       : 'Blur Brush selected. Paint over areas to blur them.');
   }
   canvas.addEventListener('pointerdown',e => {
+    if(cropRect)return; // Ignore touches on the image outside the crop frame.
     if(!original||detecting||!allowPointer(e)||!document.body.classList.contains('loox-face-brush-mode'))return;
     e.preventDefault(); if(editing)return;
     saveUndo();
@@ -369,6 +373,70 @@
       feedback('Image exported as PNG. Review the file at full size before sharing.', 'success');
     },'image/png');
   }
+
+  const faceCropFrame=$('faceCropFrame'),cropActions=$('faceCropActions');
+  function positionFaceCrop(){
+    if(!cropRect||!original){faceCropFrame.hidden=true;return}
+    const r=canvas.getBoundingClientRect(),stageRect=stage.getBoundingClientRect();
+    const x=r.width/canvas.width,y=r.height/canvas.height;
+    faceCropFrame.hidden=false;
+    faceCropFrame.style.left=(r.left-stageRect.left+cropRect.x*x)+'px';
+    faceCropFrame.style.top=(r.top-stageRect.top+cropRect.y*y)+'px';
+    faceCropFrame.style.width=(cropRect.w*x)+'px';
+    faceCropFrame.style.height=(cropRect.h*y)+'px';
+  }
+  function cancelFaceCrop(){
+    cropRect=null;cropDrag=null;faceCropFrame.hidden=true;cropActions.hidden=true;
+    document.body.classList.remove('loox-face-cropping');$('faceCropStart').hidden=false;
+    $('faceMobileCrop').classList.remove('active');
+  }
+  function startFaceCrop(){
+    if(!original||editing||detecting)return;
+    const m=.06;cropRect={x:Math.round(canvas.width*m),y:Math.round(canvas.height*m),w:Math.round(canvas.width*(1-2*m)),h:Math.round(canvas.height*(1-2*m))};
+    document.body.classList.add('loox-face-cropping');$('faceCropStart').hidden=true;cropActions.hidden=false;
+    $('faceMobileCrop').classList.add('active');closeSheet();positionFaceCrop();
+    feedback('Crop: drag inside the frame to move, or pull an edge to resize. Outside taps do nothing.');
+  }
+  $('faceCropStart').addEventListener('click',startFaceCrop);
+  $('faceMobileCrop').addEventListener('click',()=>{
+    if(cropRect){if(mobile())openSheet('crop');else cancelFaceCrop()}
+    else {startFaceCrop();if(mobile())openSheet('crop')}
+  });
+  $('faceCropCancel').addEventListener('click',()=>{cancelFaceCrop();closeSheet()});
+  $('faceCropApply').addEventListener('click',()=>{
+    if(!cropRect||editing||detecting)return;
+    const x=Math.max(0,Math.round(cropRect.x)),y=Math.max(0,Math.round(cropRect.y));
+    const w=Math.min(canvas.width-x,Math.max(1,Math.round(cropRect.w))),h=Math.min(canvas.height-y,Math.max(1,Math.round(cropRect.h)));
+    if(w<2||h<2)return;
+    const cropped=document.createElement('canvas');cropped.width=w;cropped.height=h;cropped.getContext('2d').drawImage(canvas,x,y,w,h,0,0,w,h);
+    const orig=document.createElement('canvas');orig.width=w;orig.height=h;orig.getContext('2d').drawImage(original,x,y,w,h,0,0,w,h);
+    history=[];future=[];canvas.width=w;canvas.height=h;ctx.drawImage(cropped,0,0);original=orig;
+    cancelFaceCrop();closeSheet();updateButtons();requestAnimationFrame(fitCanvas);
+    feedback('Crop applied. Save PNG to download your cropped photo.','success');
+  });
+  faceCropFrame.addEventListener('pointerdown',e=>{
+    if(!cropRect||!allowPointer(e))return;
+    e.preventDefault();e.stopPropagation();
+    const edge=e.target.dataset.edge||'move',start={...cropRect};
+    cropDrag={id:e.pointerId,edge,x:e.clientX,y:e.clientY,start};
+    faceCropFrame.setPointerCapture(e.pointerId);
+  });
+  faceCropFrame.addEventListener('pointermove',e=>{
+    if(!cropDrag||cropDrag.id!==e.pointerId||!cropRect)return;
+    e.preventDefault();const d=cropDrag,r=canvas.getBoundingClientRect();
+    const dx=(e.clientX-d.x)*canvas.width/Math.max(1,r.width),dy=(e.clientY-d.y)*canvas.height/Math.max(1,r.height),a=d.start,min=12;
+    let l=a.x,t=a.y,right=a.x+a.w,bottom=a.y+a.h;
+    if(d.edge==='move'){l=Math.max(0,Math.min(canvas.width-a.w,a.x+dx));t=Math.max(0,Math.min(canvas.height-a.h,a.y+dy));right=l+a.w;bottom=t+a.h}
+    else{
+      if(d.edge.includes('w'))l=Math.max(0,Math.min(right-min,a.x+dx));
+      if(d.edge.includes('e'))right=Math.max(l+min,Math.min(canvas.width,a.x+a.w+dx));
+      if(d.edge.includes('n'))t=Math.max(0,Math.min(bottom-min,a.y+dy));
+      if(d.edge.includes('s'))bottom=Math.max(t+min,Math.min(canvas.height,a.y+a.h+dy));
+    }
+    cropRect={x:l,y:t,w:right-l,h:bottom-t};positionFaceCrop();
+  });
+  for(const event of ['pointerup','pointercancel','lostpointercapture'])faceCropFrame.addEventListener(event,()=>cropDrag=null);
+
   $('faceDownload').addEventListener('click',download);
   mobileSave.addEventListener('click',download);
 
