@@ -17,6 +17,16 @@ function layout(){
 }
 // Each mobile tool opens only its own settings, leaving the image visible.
 const mobileBar=$('resizerMobileBar');
+const cropActions=document.createElement('div');
+cropActions.id='resizerCropTopActions';
+cropActions.innerHTML='<button type="button" id="resizerCropTopCancel">✕ Cancel</button><button type="button" id="resizerCropTopApply">✓ Apply crop</button>';
+bar.append(cropActions);
+function cropActive(){return !$('resizer-crop-apply')?.hidden}
+function refreshCropUI(){const active=cropActive();document.body.classList.toggle('resizer-cropping',active);cropActions.hidden=!active;bar.querySelector('.resizer-top-actions')?.classList.toggle('resizer-crop-hide',active)}
+$('resizerCropTopCancel').onclick=()=>{$('resizer-crop-cancel')?.click();refreshCropUI()};
+$('resizerCropTopApply').onclick=()=>{$('resizer-crop-apply')?.click();refreshCropUI()};
+new MutationObserver(refreshCropUI).observe($('resizer-crop-apply'),{attributes:true,attributeFilter:['hidden']});
+
 const panelTitle=document.createElement('div');panelTitle.className='resizer-panel-title';panelTitle.innerHTML='<strong id="resizerPanelName">Resize</strong><button type="button" id="resizerPanelClose" aria-label="Close settings">✕</button>';
 controls.prepend(panelTitle);
 const sections={
@@ -37,18 +47,29 @@ function showPanel(name){
   const visible=ids.some(id=>child.id===id||child.querySelector('#'+id));
   child.classList.toggle('resizer-section-hidden',!visible);
  });
- controls.classList.add('resizer-panel-open');
+ if(name==='crop'){closePanel();$('resizer-crop-start')?.click();refreshCropUI();return}\n controls.classList.add('resizer-panel-open');
  controls.scrollTop=0;
  mobileBar?.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.panel===name));
 }
 function closePanel(){controls.classList.remove('resizer-panel-open');activePanel='';mobileBar?.querySelectorAll('button').forEach(b=>b.classList.remove('active'))}
 $('resizerPanelClose').addEventListener('click',closePanel);
 [['resizerMobileSize','size'],['resizerMobilePresets','presets'],['resizerMobileCrop','crop']].forEach(([id,name])=>{const b=$(id);b.dataset.panel=name;b.addEventListener('click',()=>showPanel(name))});
-$('resizerMobileSave').addEventListener('click',()=>{closePanel();$('work-export').click()});
+$('resizerMobileSave').addEventListener('click',()=>{
+ closePanel();
+ if(cropActive()){$('resizerCropTopApply').click();return}
+ const previous=new Set([...document.querySelectorAll('#work-results a[href]')].map(a=>a.href));
+ const observer=new MutationObserver(()=>{
+  const link=[...document.querySelectorAll('#work-results a[href]')].find(a=>!previous.has(a.href)&&a.href.startsWith('blob:'));
+  if(link){observer.disconnect();link.click()}
+ });
+ observer.observe($('work-results'),{childList:true,subtree:true});
+ setTimeout(()=>observer.disconnect(),12000);
+ $('work-export').click();
+});
 document.addEventListener('pointerdown',e=>{if(controls.classList.contains('resizer-panel-open')&&!controls.contains(e.target)&&!mobileBar?.contains(e.target))closePanel()});
 const watcher=new MutationObserver(layout);
 watcher.observe(canvas,{attributes:true,attributeFilter:['hidden','width','height']});
 window.addEventListener('resize',layout);window.addEventListener('pageshow',layout);
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
-layout();
+layout();refreshCropUI();
 })();
