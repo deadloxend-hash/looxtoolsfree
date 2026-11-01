@@ -458,3 +458,44 @@ body.experience-shell .work-note{line-height:1.6}
  body.experience-shell .loox-tool-nav-header .loox-top-controls select{display:none!important}
  body.experience-shell .work-upload{padding:20px!important}
 }
+
+
+/* Breadcrumb navigation: subtle pill trail across tool pages */
+body.experience-shell .work-note[aria-label="Breadcrumb"],
+body.experience-shell nav[aria-label="Breadcrumb"],
+body.experience-shell .breadcrumbs,
+body.experience-shell .breadcrumb,
+body.experience-shell .tool-breadcrumbs{
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;gap:9px!important;
+ width:fit-content!important;max-width:100%!important;margin:16px 0 20px!important;
+ padding:9px 13px!important;border:1px solid #3a3853!important;border-radius:13px!important;
+ background:linear-gradient(110deg,rgba(133,92,220,.13),rgba(48,57,86,.3))!important;
+ color:#9b9eb7!important;font:600 13px/1.6 system-ui!important;
+ box-shadow:0 4px 20px rgba(0,0,0,.07)!important
+}
+body.experience-shell .work-note[aria-label="Breadcrumb"] a,
+body.experience-shell nav[aria-label="Breadcrumb"] a,
+body.experience-shell .breadcrumbs a,
+body.experience-shell .breadcrumb a,
+body.experience-shell .tool-breadcrumbs a{
+ display:inline-flex!important;align-items:center!important;color:#d5c4ff!important;
+ font:650 13px/1.5 system-ui!important;text-decoration:none!important;
+ border-radius:7px!important;padding:3px 6px!important;transition:background .15s ease,color .15s ease
+}
+body.experience-shell .work-note[aria-label="Breadcrumb"] a:hover,
+body.experience-shell nav[aria-label="Breadcrumb"] a:hover,
+body.experience-shell .breadcrumbs a:hover,
+body.experience-shell .breadcrumb a:hover,
+body.experience-shell .tool-breadcrumbs a:hover{background:#59458c!important;color:#fff!important}
+@media(max-width:600px){
+ body.experience-shell .work-note[aria-label="Breadcrumb"],
+ body.experience-shell nav[aria-label="Breadcrumb"],
+ body.experience-shell .breadcrumbs,
+ body.experience-shell .breadcrumb,
+ body.experience-shell .tool-breadcrumbs{gap:5px!important;margin:12px 0 17px!important;padding:7px 9px!important;font-size:12px!important}
+ body.experience-shell .work-note[aria-label="Breadcrumb"] a,
+ body.experience-shell nav[aria-label="Breadcrumb"] a,
+ body.experience-shell .breadcrumbs a,
+ body.experience-shell .breadcrumb a,
+ body.experience-shell .tool-breadcrumbs a{font-size:12px!important}
+}
