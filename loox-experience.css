@@ -646,3 +646,6 @@ body.loox-home-rail .topbar .loox-home-rail-button:focus-visible{background:rgba
  body.loox-home-rail .topbar .loox-home-rail-button,
  body.loox-home-rail:not(.rail-hidden) .topbar .loox-home-rail-button{position:static!important;left:auto!important;top:auto!important;width:36px!important;height:36px!important;min-width:36px!important;flex-basis:36px!important}
 }
+
+/* Precisely center vertical ellipsis inside homepage overflow button. */
+body.loox-home-rail .topbar .loox-overflow-trigger{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:0!important;line-height:1!important;font-family:Arial,system-ui,sans-serif!important;font-size:25px!important;letter-spacing:0!important;text-indent:0!important}
