@@ -249,7 +249,13 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  }
  body.loox-crop-active .loox-crop-mobile-bar{display:flex!important;z-index:9999!important}
 }
-</style><meta name="description" content="Crop images online with draggable side and corner handles, aspect ratios, precise pixel fields and a live preview. Download a separate crop."></head>
+</style><meta name="description" content="Crop images online with draggable side and corner handles, aspect ratios, precise pixel fields and a live preview. Download a separate crop."><style id="loox-crop-fixed-stage-v8">
+@media(max-width:760px){
+body.loox-crop-active #cropperLayout{display:block!important;position:relative!important;height:100%!important;min-height:0!important;overflow:hidden!important}
+body.loox-crop-active #cropperLayout>.canvas-container{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;max-height:none!important;min-height:0!important;flex:none!important;box-sizing:border-box!important;padding:54px 8px 10px!important}
+body.loox-crop-active #cropperLayout>.controls-panel.loox-crop-drawer-open{position:absolute!important;bottom:7px!important;left:7px!important;right:7px!important;max-height:min(27dvh,190px)!important;z-index:85!important}
+}
+</style></head>
 <body>
 
   <!-- Left Sidebar Navigation -->
