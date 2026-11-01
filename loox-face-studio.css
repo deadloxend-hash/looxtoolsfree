@@ -19,7 +19,7 @@
 .loox-face-body{display:flex;flex:1;min-height:0;gap:14px}
 .loox-face-stage{background:#080b13;border:1px solid #292e40;border-radius:15px;position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:380px;overflow:hidden;padding:13px}
 .loox-face-stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.2;background-image:linear-gradient(45deg,#34384a 25%,transparent 25%),linear-gradient(-45deg,#34384a 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#34384a 75%),linear-gradient(-45deg,transparent 75%,#34384a 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
-#faceCanvas{display:block;position:relative;max-width:100%;max-height:64dvh;width:auto;height:auto;object-fit:contain;border-radius:5px;box-shadow:0 10px 30px #0009;touch-action:none;cursor:crosshair}
+#faceCanvas{display:block;position:relative;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:5px;box-shadow:0 10px 30px #0009;touch-action:none;cursor:crosshair}
 .loox-face-brush-preview{position:absolute;pointer-events:none;transform:translate(-50%,-50%);border:2px solid #fff;box-shadow:0 0 0 1px #000,0 0 0 2px #0005;border-radius:50%;z-index:3}
 .loox-face-tools{width:300px;max-width:300px;min-width:260px;flex-shrink:0;border:1px solid #32354b;background:linear-gradient(160deg,#202133,#151821);border-radius:15px;padding:15px;display:flex;flex-direction:column;gap:15px;overflow:auto;max-height:calc(66dvh + 38px)}
 .loox-face-tools h2{font-size:16px;margin:0;color:#fff}
