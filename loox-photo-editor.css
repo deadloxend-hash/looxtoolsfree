@@ -49,3 +49,5 @@
  .stage-head .privacy{display:none}
  .stage-head b{max-width:calc(100vw - 80px)}
 }
+
+@media(max-width:430px){.brand b{display:none}.topbar{gap:4px}.top-actions .btn{padding:7px 8px}.top-actions{gap:2px}}
