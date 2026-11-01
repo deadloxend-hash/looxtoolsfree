@@ -38,3 +38,33 @@ body.ds-pro-active>.loox-guide-host{margin-left:0!important}
 @media(max-width:1050px){.ds-shell{grid-template-columns:66px 250px minmax(0,1fr)}}
 @media(max-width:760px){body.ds-pro-active{overflow:hidden}.ds-shell{height:calc(100dvh - 64px);min-height:0;grid-template-columns:1fr;grid-template-rows:58px minmax(160px,34%) minmax(0,1fr)}.ds-rail{position:static;flex-direction:row;overflow-x:auto;overflow-y:hidden}.ds-rail button{min-width:58px}.ds-library{max-height:none;overflow:auto}.ds-workspace{min-height:0}.ds-toolbar .ds-home span{display:none}.ds-toolbar .ds-home{min-width:38px;width:38px;padding:0}.ds-statusbar>span:nth-child(2){display:none}}
 
+
+/* Mobile studio: fixed canvas, scrollable bottom tool rail and contextual drawer. */
+@media(max-width:760px){
+html:has(body.ds-pro-active){height:100%;overflow:hidden!important}
+body.ds-pro-active{height:100dvh!important;overflow:hidden!important}
+body.ds-pro-active .top{height:56px!important;min-height:56px!important;position:relative!important;padding:0 12px!important}
+body.ds-pro-active .top .brand{font-size:15px!important}
+body.ds-pro-active .ds-shell{display:flex!important;flex-direction:column!important;height:calc(100dvh - 56px)!important;min-height:0!important;width:100%!important;overflow:hidden!important}
+body.ds-pro-active .ds-workspace{order:1!important;display:grid!important;grid-template-rows:44px minmax(0,1fr) 34px!important;flex:1 1 0!important;min-height:0!important;overflow:hidden!important}
+body.ds-pro-active .ds-toolbar{padding:0 7px!important;gap:5px!important;overflow-x:auto!important;scrollbar-width:none}
+body.ds-pro-active .ds-toolbar button{flex:0 0 34px!important;height:32px!important}
+body.ds-pro-active .ds-toolbar .ds-doc-title{min-width:100px!important;max-width:135px!important;font-size:12px!important}
+body.ds-pro-active .ds-toolbar .ds-export{flex:0 0 auto!important;padding:0 10px!important;width:auto!important}
+body.ds-pro-active .ds-canvas-viewport{min-height:0!important;min-width:0!important;overflow:auto!important;padding:12px!important;display:grid!important;place-items:center!important}
+body.ds-pro-active .ds-statusbar{min-height:34px!important;padding:0 8px!important;gap:7px!important;font-size:10px!important;position:relative!important}
+body.ds-pro-active .ds-statusbar>span:nth-child(2){display:none!important}
+body.ds-pro-active .ds-statusbar input{max-width:90px!important}
+body.ds-pro-active .ds-rail{order:3!important;position:relative!important;top:auto!important;z-index:11!important;flex:0 0 auto!important;display:flex!important;flex-direction:row!important;gap:5px!important;align-items:stretch!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none;white-space:nowrap!important;padding:7px 6px calc(8px + env(safe-area-inset-bottom))!important;min-height:73px!important;background:#121421!important;border-top:1px solid #36334a!important}
+body.ds-pro-active .ds-rail button{flex:0 0 67px!important;width:67px!important;min-width:67px!important;min-height:54px!important;max-height:62px!important;border-radius:11px!important;font-size:10px!important}
+body.ds-pro-active .ds-rail button span{font-size:21px!important}
+body.ds-pro-active .ds-rail button.active{background:#443368!important;color:#fff!important}
+body.ds-pro-active .ds-library{order:2!important;display:none!important;flex:0 0 auto!important;position:relative!important;max-height:min(38dvh,290px)!important;min-height:0!important;overflow:auto!important;border:1px solid #62517e!important;border-radius:15px 15px 0 0!important;background:#171a2a!important}
+body.ds-pro-active.ds-mobile-panel-open .ds-library{display:block!important}
+body.ds-pro-active .ds-panel-head{padding:11px 16px!important}
+body.ds-pro-active .ds-panel-body{padding:8px 14px 16px!important}
+body.ds-pro-active .ds-template-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important}
+body.ds-pro-active .ds-properties{display:none!important}
+body.ds-pro-active.ds-mobile-properties-open .ds-properties{display:block!important;order:2!important;max-height:38dvh!important;overflow:auto!important}
+body.ds-pro-active .ds-canvas-frame{max-width:none!important}
+}
