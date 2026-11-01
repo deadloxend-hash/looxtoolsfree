@@ -100,9 +100,10 @@
   const l=(labels[language]||labels.en);
   if(homePage){
    controls.classList.add('loox-overflow-controls');
+   const retainedTheme=document.querySelector('#themeControl');if(retainedTheme)retainedTheme.remove();
    controls.innerHTML='<button type="button" class="loox-overflow-trigger" aria-label="Open appearance and settings menu" aria-expanded="false" aria-controls="loox-overflow-menu">⋮</button><div class="loox-overflow-menu" id="loox-overflow-menu" hidden><div class="loox-overflow-theme"></div><button type="button" class="loox-overflow-settings">⚙ '+l.settings+'</button></div>';
    const menu=controls.querySelector('.loox-overflow-menu'),button=controls.querySelector('.loox-overflow-trigger');
-   const theme=document.querySelector('#themeControl');if(theme)controls.querySelector('.loox-overflow-theme').append(theme);
+   if(retainedTheme)controls.querySelector('.loox-overflow-theme').append(retainedTheme);
    const close=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false')};
    button.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden))};
    controls.querySelector('.loox-overflow-settings').onclick=()=>{close();openSettings()};
