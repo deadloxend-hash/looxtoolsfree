@@ -6,7 +6,7 @@ const $=s=>document.querySelector(s),controls=$('#work-controls'),preview=$('#wo
 const shell=document.createElement('div');shell.className='work-editor-toolbar';shell.hidden=true;shell.innerHTML='<button type="button" class="work-new-photo">＋ New photo</button><div class="work-tool-strip" role="tablist" aria-label="Image editing tools"></div><button type="button" class="work-save-mobile">Export ↓</button>';document.querySelector('.work-main').append(shell);const strip=shell.querySelector('.work-tool-strip');let activeToolButton=null;
 function editorMode(){
  document.documentElement.style.scrollBehavior='auto';document.documentElement.scrollTop=0;document.body.scrollTop=0;window.scrollTo(0,0);
- document.body.classList.add('work-editing');shell.hidden=false;stage.hidden=false;
+ document.body.classList.add('work-editing');shell.hidden=false;stage.hidden=tool.op==='video';
  requestAnimationFrame(()=>{window.scrollTo(0,0);drawOverlay()});
 }
 function createToolStrip(){
