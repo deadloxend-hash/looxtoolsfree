@@ -11,9 +11,11 @@ controls.innerHTML='<h2>Local upscale settings</h2>'+
  '<label>Sharpen strength <output id="u-sharp-val">45%</output><input class="work-control" type="range" id="u-sharp" min="0" max="100" value="45"></label>'+
  '<label>Clarity <output id="u-clarity-val">30%</output><input class="work-control" type="range" id="u-clarity" min="0" max="100" value="30"></label>'+
  '<label>Noise reduction <output id="u-noise-val">15%</output><input class="work-control" type="range" id="u-noise" min="0" max="100" value="15"></label>'+
+ '<div style="padding:12px;border:1px solid #5e4d86;border-radius:12px;background:#252039"><strong>✦ LOOX Face Clarity</strong><p class="work-note" style="margin:4px 0 9px">Private one-tap portrait enhancement using local detail filters. No face recognition or cloud AI.</p><button type="button" class="work-button" id="u-face" style="width:100%">✦ Enhance face clarity</button><label style="margin-top:9px;display:flex;gap:7px;align-items:center"><input type="checkbox" id="u-face-mode"> Apply portrait clarity preset on upscale</label></div>'+
  '<label>Output format <select class="work-control" id="u-format"><option value="image/png">PNG (lossless)</option><option value="image/jpeg">JPG (smaller file)</option><option value="image/webp">WebP</option></select></label>'+
  '<p class="work-note">100% free • Runs locally • No upload • Sharpening and interpolation, not a trained AI model. These filters cannot recover genuinely missing detail.</p>';
 for(const key of ['sharp','clarity','noise'])$('u-'+key).addEventListener('input',e=>$('u-'+key+'-val').textContent=e.target.value+'%');
+$('u-face').addEventListener('click',()=>{const active=$('u-face-mode');active.checked=!active.checked;$('u-sharp').value=active.checked?'36':'45';$('u-clarity').value=active.checked?'42':'30';$('u-noise').value=active.checked?'24':'15';for(const k of ['sharp','clarity','noise'])$('u-'+k+'-val').textContent=$('u-'+k).value+'%';$('u-face').textContent=active.checked?'✓ Portrait clarity enabled':'✦ Enhance face clarity';message(active.checked?'LOOX portrait clarity preset active — applies to the whole photo, entirely on your device.':'Portrait clarity preset off.');});
 function preview(c){const max=1300,scale=Math.min(1,max/Math.max(c.width,c.height));view.width=Math.max(1,Math.round(c.width*scale));view.height=Math.max(1,Math.round(c.height*scale));view.getContext('2d').drawImage(c,0,0,view.width,view.height);view.hidden=false;empty.hidden=true}
 function resetResult(){results.replaceChildren();if(current?.url)URL.revokeObjectURL(current.url);current=null}
 function openFile(f){if(!f)return;if(!f.type.startsWith('image/'))return message('Choose a PNG, JPG or WebP image.',true);if(f.size>35*1024*1024)return message('Choose an image smaller than 35 MB.',true);
@@ -45,7 +47,7 @@ try{
  message('Enlarging image locally…');await yieldUI();if(stopped)return;
  const out=canvas(w,h),cx=out.getContext('2d',{willReadFrequently:true});cx.imageSmoothingEnabled=true;cx.imageSmoothingQuality='high';
  cx.drawImage(photo,0,0,w,h);progress.value=40;await yieldUI();if(stopped)return;
- message('Applying clarity and detail enhancement…');
+ message($('u-face-mode').checked?'Applying LOOX portrait clarity filters locally…':'Applying clarity and detail enhancement…');
  filter(out,Number($('u-noise').value),Number($('u-sharp').value),Number($('u-clarity').value));progress.value=80;await yieldUI();if(stopped)return;
  const format=$('u-format').value,blob=await new Promise(resolve=>out.toBlob(resolve,format,.93));if(!blob)throw Error('Image export failed.');
  const url=URL.createObjectURL(blob);current={url};const card=document.createElement('div'),a=document.createElement('a');a.className='work-button';a.href=url;a.download=name+'-loox-'+factor+'x.'+({ 'image/png':'png','image/jpeg':'jpg','image/webp':'webp'}[format]);a.textContent='Download enhanced image ↓';a.style.display='inline-block';a.style.textDecoration='none';card.append(a);results.append(card);
