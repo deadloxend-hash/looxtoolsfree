@@ -101,12 +101,12 @@
   if(homePage){
    controls.classList.add('loox-overflow-controls');
    const retainedTheme=document.querySelector('#themeControl');if(retainedTheme)retainedTheme.remove();
-   controls.innerHTML='<button type="button" class="loox-overflow-trigger" aria-label="Open appearance and settings menu" aria-expanded="false" aria-controls="loox-overflow-menu">⋮</button><div class="loox-overflow-menu" id="loox-overflow-menu" hidden><div class="loox-overflow-theme"></div><button type="button" class="loox-overflow-settings">⚙ '+l.settings+'</button></div>';
+   controls.innerHTML='<button type="button" class="loox-overflow-trigger" aria-label="Open navigation and settings menu" aria-expanded="false" aria-controls="loox-overflow-menu">⋮</button><div class="loox-overflow-menu" id="loox-overflow-menu" hidden><nav class="loox-overflow-links" aria-label="More homepage links"><a href="#tools">Explore tools</a><a href="#favorites">Favorites</a><a href="#privacy">Privacy</a></nav><div class="loox-overflow-theme"></div><button type="button" class="loox-overflow-settings">⚙ '+l.settings+'</button></div>';
    const menu=controls.querySelector('.loox-overflow-menu'),button=controls.querySelector('.loox-overflow-trigger');
    if(retainedTheme)controls.querySelector('.loox-overflow-theme').append(retainedTheme);
    const close=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false')};
    button.onclick=e=>{e.stopPropagation();menu.hidden=!menu.hidden;button.setAttribute('aria-expanded',String(!menu.hidden))};
-   controls.querySelector('.loox-overflow-settings').onclick=()=>{close();openSettings()};
+   controls.querySelector('.loox-overflow-settings').onclick=()=>{close();openSettings()};controls.querySelectorAll('.loox-overflow-links a').forEach(a=>a.addEventListener('click',close));
    if(!controls.dataset.menuBound){controls.dataset.menuBound='true';document.addEventListener('click',e=>{if(!controls.contains(e.target))close()});document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})}
    }else{controls.replaceChildren();controls.hidden=true;}
  }
