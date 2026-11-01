@@ -3,6 +3,11 @@ const $=id=>document.getElementById(id);
 const input=$('work-file'),bar=$('resizerEditorTopbar'),newButton=$('resizerNewPhoto'),canvas=$('work-canvas'),controls=$('work-controls');
 if(!input||!bar||!newButton||!canvas||!controls)return;
 newButton.addEventListener('click',()=>input.click());
+const topActions=$('resizerTopActions'),exportButton=$('work-export'),cancelButton=$('work-cancel');
+if(topActions&&exportButton&&cancelButton){
+ topActions.append(exportButton,cancelButton);
+}
+
 function layout(){
  const ready=!canvas.hidden&&canvas.width>1&&canvas.height>1;
  document.body.classList.toggle('resizer-loaded',ready);bar.hidden=!ready;
