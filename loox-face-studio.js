@@ -261,6 +261,11 @@
           });
         }
         if(!window.faceapi)throw new Error('face-api.js was unavailable');
+        // CPU works on browsers and devices where WebGL is disabled.
+        if (window.faceapi.tf?.setBackend) {
+          await window.faceapi.tf.setBackend('cpu');
+          await window.faceapi.tf.ready();
+        }
         if(!window.faceapi.nets.tinyFaceDetector.isLoaded){
           await window.faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.13/model');
         }
@@ -342,7 +347,7 @@
       await new Promise(requestAnimationFrame);
       const {faces,engine,errors}=await detectFaces();
       if(!faces.length){
-        feedback(errors.length===2?'AI detection could not load. Check your connection and use the manual brush.':'No faces found. Try a clearer photo or use the manual brush.', 'error');
+        feedback(errors.length===2?'AI detection could not load: '+errors.join('; ')+'. Use the manual brush.':'No faces found. Try a clearer photo or use the manual brush.', 'error');
         return;
       }
       autoBlurFaces(faces);
