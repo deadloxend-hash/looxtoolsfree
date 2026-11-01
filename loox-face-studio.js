@@ -437,6 +437,7 @@
   });
   for(const event of ['pointerup','pointercancel','lostpointercapture'])faceCropFrame.addEventListener(event,()=>cropDrag=null);
 
+  $('faceMobileReset').addEventListener('click',()=>{if(cropRect)cancelFaceCrop();reset();closeSheet()});
   $('faceDownload').addEventListener('click',download);
   mobileSave.addEventListener('click',download);
 
