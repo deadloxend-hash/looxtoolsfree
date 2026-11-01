@@ -70,6 +70,14 @@
    document.body.prepend(header);document.body.classList.add('loox-has-unified-header');
   }
   if(!header)return;
+  // Give every tool the same homepage brand, hamburger and settings arrangement.
+  // Only replace simple tool headers; preserve editor toolbars and their handlers.
+  if(file!=='index.html' && !document.body.classList.contains('info-page') &&
+     header.matches('.work-header,.suite-header,.loox-unified-header,.topbar,.topbar-inner,.nav-inner') &&
+     !header.querySelector('input,select,textarea,canvas,.editor-toolbar')){
+    header.classList.add('loox-standard-tool-header');
+    header.innerHTML='<a class="loox-standard-brand" href="index.html" aria-label="LOOX Tools home"><span class="loox-standard-mark">L</span><span class="loox-standard-name">LOOX<span>Tools</span><small>FREE ONLINE WORKSPACE</small></span></a>';
+  }
   if(!document.body.classList.contains('info-page') && file!=='index.html'){
    header.classList.add('loox-tool-nav-header');
    if(!header.querySelector('.loox-tool-menu')){
