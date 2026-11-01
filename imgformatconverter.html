@@ -88,6 +88,49 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 @media(max-width:900px){body>aside{width:220px!important;padding:16px!important}body>aside .brand span,body>aside .nav-section-title,body>aside .nav-item span+span{display:initial!important}body>aside .nav-section-title{display:block!important}body>aside .nav-item{justify-content:flex-start!important;padding:10px 12px!important}main{margin-left:220px!important;padding:22px!important}}
 @media(max-width:620px){body>aside{width:68px!important;padding:12px 8px!important}body>aside .brand{justify-content:center}body>aside .brand span,body>aside .nav-section-title,body>aside .nav-item span+span{display:none!important}body>aside .nav-item{justify-content:center!important;padding:12px 4px!important}main{margin-left:68px!important;padding:14px!important}}
 
+
+/* LOOX converter workspace: Face Blur-inspired responsive editor */
+body.converter-editing{height:100dvh;overflow:hidden}
+body.converter-editing main{height:100dvh;min-height:0;padding:14px 18px 12px;overflow:hidden}
+body.converter-editing .hero{display:none}
+body.converter-editing .workspace-card{min-height:0;flex:1;padding:14px;overflow:hidden}
+body.converter-editing .converter-layout{display:flex!important;flex:1;min-height:0;gap:12px;margin:0}
+.converter-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#ddd5f8;flex:0 0 auto}
+.converter-new{background:#282b40;border:1px solid #444960;color:#fff;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}
+.converter-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(255px,310px);gap:12px;min-height:0;flex:1}
+.converter-stage{min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;border:1px solid #30364b;border-radius:12px;background-color:#10131f;background-image:linear-gradient(45deg,#191d2d 25%,transparent 25%),linear-gradient(-45deg,#191d2d 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#191d2d 75%),linear-gradient(-45deg,transparent 75%,#191d2d 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;padding:12px}
+.converter-stage .preview-box{max-height:100%;min-height:0;max-width:100%;flex:0 1 auto}
+.converter-stage .preview-box img{max-width:100%;max-height:calc(100dvh - 180px);object-fit:contain}
+.converter-preview-note{font-size:11px;color:#b1bad1;text-align:center;background:#111827dd;border-radius:8px;padding:5px 8px}
+.converter-inspector{min-height:0;overflow-y:auto;overscroll-behavior:contain;background:#1b1d2d;border:1px solid #38364f;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:12px}
+.converter-inspector h2{font-size:15px;margin:0}.converter-inspector>p{font-size:12px;color:#b7bdd1;margin:0}
+.converter-inspector .settings-grid{display:flex;flex-direction:column;gap:14px;padding:10px;border-radius:10px;min-width:0}
+.converter-inspector .setting-group{min-width:0}
+.converter-inspector .file-info{display:grid;gap:8px;min-width:0;overflow-wrap:anywhere}
+.converter-mobile-bar{display:none}
+@media(max-width:900px){
+ body.converter-editing main{margin-left:0!important;padding:6px!important;height:100dvh!important}
+ body.converter-editing>aside{display:none!important}
+ body.converter-editing .workspace-card{padding:6px!important}
+ body.converter-editing .converter-layout{gap:6px}
+ .converter-workspace{grid-template-columns:minmax(0,1fr) 270px}
+}
+@media(max-width:650px){
+ body.converter-editing{height:100dvh;overflow:hidden}
+ body.converter-editing .converter-layout{gap:6px}
+ .converter-topbar{padding:5px 7px;min-height:40px}
+ .converter-workspace{display:flex;flex:1;min-height:0;position:relative}
+ .converter-stage{width:100%;height:100%;padding:8px 8px 10px;gap:4px}
+ .converter-stage .preview-box img{max-height:calc(100dvh - 190px)}
+ .converter-preview-note{font-size:10px;padding:4px}
+ .converter-inspector{display:none;position:absolute;inset:auto 4px 3px;z-index:12;max-height:min(65dvh,410px);overflow-y:auto;box-shadow:0 -14px 35px #000b;padding:14px;border-radius:16px}
+ .converter-inspector.open{display:flex}
+ .converter-mobile-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px 2px calc(7px + env(safe-area-inset-bottom));flex:0 0 auto}
+ .converter-mobile-bar button{color:#eee9ff;border:0;border-radius:10px;background:#29263e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:54px;font-size:11px;font-weight:700;cursor:pointer}
+ .converter-mobile-bar button b{font-size:20px}
+ .converter-mobile-bar button.converter-mobile-save{background:#7554bc;color:white}
+}
+@media(max-height:540px) and (min-width:651px){.converter-stage .preview-box img{max-height:calc(100dvh - 120px)}}
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 
@@ -143,10 +186,13 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
       <!-- Converter Configuration Panel -->
       <div class="converter-layout" id="converterLayout">
-        <div class="preview-box">
-          <img id="imagePreview" alt="Uploaded Image Preview">
-        </div>
-
+        <div class="converter-topbar"><strong>LOOX · Image converter</strong><button type="button" class="converter-new" id="converterNew">＋ New photo</button></div>
+        <div class="converter-workspace">
+          <div class="converter-stage"><div class="preview-box">
+            <img id="imagePreview" alt="Uploaded Image Preview">
+          </div><p class="converter-preview-note">Original image preview · conversion settings do not add a canvas background</p></div>
+          <div class="converter-inspector" id="converterInspector">
+            <h2>Convert image</h2><p>Choose a format and download your image.</p>
         <div class="settings-grid">
           <div class="setting-group">
             <label for="formatSelect">Target Output Format</label>
@@ -175,6 +221,14 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
         <button class="btn btn-primary" onclick="convertAndDownload()">⬇️ Convert & Download Image</button>
         <button class="btn btn-secondary" onclick="resetConverter()">🔄 Choose Different Image</button>
+          </div>
+        </div>
+        <nav class="converter-mobile-bar" aria-label="Image converter tools">
+          <button type="button" id="converterMobileFormat"><b>▧</b><span>Format</span></button>
+          <button type="button" id="converterMobileQuality"><b>◐</b><span>Quality</span></button>
+          <button type="button" id="converterMobileInfo"><b>ⓘ</b><span>Info</span></button>
+          <button type="button" id="converterMobileDownload" class="converter-mobile-save"><b>↓</b><span>Save</span></button>
+        </nav>
       </div>
     </div>
   </main>
@@ -227,6 +281,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
         imagePreview.src = fileUrl;
         dropZone.style.display = 'none';
         converterLayout.style.display = 'flex';
+        document.body.classList.add('converter-editing');
+        document.getElementById('converterInspector').classList.remove('open');
         scheduleLivePreview();
       };
       loadedImage.src = fileUrl;
@@ -324,9 +380,25 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
       previewUrl = null;
       imagePreview.removeAttribute('src');
       converterLayout.style.display = 'none';
+      document.body.classList.remove('converter-editing');
+      document.getElementById('converterInspector').classList.remove('open');
       dropZone.style.display = 'block';
       document.getElementById('outputSizeDisplay').textContent = '-';
     }
+
+    // Compact mobile controls: show only the requested settings drawer.
+    document.getElementById('converterNew').addEventListener('click',resetConverter);
+    const converterInspector=document.getElementById('converterInspector');
+    function toggleConverterPanel(selector){
+      if(converterInspector.classList.contains('open')){converterInspector.classList.remove('open');return}
+      converterInspector.classList.add('open');
+      const target=converterInspector.querySelector(selector);
+      if(target)target.scrollIntoView({block:'nearest',behavior:'auto'});
+    }
+    document.getElementById('converterMobileFormat').addEventListener('click',()=>toggleConverterPanel('#formatSelect'));
+    document.getElementById('converterMobileQuality').addEventListener('click',()=>toggleConverterPanel('#qualityGroup'));
+    document.getElementById('converterMobileInfo').addEventListener('click',()=>toggleConverterPanel('.file-info'));
+    document.getElementById('converterMobileDownload').addEventListener('click',convertAndDownload);
   </script>
   
   <script src="loox-tool-ui.js?v=40"></script>
