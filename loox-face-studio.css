@@ -85,3 +85,16 @@
  .loox-face-mobile-bar button b{font-size:18px}
 }
 @media(prefers-reduced-motion:reduce){.loox-face-upload,.loox-face-primary,.loox-face-mobile-bar button{transition:none!important}}
+
+/* Selective erase: switch modes without losing the image or brush settings. */
+.loox-face-mode-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.loox-face-mode-buttons .loox-face-secondary{min-width:0;padding:10px 5px}
+.loox-face-erase-mode #faceCanvas{cursor:crosshair}
+.loox-face-erase-mode .loox-face-brush-preview{border-color:#70e5d5;box-shadow:0 0 0 1px #000,0 0 0 3px #21bfa844}
+@media(max-width:800px){
+ body.loox-face-ready .loox-face-mobile-bar{gap:2px!important;padding-inline:2px!important}
+ body.loox-face-ready .loox-face-mobile-bar button{padding:5px 1px!important;font-size:9px!important;gap:3px!important;overflow:hidden!important}
+ body.loox-face-ready .loox-face-mobile-bar button b{font-size:19px!important}
+ body.loox-face-ready .loox-face-mobile-bar button span{white-space:nowrap}
+ body.loox-face-ready .loox-face-mobile-bar button#faceMobileErase.active{background:#174d4c!important;color:#bffcf4!important}
+}
