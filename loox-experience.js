@@ -80,7 +80,7 @@
   }
   if(!document.body.classList.contains('info-page') && file!=='index.html'){
    header.classList.add('loox-tool-nav-header');
-   if(!header.querySelector('.loox-tool-menu')){
+   if(file==='index.html' && !header.querySelector('.loox-tool-menu')){
     const button=document.createElement('button');button.type='button';button.className='loox-tool-menu';button.textContent='☰';button.setAttribute('aria-label','Toggle tools menu');button.onclick=event=>{event.stopPropagation();compact=!compact;save('loox-rail-collapsed',String(compact));document.body.classList.toggle('rail-compact',compact);drawRail();};header.prepend(button);
    }
   }
