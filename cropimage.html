@@ -571,8 +571,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
         from:p,
         original:{x:crop.x/img.width,y:crop.y/img.height,w:crop.w/img.width,h:crop.h/img.height}
       };
-      // Delay creating a new selection until the finger actually moves.
-      // Otherwise the first finger of a pinch outside the frame would erase it.
+      // A gesture begins only inside the existing crop; no new selection is created.
     }
     canvasWrapper.style.touchAction='none';
     cropBox.style.touchAction='none';
