@@ -159,6 +159,29 @@ body.converter-editing .workspace-card,body.converter-editing .converter-layout,
  body.converter-editing .converter-stage{min-height:0!important}
  body.converter-editing .converter-stage .preview-box img{max-height:calc(var(--converter-editor-height,100dvh) - 155px)}
 }
+
+/* Precision quality control: consistent row alignment across desktop and mobile */
+.converter-inspector #qualityGroup{display:grid!important;grid-template-columns:minmax(0,1fr);gap:12px!important;align-content:start;justify-items:stretch;min-width:0;width:100%;padding:0}
+.converter-inspector #qualityGroup>label{display:flex!important;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;width:100%;margin:0;line-height:1.5}
+.converter-inspector #qualityVal{font-variant-numeric:tabular-nums;color:#d9b4ff;font-weight:750}
+.converter-inspector #qualityRange{
+ appearance:none!important;-webkit-appearance:none!important;
+ display:block!important;position:relative;width:100%!important;
+ min-width:0!important;max-width:100%!important;
+ height:8px!important;margin:9px 0 14px!important;padding:0!important;
+ border:0!important;border-radius:999px!important;
+ background:linear-gradient(90deg,#a77cff 0%,#a77cff var(--quality-fill,90%),#454258 var(--quality-fill,90%),#454258 100%)!important;
+ outline-offset:7px;box-shadow:none!important;cursor:pointer;
+}
+.converter-inspector #qualityRange::-webkit-slider-thumb{
+ appearance:none;-webkit-appearance:none;width:19px;height:19px;
+ border:3px solid #eee7ff;border-radius:50%;background:#9668e9;
+ box-shadow:0 1px 6px #0009;cursor:grab;
+}
+.converter-inspector #qualityRange::-moz-range-thumb{
+ width:14px;height:14px;border:3px solid #eee7ff;border-radius:50%;
+ background:#9668e9;box-shadow:0 1px 6px #0009;cursor:grab;
+}
 </style>
   <link rel="stylesheet" href="loox-tool-ui.css?v=3">
 
@@ -319,6 +342,7 @@ body.converter-editing .workspace-card,body.converter-editing .converter-layout,
 
     function updateQualityText(val) {
       document.getElementById('qualityVal').textContent = val + '%';
+      qualityRange.style.setProperty('--quality-fill', Math.max(0, Math.min(100, (Number(val) - 10) / 90 * 100)) + '%');
       scheduleLivePreview();
     }
 
@@ -328,6 +352,7 @@ body.converter-editing .workspace-card,body.converter-editing .converter-layout,
       document.getElementById('qualityGroup').style.opacity = supportsQuality ? '1' : '0.3';
       qualityRange.disabled = !supportsQuality;
       document.getElementById('qualityVal').textContent = supportsQuality ? qualityRange.value + '%' : 'Lossless';
+      qualityRange.style.setProperty('--quality-fill', Math.max(0, Math.min(100, (Number(qualityRange.value) - 10) / 90 * 100)) + '%');
       scheduleLivePreview();
     }
 
