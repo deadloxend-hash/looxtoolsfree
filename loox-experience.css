@@ -693,3 +693,14 @@ body.loox-home-rail .topbar .brand{gap:11px!important;flex-shrink:0!important;wh
  body.loox-home-rail .topbar .brand-tag{font-size:8px!important;letter-spacing:1px!important}
  body.loox-home-rail .topbar .brand{gap:8px!important}
 }
+
+/* Home navigation: keep the two primary links visible on desktop, and place
+   them only in the workspace menu on mobile. */
+body.loox-home-rail .loox-overflow-links .loox-mobile-link{display:none!important}
+@media (max-width:900px){
+ body.loox-home-rail .topbar #mainNav,
+ body.loox-home-rail .topbar .main-nav{display:none!important}
+ body.loox-home-rail .loox-overflow-links .loox-mobile-link{display:flex!important}
+ body.loox-home-rail .topbar .loox-top-controls{margin-left:auto!important}
+ body.loox-home-rail .topbar .brand{flex-shrink:0!important}
+}
