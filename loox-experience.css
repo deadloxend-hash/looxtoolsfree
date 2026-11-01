@@ -649,3 +649,6 @@ body.loox-home-rail .topbar .loox-home-rail-button:focus-visible{background:rgba
 
 /* Precisely center vertical ellipsis inside homepage overflow button. */
 body.loox-home-rail .topbar .loox-overflow-trigger{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:0!important;line-height:1!important;font-family:Arial,system-ui,sans-serif!important;font-size:25px!important;letter-spacing:0!important;text-indent:0!important}
+
+/* Tools and supporting pages have no theme/settings header controls; homepage menu only. */
+body.loox-no-rail .loox-top-controls,body.loox-no-rail .loox-theme,body.loox-no-rail #themeControl,body.loox-no-rail .theme-control,body.loox-no-rail .loox-header-settings{display:none!important}
