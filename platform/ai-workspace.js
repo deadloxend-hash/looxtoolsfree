@@ -42,8 +42,9 @@ async function start(){try{await initialize()}catch{}if(thread)drawThread();awai
 }
 start();
 
-// Open the exact same site-wide All tools dialog used by the main LOOX Tools homepage.
-document.getElementById('aiNavToggle')?.addEventListener('click',()=>{
- if(typeof window.LOOXOpenAllTools==='function')window.LOOXOpenAllTools();
+// Use the identical category sidebar built by the main LOOX Tools navigation.
+document.getElementById('aiNavToggle')?.addEventListener('click',event=>{
+ event.stopPropagation();
+ if(typeof window.LOOXToggleToolRail==='function')window.LOOXToggleToolRail();
  else location.href='index.html#tools';
 });
