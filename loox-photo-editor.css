@@ -110,3 +110,14 @@
  -webkit-user-select:none;
  user-select:none;
 }
+
+/* Low-resolution, pointer-transparent live preview for fast touch dragging. */
+.photo-gesture-preview{position:absolute;z-index:2;pointer-events:none;touch-action:none;display:block;max-width:none;max-height:none;image-rendering:auto}
+.photo-gesture-preview[hidden]{display:none!important}
+.photo-inline-text-editor{position:absolute;z-index:15;resize:none;overflow:auto;
+ border:2px solid #b38afe;border-radius:7px;outline:none;
+ background:rgba(20,16,35,.94);color:#fff;box-shadow:0 6px 25px rgba(0,0,0,.48);
+ padding:5px 7px;font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+ font-weight:700;line-height:1.25;touch-action:manipulation;user-select:text;
+ -webkit-user-select:text}
+.photo-inline-text-editor[hidden]{display:none!important}
