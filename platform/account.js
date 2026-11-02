@@ -1,6 +1,6 @@
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
-export const labels={background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image'};
+export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image'};
 const proposal=[{id:'free',price_cents:0,credits:10},{id:'pro',price_cents:999,credits:100},{id:'lifetime',price_cents:4900,credits:50}];
 const planName={free:'Free',pro:'LOOX Pro',lifetime:'LOOX Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
@@ -130,7 +130,7 @@ export async function plans(host){
  for(const id of ['free','pro','lifetime']){
   const p=available.find(x=>x.id===id);if(!p)continue;
   const card=el('section',null,'lx-card'),period={free:'',pro:' / month',lifetime:' once'}[id];
-  card.append(el('h3',planName[id]),el('strong',money(p.price_cents)+period,'lx-price'),el('p',{free:p.credits+' signup credits after email verification. Local tools stay free.',pro:p.credits+' AI credits per paid billing cycle. Includes all standard AI tools and credit history.',lifetime:p.credits+' AI credits granted once. Includes ongoing access to eligible premium features. No recurring credit refill.'}[id]));
+  card.append(el('h3',planName[id]+(state.account?.plan===id?' · Current plan':'')),el('strong',money(p.price_cents)+period,'lx-price'),el('p',{free:p.credits+' signup credits after email verification. Local tools stay free.',pro:p.credits+' AI credits per paid billing cycle. Includes all standard AI tools and credit history.',lifetime:p.credits+' AI credits granted once. Includes ongoing access to eligible premium features. No recurring credit refill.'}[id]));
   if(id!=='free'){
    const note=el('p',null,'lx-note'),buy=button(cfg?.billing?'Choose '+planName[id]:'Checkout pending',async()=>{if(!state.user)return auth();buy.disabled=true;try{location.assign((await api('checkout',{plan:id})).url);}catch(e){msg(note,e.message);}finally{buy.disabled=false;}},'lx-button lx-primary');buy.disabled=!cfg?.billing;card.append(buy,note);
   }else if(!state.user)card.append(button('Create account',()=>auth('register')));
@@ -154,7 +154,7 @@ function drawDashboard(){
  const a=state.account;
  const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,'#'+id));host.append(nav);
  function section(id,title){const s=el('section',null,'lx-card');s.id=id;s.append(el('h2',title));host.append(s);return s;}
- section('profile','My profile').append(el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
+ section('profile','My profile').append(el('h3','Welcome, '+a.profile.name),el('p',a.jobs.length+' recent AI actions'),el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
  section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),button('Buy credits',pricing));
  const jobs=section('usage','Recent AI jobs');if(!a.jobs.length)jobs.append(el('p','No AI jobs yet.'));
  for(const j of a.jobs){const row=el('div',null,'lx-row');row.append(el('span',labels[j.operation]+' · '+j.state));

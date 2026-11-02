@@ -1,9 +1,9 @@
 import {el,button,field,msg,config,api,state,refresh,auth,pricing} from './account.js';
 
 const host=document.querySelector('[data-studio]'), tool=host.dataset.studio;
-const isText=tool==='generate',isMask=tool==='erase';
+const isText=tool==='generate',isMask=['erase','fill'].includes(tool);
 const form=el('form',null,'lx-stack'),notice=el('p',null,'lx-note'),result=el('section',null,'lx-result');
-notice.setAttribute('role','status');host.append(form,notice,result);
+notice.setAttribute('role','status');const progress=el('progress');progress.setAttribute('aria-label','AI processing');progress.hidden=true;host.append(progress);host.append(form,notice,result);
 let source,sourceURL,imageSize,strokes=[],redo=[],current=null,requestId=null,busy=false,generation=0,available=false;
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const settings=el('div',null,'lx-fields');
@@ -66,6 +66,14 @@ function paintMask(target,preview){
 }
 function paint(){paintMask(canvas,true);undo.disabled=!strokes.length;redoBtn.disabled=!redo.length;}
 function asData(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Cannot read image.'));reader.onload=()=>resolve(reader.result);reader.readAsDataURL(blob);});}
+let fillPrompt;
+if(tool==='fill'){
+ const label=el('label','Describe the replacement','lx-field');
+ fillPrompt=el('textarea');fillPrompt.required=true;fillPrompt.maxLength=1200;fillPrompt.rows=3;label.append(fillPrompt);form.append(label);
+}
+form.addEventListener('dragover',e=>{if(!file)return;e.preventDefault();});
+form.addEventListener('drop',e=>{if(!file||busy)return;e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;const transfer=new DataTransfer();transfer.items.add(f);file.files=transfer.files;file.dispatchEvent(new Event('change'));});
+form.append(button('Reset workspace',()=>{if(busy)return;form.reset();source=null;imageSize=null;strokes=[];redo=[];if(sourceURL)URL.revokeObjectURL(sourceURL);sourceURL=null;if(scene)scene.hidden=true;resetResult();msg(notice,'');}));
 const run=el('button',isText?'Generate image':'Process image','lx-button lx-primary');run.type='submit';
 const cost=el('small','Checking service availability…');form.append(cost,run);
 const operation=()=>scale?scale.value:tool;
@@ -89,10 +97,10 @@ form.onsubmit=async e=>{
  if(!available)return msg(notice,'AI processing setup is pending.');
  const op=operation(),price=state.config.operations.find(o=>o.id===op)?.cost;
  if(!requestId && state.account && state.account.wallet.balance<price){pricing();return;}
- busy=true;run.disabled=true;
+ busy=true;progress.hidden=false;run.disabled=true;
  const controls=[...form.querySelectorAll('input,select,textarea,button')].filter(n=>n!==run&&!n.disabled);controls.forEach(n=>n.disabled=true);
  try{
-  const body={operation:op,requestId:requestId ||=crypto.randomUUID()};
+  const body={operation:op,requestId:requestId ||=crypto.randomUUID()};if(fillPrompt)body.prompt=fillPrompt.value;
   if(isText){body.prompt=prompt.value;body.ratio=ratio.value;if(seed.value!=='')body.seed=Number(seed.value);}
   else{
    if(!source)throw Error('Choose a valid image first.');
@@ -109,5 +117,5 @@ form.onsubmit=async e=>{
    msg(notice,'Processing. You can close this page and return to your jobs in My Profile.');
   }
  }catch(err){msg(notice,err.message);if(err.status===402)pricing();if(err.status===401)auth();}
- finally{busy=false;run.disabled=false;controls.forEach(n=>n.disabled=false);if(isMask&&imageSize)paint();refresh().catch(()=>{});}
+ finally{busy=false;progress.hidden=true;run.disabled=false;controls.forEach(n=>n.disabled=false);if(isMask&&imageSize)paint();refresh().catch(()=>{});}
 };

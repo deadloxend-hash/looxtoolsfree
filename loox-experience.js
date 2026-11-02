@@ -10,7 +10,7 @@
  let language=supportedCodes.has(new URLSearchParams(location.search).get('lang'))?new URLSearchParams(location.search).get('lang'):read('loox-language','en');
  if(!supportedCodes.has(language))language='en';
  const homePage=file==='index.html';
- let sidebarVisible=homePage&&read('loox-home-sidebar-visible','true')!=='false';
+ let sidebarVisible=homePage&&!matchMedia('(max-width:900px)').matches&&read('loox-home-sidebar-visible','true')!=='false';
  document.body.classList.add(homePage?'loox-home-rail':'loox-no-rail');
  document.body.classList.toggle('rail-hidden',!sidebarVisible);
  const studio=document.body.classList.contains('studio-page');
@@ -53,8 +53,12 @@
  function drawRail(){
   if(!homePage){mountHeader();return}
   const w=(words[language]||words.en),active=current();
-  const primary=['video-editor','photo-editor','bg-remove','faceswap','design-studio','watermark','fancy-fonts'].map(s=>catalog.find(t=>t.slug===s)).filter(Boolean),l=(labels[language]||labels.en);
-  rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">'+w.tools+'</span><button class="loox-rail-toggle" aria-label="'+(compact?w.expand:w.collapse)+'" aria-expanded="'+!compact+'">☰</button></div><nav class="loox-rail-list" aria-label="'+w.tools+'"><a class="loox-rail-link" href="'+localizedURL('index.html')+'"><span class="loox-rail-icon" aria-hidden="true">⌂</span><span class="loox-rail-label">'+w.home+'</span></a>'+primary.map(t=>'<a class="loox-rail-link" href="'+esc(localizedURL(t.url))+'" title="'+esc((t.names[language]||t.names.en))+'" '+(active?.slug===t.slug?'aria-current="page"':'')+'><span class="loox-rail-icon"><img src="assets/icons/'+t.slug+'.svg" alt="" width="27" height="27"></span><span class="loox-rail-label">'+esc((t.names[language]||t.names.en))+'</span></a>').join('')+'<button class="loox-rail-link loox-more-trigger" aria-haspopup="dialog"><span class="loox-rail-icon" aria-hidden="true">•••</span><span class="loox-rail-label">'+l.more+'</span></button></nav><div class="loox-rail-bottom"><a class="loox-rail-policy" href="'+localizedURL('guides.html')+'">'+w.help+'</a><a class="loox-rail-policy" href="'+localizedURL('privacy-policy.html')+'">'+w.privacy+'</a></div>';
+  const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(location.href.split('?')[0].endsWith(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
+  rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">AI-powered tools</h2>'+
+   [['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join('')+
+   '<h2 class="loox-rail-group-title">Free tools</h2>'+
+   [['all-image-tools.html','Image Tools','▧'],['all-video-tools.html','Video Tools','▶'],['index.html?category=Audio#tools','Audio Tools','♫'],['all-text-tools.html','Text Tools','Aa'],['index.html?category=PDF#tools','PDF Tools','▤'],['index.html?category=Developer#tools','Developer Tools','⌘'],['pricing.html','Pricing & Credits','◇'],['account.html','My Account','◎']].map(t=>item(...t)).join('')+
+   '<button class="loox-rail-link loox-more-trigger"><span class="loox-rail-label">More tools</span></button></nav>';
   rail.querySelector('.loox-rail-toggle').onclick=toggleHomeRail;
   rail.querySelector('.loox-more-trigger').onclick=openMore;
   rail.querySelector('.loox-more-trigger').setAttribute('aria-label',l.more);
@@ -101,7 +105,7 @@
   if(homePage){
    controls.classList.add('loox-overflow-controls');
    const retainedTheme=document.querySelector('#themeControl');if(retainedTheme)retainedTheme.remove();
-   controls.innerHTML='<button type="button" class="loox-overflow-trigger" aria-label="Open navigation and settings menu" aria-expanded="false" aria-controls="loox-overflow-menu"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 13.8v7.4M13.8 17.5h7.4"/></svg></button><div class="loox-overflow-menu" id="loox-overflow-menu" hidden><nav class="loox-overflow-links" aria-label="More homepage links"><a class="loox-mobile-link" href="#tools">Explore the toolkit</a><a class="loox-mobile-link" href="#quickstart">Quick start</a><a href="#tools">Explore tools</a><a href="#favorites">Favorites</a><a href="#privacy">Privacy</a></nav><div class="loox-overflow-theme"></div><button type="button" class="loox-overflow-settings">⚙ '+l.settings+'</button></div>';
+   controls.innerHTML='<button type="button" class="loox-overflow-trigger" aria-label="Open navigation and settings menu" aria-expanded="false" aria-controls="loox-overflow-menu"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><path d="M17.5 13.8v7.4M13.8 17.5h7.4"/></svg></button><div class="loox-overflow-menu" id="loox-overflow-menu" hidden><nav class="loox-overflow-links" aria-label="More homepage links"><a class="loox-mobile-link" href="#tools">Explore the toolkit</a><a class="loox-mobile-link" href="#quickstart">Quick start</a><a href="#tools">Explore tools</a><a href="#favorites">Favorites</a><a href="#privacy">Privacy</a><a href="pricing.html">Pricing &amp; Credits</a><a href="account.html">My Account</a></nav><div class="loox-overflow-theme"></div><button type="button" class="loox-overflow-settings">⚙ '+l.settings+'</button></div>';
    const menu=controls.querySelector('.loox-overflow-menu'),button=controls.querySelector('.loox-overflow-trigger');
    if(retainedTheme)controls.querySelector('.loox-overflow-theme').append(retainedTheme);
    const close=()=>{menu.hidden=true;button.setAttribute('aria-expanded','false')};
