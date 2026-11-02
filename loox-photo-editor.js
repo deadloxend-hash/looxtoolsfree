@@ -1025,6 +1025,11 @@ function removeOverlay(){if(selectedOverlay<0||!overlays[selectedOverlay])return
 function layerName(o,i){return o.name||((o.type==='text'?String(o.text).slice(0,20):o.type==='stroke'?'Drawn stroke':o.type==='shape'?o.shape:'Photo overlay')+' '+(i+1))}
 function layerManager(){
  const list=document.createElement('div');list.className='layer-list';
+ if(canvasBackground){
+  const bgRow=button('▤ Canvas background · '+canvasBackground.preset,()=>selectTab('resize'));
+  bgRow.className='layer-base';bgRow.title='Edit separate canvas background and its color in Resize';
+  list.append(bgRow);
+ }
  const baseRow=document.createElement('button');baseRow.type='button';baseRow.className='layer-base'+(selectedOverlay<0?' selected':'');baseRow.textContent='▧ Background photo';baseRow.onclick=()=>{selectedOverlay=-1;render();showPanel()};list.append(baseRow);
  overlays.forEach((o,i)=>{const row=document.createElement('div');row.className='layer-row'+(selectedOverlay===i?' selected':'')+(o.visible===false?' is-hidden':'');
   const thumb=document.createElement('canvas');thumb.width=42;thumb.height=42;thumb.className='layer-thumb';const tc=thumb.getContext('2d');if(o.type==='image')tc.drawImage(o.image,0,0,42,42);else if(o.type==='text'){tc.fillStyle=o.color;tc.font='bold 28px system-ui';tc.fillText('T',11,32)}else{tc.fillStyle=o.color||'#a879ff';tc.fillRect(5,5,32,32)}
