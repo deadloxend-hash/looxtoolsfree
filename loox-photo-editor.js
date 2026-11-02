@@ -1009,6 +1009,7 @@ function showLayerControls(kind){
 function colorField(name,value,onChange){const color=document.createElement('input');color.type='color';color.value=value;color.onfocus=()=>saveHistory();color.oninput=()=>onChange(color.value);const label=document.createElement('label');label.className='field';label.textContent=name+' ';label.append(color);panel.append(label)}
 function setBrush(s){brushSize=s;brushActive=true;showPanel();setStatus('Blur brush active')}
 function selectTab(t){
+ if(sliderPreviewActive)stopQuickPreview();
  if(t==='export'){openExport();return}
  if(t==='crop'){
   if(!base){setStatus('Open a photo before cropping');triggerUpload();return}
@@ -1153,6 +1154,7 @@ function paint(p){
 // Drag shapes/elements at display resolution. Commit once on release.
 let overlayDragFrame=0,overlayDragBackground=null;
 function startOverlayDrag(e,index,p){
+ ++renderToken; // Drop a pending expensive render before starting the object preview.
  const o=overlays[index];if(!o||o.locked||o.visible===false)return false;
  e.preventDefault();
  overlayDrag={id:e.pointerId,index,dx:p.x-o.x,dy:p.y-o.y,
