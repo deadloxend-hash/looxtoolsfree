@@ -50,6 +50,17 @@
  let sidebarButton=null;
  function toggleHomeRail(force){if(!railPage)return;sidebarVisible=typeof force==='boolean'?force:!sidebarVisible;if(homePage)save('loox-home-sidebar-visible',String(sidebarVisible));document.body.classList.toggle('rail-hidden',!sidebarVisible);if(sidebarButton){sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar'}if(aiSharedDialog){const button=document.getElementById('aiNavToggle');button?.setAttribute('aria-expanded',String(sidebarVisible));aiRailBackdrop.hidden=!sidebarVisible;document.body.classList.toggle('ai-rail-open',sidebarVisible)}}
  window.LOOXToggleToolRail=toggleHomeRail;
+ if(aiSharedDialog){
+  const aiToggle=document.getElementById('aiNavToggle');
+  aiToggle?.addEventListener('click',event=>{
+   event.preventDefault();event.stopImmediatePropagation();
+   toggleHomeRail();
+   // The AI hamburger controls the category rail, never the All tools dialog.
+   if(moreDialog?.open)moreDialog.close();
+  },true);
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&sidebarVisible)toggleHomeRail(false)});
+ }
+
  const aiRailBackdrop=aiSharedDialog?document.createElement('div'):null;
  if(aiRailBackdrop){aiRailBackdrop.className='ai-shared-rail-backdrop';aiRailBackdrop.hidden=true;aiRailBackdrop.addEventListener('click',()=>toggleHomeRail(false));document.body.append(aiRailBackdrop)}
 
@@ -127,7 +138,7 @@
   if(t.kind==='text')return 3;
   return 4
  }
- window.LOOXOpenAllTools=openMore;
+ if(!aiSharedDialog)window.LOOXOpenAllTools=openMore;
  function openMore(){
   if(!moreDialog){moreDialog=document.createElement('dialog');moreDialog.className='loox-more-dialog';document.body.append(moreDialog)}
   const l=(labels[language]||labels.en),li=Math.max(0,['en','es','fr','de'].indexOf(language)),categoryNames=[['Image Resizing & Canvas Scaling','Tamaño y lienzo','Dimensions et canevas','Bildgröße und Leinwand'],['Compression & File Optimization','Compresión y optimización','Compression et optimisation','Komprimierung und Optimierung'],['Image Cropping & Framing','Recorte y encuadre','Recadrage et formes','Zuschnitt und Formen'],['Image Format Converters','Conversores de imagen','Conversion d’images','Bildformatkonverter'],['Photo Editing & Filters','Edición y filtros','Retouche et filtres','Bildbearbeitung und Filter'],['Watermarking & Branding','Marcas de agua y diseño','Filigranes et identité','Wasserzeichen und Gestaltung'],['AI-Powered Media Suite','Herramientas de IA','Outils IA','KI-Medienwerkzeuge'],['Video & Animation Utilities','Vídeo y animación','Vidéo et animation','Video und Animation']],ids=['resize','compress','crop','convert','edit','brand','ai','video'],routes=['image-resizing-tools','image-compression-tools','image-cropping-tools','image-converter-tools','photo-editing-tools','watermark-branding-tools','ai-media-tools','video-animation-tools'];
