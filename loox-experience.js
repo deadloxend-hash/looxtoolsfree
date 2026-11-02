@@ -70,17 +70,26 @@
  function drawRail(){
   if(!railPage){mountHeader();return}
   const w=(words[language]||words.en),l=(labels[language]||labels.en),active=current();
-  const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(location.href.split('?')[0].endsWith(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
-  rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">Navigation</h2><a class="loox-rail-link loox-tools-home-link" href="index.html"><span class="loox-rail-icon">⌂</span><span class="loox-rail-label">LOOX Tools Home</span></a><h2 class="loox-rail-group-title">AI-powered tools</h2>'+
-   [['ai-home.html','LOOX AI Home','⌂'],['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join('')+
-   '<h2 class="loox-rail-group-title">Free tools</h2>'+
-   [['all-image-tools.html','Image Tools','▧'],['all-video-tools.html','Video Tools','▶'],['index.html?category=Audio#tools','Audio Tools','♫'],['all-text-tools.html','Text Tools','Aa'],['index.html?category=PDF#tools','PDF Tools','▤'],['index.html?category=Developer#tools','Developer Tools','⌘'],['pricing.html','Pricing & Credits','◇'],['account.html','My Account','◎']].map(t=>item(...t)).join('')+
+  const activeURL=(url)=>{
+   const target=new URL(url,location.href);
+   const here=new URL(location.href);
+   if(target.pathname!==here.pathname)return false;
+   const category=target.searchParams.get('category');
+   return category?category===here.searchParams.get('category'):true;
+  };
+  const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(activeURL(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
+  rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">Navigation</h2>'+[
+   ['index.html','LOOX Tools Home','⌂'],['ai-home.html','LOOX AI Home','✦']].map(t=>item(...t)).join('')+
+   '<h2 class="loox-rail-group-title">AI-powered tools</h2>'+[
+   ['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join('')+
+   '<h2 class="loox-rail-group-title">Free tools</h2>'+[
+   ['all-image-tools.html','Image Tools','▧'],['all-video-tools.html','Video Tools','▶'],['index.html?category=Audio#tools','Audio Tools','♫'],['all-text-tools.html','Text Tools','Aa'],['index.html?category=PDF#tools','PDF Tools','▤'],['index.html?category=Developer#tools','Developer Tools','⌘'],['pricing.html','Pricing & Credits','◇'],['account.html','My Account','◎']].map(t=>item(...t)).join('')+
    '<button class="loox-rail-link loox-more-trigger"><span class="loox-rail-label">More tools</span></button></nav>';
   rail.querySelector('.loox-rail-toggle').onclick=toggleHomeRail;
   rail.querySelector('.loox-more-trigger').onclick=openMore;
   rail.querySelector('.loox-more-trigger').setAttribute('aria-label',l.more);
   rail.querySelector('.loox-more-trigger').title=l.more;
-  rail.querySelector('.loox-tools-home-link').setAttribute('aria-label','Open LOOX Tools Home');
+  rail.querySelector('a[href="index.html"]').setAttribute('aria-label','Open LOOX Tools Home');
   if(!aiSharedDialog)mountHeader();
  }
  // On mobile, tapping the page outside the open tools drawer closes it.
