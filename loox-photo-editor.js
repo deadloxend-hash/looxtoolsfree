@@ -544,11 +544,22 @@ function applyCrop(){
   saveHistory();overlays[cropIndex]=edited;selectedOverlay=cropIndex;crop=null;cropTarget='canvas';cropIndex=-1;positionCrop();render();showPanel();setStatus('Photo overlay cropped');return;
  }
  if(cropTarget==='photo'){
-  // Crop the background image's pixels without changing canvas size or touching layers.
+  // Preserve the high-resolution source region when cropping an already resized photo.
+  const previous=photoBounds||{x:0,y:0,w:base.width,h:base.height};
+  const src=photoTransformSourceRect&&photoTransformSource
+   ?{x:photoTransformSourceRect.x+(x-previous.x)/previous.w*photoTransformSourceRect.w,
+     y:photoTransformSourceRect.y+(y-previous.y)/previous.h*photoTransformSourceRect.h,
+     w:w/previous.w*photoTransformSourceRect.w,h:h/previous.h*photoTransformSourceRect.h}:null;
   saveHistory();
   const cropped=makeCanvas(base.width,base.height),croppedMask=makeCanvas(mask.width,mask.height);
-  cropped.getContext('2d').drawImage(base,x,y,w,h,x,y,w,h);
-  croppedMask.getContext('2d').drawImage(mask,x,y,w,h,x,y,w,h);
+  if(src){
+   cropped.getContext('2d').drawImage(photoTransformSource,src.x,src.y,src.w,src.h,x,y,w,h);
+   croppedMask.getContext('2d').drawImage(photoTransformMask,src.x,src.y,src.w,src.h,x,y,w,h);
+   photoTransformSourceRect=src;
+  }else{
+   cropped.getContext('2d').drawImage(base,x,y,w,h,x,y,w,h);
+   croppedMask.getContext('2d').drawImage(mask,x,y,w,h,x,y,w,h);
+  }
   base=cropped;mask=croppedMask;photoBounds={...r};
   resizeAnchor=null;resizePlacement=null;resizeLast=null;
   crop=null;cropTarget='canvas';cropIndex=-1;positionCrop();render();showPanel();
@@ -559,8 +570,17 @@ function applyCrop(){
  overlays.forEach((o,i)=>{let layer;if(o.type==='image')layer=cropPhoto(o,r,x,y);else if(o.type==='stroke'){layer=cloneOverlay(o);layer.points=(o.points||[]).map(p=>({x:p.x-x,y:p.y-y}))}else layer={...o,x:(o.x||0)-x,y:(o.y||0)-y};
  if(layer){if(i===previousSelected)nextSelected=next.length;next.push(layer)}});
  base=newBase;mask=newMask;overlays=next;selectedOverlay=nextSelected;
- if(photoBounds){const px=Math.max(photoBounds.x,x),py=Math.max(photoBounds.y,y),pr=Math.min(photoBounds.x+photoBounds.w,x+w),pb=Math.min(photoBounds.y+photoBounds.h,y+h);photoBounds=pr>px&&pb>py?{x:px-x,y:py-y,w:pr-px,h:pb-py}:null}
- resizeAnchor=null;resizePlacement=null;resizeLast=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();setStatus('Canvas and photo overlays cropped');
+ if(photoBounds){
+  const previous=photoBounds,px=Math.max(previous.x,x),py=Math.max(previous.y,y),pr=Math.min(previous.x+previous.w,x+w),pb=Math.min(previous.y+previous.h,y+h);
+  if(pr>px&&pb>py){
+   if(photoTransformSourceRect){
+    const src=photoTransformSourceRect;
+    photoTransformSourceRect={x:src.x+(px-previous.x)/previous.w*src.w,y:src.y+(py-previous.y)/previous.h*src.h,w:(pr-px)/previous.w*src.w,h:(pb-py)/previous.h*src.h};
+   }
+   photoBounds={x:px-x,y:py-y,w:pr-px,h:pb-py};
+  }else{photoBounds=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null}
+ }else{photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null}
+ resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();setStatus('Canvas and photo overlays cropped');
 }
 function pointerPosition(e){const r=canvas.getBoundingClientRect();return {x:clamp((e.clientX-r.left)*base.width/r.width,0,base.width),y:clamp((e.clientY-r.top)*base.height/r.height,0,base.height)}}
 let painting=false,lastPoint=null,activeStroke=null,activePaintTarget=null;
