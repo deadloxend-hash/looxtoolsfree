@@ -230,6 +230,86 @@ photoSelectionBox.addEventListener('keydown',e=>{
  commitPhotoSize(resizeRectFromHandle(rect,handle.dataset.photoHandle,delta[0]*n,delta[1]*n));
 });
 
+
+/* One-finger move and intentionally reversed two-finger photo scaling.
+   Close fingers = larger photo, spread fingers = smaller photo.
+   Only the selected photo moves; the canvas dimensions never change. */
+const activePhotoPointers=new Map();
+let photoGesture=null;
+const gesturePoint=e=>pointerPosition(e);
+const pointerDistance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function startPhotoPointer(e,keepSelection=false){
+ if(!base||crop||brushActive||!selectedPhoto)return false;
+ // For the second finger, keep the first finger's selected photo.
+ const existing=activePhotoPointers.size;
+ activePhotoPointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});
+ try{canvas.setPointerCapture(e.pointerId)}catch{}
+ e.preventDefault();
+ if(existing===0||!photoGesture){
+  photoGesture={mode:'move',id:e.pointerId,first:gesturePoint(e),start:selectedPhotoRect(),last:null,recorded:false,lastPaint:0};
+ }
+ if(activePhotoPointers.size>=2){
+  const pts=[...activePhotoPointers.values()].slice(0,2).map(p=>gesturePoint(p));
+  const r=selectedPhotoRect();
+  if(r){
+   photoGesture={mode:'pinch',start:r,distance:Math.max(1,pointerDistance(pts[0],pts[1])),
+    midpoint:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2},
+    last:null,recorded:photoGesture?.recorded||false,lastPaint:0};
+  }
+ }
+ return true;
+}
+function photoGestureRect(g){
+ if(!g||!base||!selectedPhoto)return null;
+ if(g.mode==='move'){
+  const p=activePhotoPointers.get(g.id);if(!p)return g.last;
+  const now=gesturePoint(p);
+  return fitPhotoRect({...g.start,x:g.start.x+now.x-g.first.x,y:g.start.y+now.y-g.first.y});
+ }
+ const pts=[...activePhotoPointers.values()].slice(0,2).map(p=>gesturePoint(p));
+ if(pts.length<2)return g.last;
+ const mid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};
+ const ratio=clamp(g.distance/Math.max(12,pointerDistance(pts[0],pts[1])),.2,5);
+ const w=g.start.w*ratio,h=g.start.h*ratio;
+ const fractionX=(g.midpoint.x-g.start.x)/Math.max(1,g.start.w);
+ const fractionY=(g.midpoint.y-g.start.y)/Math.max(1,g.start.h);
+ return fitPhotoRect({x:mid.x-w*fractionX,y:mid.y-h*fractionY,w,h});
+}
+function progressPhotoGesture(){
+ const g=photoGesture;if(!g||!selectedPhoto||crop)return;
+ const next=photoGestureRect(g);if(!next)return;
+ const current=selectedPhotoRect();if(!current)return;
+ const moved=['x','y','w','h'].some(k=>Math.abs(next[k]-g.start[k])>2);
+ if(!moved&&!g.recorded)return;
+ g.last=next;positionPhotoSelection(next);
+ // Throttle expensive full-canvas compositing; the handles still follow every touch.
+ const now=performance.now();
+ if(now-g.lastPaint<110)return;
+ if(!g.recorded){saveHistory();g.recorded=true}
+ g.lastPaint=now;
+ applyPhotoRect(next,false,false);
+}
+function finishPhotoPointer(e){
+ if(!activePhotoPointers.has(e.pointerId))return false;
+ activePhotoPointers.delete(e.pointerId);
+ const g=photoGesture;
+ if(g){
+  if(g.last){
+   if(!g.recorded){saveHistory();g.recorded=true}
+   applyPhotoRect(g.last,false,false);
+  }
+  if(activePhotoPointers.size===1){
+   const [id,p]=activePhotoPointers.entries().next().value;
+   photoGesture={mode:'move',id,first:gesturePoint(p),start:selectedPhotoRect(),last:null,recorded:g.recorded,lastPaint:0};
+  }else if(!activePhotoPointers.size){
+   photoGesture=null;
+   positionPhotoSelection();
+   if(g.recorded){if(tab==='tools')showPanel();setStatus('Photo moved or resized · one undo step');}
+  }
+ }
+ return true;
+}
+
 function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
 function triggerUpload(){$('fileInput').click()}
 function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);return b}
@@ -499,6 +579,9 @@ function paint(p){
 canvas.addEventListener('pointerdown',e=>{
  if(!base)return;const p=pointerPosition(e);
  if(crop){e.preventDefault();return}
+ if(e.pointerType==='touch'&&activePhotoPointers.size&&selectedPhoto&&!brushActive){
+  startPhotoPointer(e,true);return;
+ }
  const hit=hitOverlay(p,!(tab==='text'||tab==='elements'||tab==='layers'));
  const previous=selectedOverlay,oldPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
  selectedOverlay=hit;
@@ -509,6 +592,9 @@ canvas.addEventListener('pointerdown',e=>{
  }
  const nextPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
  if(previous!==hit||oldPhoto!==nextPhoto){render();showPanel()}
+ if(!brushActive&&selectedPhoto&&(['tools','resize','adjust','effects','elements','layers','text','frames'].includes(tab))){
+  startPhotoPointer(e);return;
+ }
  if(hit>=0&&!brushActive&&['text','elements','layers'].includes(tab)){e.preventDefault();saveHistory();overlayDrag={dx:p.x-overlays[hit].x,dy:p.y-overlays[hit].y};canvas.setPointerCapture(e.pointerId);return}
  if(!brushActive)return;
  e.preventDefault();if(brushActive==='draw'&&!requireRoom('drawing'))return;saveHistory();painting=true;lastPoint=null;canvas.setPointerCapture(e.pointerId);
@@ -517,11 +603,14 @@ canvas.addEventListener('pointerdown',e=>{
  render();
 });
 canvas.addEventListener('pointermove',e=>{
-
+ if(activePhotoPointers.has(e.pointerId)){
+  activePhotoPointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});
+  e.preventDefault();progressPhotoGesture();return;
+ }
  if(overlayDrag&&base){e.preventDefault();const p=pointerPosition(e),o=overlays[selectedOverlay];if(o&&!o.locked){o.x=Math.round(clamp(p.x-overlayDrag.dx,0,base.width));o.y=Math.round(clamp(p.y-overlayDrag.dy,0,base.height));render()}return}
  if(!painting||!base)return;e.preventDefault();if(activeStroke)activeStroke.points.push(pointerPosition(e));else paint(pointerPosition(e));render();
 });
-const endPaint=()=>{overlayDrag=null;if(painting){painting=false;activeStroke=null;activePaintTarget=null;lastPoint=null;render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied')}};
+const endPaint=e=>{if(finishPhotoPointer(e))return;overlayDrag=null;if(painting){painting=false;activeStroke=null;activePaintTarget=null;lastPoint=null;render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied')}};
 canvas.addEventListener('pointerup',endPaint);canvas.addEventListener('pointercancel',endPaint);
 $('cropBox').addEventListener('pointerdown',e=>{
  if(!crop||!base)return;e.preventDefault();e.stopPropagation();const p=pointerPosition(e),b=cropBounds(),r={x:(crop.x-b.x)/b.w,y:(crop.y-b.y)/b.h,w:crop.w/b.w,h:crop.h/b.h};
