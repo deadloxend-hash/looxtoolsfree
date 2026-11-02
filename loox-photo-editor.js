@@ -194,6 +194,7 @@ function stopQuickPreview(){
  sliderPreviewActive=false;
  if(sliderPreviewFrame){cancelAnimationFrame(sliderPreviewFrame);sliderPreviewFrame=0}
  quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;quickPreviewToken++;
+ hideGesturePreview();
  render();
 }
 let lastRenderedComposite=null;
@@ -235,6 +236,7 @@ function positionCrop(){
  Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',
  top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});
  const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;
+ c.classList.toggle('compact',crop.w*sx<90||crop.h*sy<90);
  Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',
  width:crop.w*sx+'px',height:crop.h*sy+'px'});
 }
@@ -261,6 +263,7 @@ function positionPhotoSelection(preview){
  const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
  if(!b.width||!b.height){el.hidden=true;return}
  el.hidden=false;
+ el.classList.toggle('compact',r.w*b.width/base.width<90||r.h*b.height/base.height<90);
  Object.assign(el.style,{
   left:(b.left-v.left+$('dropzone').scrollLeft+r.x*b.width/base.width)+'px',
   top:(b.top-v.top+$('dropzone').scrollTop+r.y*b.height/base.height)+'px',
@@ -558,7 +561,7 @@ function finishPhotoPointer(e){
    photoGesture={mode:'move',id,first:gesturePoint(p),start:r,last:r};
    queueGesturePreview(r);
   }else if(!activePhotoPointers.size){
-   photoGesture=null;clearGesturePreview();
+   photoGesture=null;clearGesturePreview();hideGesturePreview();
    const before=selectedPhotoRect();
    const changed=finalRect&&before&&['x','y','w','h'].some(k=>Math.abs(finalRect[k]-before[k])>=1);
    if(changed){
@@ -732,6 +735,7 @@ function positionTextSelection(preview){
  const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
  if(!b.width||!b.height){textSelectionElement.hidden=true;return}
  textSelectionElement.hidden=false;
+ textSelectionElement.classList.toggle('compact',rect.w*b.width/base.width<90||rect.h*b.height/base.height<90);
  Object.assign(textSelectionElement.style,{
   left:(b.left-v.left+$('dropzone').scrollLeft+rect.x*b.width/base.width)+'px',
   top:(b.top-v.top+$('dropzone').scrollTop+rect.y*b.height/base.height)+'px',
@@ -870,6 +874,7 @@ function finishTextGesture(e,cancel=false){
  const next=g.moved&&!cancel&&o?textGestureValues(g,e):null;
  if(textPreviewFrame)cancelAnimationFrame(textPreviewFrame);
  textPreviewFrame=0;activeTextGesture=null;textPreviewBackground=null;
+ hideGesturePreview();
  if(next){
   saveHistory();Object.assign(o,next);
   render();positionTextSelection();setStatus(g.mode==='move'?'Text moved':'Text resized');
@@ -1202,6 +1207,7 @@ function finishOverlayDrag(e,cancel=false){
  const g=overlayDrag;if(!g||e.pointerId!==g.id)return false;
  if(overlayDragFrame)cancelAnimationFrame(overlayDragFrame);
  overlayDragFrame=0;overlayDrag=null;overlayDragBackground=null;
+ hideGesturePreview();
  quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;
  const o=overlays[g.index];
  if(!cancel&&g.moved&&o){saveHistory();Object.assign(o,g.next);render();setStatus('Element moved')}
