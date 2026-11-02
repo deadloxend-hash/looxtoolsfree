@@ -1,0 +1,49 @@
+/* LOOX AI learning showcase; scoped to AI pages and home AI cards. */
+.loox-ai-showcase, .loox-ai-learning{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f7f5ff;box-sizing:border-box}
+.loox-ai-showcase *, .loox-ai-learning *{box-sizing:border-box}
+.loox-ai-showcase{position:relative;isolation:isolate;min-height:340px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:clamp(16px,3vw,42px);padding:clamp(24px,5vw,65px);overflow:hidden;border-radius:28px;border:1px solid rgba(192,124,255,.24);background:radial-gradient(ellipse at 76% 26%,rgba(171,41,233,.21),transparent 52%),radial-gradient(ellipse at 10% 85%,rgba(49,66,190,.22),transparent 55%),linear-gradient(138deg,#090c17,#17112c 62%,#110b1e);box-shadow:0 24px 74px #0007;margin:0 0 20px}
+.loox-ai-showcase::before{content:"";position:absolute;inset:-38% -30%;z-index:-1;pointer-events:none;background:conic-gradient(from 230deg at 65% 30%,transparent 0 50%,#6b21a880 56%,transparent 68%,#3e5af048 75%,transparent 81%);filter:blur(32px)}
+.loox-ai-hero-copy{position:relative;z-index:2;max-width:670px}
+.loox-ai-eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 12px;background:#27183d9e;border:1px solid #73509582;border-radius:99px;color:#e8c3ff;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.loox-ai-showcase h1{font-size:clamp(31px,4.6vw,66px);letter-spacing:-.045em;line-height:1.05;margin:19px 0 13px;font-weight:850;color:#fff;text-wrap:balance}
+.loox-ai-showcase h1 strong{font-weight:850;background:linear-gradient(112deg,#eeb7ff,#cd77fc,#ff5bbb);background-clip:text;-webkit-background-clip:text;color:transparent}
+.loox-ai-showcase p{color:#cfc8df;line-height:1.75;font-size:clamp(13px,1.2vw,16px);margin:0 0 18px}
+.loox-ai-hero-actions{display:flex;align-items:center;flex-wrap:wrap;gap:11px}
+.loox-ai-link{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:43px;padding:11px 19px;border-radius:13px;text-decoration:none!important;font-weight:750;font-size:13px;color:#fff!important;border:1px solid #ffffff30;background:#282338}
+.loox-ai-link-primary{border:0;background:linear-gradient(110deg,#9b49ec,#e332be);box-shadow:0 8px 24px #b337ce4a}
+.loox-ai-link:hover{filter:brightness(1.14);transform:translateY(-1px)}
+.loox-ai-hero-media{position:relative;min-width:0;aspect-ratio:1.52;border:1px solid #be88ed5c;background:#121322;border-radius:21px;padding:10px;box-shadow:0 0 0 6px #9f60e111,0 18px 42px #050410b0}
+.loox-ai-hero-media img{display:block;width:100%;height:100%;object-fit:cover;border-radius:13px}
+.loox-ai-media-label{position:absolute;top:21px;left:21px;padding:7px 11px;border:1px solid #ffffff50;border-radius:100px;background:#11111abc;font-size:11px;font-weight:800;color:#fff;backdrop-filter:blur(12px)}
+.loox-ai-media-foot{position:absolute;right:20px;bottom:20px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#fff;background:#160d26c9;border:1px solid #f8d5ff55;border-radius:100px;padding:7px 12px}
+.loox-ai-learning{max-width:1120px;margin:20px auto 45px;padding:0 12px}
+.loox-ai-learn-head{text-align:center;margin:38px 0 19px}
+.loox-ai-kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#c18eff;font-weight:850}
+.loox-ai-learn-head h2{font-size:clamp(25px,3vw,39px);margin:10px 0;color:#fff;letter-spacing:-.03em}
+.loox-ai-learn-head p{color:#b9b8cb;font-size:14px;line-height:1.7;margin:0 auto;max-width:690px}
+.loox-ai-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.loox-ai-step{padding:22px;min-height:172px;border-radius:18px;border:1px solid #59516e78;background:linear-gradient(156deg,#19192b,#11121e)}
+.loox-ai-step-number{display:grid;place-items:center;width:37px;height:37px;margin-bottom:15px;border-radius:12px;background:linear-gradient(135deg,#7042ca,#e44cbb);font-size:13px;font-weight:900;color:white}
+.loox-ai-step h3{color:#fff;font-size:16px;margin:0 0 9px}
+.loox-ai-step p{font-size:13px;color:#b9bacc;line-height:1.65;margin:0}
+.loox-ai-example{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;margin:16px 0;padding:24px;background:#121421;border:1px solid #45405288;border-radius:22px}
+.loox-ai-example img{display:block;width:100%;aspect-ratio:1.65;object-fit:cover;border-radius:16px}
+.loox-ai-example h3{color:white;margin:0 0 9px;font-size:21px}
+.loox-ai-example p,.loox-ai-note{color:#b7b8c9;font-size:13px;line-height:1.8}
+.loox-ai-example a{color:#dab2ff;font-weight:700}
+.loox-ai-faq{border:1px solid #383546;border-radius:19px;background:#10121d;padding:20px;margin-top:20px}
+.loox-ai-faq h3{font-size:21px;color:white;margin:0 0 14px}
+.loox-ai-faq details{border-top:1px solid #ffffff18;padding:14px 0}
+.loox-ai-faq summary{font-size:14px;color:#f2efff;font-weight:750;cursor:pointer}
+.loox-ai-faq p{margin:12px 0 0;font-size:13px;line-height:1.7;color:#bfc1d2}
+.loox-ai-original-heading{display:none!important}
+body.loox-ai-has-showcase main.work-main{max-width:1230px;margin:22px auto;padding:16px 24px}
+body.loox-ai-has-showcase main .lx-workspace,body.loox-ai-has-showcase main .work-upload{max-width:1080px;margin:18px auto}
+body.loox-ai-has-showcase .loox-guide-host{max-width:1100px;margin:0 auto 50px}
+body.loox-ai-has-showcase .loox-ai-showcase{scroll-margin-top:90px}
+body.loox-ai-has-showcase #workspace{scroll-margin-top:86px}
+body.loox-ai-has-showcase .loox-ai-learning{scroll-margin-top:86px}
+.tool-main .loox-ai-card-art{display:block;width:100%;height:148px;object-fit:cover;border-radius:12px;margin-bottom:12px}
+@media(max-width:850px){.loox-ai-showcase{grid-template-columns:1fr;padding:25px 21px;gap:24px}.loox-ai-hero-media{max-width:700px;width:100%;margin:auto}.loox-ai-steps{grid-template-columns:1fr}.loox-ai-example{grid-template-columns:1fr}.loox-ai-showcase h1{font-size:clamp(30px,8vw,49px)}}
+@media(max-width:500px){body.loox-ai-has-showcase main.work-main{padding:10px 12px}.loox-ai-showcase{border-radius:20px;padding:23px 16px}.loox-ai-hero-media{padding:6px;border-radius:15px}.loox-ai-hero-media img{border-radius:9px}.loox-ai-hero-actions{gap:7px}.loox-ai-link{font-size:12px;min-height:41px;padding:9px 13px}.loox-ai-example{padding:14px}.loox-ai-step{padding:18px}}
+@media(prefers-reduced-motion:reduce){.loox-ai-link:hover{transform:none}}
