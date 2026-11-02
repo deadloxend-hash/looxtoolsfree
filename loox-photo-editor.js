@@ -323,7 +323,7 @@ function startPhotoPointer(e,keepSelection=false){
   const pts=[...activePhotoPointers.values()].slice(0,2).map(p=>gesturePoint(p));
   const r=previousRect||selectedPhotoRect();
   if(r){
-   photoGesture={mode:'pinch',start:r,distance:Math.max(1,pointerDistance(pts[0],pts[1])),
+   photoGesture={mode:'pinch',start:r,distance:Math.max(12,pointerDistance(pts[0],pts[1])),
     midpoint:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2},last:r};
    queueGesturePreview(r);
   }
