@@ -4,7 +4,7 @@ export const labels={fill:'Generative Fill',background:'Background removal',upsc
 const proposal=[{id:'free',price_cents:0,credits:10},{id:'pro',price_cents:999,credits:100},{id:'lifetime',price_cents:4900,credits:50}];
 const planName={free:'Free',pro:'LOOX Pro',lifetime:'LOOX Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
-let loading,library,clientReady,modal,refreshTask;
+let loading,library,clientReady,modal,refreshTask,accountError='';
 export function el(tag,text,cls){
  const node=document.createElement(tag);if(text!=null)node.textContent=text;if(cls)node.className=cls;return node;
 }
@@ -33,7 +33,7 @@ async function client(){
   api.auth.onAuthStateChange((event,session)=>{
    const changed=state.user?.id!==session?.user?.id;
    state.user=session?.user||null;
-   if(changed){state.account=null;renderHeader();document.dispatchEvent(new Event('loox-user'));}
+   if(changed){state.account=null;accountError='';renderHeader();document.dispatchEvent(new Event('loox-user'));}
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>auth('reset'),0);
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
@@ -50,7 +50,7 @@ export async function api(action,body,extra={}){
 }
 export async function refresh(){
  if(!state.user)return;
- if(!refreshTask){const id=state.user.id;refreshTask=api('account').then(data=>{if(state.user?.id!==id)return;state.account=data;renderHeader();document.dispatchEvent(new Event('loox-account'));}).finally(()=>{refreshTask=null;});}
+ if(!refreshTask){const id=state.user.id;refreshTask=api('account').then(data=>{if(state.user?.id!==id)return;state.account=data;accountError='';renderHeader();document.dispatchEvent(new Event('loox-account'));}).catch(e=>{accountError=e.message||'Could not load your account.';document.dispatchEvent(new Event('loox-account'));throw e;}).finally(()=>{refreshTask=null;});}
  return refreshTask;
 }
 export function dialog(title){
@@ -121,7 +121,7 @@ export function renderHeader(){
  for(const host of document.querySelectorAll('[data-loox-account]')){
   host.replaceChildren();host.classList.add('lx-controls');
   if(!state.user){host.append(button('Login',()=>auth(),'lx-button'),button('Register',()=>auth('register'),'lx-button lx-primary'));continue;}
-  const name=state.account?.profile.name||'Account', balance=state.account?.wallet.balance;
+  const name=state.account?.profile?.name||'Account', balance=state.account?.wallet?.balance;
   const details=el('details',null,'lx-details'),summary=el('summary'),avatar=el('span',name.slice(0,1).toUpperCase(),'lx-avatar');
   summary.setAttribute('aria-label','Open account menu');summary.append(avatar,el('span',name,'lx-username'),el('span',(balance??'…')+' cr','lx-balance'));
   const menu=el('nav',null,'lx-menu');for(const [id,label] of sections)menu.append(link(label,'account.html#'+id));menu.append(button('Sign out',signOut,'lx-link'));
@@ -154,7 +154,7 @@ export async function initialize(){
  renderHeader();
  const accountPage=!!document.querySelector('[data-dashboard]');
  if(accountPage||store().getItem(sessionKey)||location.search.includes('code=')){
-  try{await client();renderHeader();if(state.user)await refresh();}catch(e){if(accountPage)msg(document.querySelector('[data-account-note]'),e.message);}
+  try{await client();renderHeader();if(state.user)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
  }
  if(accountPage)drawDashboard();
  const planHost=document.querySelector('[data-pricing]');if(planHost)plans(planHost);
@@ -162,7 +162,7 @@ export async function initialize(){
 function drawDashboard(){
  const host=document.querySelector('[data-dashboard]');if(!host)return;host.replaceChildren();
  if(!state.user){host.append(el('p','Sign in to see your credits, AI jobs and billing history.'),button('Sign in',()=>auth()));return;}
- if(!state.account){host.append(el('p','Loading account…'),button('Retry',()=>refresh().catch(e=>msg(document.querySelector('[data-account-note]'),e.message))));return;}
+ if(!state.account){host.append(el('p',accountError||'Loading your account…'),button('Retry',()=>{accountError='';drawDashboard();client().then(()=>refresh()).catch(e=>{accountError=e.message||'Unable to load account.';drawDashboard();});},'lx-button'));return;}
  const a=state.account;
  const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,'#'+id));host.append(nav);
  function section(id,title){const s=el('section',null,'lx-card');s.id=id;s.append(el('h2',title));host.append(s);return s;}
