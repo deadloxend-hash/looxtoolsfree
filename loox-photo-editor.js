@@ -706,13 +706,30 @@ function showPanel(){
   const mode=actions([['Fit image',()=>{resizeMode='fit';showPanel()}],['Fill canvas',()=>{resizeMode='fill';showPanel()}]]);
   [...mode.children].forEach((b,i)=>b.classList.toggle('selected',resizeMode===(i?'fill':'fit')));
   const sizes=[['YouTube thumbnail',1280,720],['YouTube banner',2560,1440],['TikTok / Reel',1080,1920],['Instagram post',1080,1080],['Instagram portrait',1080,1350],['Instagram story',1080,1920],['Facebook post',1200,630],['Facebook cover',820,312],['X header',1500,500],['Pinterest pin',1000,1500],['LinkedIn banner',1584,396],['Square avatar',800,800]];
-  const g=actions(sizes.map(([name,w,h])=>[name+' · '+w+'×'+h,()=>resizeTo(w,h)]),'preset-grid');
+  const g=actions(sizes.map(([name,w,h])=>[name+' · '+w+'×'+h,()=>resizeTo(w,h,name)]),'preset-grid');
   g.classList.add('size-grid');
   heading('Custom dimensions');const row=document.createElement('div');row.className='dimension-row';
   const w=document.createElement('input'),h=document.createElement('input');for(const [el,v]of [[w,base?.width||1280],[h,base?.height||720]]){el.type='number';el.min='1';el.max='8000';el.value=v;el.setAttribute('aria-label',el===w?'Width in pixels':'Height in pixels')}
   const apply=button('Apply size',()=>resizeTo(Number(w.value),Number(h.value)));row.append(w,h,apply);panel.append(row);
-  hint('Maximum 24 megapixels. Fit adds the selected solid background; Fill crops to the preset shape.');
-  const color=document.createElement('input');color.type='color';color.value=resizeBackground;const label=document.createElement('label');label.className='field';label.textContent='Fit background ';label.append(color);panel.append(label);color.oninput=()=>resizeBackground=color.value;
+  hint('The photo stays separate from the canvas background. Applying another size replaces the previous preset, not the photo.');
+  heading('Canvas background');
+  if(canvasBackground)hint('Active: '+canvasBackground.preset+' · change its background color live.');
+  else hint('Choose a preset to add an independent, editable background behind your photo.');
+  const color=document.createElement('input');color.type='color';color.value=canvasBackground?.color||resizeBackground;
+  color.setAttribute('aria-label','Canvas background color');
+  const label=document.createElement('label');label.className='field';label.textContent='Background color ';label.append(color);panel.append(label);
+  let savedColorHistory=false;
+  color.oninput=()=>{
+   if(canvasBackground&&!savedColorHistory){saveHistory();savedColorHistory=true}
+   resizeBackground=color.value;
+   if(canvasBackground){
+    canvasBackground.color=resizeBackground;
+    positionCanvasBackdrop(); // No expensive photo recomposition on color changes.
+    ++renderToken;
+    setStatus('Background color updated · photo unchanged');
+   }
+  };
+  color.onchange=()=>savedColorHistory=false;
  }
  if(tab==='adjust'){
   heading('Light');['exposure','brightness','contrast','highlights','shadows','gamma'].forEach(k=>addAdjustment(k));
@@ -1077,32 +1094,48 @@ function selectTab(t){
 }
 function closeDrawer(){$('inspector').classList.remove('open');document.querySelector('.app').classList.remove('drawer-open');layoutCanvas()}
 function transform(draw,w,h){if(!base)return;saveHistory();resizeAnchor=null;resizePlacement=null;resizeLast=null;for(const name of ['base','mask']){const old=name==='base'?base:mask,n=makeCanvas(w,h),c=n.getContext('2d');draw(c,old);if(name==='base')base=n;else mask=n}crop=null;photoBounds=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;syncCanvas();render();setStatus('Transform applied')}
-function resizeTo(w,h){
+// Presets change the CANVAS and its independent background, never flatten color
+// into the photo. Original photo pixels are retained for any subsequent preset.
+function resizeTo(w,h,presetName='Custom size'){
  if(!base)return;
  w=Math.round(w);h=Math.round(h);
  if(!Number.isFinite(w)||!Number.isFinite(h)||w<1||h<1||w>8000||h>8000||w*h>24000000){
   setStatus('Choose dimensions from 1 to 8000 px and under 24 megapixels');return;
  }
- const key=[w,h,resizeMode,resizeMode==='fit'?resizeBackground:''].join('|');
- if(resizeLast===key&&base.width===w&&base.height===h){
-  setStatus('Already '+w+' × '+h+' — no additional resize applied');return;
+ const key=[w,h,resizeMode,presetName].join('|');
+ if(resizeLast===key&&base.width===w&&base.height===h&&canvasBackground){
+  setStatus(presetName+' is already applied');return;
  }
- // Keep the unpadded, full-quality source for the entire resize session.
- // Repeated Fit/Fill selections must never resize previously added white bars.
+ // Capture the unpadded photo ONCE, before replacing the previous preset.
+ // If a photo has been independently resized/cropped, capture its actual pixels.
+ saveHistory();
  if(!resizeAnchor){
-  resizeAnchor={base:clone(base),mask:clone(mask)};
-  resizePlacement={scale:1,dx:0,dy:0};
+  const bounds=photoBounds||{x:0,y:0,w:base.width,h:base.height};
+  let original,srcMask;
+  if(photoTransformSource&&photoTransformSourceRect){
+   const r=photoTransformSourceRect;
+   original=makeCanvas(Math.max(1,Math.round(r.w)),Math.max(1,Math.round(r.h)));
+   srcMask=makeCanvas(original.width,original.height);
+   original.getContext('2d').drawImage(photoTransformSource,r.x,r.y,r.w,r.h,0,0,original.width,original.height);
+   srcMask.getContext('2d').drawImage(photoTransformMask,r.x,r.y,r.w,r.h,0,0,srcMask.width,srcMask.height);
+  }else{
+   original=makeCanvas(Math.max(1,Math.round(bounds.w)),Math.max(1,Math.round(bounds.h)));
+   srcMask=makeCanvas(original.width,original.height);
+   original.getContext('2d').drawImage(base,bounds.x,bounds.y,bounds.w,bounds.h,0,0,original.width,original.height);
+   srcMask.getContext('2d').drawImage(mask,bounds.x,bounds.y,bounds.w,bounds.h,0,0,srcMask.width,srcMask.height);
+  }
+  resizeAnchor={base:original,mask:srcMask};
+  resizePlacement={scale:1,dx:bounds.x,dy:bounds.y};
  }
  const original=resizeAnchor.base,srcMask=resizeAnchor.mask;
- const old=resizePlacement;
+ const old=resizePlacement||{scale:1,dx:0,dy:0};
  const scale=resizeMode==='fill'?
   Math.max(w/original.width,h/original.height):
   Math.min(w/original.width,h/original.height);
  const drawW=original.width*scale,drawH=original.height*scale;
  const dx=(w-drawW)/2,dy=(h-drawH)/2;
- saveHistory();
+ // Transparent photo layer: the canvas preset color is displayed behind it.
  const newBase=makeCanvas(w,h),bc=newBase.getContext('2d');
- bc.fillStyle=resizeBackground;bc.fillRect(0,0,w,h);
  bc.imageSmoothingEnabled=true;bc.imageSmoothingQuality='high';
  bc.drawImage(original,dx,dy,drawW,drawH);
  const newMask=makeCanvas(w,h),mc=newMask.getContext('2d');
@@ -1119,10 +1152,17 @@ function resizeTo(w,h){
  });
  frame.width=Math.max(1,Math.round(frame.width*factor));
  base=newBase;mask=newMask;
- resizePlacement={scale,dx,dy};
- resizeLast=key;
- photoBounds=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;crop=null;zoom=1;syncCanvas();render();showPanel();
- setStatus('Resized to '+w+' × '+h+' from original photo content');
+ // Exactly one background exists at a time. Switching the preset replaces its
+ // geometry/name; the chosen color remains editable, not baked into the image.
+ canvasBackground={color:canvasBackground?.color||resizeBackground,preset:presetName};
+ resizeBackground=canvasBackground.color;
+ resizePlacement={scale,dx,dy};resizeLast=key;
+ photoBounds={x:dx,y:dy,w:drawW,h:drawH};
+ photoTransformSource=original;photoTransformMask=srcMask;
+ photoTransformSourceRect={x:0,y:0,w:original.width,h:original.height};
+ selectedPhoto=null;selectedOverlay=-1;
+ crop=null;zoom=1;syncCanvas();render();showPanel();
+ setStatus(presetName+' · '+w+' × '+h+' · background and photo are separate');
 }
 function rotate(dir){if(!base)return;const oldW=base.width,oldH=base.height;transform((c,old)=>{c.translate(dir>0?old.height:0,dir>0?0:old.width);c.rotate(dir*Math.PI/2);c.drawImage(old,0,0)},base.height,base.width);overlays.forEach(o=>{let x=o.x,y=o.y;o.x=dir>0?oldH-y:y;o.y=dir>0?x:oldW-x});render()}
 function flip(horizontal){if(!base)return;transform((c,old)=>{c.translate(horizontal?old.width:0,horizontal?0:old.height);c.scale(horizontal?-1:1,horizontal?1:-1);c.drawImage(old,0,0)},base.width,base.height);overlays.forEach(o=>{if(horizontal)o.x=base.width-o.x;else o.y=base.height-o.y});render()}
