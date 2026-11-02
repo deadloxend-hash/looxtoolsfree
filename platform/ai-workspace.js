@@ -42,19 +42,8 @@ async function start(){try{await initialize()}catch{}if(thread)drawThread();awai
 }
 start();
 
-const aiNav=document.getElementById('aiNav'),navToggle=document.getElementById('aiNavToggle'),navClose=document.getElementById('aiNavClose'),navBackdrop=document.getElementById('aiNavBackdrop');
-function setNav(open){aiNav.hidden=!open;navBackdrop.hidden=!open;navToggle.setAttribute('aria-expanded',String(open));navToggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');document.body.classList.toggle('ai-nav-open',open)}
-navToggle?.addEventListener('click',()=>setNav(aiNav.hidden));navClose?.addEventListener('click',()=>setNav(false));navBackdrop?.addEventListener('click',()=>setNav(false));
-const drawerSearch=document.getElementById('aiDrawerSearch'),drawerLinks=document.getElementById('aiDrawerLinks'),drawerEmpty=document.getElementById('aiDrawerEmpty');
-if(drawerSearch&&drawerLinks){drawerSearch.addEventListener('input',()=>{
- const query=drawerSearch.value.toLocaleLowerCase().trim();let shown=0;
- drawerLinks.querySelectorAll('.ai-drawer-section').forEach(section=>{
-  let count=0;
-  section.querySelectorAll('a').forEach(link=>{const match=!query||link.textContent.toLocaleLowerCase().includes(query);link.hidden=!match;if(match){shown++;count++}});
-  section.querySelectorAll('details').forEach(details=>{const visible=[...details.querySelectorAll('a')].some(a=>!a.hidden);details.hidden=!!query&&!visible;if(query&&visible)details.open=true;});
-  section.classList.toggle('ai-search-empty',!!query&&!count);
- });
- drawerEmpty.hidden=shown>0;
- });
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!aiNav.hidden)setNav(false)});
+// Open the exact same site-wide All tools dialog used by the main LOOX Tools homepage.
+document.getElementById('aiNavToggle')?.addEventListener('click',()=>{
+ if(typeof window.LOOXOpenAllTools==='function')window.LOOXOpenAllTools();
+ else location.href='index.html#tools';
+});
