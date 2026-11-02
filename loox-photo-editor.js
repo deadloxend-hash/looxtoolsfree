@@ -1331,7 +1331,22 @@ floatingCropCancel.addEventListener('click',cancelCrop);
 floatingCropApply.addEventListener('click',applyCrop);
 $('closeDrawer').addEventListener('click',closeDrawer);$('drawerBackdrop').addEventListener('click',closeDrawer);
 $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);$('exportTop').addEventListener('click',openExport);$('closeExport').addEventListener('click',()=>$('exportDialog').close());$('download').addEventListener('click',download);
-$('quality').addEventListener('input',e=>{$('qualityValue').textContent=e.target.value+'%';prepareExport()});$('format').addEventListener('change',e=>{$('quality').disabled=e.target.value==='image/png';prepareExport()});$('exportSize').addEventListener('change',prepareExport);
+// Export quality uses the same thumb-only gesture and defers encoding until release.
+const qualityRange=$('quality');let blockedQualityClick=false;
+qualityRange.addEventListener('pointerdown',e=>{
+ const b=qualityRange.getBoundingClientRect();
+ const p=(Number(qualityRange.value)-Number(qualityRange.min))/
+  (Number(qualityRange.max)-Number(qualityRange.min)||1);
+ const center=b.left+11+p*Math.max(1,b.width-22);
+ if(e.button>0||Math.abs(e.clientX-center)>Math.max(20,Math.min(27,b.width*.12))){
+  blockedQualityClick=true;e.preventDefault();
+ }else blockedQualityClick=false;
+});
+qualityRange.addEventListener('click',e=>{
+ if(blockedQualityClick){e.preventDefault();e.stopPropagation();blockedQualityClick=false}
+},true);
+qualityRange.addEventListener('input',e=>{$('qualityValue').textContent=e.target.value+'%'});
+qualityRange.addEventListener('change',prepareExport);$('format').addEventListener('change',e=>{$('quality').disabled=e.target.value==='image/png';prepareExport()});$('exportSize').addEventListener('change',prepareExport);
 $('zoomIn').addEventListener('click',()=>{zoom=clamp(zoom*1.25,.2,8);layoutCanvas()});$('zoomOut').addEventListener('click',()=>{zoom=clamp(zoom/1.25,.2,8);layoutCanvas()});$('fit').addEventListener('click',()=>{zoom=1;layoutCanvas()});
 const zone=$('dropzone');zone.addEventListener('pointerdown',e=>{if(e.target!==zone||crop||!base)return;if(selectedTextIndex>=0){selectedTextIndex=-1;positionTextSelection()}if(selectedPhoto){selectedPhoto=null;positionPhotoSelection();if(tab==='tools')showPanel()}});zone.addEventListener('dragover',e=>{e.preventDefault();zone.style.outline='2px dashed #a979ff'});zone.addEventListener('dragleave',()=>zone.style.outline='');zone.addEventListener('drop',e=>{e.preventDefault();zone.style.outline='';load([...e.dataTransfer.files].find(f=>f.type.startsWith('image/')))});window.addEventListener('resize',layoutCanvas);
 document.addEventListener('keydown',e=>{if(e.target?.matches?.('input,textarea,[contenteditable]'))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo()}if(e.key==='Escape'&&crop){crop=null;positionCrop();showPanel()}else if(e.key==='Escape'&&selectedPhoto){selectedPhoto=null;positionPhotoSelection();if(tab==='tools')showPanel()}});
