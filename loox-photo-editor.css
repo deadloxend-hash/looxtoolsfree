@@ -103,3 +103,10 @@
  .mobile-bar button[data-tab="crop"]{color:#dfcbff}
  .mobile-bar button[data-tab="crop"].active{color:#fff;background:#493260}
 }
+
+/* Avoid a 9999px crop shadow repaint on every mobile touch move. */
+.crop-box{
+ box-shadow:0 0 0 160vmax rgba(0,0,0,.56);
+ -webkit-user-select:none;
+ user-select:none;
+}
