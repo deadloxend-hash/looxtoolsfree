@@ -207,7 +207,37 @@ function render(){if(!base)return;if(sliderPreviewActive){++renderToken;queueQui
 })}
 function syncCanvas(){sliderPreviewActive=false;quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;hideGesturePreview();lastRenderedComposite=null;canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
 function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionTextSelection(activeTextGesture?.next&&textLayerBounds({...overlays[activeTextGesture.index],...activeTextGesture.next}));positionInlineTextEditor()}
-function positionCrop(){if(!crop||!base){$('cropOverlay').hidden=true;return}const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');el.hidden=false;Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',width:crop.w*sx+'px',height:crop.h*sy+'px'})}
+const floatingCropCancel=$('cropCancelFloating'),floatingCropApply=$('cropApplyFloating');
+function positionCropActions(){
+ const visible=!!(crop&&base);
+ floatingCropCancel.hidden=!visible;floatingCropApply.hidden=!visible;
+ if(!visible)return;
+ const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
+ const left=b.left-v.left+$('dropzone').scrollLeft;
+ const top=b.top-v.top+$('dropzone').scrollTop;
+ const size=35,offset=6;
+ const y=clamp(top+b.height*.5-size/2,4,Math.max(4,$('dropzone').clientHeight-size-4));
+ const lx=clamp(left-size-offset,4,Math.max(4,$('dropzone').clientWidth-size-4));
+ const rx=clamp(left+b.width+offset,4,Math.max(4,$('dropzone').clientWidth-size-4));
+ Object.assign(floatingCropCancel.style,{left:lx+'px',top:y+'px'});
+ Object.assign(floatingCropApply.style,{left:rx+'px',top:y+'px'});
+}
+function cancelCrop(){
+ if(!crop)return;
+ crop=null;cropTarget='canvas';cropIndex=-1;
+ positionCrop();showPanel();setStatus('Crop cancelled');
+}
+function positionCrop(){
+ positionCropActions();
+ if(!crop||!base){$('cropOverlay').hidden=true;return}
+ const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');
+ el.hidden=false;
+ Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',
+ top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});
+ const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;
+ Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',
+ width:crop.w*sx+'px',height:crop.h*sy+'px'});
+}
 
 // Main photo and imported overlays share the same selection and sizing controls.
 // Resizing commits once on release, rather than continuously reprocessing large images.
@@ -569,16 +599,16 @@ function control(name,min,max,step,value,onChange){
   if(base){sliderPreviewActive=true;makeQuickPreviewBase()}
  });
  range.addEventListener('click',e=>{if(blockedClick){e.preventDefault();e.stopPropagation();blockedClick=false}},true);
- function apply(v,save=true){
+ function apply(v,save=true,force=false){
   const n=clamp(Number(v)||0,min,max);
   const current=Number(range.value);
   if(save&&base&&!hasHistory){saveHistory();hasHistory=true}
   range.value=n;num.value=n;
-  if(!save||n!==current||dragging)onChange(n);
+  if(force||n!==current||dragging)onChange(n);
  }
  range.addEventListener('input',()=>{
   if(!dragging&&!keyboardHistory&&base){saveHistory();keyboardHistory=true}
-  apply(range.value,dragging);
+  apply(range.value,dragging,true);
  });
  const finish=()=>{
   if(!dragging)return;
@@ -606,7 +636,7 @@ function showCropControls(){
  [...buttons.children].forEach((button,i)=>button.classList.toggle('selected',ratios[i]===cropRatio));
  hint('Drag inside the crop to move it, or drag an edge or corner to resize it.');
  cropFields();
- actions([['Apply crop',applyCrop],['Cancel',()=>{crop=null;cropTarget='canvas';cropIndex=-1;positionCrop();showPanel()}]]);
+ actions([['Apply crop',applyCrop],['Cancel',cancelCrop]]);
 }
 function showPanel(){
  panel.replaceChildren();$('panelTitle').textContent=tab==='crop'?'Crop Photo':tab.charAt(0).toUpperCase()+tab.slice(1);if(['adjust','effects','retouch'].includes(tab)){hint('Editing: '+(selectedImage()?.name||'Background photo'));if(selectedImage()?.locked||selectedImage()?.visible===false){hint('Unlock and show this layer in Layers before editing it.');return}}
@@ -1238,6 +1268,8 @@ $('overlayInput').addEventListener('change',e=>{
 });
 $('fileInput').addEventListener('change',e=>{load(e.target.files[0]);e.target.value=''});['openImage','chooseImage'].forEach(id=>$(id).addEventListener('click',triggerUpload));
 document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>selectTab(b.dataset.tab)));
+floatingCropCancel.addEventListener('click',cancelCrop);
+floatingCropApply.addEventListener('click',applyCrop);
 $('closeDrawer').addEventListener('click',closeDrawer);$('drawerBackdrop').addEventListener('click',closeDrawer);
 $('undo').addEventListener('click',undo);$('redo').addEventListener('click',redo);$('exportTop').addEventListener('click',openExport);$('closeExport').addEventListener('click',()=>$('exportDialog').close());$('download').addEventListener('click',download);
 $('quality').addEventListener('input',e=>{$('qualityValue').textContent=e.target.value+'%';prepareExport()});$('format').addEventListener('change',e=>{$('quality').disabled=e.target.value==='image/png';prepareExport()});$('exportSize').addEventListener('change',prepareExport);
