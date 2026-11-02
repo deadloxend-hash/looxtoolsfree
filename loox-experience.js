@@ -10,15 +10,16 @@
  let language=supportedCodes.has(new URLSearchParams(location.search).get('lang'))?new URLSearchParams(location.search).get('lang'):read('loox-language','en');
  if(!supportedCodes.has(language))language='en';
  const homePage=file==='index.html';
+ const aiSharedDialog=document.body.classList.contains('ai-home')||document.body.classList.contains('ai-chat');
  let sidebarVisible=homePage&&!matchMedia('(max-width:900px)').matches&&read('loox-home-sidebar-visible','true')!=='false';
- document.body.classList.add(homePage?'loox-home-rail':'loox-no-rail');
- document.body.classList.toggle('rail-hidden',!sidebarVisible);
+ if(!aiSharedDialog)document.body.classList.add(homePage?'loox-home-rail':'loox-no-rail');
+ if(!aiSharedDialog)document.body.classList.toggle('rail-hidden',!sidebarVisible);
  const studio=document.body.classList.contains('studio-page');
  const main=document.querySelector('main')||document.querySelector('.app');
  let compact=homePage?false:(matchMedia('(max-width:900px)').matches||read('loox-rail-collapsed','true')!=='false');
- document.body.classList.add('experience-shell');document.body.classList.toggle('rail-compact',compact);
+ if(!aiSharedDialog){document.body.classList.add('experience-shell');document.body.classList.toggle('rail-compact',compact);}
  if(studio)document.body.classList.add('experience-studio');
- if(main)main.classList.add('experience-content');
+ if(main&&!aiSharedDialog)main.classList.add('experience-content');
  const words={
   en:{tools:'TOOLS',learn:'LEARN & SUPPORT',collapse:'Hide tool names',expand:'Show tool names',privacy:'Privacy policy',help:'Help & guides',home:'All tools',local:'PROCESSED IN YOUR BROWSER',cloud:'CONNECTED CLOUD PROCESSING',remote:'PUBLIC IMAGE REQUESTS'},
   es:{tools:'HERRAMIENTAS',learn:'APRENDER Y AYUDA',collapse:'Ocultar nombres',expand:'Mostrar nombres',privacy:'Privacidad',help:'Ayuda y guías',home:'Todas las herramientas',local:'PROCESADO EN TU NAVEGADOR',cloud:'PROCESAMIENTO EN LA NUBE',remote:'SOLICITUDES DE IMÁGENES PÚBLICAS'},
@@ -121,6 +122,7 @@
   if(t.kind==='text')return 3;
   return 4
  }
+ window.LOOXOpenAllTools=openMore;
  function openMore(){
   if(!moreDialog){moreDialog=document.createElement('dialog');moreDialog.className='loox-more-dialog';document.body.append(moreDialog)}
   const l=(labels[language]||labels.en),li=Math.max(0,['en','es','fr','de'].indexOf(language)),categoryNames=[['Image Resizing & Canvas Scaling','Tamaño y lienzo','Dimensions et canevas','Bildgröße und Leinwand'],['Compression & File Optimization','Compresión y optimización','Compression et optimisation','Komprimierung und Optimierung'],['Image Cropping & Framing','Recorte y encuadre','Recadrage et formes','Zuschnitt und Formen'],['Image Format Converters','Conversores de imagen','Conversion d’images','Bildformatkonverter'],['Photo Editing & Filters','Edición y filtros','Retouche et filtres','Bildbearbeitung und Filter'],['Watermarking & Branding','Marcas de agua y diseño','Filigranes et identité','Wasserzeichen und Gestaltung'],['AI-Powered Media Suite','Herramientas de IA','Outils IA','KI-Medienwerkzeuge'],['Video & Animation Utilities','Vídeo y animación','Vidéo et animation','Video und Animation']],ids=['resize','compress','crop','convert','edit','brand','ai','video'],routes=['image-resizing-tools','image-compression-tools','image-cropping-tools','image-converter-tools','photo-editing-tools','watermark-branding-tools','ai-media-tools','video-animation-tools'];
@@ -180,12 +182,12 @@
   });
  }
  // Render essential navigation immediately: a failed catalog fetch must not hide it.
- if(homePage)drawRail();else mountHeader();
+ if(!aiSharedDialog){if(homePage)drawRail();else mountHeader();}
  Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
-  catalog=c;dictionary=d;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
+  catalog=c;dictionary=d;if(aiSharedDialog)return;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
   const grid=document.querySelector('#toolGrid');if(grid)new MutationObserver(()=>brandCards(grid)).observe(grid,{childList:true});
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
- }).catch(error=>{console.error('LOOX optional catalog or translation setup failed:',error);applyPreferences(); /* Keep the already-rendered sidebar and Settings button visible. */});
- window.addEventListener('hashchange',()=>{drawRail();chooseToolbox();loadGuide()});
+ }).catch(error=>{console.error('LOOX optional catalog or translation setup failed:',error);if(!aiSharedDialog)applyPreferences(); /* Keep the already-rendered sidebar and Settings button visible. */});
+ if(!aiSharedDialog)window.addEventListener('hashchange',()=>{drawRail();chooseToolbox();loadGuide()});
  matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>{if(preferences().theme==='system')applyPreferences()});
 })();
