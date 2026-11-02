@@ -231,7 +231,7 @@ function photoSizeFields(){
   input.addEventListener('change',()=>{const value=Number(input.value);if(!Number.isFinite(value)||value<1){input.value=String(Math.round(r[key]));return}commitPhotoSize({...r,[key]:value})});
   row.append(input);wrap.append(row);
  }
- panel.append(wrap);hint('One finger moves the photo. Pinch fingers together to enlarge; spread them to shrink. Tap empty canvas to deselect.');
+ panel.append(wrap);hint('Drag with one finger to move. Spread two fingers to enlarge; pinch together to shrink. Tap empty canvas to deselect.');
 }
 function resizeRectFromHandle(start,handle,dx,dy){
  const minW=Math.min(12,base.width),minH=Math.min(12,base.height);
@@ -727,7 +727,7 @@ canvas.addEventListener('pointerdown',e=>{
  }
  const nextPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
  if(previous!==hit||oldPhoto!==nextPhoto){render();showPanel()}
- if(!brushActive&&selectedPhoto&&tab!=='crop'){
+ if(!brushActive&&selectedPhoto){
   startPhotoPointer(e);return;
  }
  if(hit>=0&&!brushActive&&['text','elements','layers'].includes(tab)){e.preventDefault();saveHistory();overlayDrag={dx:p.x-overlays[hit].x,dy:p.y-overlays[hit].y};canvas.setPointerCapture(e.pointerId);return}
