@@ -84,13 +84,12 @@
    ['index.html','LOOX Tools Home','⌂'],['ai-home.html','LOOX AI Home','✦']].map(t=>item(...t)).join('')+
    '<h2 class="loox-rail-group-title">AI-powered tools</h2>'+[
    ['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join('')+
-   '<h2 class="loox-rail-group-title">Free tools</h2>'+[
+   (aiSharedDialog?'':'<h2 class="loox-rail-group-title">Free tools</h2>'+[
    ['all-image-tools.html','Image Tools','▧'],['all-video-tools.html','Video Tools','▶'],['index.html?category=Audio#tools','Audio Tools','♫'],['all-text-tools.html','Text Tools','Aa'],['index.html?category=PDF#tools','PDF Tools','▤'],['index.html?category=Developer#tools','Developer Tools','⌘'],['pricing.html','Pricing & Credits','◇'],['account.html','My Account','◎']].map(t=>item(...t)).join('')+
-   '<button class="loox-rail-link loox-more-trigger"><span class="loox-rail-label">More tools</span></button></nav>';
+   '<button class="loox-rail-link loox-more-trigger"><span class="loox-rail-label">More tools</span></button>')+'</nav>';
   rail.querySelector('.loox-rail-toggle').onclick=toggleHomeRail;
-  rail.querySelector('.loox-more-trigger').onclick=openMore;
-  rail.querySelector('.loox-more-trigger').setAttribute('aria-label',l.more);
-  rail.querySelector('.loox-more-trigger').title=l.more;
+  const moreTrigger=rail.querySelector('.loox-more-trigger');
+  if(moreTrigger){moreTrigger.onclick=openMore;moreTrigger.setAttribute('aria-label',l.more);moreTrigger.title=l.more;}
   rail.querySelector('a[href="index.html"]').setAttribute('aria-label','Open LOOX Tools Home');
   if(!aiSharedDialog)mountHeader();
  }
