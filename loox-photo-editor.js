@@ -312,8 +312,8 @@ function prepareGesturePreview(){
  try{
   if(selectedPhoto.kind==='base'){
    const currentRect=selectedPhotoRect();
-   const moving=lastRenderedComposite||currentBase;
    const hasTop=overlays.some(o=>o.visible!==false)||frame.style!=='none';
+   const moving=hasTop?compose({toLayer:0,drawFrame:false}):(lastRenderedComposite||currentBase);
    // The cached final render already includes the current tone settings.
    // Only create a separate overlay layer if the design actually has one.
    const top=hasTop?compose({skipBase:true}):null;
@@ -541,7 +541,69 @@ function filterThumbnail(name){
 }
 function addAdjustment(k){const [name,min,max]=definitions[k],target=editTarget();control(name,min,max,k==='exposure'?.1:1,target?.values?.[k]??values[k],v=>{const current=editTarget();if(current){current.values={...current.values,[k]:v};current.cache=null}else values[k]=v;render()})}
 function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
-function addText(text,scale,textKind='text'){if(!base||!requireRoom(textKind))return;saveHistory();overlays.push({type:'text',textKind,text,x:Math.round(base.width*.12),y:Math.round(base.height*.2),size:Math.max(20,Math.round(base.width*scale)),color:'#ffffff',opacity:1,font:'system-ui,Arial,sans-serif',weight:'bold',outlineWidth:0,outlineColor:'#111111',shadowBlur:0,visible:true,locked:false});selectedOverlay=overlays.length-1;brushActive=false;render();showPanel()}
+// Tap a text/heading/caption on the canvas to type directly over it.
+// Text updates the real layer; the textarea is a temporary editing control only.
+const inlineTextInput=document.createElement('textarea');
+inlineTextInput.className='photo-inline-text-editor';
+inlineTextInput.hidden=true;
+inlineTextInput.setAttribute('aria-label','Edit selected photo text');
+inlineTextInput.setAttribute('spellcheck','true');
+$('dropzone').append(inlineTextInput);
+let inlineTextIndex=-1,inlineTextOriginal='',inlineTextSaved=false,inlineTextTimer=0;
+function positionInlineTextEditor(){
+ if(inlineTextInput.hidden||!base)return;
+ const o=overlays[inlineTextIndex];if(!o||o.type!=='text'){closeInlineTextEditor();return}
+ const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
+ const sx=b.width/base.width,sy=b.height/base.height;
+ const lines=String(inlineTextInput.value).split('\n');
+ const fontSize=Math.max(16,Math.min(68,o.size*sx));
+ const desiredWidth=Math.max(160,Math.max(...lines.map(l=>l.length),7)*fontSize*.62+24);
+ const width=Math.min(Math.max(140,$('dropzone').clientWidth-20),desiredWidth);
+ const height=Math.min(Math.max(44,$('dropzone').clientHeight-16),Math.max(54,lines.length*fontSize*1.32+18));
+ const left=clamp(b.left-v.left+$('dropzone').scrollLeft+o.x*sx,6,Math.max(6,$('dropzone').clientWidth-width-6));
+ const top=clamp(b.top-v.top+$('dropzone').scrollTop+o.y*sy,6,Math.max(6,$('dropzone').clientHeight-height-6));
+ Object.assign(inlineTextInput.style,{left:left+'px',top:top+'px',
+  width:width+'px',height:height+'px',fontSize:fontSize+'px',
+  fontFamily:o.font||'system-ui,sans-serif',fontWeight:o.weight||'bold',color:o.color||'#fff'});
+}
+function closeInlineTextEditor(){
+ clearTimeout(inlineTextTimer);inlineTextTimer=0;
+ if(inlineTextInput.hidden)return;
+ inlineTextIndex=-1;inlineTextInput.hidden=true;
+ if(document.activeElement===inlineTextInput)inlineTextInput.blur();
+ if(base)render();
+ if(tab==='text'||tab==='layers')showPanel();
+}
+function editTextInline(index,selectAll=false){
+ const o=overlays[index];
+ if(!base||!o||o.type!=='text'||o.visible===false||o.locked||crop)return;
+ if(!inlineTextInput.hidden&&inlineTextIndex===index){inlineTextInput.focus({preventScroll:true});return}
+ if(!inlineTextInput.hidden)closeInlineTextEditor();
+ inlineTextIndex=index;inlineTextOriginal=String(o.text||'');inlineTextSaved=false;
+ selectedOverlay=index;selectedPhoto=null;positionPhotoSelection();
+ inlineTextInput.value=inlineTextOriginal;
+ inlineTextInput.hidden=false;
+ positionInlineTextEditor();
+ if(tab==='text'||tab==='layers')showPanel();
+ inlineTextInput.focus({preventScroll:true});
+ if(selectAll)inlineTextInput.select();
+ setStatus('Type to edit the selected text · tap outside to finish');
+}
+inlineTextInput.addEventListener('input',()=>{
+ const o=overlays[inlineTextIndex];if(!o||o.type!=='text')return;
+ if(!inlineTextSaved){saveHistory();inlineTextSaved=true}
+ o.text=inlineTextInput.value.slice(0,1200);
+ positionInlineTextEditor();
+ clearTimeout(inlineTextTimer);
+ inlineTextTimer=setTimeout(()=>{if(base)render()},100);
+});
+inlineTextInput.addEventListener('blur',()=>closeInlineTextEditor());
+inlineTextInput.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){e.preventDefault();closeInlineTextEditor()}
+ if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();closeInlineTextEditor()}
+});
+
+function addText(text,scale,textKind='text'){if(!base||!requireRoom(textKind))return;saveHistory();overlays.push({type:'text',textKind,text,x:Math.round(base.width*.12),y:Math.round(base.height*.2),size:Math.max(20,Math.round(base.width*scale)),color:'#ffffff',opacity:1,font:'system-ui,Arial,sans-serif',weight:'bold',outlineWidth:0,outlineColor:'#111111',shadowBlur:0,visible:true,locked:false});selectedOverlay=overlays.length-1;brushActive=false;render();showPanel();if(textKind!=='sticker')editTextInline(selectedOverlay,true)}
 function addShape(shape){if(!base||!requireRoom('shape'))return;saveHistory();overlays.push({type:'shape',shape,x:Math.round(base.width*.3),y:Math.round(base.height*.3),w:Math.round(base.width*.35),h:Math.round(base.height*.25),color:'#ff62ad',opacity:1,visible:true,locked:false});selectedOverlay=overlays.length-1;brushActive=false;render();showPanel()}
 function removeOverlay(){if(selectedOverlay<0||!overlays[selectedOverlay])return;saveHistory();overlays.splice(selectedOverlay,1);selectedOverlay=overlays.length?Math.min(selectedOverlay,overlays.length-1):-1;render();showPanel()}
 function layerName(o,i){return o.name||((o.type==='text'?String(o.text).slice(0,20):o.type==='stroke'?'Drawn stroke':o.type==='shape'?o.shape:'Photo overlay')+' '+(i+1))}
@@ -743,6 +805,12 @@ function paint(p){
 canvas.addEventListener('pointerdown',e=>{
  if(!base)return;const p=pointerPosition(e);
  if(crop){e.preventDefault();return}
+ if(!brushActive&&!activePhotoPointers.size){
+  const candidate=hitOverlay(p,false);
+  if(candidate>=0&&overlays[candidate]?.type==='text'){
+   e.preventDefault();editTextInline(candidate);return;
+  }
+ }
  if(e.pointerType==='touch'&&activePhotoPointers.size&&selectedPhoto&&!brushActive){
   startPhotoPointer(e,true);return;
  }
