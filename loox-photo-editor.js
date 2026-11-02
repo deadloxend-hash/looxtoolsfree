@@ -137,7 +137,7 @@ function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(
  }catch(e){hideGesturePreview();console.error(e);setStatus('Rendering failed — try a smaller image.')}
 })}
 function syncCanvas(){hideGesturePreview();lastRenderedComposite=null;canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
-function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionInlineTextEditor()}
+function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionTextSelection(activeTextGesture?.next&&textLayerBounds({...overlays[activeTextGesture.index],...activeTextGesture.next}));positionInlineTextEditor()}
 function positionCrop(){if(!crop||!base){$('cropOverlay').hidden=true;return}const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');el.hidden=false;Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',width:crop.w*sx+'px',height:crop.h*sy+'px'})}
 
 // Main photo and imported overlays share the same selection and sizing controls.
@@ -568,6 +568,152 @@ function addAdjustment(k){const [name,min,max]=definitions[k],target=editTarget(
 function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
 // Tap a text/heading/caption on the canvas to type directly over it.
 // Text updates the real layer; the textarea is a temporary editing control only.
+// Text is selectable independently of the photo layer and stays crisp while resizing.
+const textSelectionElement=document.createElement('div');
+textSelectionElement.className='text-layer-selection';
+textSelectionElement.hidden=true;
+textSelectionElement.innerHTML='<div class="text-layer-frame"><span class="text-layer-size"></span>'+
+ ['nw','n','ne','e','se','s','sw','w'].map(h=>
+  '<span class="text-layer-handle '+h+'" data-text-handle="'+h+'" role="button" tabindex="0" aria-label="Resize text from '+h+'"></span>').join('')+'</div>';
+$('dropzone').append(textSelectionElement);
+let selectedTextIndex=-1,activeTextGesture=null,textPreviewFrame=0,textPreviewBackground=null;
+function positionTextSelection(preview){
+ const o=overlays[selectedTextIndex],rect=preview||o&&o.type==='text'&&textLayerBounds(o);
+ if(!base||!rect||crop||!o||o.visible===false||o.locked){
+  textSelectionElement.hidden=true;return;
+ }
+ const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
+ if(!b.width||!b.height){textSelectionElement.hidden=true;return}
+ textSelectionElement.hidden=false;
+ Object.assign(textSelectionElement.style,{
+  left:(b.left-v.left+$('dropzone').scrollLeft+rect.x*b.width/base.width)+'px',
+  top:(b.top-v.top+$('dropzone').scrollTop+rect.y*b.height/base.height)+'px',
+  width:Math.max(1,rect.w*b.width/base.width)+'px',
+  height:Math.max(1,rect.h*b.height/base.height)+'px'
+ });
+ textSelectionElement.querySelector('.text-layer-size').textContent=
+  Math.round(rect.w)+' × '+Math.round(rect.h)+' px';
+}
+function selectTextLayer(i){
+ selectedTextIndex=i;
+ selectedOverlay=i;
+ selectedPhoto=null;
+ positionPhotoSelection();
+ positionTextSelection();
+}
+function textPreviewRect(layer){
+ return textLayerBounds(layer);
+}
+function prepareTextPreview(){
+ const g=activeTextGesture;if(!g||!base)return;
+ try{
+  ++renderToken;
+  positionGestureCanvas();
+  const full=compose({skipLayer:g.index});
+  const mini=document.createElement('canvas');
+  mini.width=gestureCanvas.width;mini.height=gestureCanvas.height;
+  mini.getContext('2d').drawImage(full,0,0,mini.width,mini.height);
+  textPreviewBackground=mini;
+  gestureCanvas.hidden=false;canvas.style.opacity='0';
+ }catch(e){
+  console.warn('Text preview unavailable',e);textPreviewBackground=null;
+  canvas.style.opacity='';gestureCanvas.hidden=true;
+ }
+}
+function paintTextPreview(next){
+ const g=activeTextGesture,o=overlays[g?.index];
+ if(!g||!o||!base)return;
+ const c=gestureContext;
+ if(textPreviewBackground&&!gestureCanvas.hidden){
+  c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,gestureCanvas.width,gestureCanvas.height);
+  c.drawImage(textPreviewBackground,0,0);
+  c.setTransform(gestureCanvas.width/base.width,0,0,gestureCanvas.height/base.height,0,0);
+  c.save();c.globalAlpha=o.opacity??1;
+  paintTextLayer(c,{...o,...next});c.restore();
+ }else{
+  // Keep a responsive selection outline if a device cannot allocate preview memory.
+  positionTextSelection(textPreviewRect({...o,...next}));
+ }
+}
+function queueTextPreview(next){
+ if(!activeTextGesture)return;
+ activeTextGesture.next=next;
+ if(textPreviewFrame)return;
+ textPreviewFrame=requestAnimationFrame(()=>{
+  textPreviewFrame=0;
+  const g=activeTextGesture;if(!g)return;
+  paintTextPreview(g.next);
+  positionTextSelection(textLayerBounds({...overlays[g.index],...g.next}));
+ });
+}
+function textGestureValues(g,e){
+ const p=pointerPosition(e),dx=p.x-g.from.x,dy=p.y-g.from.y;
+ const o=overlays[g.index],r=g.bounds;
+ if(g.mode==='move'){
+  const x=clamp(g.original.x+dx,Math.min(20,base.width*.08)-r.w,base.width-Math.min(20,base.width*.08));
+  const y=clamp(g.original.y+dy,Math.min(20,base.height*.08)-r.h,base.height-Math.min(20,base.height*.08));
+  return {x:Math.round(x),y:Math.round(y)};
+ }
+ const h=g.mode,left0=r.x,top0=r.y,right0=r.x+r.w,bottom0=r.y+r.h;
+ let left=left0,right=right0,top=top0,bottom=bottom0;
+ if(h.includes('w'))left=clamp(left0+dx,right0-base.width*3,right0-12);
+ if(h.includes('e'))right=clamp(right0+dx,left0+12,left0+base.width*3);
+ if(h.includes('n'))top=clamp(top0+dy,bottom0-base.height*3,bottom0-12);
+ if(h.includes('s'))bottom=clamp(bottom0+dy,top0+12,top0+base.height*3);
+ const m=textMetrics(o);
+ return {x:left,y:top,scaleX:clamp((right-left)/m.w,.15,12),
+  scaleY:clamp((bottom-top)/m.h,.15,12)};
+}
+function startTextGesture(e,i,mode='move'){
+ const o=overlays[i];
+ if(!base||crop||brushActive||!o||o.type!=='text'||o.locked||o.visible===false)return;
+ if(!inlineTextInput.hidden)closeInlineTextEditor();
+ e.preventDefault();e.stopPropagation();
+ selectTextLayer(i);
+ const start={x:o.x,y:o.y,scaleX:o.scaleX||1,scaleY:o.scaleY||1};
+ activeTextGesture={id:e.pointerId,index:i,mode,from:pointerPosition(e),
+  startClient:{x:e.clientX,y:e.clientY},bounds:textLayerBounds(o),original:start,next:start,
+  moved:false,previewReady:false};
+ try{e.target.setPointerCapture(e.pointerId)}catch{}
+ if(tab==='text'||tab==='layers')showPanel();
+}
+function moveTextGesture(e){
+ const g=activeTextGesture;if(!g||g.id!==e.pointerId)return false;
+ e.preventDefault();
+ const distance=Math.hypot(e.clientX-g.startClient.x,e.clientY-g.startClient.y);
+ if(!g.moved&&distance<4)return true;
+ if(!g.previewReady){g.previewReady=true;prepareTextPreview()}
+ g.moved=true;
+ queueTextPreview(textGestureValues(g,e));
+ return true;
+}
+function finishTextGesture(e,cancel=false){
+ const g=activeTextGesture;if(!g||g.id!==e.pointerId)return false;
+ e.preventDefault();
+ const o=overlays[g.index];
+ const next=g.moved&&!cancel&&o?textGestureValues(g,e):null;
+ if(textPreviewFrame)cancelAnimationFrame(textPreviewFrame);
+ textPreviewFrame=0;activeTextGesture=null;textPreviewBackground=null;
+ if(next){
+  saveHistory();Object.assign(o,next);
+  render();positionTextSelection();setStatus(g.mode==='move'?'Text moved':'Text resized');
+  if(tab==='text'||tab==='layers')showPanel();
+ }else{
+  canvas.style.opacity='';gestureCanvas.hidden=true;
+  positionTextSelection();
+  if(!cancel&&g.mode==='move')editTextInline(g.index);
+ }
+ return true;
+}
+textSelectionElement.addEventListener('pointerdown',e=>{
+ const handle=e.target.closest('[data-text-handle]');
+ if(!handle||selectedTextIndex<0)return;
+ startTextGesture(e,selectedTextIndex,handle.dataset.textHandle);
+});
+textSelectionElement.addEventListener('pointermove',e=>moveTextGesture(e));
+textSelectionElement.addEventListener('pointerup',e=>finishTextGesture(e));
+textSelectionElement.addEventListener('pointercancel',e=>finishTextGesture(e,true));
+
 const inlineTextInput=document.createElement('textarea');
 inlineTextInput.className='photo-inline-text-editor';
 inlineTextInput.hidden=true;
@@ -605,7 +751,7 @@ function editTextInline(index,selectAll=false){
  if(!inlineTextInput.hidden&&inlineTextIndex===index){inlineTextInput.focus({preventScroll:true});return}
  if(!inlineTextInput.hidden)closeInlineTextEditor();
  inlineTextIndex=index;inlineTextOriginal=String(o.text||'');inlineTextSaved=false;
- selectedOverlay=index;selectedPhoto=null;positionPhotoSelection();
+ selectTextLayer(index);
  inlineTextInput.value=inlineTextOriginal;
  inlineTextInput.hidden=false;
  positionInlineTextEditor();
