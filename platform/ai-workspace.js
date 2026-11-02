@@ -34,3 +34,7 @@ async function start(){try{await initialize()}catch{}if(thread)drawThread();if(l
  if(draft&&typeof draft.message==='string'&&draft.message.trim()){model=draft.model==='premium'?'premium':'free';modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';if(state.user){await sendMessage(draft.message.trim().slice(0,1800))}else{prompt.value=draft.message.trim().slice(0,1800);resize();note('Sign in and press send to start your conversation.')}}else note(state.user?'LOOX Free · 25 requests per 24 hours.':'Sign in to chat with LOOX AI.');
 }
 start();
+
+const aiNav=document.getElementById('aiNav'),navToggle=document.getElementById('aiNavToggle'),navClose=document.getElementById('aiNavClose'),navBackdrop=document.getElementById('aiNavBackdrop');
+function setNav(open){aiNav.hidden=!open;navBackdrop.hidden=!open;navToggle.setAttribute('aria-expanded',String(open));navToggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');document.body.classList.toggle('ai-nav-open',open)}
+navToggle?.addEventListener('click',()=>setNav(aiNav.hidden));navClose?.addEventListener('click',()=>setNav(false));navBackdrop?.addEventListener('click',()=>setNav(false));document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!aiNav.hidden)setNav(false)});
