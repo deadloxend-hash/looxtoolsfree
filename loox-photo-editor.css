@@ -72,3 +72,24 @@
 .layer-row .layer-select{text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
 .export-file-size{padding:12px;border-radius:9px;background:#292f42;border:1px solid #46506c;color:#e7ddff;font-weight:700;margin:12px 0}
 @media(max-width:767px){.layer-row{grid-template-columns:40px minmax(0,1fr) repeat(3,30px)}.crop-handle{width:18px;height:18px}.export-dialog{max-height:calc(100dvh - 20px);overflow:auto}}
+
+/* Photo resize selection: a lightweight transform box, independent of canvas crop. */
+.photo-selection{position:absolute;z-index:6;pointer-events:none;overflow:visible}
+.photo-selection[hidden]{display:none!important}
+.photo-selection-box{position:absolute;inset:0;border:2px solid #b88aff;box-shadow:0 0 0 1px #12131d80,0 0 12px #ad7dff35;pointer-events:none}
+.photo-size-badge{position:absolute;bottom:calc(100% + 9px);left:50%;transform:translateX(-50%);white-space:nowrap;background:#252037;border:1px solid #9f79e4;color:#fff;padding:4px 8px;border-radius:7px;font-size:11px;font-weight:700;line-height:1.2;box-shadow:0 3px 12px #0008;pointer-events:none}
+.photo-resize-handle{position:absolute;display:block;width:15px;height:15px;border:2px solid #a275ef;border-radius:3px;background:#fff;transform:translate(-50%,-50%);pointer-events:auto;touch-action:none;z-index:8}
+.photo-resize-handle.nw{left:0;top:0;cursor:nwse-resize}
+.photo-resize-handle.n{left:50%;top:0;cursor:ns-resize}
+.photo-resize-handle.ne{left:100%;top:0;cursor:nesw-resize}
+.photo-resize-handle.e{left:100%;top:50%;cursor:ew-resize}
+.photo-resize-handle.se{left:100%;top:100%;cursor:nwse-resize}
+.photo-resize-handle.s{left:50%;top:100%;cursor:ns-resize}
+.photo-resize-handle.sw{left:0;top:100%;cursor:nesw-resize}
+.photo-resize-handle.w{left:0;top:50%;cursor:ew-resize}
+.photo-resize-handle:focus-visible{outline:2px solid #fff;outline-offset:3px}
+@media(max-width:767px){
+ .photo-resize-handle{width:21px;height:21px;border-radius:5px}
+ .photo-size-badge{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.photo-selection-box{box-shadow:none}}
