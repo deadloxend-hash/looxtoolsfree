@@ -1,4 +1,4 @@
-import {aiTools} from './catalog.js';
+import {aiTools} from './catalog.js?v=3';
 import {el,button,config,state,pricing,auth} from './account.js';
 const aiBannerFiles={
 'bg-remove':'loox_ai_background_remover_hero_banner.jpg',
