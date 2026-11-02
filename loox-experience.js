@@ -174,6 +174,7 @@
  }
  const originalText=new WeakMap();
  let translationObserver;
+ let lastAppliedLanguage='en';
  function translateNode(node){
   if(node.nodeType!==Node.TEXT_NODE||!node.textContent.trim()||node.parentElement?.closest('script,style,textarea,pre,code,[contenteditable],.loox-story,.loox-rail,.loox-top-controls,.loox-more-dialog,.loox-settings-panel,#status,.status,.suite-status,.font-grid,.suite-stats,.suite-diff,.studio-list,#layerList,#mediaBin,#tracks,#properties strong,#inspector strong'))return;
   if(!originalText.has(node))originalText.set(node,node.textContent);
@@ -182,7 +183,11 @@
  }
  function applyLanguage(){
   translationObserver?.disconnect();document.documentElement.lang=language;document.documentElement.dir=language==='ar'?'rtl':'ltr';
+  // English is the source language. Skip a full-page text walk and observer until a translation is requested.
+  if(language==='en'&&lastAppliedLanguage==='en')return;
   const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);while(walker.nextNode())translateNode(walker.currentNode);
+  lastAppliedLanguage=language;
+  if(language==='en')return;
   translationObserver=new MutationObserver(records=>{translationObserver.disconnect();for(const r of records)for(const n of r.addedNodes){if(n.nodeType===3)translateNode(n);else if(n.nodeType===1&&!n.closest('.loox-story,.loox-rail')){const w=document.createTreeWalker(n,NodeFilter.SHOW_TEXT);while(w.nextNode())translateNode(w.currentNode)}}translationObserver.observe(document.body,{childList:true,subtree:true})});
   translationObserver.observe(document.body,{childList:true,subtree:true});
  }
@@ -200,17 +205,17 @@
  function brandCards(root=document){
   root.querySelectorAll?.('a[data-tool],.loox-featured-card').forEach(a=>{
    const href=a.getAttribute('href'),t=catalog.find(t=>t.url===href);if(!t)return;
-   const heading=a.querySelector('.tool-copy h3,.personal-copy strong');if(heading)heading.textContent=(t.names[language]||t.names.en);
-   const description=a.querySelector('.tool-copy p');if(description)description.textContent=(t.lead[language]||t.lead.en);
+   const heading=a.querySelector('.tool-copy h3,.personal-copy strong');const name=(t.names[language]||t.names.en);if(heading&&heading.textContent!==name)heading.textContent=name;
+   const description=a.querySelector('.tool-copy p');const lead=(t.lead[language]||t.lead.en);if(description&&description.textContent!==lead)description.textContent=lead;
    const icon=a.querySelector('.tool-icon,.personal-icon');if(icon&&!icon.querySelector('img'))icon.innerHTML='<img class="loox-original-icon" src="assets/icons/'+t.slug+'.svg" alt="" width="32" height="32">';
-   if(a.classList.contains('tool-main')&&!a.querySelector('.loox-card-cover,.loox-ai-card-art')){const img=document.createElement('img');img.className='loox-card-cover';img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en)+' — original guide illustration';img.loading='lazy';img.width=640;img.height=400;a.prepend(img)}
-   if(a.classList.contains('loox-featured-card')){const art=a.querySelector('.loox-featured-art');if(art&&!art.querySelector('img')){art.textContent='';const img=document.createElement('img');img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en);img.style.cssText='width:100%;height:100%;object-fit:cover';art.append(img)}}
+   if(a.classList.contains('tool-main')&&!a.querySelector('.loox-card-cover,.loox-ai-card-art')){const img=document.createElement('img');img.className='loox-card-cover';img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en)+' — original guide illustration';img.loading='lazy';img.decoding='async';img.fetchPriority='low';img.width=640;img.height=400;a.prepend(img)}
+   if(a.classList.contains('loox-featured-card')){const art=a.querySelector('.loox-featured-art');if(art&&!art.querySelector('img')){art.textContent='';const img=document.createElement('img');img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en);img.loading='lazy';img.decoding='async';img.style.cssText='width:100%;height:100%;object-fit:cover';art.append(img)}}
   });
  }
  // Render essential navigation immediately: a failed catalog fetch must not hide it.
  if(railPage)drawRail();else mountHeader();
- Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
-  catalog=c;dictionary=d;if(aiSharedDialog)return;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
+ if(!aiSharedDialog)Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
+  catalog=c;dictionary=d;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
   const grid=document.querySelector('#toolGrid');if(grid)new MutationObserver(()=>brandCards(grid)).observe(grid,{childList:true});
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
  }).catch(error=>{console.error('LOOX optional catalog or translation setup failed:',error);if(!aiSharedDialog)applyPreferences(); /* Keep the already-rendered sidebar and Settings button visible. */});
