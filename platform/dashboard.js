@@ -12,7 +12,7 @@ const aiBannerFiles={
 'ai-uncrop':'loox_ai_generative_uncrop_studio.jpg',
 'ai-photo-restorer':'loox_old_photo_restorer.jpg'
 };
-const aiFallbacks={'ai-skin-retoucher':'ai-skin-retoucher','ai-face-restoration':'ai-photo-restorer','image-to-text':'image-to-text','face-blur':'face-blur','faceswap':'faceswap'};
+const aiFallbacks={'ai-chat':'ai-generative-fill','ai-skin-retoucher':'ai-skin-retoucher','ai-face-restoration':'ai-photo-restorer','image-to-text':'image-to-text','face-blur':'face-blur','faceswap':'faceswap'};
 const host=document.querySelector('[data-ai-dashboard]');
 if(host){
  const full=host.dataset.aiDashboard==='full';
