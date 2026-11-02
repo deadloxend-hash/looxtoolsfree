@@ -175,7 +175,7 @@
    const heading=a.querySelector('.tool-copy h3,.personal-copy strong');if(heading)heading.textContent=(t.names[language]||t.names.en);
    const description=a.querySelector('.tool-copy p');if(description)description.textContent=(t.lead[language]||t.lead.en);
    const icon=a.querySelector('.tool-icon,.personal-icon');if(icon&&!icon.querySelector('img'))icon.innerHTML='<img class="loox-original-icon" src="assets/icons/'+t.slug+'.svg" alt="" width="32" height="32">';
-   if(a.classList.contains('tool-main')&&!a.querySelector('.loox-card-cover')){const img=document.createElement('img');img.className='loox-card-cover';img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en)+' — original guide illustration';img.loading='lazy';img.width=640;img.height=400;a.prepend(img)}
+   if(a.classList.contains('tool-main')&&!a.querySelector('.loox-card-cover,.loox-ai-card-art')){const img=document.createElement('img');img.className='loox-card-cover';img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en)+' — original guide illustration';img.loading='lazy';img.width=640;img.height=400;a.prepend(img)}
    if(a.classList.contains('loox-featured-card')){const art=a.querySelector('.loox-featured-art');if(art&&!art.querySelector('img')){art.textContent='';const img=document.createElement('img');img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en);img.style.cssText='width:100%;height:100%;object-fit:cover';art.append(img)}}
   });
  }
