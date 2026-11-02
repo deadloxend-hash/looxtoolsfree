@@ -19,21 +19,21 @@ const data={
 'faceswap.html':['Face Swap','Explore consent-based face editing.','faceswap','Provide source and target media with consent','Choose compatible faces and review privacy requirements','Run the tool if its integration is available','Integration pending']
 };
 const bannerFile={
-'bg-remove.html':'loox_ai_background_remover_hero_banner.png',
-'ai-image-upscaler.html':'loox_ai_image_upscaler_showcase.png',
-'ai-image-enhancer.html':'loox_ai_image_enhancer_banner.png',
-'ai-object-eraser.html':'loox_object_eraser_hero_banner.png',
-'ai-watermark-remover.html':'loox_watermark_removal_workflow.png',
-'ai-text-to-image.html':'neon_loox_ai_image_generator_interface.png',
-'ai-generative-fill.html':'loox_generative_fill_alpine_lake_makeover.png',
-'ai-generative-erase.html':'loox_ai_generative_erase_hero.png',
-'ai-uncrop.html':'loox_ai_generative_uncrop_studio.png',
-'ai-photo-restorer.html':'loox_old_photo_restorer.png'
+'bg-remove.html':'loox_ai_background_remover_hero_banner.jpg',
+'ai-image-upscaler.html':'loox_ai_image_upscaler_showcase.jpg',
+'ai-image-enhancer.html':'loox_ai_image_enhancer_banner.jpg',
+'ai-object-eraser.html':'loox_object_eraser_hero_banner.jpg',
+'ai-watermark-remover.html':'loox_watermark_removal_workflow.jpg',
+'ai-text-to-image.html':'neon_loox_ai_image_generator_interface.jpg',
+'ai-generative-fill.html':'loox_generative_fill_alpine_lake_makeover.jpg',
+'ai-generative-erase.html':'loox_ai_generative_erase_hero.jpg',
+'ai-uncrop.html':'loox_ai_generative_uncrop_studio.jpg',
+'ai-photo-restorer.html':'loox_old_photo_restorer.jpg'
 };
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const path=location.pathname.split('/').pop()||'index.html',entry=data[path];
 if(!entry&&path!=='index.html')return;
-const css=document.createElement('link');css.rel='stylesheet';css.href='ai-guide.css?v=1';document.head.append(css);
+const css=document.createElement('link');css.rel='stylesheet';css.href='ai-guide.css?v=2';document.head.append(css);
 function assetFor(file){return 'assets/tool-art/'+data[file][2]+'.webp'}
 function imageWithFallback(image,url, fallback){
  image.src=url;image.onerror=()=>{image.onerror=null;if(image.src.endsWith(fallback))return;image.src=fallback};
