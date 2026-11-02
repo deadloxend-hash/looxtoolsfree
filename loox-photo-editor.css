@@ -93,3 +93,13 @@
  .photo-size-badge{font-size:10px}
 }
 @media(prefers-reduced-motion:reduce){.photo-selection-box{box-shadow:none}}
+
+/* Keep the dedicated Crop shortcut reachable on short desktop and mobile screens. */
+@media(min-width:768px){
+ .workspace .rail{min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#4a405e transparent}
+ .workspace .rail .tool{flex:none}
+}
+@media(max-width:767px){
+ .mobile-bar button[data-tab="crop"]{color:#dfcbff}
+ .mobile-bar button[data-tab="crop"].active{color:#fff;background:#493260}
+}
