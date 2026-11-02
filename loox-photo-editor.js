@@ -2,7 +2,7 @@
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d',{willReadFrequently:true}),panel=$('panelContent');
 const keys=['brightness','contrast','exposure','highlights','shadows','saturation','vibrance','temperature','tint','fade','gamma'];
 const definitions={brightness:['Brightness',-100,100,0],contrast:['Contrast',-100,100,0],saturation:['Saturation',-100,100,0],vibrance:['Vibrance',-100,100,0],highlights:['Highlights',-100,100,0],shadows:['Shadows',-100,100,0],exposure:['Exposure',-3,3,0],temperature:['Temperature',-100,100,0],tint:['Tint',-100,100,0],fade:['Fade',0,100,0],gamma:['Gamma',-100,100,0]};
-let overlays=[],selectedOverlay=-1,overlayDrag=null,cropRatio='free',frame={style:'none',color:'#ffffff',width:20},drawColor='#ff52ad',drawSize=16,resizeMode='fit',resizeBackground='#ffffff';let cropTarget='canvas',cropIndex=-1,photoBounds=null,selectedPhoto=null,photoResizeDrag=null;let photoTransformSource=null,photoTransformMask=null,photoTransformSourceRect=null;let resizeAnchor=null,resizePlacement=null,resizeLast=null;let source=null,base=null,mask=null,filename='photo',tab='tools',brushSize=44,intensity=85,brushActive=false,zoom=1,fitScale=1,crop=null,drag=null,history=[],future=[],busy=false,renderToken=0;
+let overlays=[],selectedOverlay=-1,overlayDrag=null,cropRatio='free',frame={style:'none',color:'#ffffff',width:20},drawColor='#ff52ad',drawSize=16,resizeMode='fit',resizeBackground='#ffffff',canvasBackground=null;let cropTarget='canvas',cropIndex=-1,photoBounds=null,selectedPhoto=null,photoResizeDrag=null;let photoTransformSource=null,photoTransformMask=null,photoTransformSourceRect=null;let resizeAnchor=null,resizePlacement=null,resizeLast=null;let source=null,base=null,mask=null,filename='photo',tab='tools',brushSize=44,intensity=85,brushActive=false,zoom=1,fitScale=1,crop=null,drag=null,history=[],future=[],busy=false,renderToken=0;
 const adjustments=()=>Object.fromEntries(keys.map(k=>[k,definitions[k][3]]));let values=adjustments(),preset='original';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));const setStatus=s=>$('status').textContent=s;
 const makeCanvas=(w,h)=>{let c=document.createElement('canvas');c.width=w;c.height=h;return c};
@@ -32,9 +32,9 @@ function cropPhoto(o,r,shiftX=0,shiftY=0){
  return {...o,image,blurMask,cache:null,x:x-shiftX,y:y-shiftY,w:right-x,h:bottom-y}
 }
 function cloneOverlay(o){return {...o,values:o.values?{...o.values}:undefined,blurMask:o.blurMask?clone(o.blurMask):undefined,points:o.points?.map(p=>({...p})),cache:null}}
-function snapshot(){return {base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(cloneOverlay),selectedOverlay,resizeAnchor,resizePlacement:resizePlacement?{...resizePlacement}:null,resizeLast,photoBounds:photoBounds?{...photoBounds}:null,photoTransformSource,photoTransformMask,photoTransformSourceRect:photoTransformSourceRect?{...photoTransformSourceRect}:null}}
+function snapshot(){return {canvasBackground:canvasBackground?{...canvasBackground}:null,resizeBackground,base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(cloneOverlay),selectedOverlay,resizeAnchor,resizePlacement:resizePlacement?{...resizePlacement}:null,resizeLast,photoBounds:photoBounds?{...photoBounds}:null,photoTransformSource,photoTransformMask,photoTransformSourceRect:photoTransformSourceRect?{...photoTransformSourceRect}:null}}
 function saveHistory(){if(!base)return;history.push(snapshot());while(history.length>Math.max(1,Math.min(10,Math.floor(24000000/(base.width*base.height)))))history.shift();future=[];updateHistory()}
-function restore(s){base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(cloneOverlay);selectedOverlay=Math.min(s.selectedOverlay??-1,overlays.length-1);resizeAnchor=s.resizeAnchor||null;resizePlacement=s.resizePlacement?{...s.resizePlacement}:null;resizeLast=s.resizeLast||null;photoBounds=s.photoBounds?{...s.photoBounds}:null;photoTransformSource=s.photoTransformSource||null;photoTransformMask=s.photoTransformMask||null;photoTransformSourceRect=s.photoTransformSourceRect?{...s.photoTransformSourceRect}:null;selectedPhoto=null;photoResizeDrag=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();updateHistory()}
+function restore(s){canvasBackground=s.canvasBackground?{...s.canvasBackground}:null;resizeBackground=s.resizeBackground||canvasBackground?.color||'#ffffff';base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(cloneOverlay);selectedOverlay=Math.min(s.selectedOverlay??-1,overlays.length-1);resizeAnchor=s.resizeAnchor||null;resizePlacement=s.resizePlacement?{...s.resizePlacement}:null;resizeLast=s.resizeLast||null;photoBounds=s.photoBounds?{...s.photoBounds}:null;photoTransformSource=s.photoTransformSource||null;photoTransformMask=s.photoTransformMask||null;photoTransformSourceRect=s.photoTransformSourceRect?{...s.photoTransformSourceRect}:null;selectedPhoto=null;photoResizeDrag=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();updateHistory()}
 function updateHistory(){$('undo').disabled=!history.length;$('redo').disabled=!future.length}
 function undo(){if(!history.length||!base)return;future.push(snapshot());restore(history.pop())}
 function redo(){if(!future.length||!base)return;history.push(snapshot());restore(future.pop())}
@@ -125,6 +125,9 @@ if(options.drawFrame!==false&&frame.style!=='none'){
   else if(frame.style==='shadow'){wc.shadowColor='#000';wc.shadowBlur=frame.width*3;wc.strokeRect(frame.width/2,frame.width/2,w-frame.width,h-frame.width)}
   else {if(frame.style==='dashed')wc.setLineDash([frame.width*2,frame.width]);wc.strokeRect(frame.width/2,frame.width/2,w-frame.width,h-frame.width)}
   wc.restore();
+}
+if(options.includeBackground&&canvasBackground){
+ wc.save();wc.globalCompositeOperation='destination-over';wc.fillStyle=canvasBackground.color;wc.fillRect(0,0,w,h);wc.restore();
 }
 return work}
 // UI interaction preview: work at a fraction of the original pixels during dragging.
@@ -453,6 +456,8 @@ function positionCanvasBackdrop(){
  const r=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
  if(!r.width||!r.height){canvasBackdrop.hidden=true;return}
  canvasBackdrop.hidden=false;
+ canvasBackdrop.style.backgroundColor=canvasBackground?.color||'';
+ canvasBackdrop.style.backgroundImage=canvasBackground?'none':'';
  Object.assign(canvasBackdrop.style,{
   left:(r.left-v.left+$('dropzone').scrollLeft)+'px',
   top:(r.top-v.top+$('dropzone').scrollTop)+'px',
@@ -618,7 +623,7 @@ function finishPhotoPointer(e){
  return true;
 }
 
-function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
+function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
 function triggerUpload(){$('fileInput').click()}
 function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);return b}
 function heading(s){const h=document.createElement('h3');h.textContent=s;panel.append(h)}
@@ -757,7 +762,7 @@ function filterThumbnail(name){
  tc.putImageData(out,0,0);return thumb.toDataURL('image/jpeg',.65);
 }
 function addAdjustment(k){const [name,min,max]=definitions[k],target=editTarget();control(name,min,max,k==='exposure'?.1:1,target?.values?.[k]??values[k],v=>{const current=editTarget();if(current){current.values={...current.values,[k]:v};current.cache=null}else values[k]=v;render()})}
-function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
+function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
 // Tap a text/heading/caption on the canvas to type directly over it.
 // Text updates the real layer; the textarea is a temporary editing control only.
 // Text is selectable independently of the photo layer and stays crisp while resizing.
@@ -1344,7 +1349,7 @@ let exportPreview=null,exportPreviewKey='',exportTimer=0,exportToken=0;
 const fileSizeLabel=bytes=>bytes>=1048576?(bytes/1048576).toFixed(2)+' MB':(bytes/1024).toFixed(1)+' KB';
 function exportSettings(){return [$('format').value,$('quality').value,$('exportSize').value,renderToken].join('|')}
 function outputCanvas(type){
- const composed=compose(),edge=$('exportSize').value;let w=composed.width,h=composed.height;
+ const composed=compose({includeBackground:true}),edge=$('exportSize').value;let w=composed.width,h=composed.height;
  if(edge!=='original'){const scale=Number(edge)/Math.max(w,h);w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale))}
  const out=makeCanvas(w,h),c=out.getContext('2d');c.imageSmoothingQuality='high';
  if(type==='image/jpeg'){c.fillStyle='#ffffff';c.fillRect(0,0,w,h)}
