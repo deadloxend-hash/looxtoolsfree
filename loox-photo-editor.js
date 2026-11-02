@@ -76,11 +76,13 @@ function drawShape(c,o){
  else c.rect(x,y,w,h);
  c.fill()
 }
-function compose(){if(!base)return null;const w=base.width,h=base.height,work=makeCanvas(w,h),wc=work.getContext('2d',{willReadFrequently:true});wc.drawImage(base,0,0);let data=wc.getImageData(0,0,w,h),out=wc.createImageData(w,h);tone(data.data,out.data,effective());wc.putImageData(out,0,0);
+function compose(options={}){if(!base)return null;const w=base.width,h=base.height,work=makeCanvas(w,h),wc=work.getContext('2d',{willReadFrequently:true});if(!options.skipBase){wc.drawImage(base,0,0);let data=wc.getImageData(0,0,w,h),out=wc.createImageData(w,h);tone(data.data,out.data,effective());wc.putImageData(out,0,0);
 const mc=mask.getContext('2d',{willReadFrequently:true}),alpha=mc.getImageData(0,0,w,h).data;let any=false;for(let i=3;i<alpha.length;i+=4){if(alpha[i]>0){any=true;break}}
 if(any){const blurred=makeCanvas(w,h),bc=blurred.getContext('2d');bc.filter='blur('+Math.max(12,Math.round(Math.min(w,h)*.018))+'px)';bc.drawImage(work,0,0);bc.filter='none';const bd=bc.getImageData(0,0,w,h).data,od=out.data;for(let i=0;i<od.length;i+=4){const mix=alpha[i+3]/255;for(let j=0;j<3;j++)od[i+j]=od[i+j]*(1-mix)+bd[i+j]*mix}wc.putImageData(out,0,0)}
 applySpecial(work,preset);
-for(const o of overlays){
+}
+for(let i=options.fromLayer||0;i<Math.min(overlays.length,options.toLayer??overlays.length);i++){
+ const o=overlays[i];
   if(o.visible===false)continue;
   wc.save();wc.globalAlpha=o.opacity??1;
   if(o.type==='shape'){drawShape(wc,o)}
@@ -89,7 +91,7 @@ for(const o of overlays){
   else {wc.fillStyle=o.color;wc.textBaseline='top';wc.font=(o.weight||'bold')+' '+o.size+'px '+(o.font||'system-ui,Arial,sans-serif');wc.lineJoin='round';wc.strokeStyle=o.outlineColor||'#111111';wc.lineWidth=(o.outlineWidth||0)*2;wc.shadowColor='rgba(0,0,0,.85)';wc.shadowBlur=o.shadowBlur||0;String(o.text||'').split('\\n').forEach((line,n)=>{const y=o.y+n*o.size*1.25;if(o.outlineWidth)wc.strokeText(line,o.x,y);wc.fillText(line,o.x,y)})}
   wc.restore();
 }
-if(frame.style!=='none'){
+if(options.drawFrame!==false&&frame.style!=='none'){
   wc.save();wc.strokeStyle=frame.color;wc.lineWidth=frame.width;
   if(frame.style==='polaroid'){wc.fillStyle=frame.color;const p=frame.width;wc.fillRect(0,0,w,p);wc.fillRect(0,0,p,h);wc.fillRect(w-p,0,p,h);wc.fillRect(0,h-p*2,w,p*2)}
   else if(frame.style==='double'){wc.strokeRect(frame.width/2,frame.width/2,w-frame.width,h-frame.width);wc.lineWidth=Math.max(2,frame.width/5);wc.strokeRect(frame.width*1.3,frame.width*1.3,w-frame.width*2.6,h-frame.width*2.6)}
