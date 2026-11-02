@@ -710,3 +710,6 @@ body.loox-home-rail .loox-overflow-links .loox-mobile-link{display:none!importan
 .loox-rail-list .loox-rail-link[aria-current="page"] .loox-rail-label{display:inline-flex;align-items:center;color:#fff;position:relative}
 .loox-rail-list .loox-rail-link[aria-current="page"] .loox-rail-label::before{content:"";position:absolute;left:-17px;top:50%;transform:translateY(-50%);width:7px;height:7px;border-radius:50%;background:#a86bff;box-shadow:0 0 0 3px #aa6cff25}
 .loox-rail-list .loox-rail-link[aria-current="page"] .loox-rail-icon{color:#c29bff}
+
+/* Unified sidebar section headings across Tools Home, AI Home and AI Chat. */
+.loox-rail .loox-rail-list .loox-rail-group-title{color:#c19be9!important;font:700 10px/1.4 system-ui!important;letter-spacing:.12em!important;text-transform:uppercase!important}
