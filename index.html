@@ -419,24 +419,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
 }
 
 
-/* LOOX tool card artwork: distinct, responsive visual banners for every tool. */
-.tool-card{flex-direction:column;gap:0;overflow:hidden;padding:0}
-.tool-main{display:flex;flex-direction:column;gap:0;min-width:0}
-.loox-card-banner{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;min-height:116px;overflow:hidden;background:linear-gradient(125deg,#261d52,#7147bf 64%,#a35cca);border-bottom:1px solid rgba(255,255,255,.12)}
-.loox-card-banner::before{content:"";position:absolute;inset:-60% -15%;background:radial-gradient(circle at 25% 60%,rgba(255,255,255,.23),transparent 26%),radial-gradient(circle at 75% 35%,rgba(255,255,255,.12),transparent 31%);transform:rotate(-12deg)}
-.loox-card-banner::after{content:"";position:absolute;width:120px;height:120px;border:1px solid rgba(255,255,255,.2);border-radius:27px;transform:translate(78px,-40px) rotate(23deg)}
-.loox-card-art{position:relative;z-index:1;display:grid;place-items:center;width:72px;height:72px;border:1px solid rgba(255,255,255,.35);border-radius:22px;background:rgba(255,255,255,.16);box-shadow:0 12px 35px rgba(0,0,0,.21);font-size:34px;backdrop-filter:blur(8px);transform:rotate(-6deg)}
-.loox-card-banner[data-category="AI"]{background:linear-gradient(125deg,#1b174c,#654be1 55%,#b15fe2)}
-.loox-card-banner[data-category="Image"]{background:linear-gradient(125deg,#113c62,#2777ae 55%,#65b7d9)}
-.loox-card-banner[data-category="Video"]{background:linear-gradient(125deg,#46205f,#9b458e 55%,#ea82a9)}
-.loox-card-banner[data-category="Audio"]{background:linear-gradient(125deg,#163e49,#278b91 55%,#6bceb7)}
-.loox-card-banner[data-category="PDF"]{background:linear-gradient(125deg,#62302b,#bd6256 55%,#eaa37b)}
-.loox-card-banner[data-category="Text"]{background:linear-gradient(125deg,#333769,#6470bd 55%,#a5a8ea)}
-.loox-card-banner[data-category="Developer"]{background:linear-gradient(125deg,#192e3f,#3b6682 55%,#71a2bf)}
-.tool-card .tool-copy{padding:15px 16px 17px;width:100%}
-.tool-card .favorite-btn{position:absolute;right:10px;top:10px;z-index:2;background:rgba(20,15,35,.64);color:#fff;border-color:rgba(255,255,255,.2)}
-.tool-card .favorite-btn:hover{background:#fff;color:#6147b9}
-@media(max-width:650px){.loox-card-banner{min-height:104px}.loox-card-art{width:64px;height:64px;font-size:30px}}
+/* Restore original illustrated 640×400 tool banners from assets/tool-art. */
+.tool-card{display:flex;flex-direction:column;overflow:hidden;padding:0;gap:0}
+.tool-card .tool-main{display:flex;flex-direction:column;gap:0;min-width:0}
+.tool-card .loox-card-cover{display:block;width:100%;height:auto;aspect-ratio:640/270;object-fit:cover;object-position:center;background:#222536;border:0;border-radius:0}
+.tool-card .tool-icon{margin:14px 16px 0}
+.tool-card .tool-copy{padding:0 16px 18px;width:100%}
+.tool-card .favorite-btn{position:absolute;right:12px;bottom:12px;top:auto;z-index:2}
+@media(max-width:650px){.tool-card .loox-card-cover{aspect-ratio:640/290}}
 </style>
 <style>
 .loox-featured{padding:46px 0 10px}.loox-featured-head span{font-size:11px;font-weight:900;letter-spacing:2px;color:#a586ff}.loox-featured-head h2{font-size:clamp(25px,3.5vw,37px);margin:10px 0;letter-spacing:-1.2px}.loox-featured-head p{font-size:13px;color:var(--muted);margin:0 0 22px}.loox-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.loox-featured-card{display:flex;flex-direction:column;text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--white);min-width:0;transition:transform .2s,border-color .2s}.loox-featured-card:hover{transform:translateY(-4px);border-color:var(--purple)}.loox-featured-art{height:140px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:20px;font-size:60px;color:#fff;position:relative;overflow:hidden}.loox-featured-art i{font-style:normal;font-size:22px;letter-spacing:8px;opacity:.55}.loox-featured-art.video{background:linear-gradient(135deg,#2b215c,#7951d6,#bf69b2)}.loox-featured-art.remove{background:linear-gradient(135deg,#1c4758,#297d9e,#79b2bb)}.loox-featured-art.photo{background:linear-gradient(135deg,#53365d,#a25983,#e19a83)}.loox-featured-card strong{font-size:17px;margin:17px 3px 6px}.loox-featured-card small{font-size:12px;color:var(--muted);margin:0 3px 17px}.loox-featured-card b{font-size:12px;color:var(--purple);margin:0 3px 5px}.loox-featured-card:focus-visible{outline:3px solid var(--purple);outline-offset:3px}@media(max-width:760px){.loox-featured-grid{grid-template-columns:1fr}.loox-featured-art{height:115px}.loox-featured{padding-top:30px}}@media(prefers-reduced-motion:reduce){.loox-featured-card{transition:none}.loox-featured-card:hover{transform:none}}
@@ -663,7 +653,7 @@ tools.push({name:"AI Text to Image",desc:"Generate a private image from a prompt
 function toolCard(tool){
  const saved=read(keyFav).includes(tool.url);
  const modeClass=tool.mode==='Cloud AI'?'cloud':'';
- return '<article class="tool-card"><a class="tool-main" href="'+escapeHTML(tool.url)+'" data-tool="'+escapeHTML(tool.url)+'"><span class="loox-card-banner" data-category="'+escapeHTML(tool.cat)+'"><span class="loox-card-art" aria-hidden="true">'+tool.icon+'</span></span><span class="tool-copy"><h3>'+escapeHTML(tool.name)+'</h3><p>'+escapeHTML(tool.desc)+'</p><span class="tool-meta"><span class="category-tag">'+escapeHTML(tool.cat)+'</span><span class="mode-tag '+modeClass+'">'+escapeHTML(tool.mode)+'</span></span></span></a><button class="favorite-btn '+(saved?'on':'')+'" type="button" data-fav="'+escapeHTML(tool.url)+'" aria-label="'+(saved?'Remove ':'Add ')+escapeHTML(tool.name)+' '+(saved?'from':'to')+' favorites" title="Favorite">'+(saved?'♥':'♡')+'</button><span class="tool-arrow" aria-hidden="true">↗</span></article>';
+ return '<article class="tool-card"><a class="tool-main" href="'+escapeHTML(tool.url)+'" data-tool="'+escapeHTML(tool.url)+'"><span class="tool-icon">'+tool.icon+'</span><span class="tool-copy"><h3>'+escapeHTML(tool.name)+'</h3><p>'+escapeHTML(tool.desc)+'</p><span class="tool-meta"><span class="category-tag">'+escapeHTML(tool.cat)+'</span><span class="mode-tag '+modeClass+'">'+escapeHTML(tool.mode)+'</span></span></span></a><button class="favorite-btn '+(saved?'on':'')+'" type="button" data-fav="'+escapeHTML(tool.url)+'" aria-label="'+(saved?'Remove ':'Add ')+escapeHTML(tool.name)+' '+(saved?'from':'to')+' favorites" title="Favorite">'+(saved?'♥':'♡')+'</button><span class="tool-arrow" aria-hidden="true">↗</span></article>';
 }
 function personalCard(tool){
  return '<a class="personal-card" href="'+escapeHTML(tool.url)+'" data-tool="'+escapeHTML(tool.url)+'"><span class="personal-icon">'+tool.icon+'</span><span class="personal-copy"><strong>'+escapeHTML(tool.name)+'</strong><small>'+escapeHTML(tool.cat)+' · Open tool ↗</small></span></a>';
@@ -846,6 +836,6 @@ applyTheme(savedTheme,readCustomTheme(),false);
 
 
 
-<script src="loox-experience.js?v=115" defer></script>
+<script src="loox-experience.js?v=118" defer></script>
 </body>
 </html>
