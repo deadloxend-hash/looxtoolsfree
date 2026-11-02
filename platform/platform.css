@@ -21,3 +21,8 @@
 .lx-ai-card{display:flex;flex-direction:column;gap:8px;text-decoration:none!important;color:#eee9ff!important;background:#201a2c;border:1px solid #483b5a;padding:20px;border-radius:15px;transition:transform .15s,border-color .15s}.lx-ai-card:hover{transform:translateY(-3px);border-color:#aa81e6}.lx-ai-icon{font-size:24px;color:#c7a5ff}.lx-ai-card p{flex:1;color:#d3c9de}.lx-ai-card strong{font-size:13px}.lx-status{color:#c6b0e0}.lx-tabs button[aria-pressed=true]{background:#69509c;color:white}
 .loox-rail-group-title{font-size:11px;color:#bb9de4;padding:12px 8px 5px;letter-spacing:.08em;text-transform:uppercase}.loox-rail-list{overflow:auto}.loox-home-rail .loox-rail-link{min-height:36px}
 @media(prefers-reduced-motion:reduce){.lx-ai-card{transition:none}}
+
+/* Illustrated banners on the AI dashboard and featured AI panel. */
+.lx-ai-card{overflow:hidden}
+.lx-ai-card-image{display:block;flex:0 0 auto;width:calc(100% + 40px);max-width:none;height:168px;object-fit:cover;object-position:center;margin:-20px -20px 11px;border-radius:14px 14px 0 0;background:#161423}
+@media(max-width:650px){.lx-ai-card-image{height:154px}}
