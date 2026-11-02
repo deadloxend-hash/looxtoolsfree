@@ -696,14 +696,17 @@ $('filters').addEventListener('click',event=>{
  if(button)chooseCategory(button.dataset.cat);
 });
 document.querySelectorAll('[data-quick-cat]').forEach(link=>link.addEventListener('click',()=>chooseCategory(link.dataset.quickCat)));
+let searchRenderTimer=0;
 $('search').addEventListener('input',event=>{
  query=event.target.value.trim().toLowerCase();
  if(query)category='All';
  else visibleToolCount=toolsPerPage;
- renderTools();
+ clearTimeout(searchRenderTimer);
+ searchRenderTimer=setTimeout(()=>{searchRenderTimer=0;renderTools()},110);
 });
 $('searchForm').addEventListener('submit',event=>{
  event.preventDefault();
+ clearTimeout(searchRenderTimer);
  query=$('search').value.trim().toLowerCase();
  if(query)category='All';
  else visibleToolCount=toolsPerPage;
