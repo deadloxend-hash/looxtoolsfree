@@ -272,3 +272,19 @@
  background-image:none!important;
 }
 #dropzone .crop-overlay{z-index:5}
+
+/* Preset canvas colors live behind the photo, not fused into it.
+   The independent backdrop owns either the preset color or transparency grid. */
+#dropzone #canvas{
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+}
+#dropzone .photo-gesture-preview{
+ background:transparent!important;
+ background-color:transparent!important;
+ background-image:none!important;
+}
+#dropzone .canvas-transparency-backdrop{
+ isolation:isolate;
+}
