@@ -609,10 +609,39 @@ function prepareTextPreview(){
  try{
   ++renderToken;
   positionGestureCanvas();
-  const full=compose({skipLayer:g.index});
   const mini=document.createElement('canvas');
   mini.width=gestureCanvas.width;mini.height=gestureCanvas.height;
-  mini.getContext('2d').drawImage(full,0,0,mini.width,mini.height);
+  const pc=mini.getContext('2d');
+  // A single display-sized backing canvas keeps the first drag frame responsive.
+  pc.setTransform(mini.width/base.width,0,0,mini.height/base.height,0,0);
+  const v=effective();
+  pc.save();
+  pc.filter='brightness('+Math.max(.15,1+v.brightness/180)+') contrast('+
+    Math.max(.2,1+v.contrast/180)+') saturate('+Math.max(0,1+v.saturation/100)+')';
+  pc.drawImage(base,0,0);pc.restore();
+  overlays.forEach((o,i)=>{
+   if(i===g.index||o.visible===false)return;
+   pc.save();pc.globalAlpha=o.opacity??1;
+   if(o.type==='image'&&o.image){
+    pc.drawImage(o.cache||o.image,o.x,o.y,o.w,o.h);
+   }else if(o.type==='shape'){
+    drawShape(pc,o);
+   }else if(o.type==='text'){
+    paintTextLayer(pc,o);
+   }else if(o.type==='stroke'){
+    pc.lineCap='round';pc.lineJoin='round';pc.strokeStyle=o.color;pc.fillStyle=o.color;
+    pc.lineWidth=o.size;pc.beginPath();
+    (o.points||[]).forEach((p,n)=>n?pc.lineTo(p.x,p.y):pc.moveTo(p.x,p.y));
+    if(o.points?.length===1){const p=o.points[0];pc.arc(p.x,p.y,o.size/2,0,Math.PI*2);pc.fill()}
+    else pc.stroke();
+   }
+   pc.restore();
+  });
+  if(frame.style!=='none'){
+   pc.save();pc.lineWidth=frame.width;pc.strokeStyle=frame.color;pc.strokeRect(
+    frame.width/2,frame.width/2,base.width-frame.width,base.height-frame.width);
+   pc.restore();
+  }
   textPreviewBackground=mini;
   gestureCanvas.hidden=false;canvas.style.opacity='0';
  }catch(e){
@@ -898,7 +927,7 @@ function resizeTo(w,h){
 function rotate(dir){if(!base)return;const oldW=base.width,oldH=base.height;transform((c,old)=>{c.translate(dir>0?old.height:0,dir>0?0:old.width);c.rotate(dir*Math.PI/2);c.drawImage(old,0,0)},base.height,base.width);overlays.forEach(o=>{let x=o.x,y=o.y;o.x=dir>0?oldH-y:y;o.y=dir>0?x:oldW-x});render()}
 function flip(horizontal){if(!base)return;transform((c,old)=>{c.translate(horizontal?old.width:0,horizontal?0:old.height);c.scale(horizontal?-1:1,horizontal?1:-1);c.drawImage(old,0,0)},base.width,base.height);overlays.forEach(o=>{if(horizontal)o.x=base.width-o.x;else o.y=base.height-o.y});render()}
 function beginCrop(target='canvas',panelTab='tools'){
- if(!base)return;brushActive=false;selectedPhoto=null;positionPhotoSelection();cropTarget=target==='overlay'&&selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false?'overlay':target==='photo'?'photo':'canvas';
+ if(!base)return;if(!inlineTextInput.hidden)closeInlineTextEditor();selectedTextIndex=-1;positionTextSelection();brushActive=false;selectedPhoto=null;positionPhotoSelection();cropTarget=target==='overlay'&&selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false?'overlay':target==='photo'?'photo':'canvas';
  cropIndex=cropTarget==='overlay'?selectedOverlay:-1;cropRatio='free';
  const b=cropBounds();
  // Oversized photos start cropping at the four visible canvas edges, never outside.
