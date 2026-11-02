@@ -147,6 +147,44 @@ function fitPhotoRect(r){
  const y=clamp(Math.round(r.y),visibleY-h,base.height-visibleY);
  return {x,y,w,h};
 }
+// Magnetic canvas-edge snapping for selected photos (base or photo overlays).
+// Works from below and above canvas size, without changing the canvas dimensions.
+// Uniform scaling keeps aspect ratio; freeform handles can snap each axis.
+function snapPhotoRect(request,uniform=false){
+ if(!base)return request;
+ const wCanvas=base.width,hCanvas=base.height;
+ const tolX=Math.max(8,Math.min(80,wCanvas*.055));
+ const tolY=Math.max(8,Math.min(120,hCanvas*.055));
+ let r=fitPhotoRect(request);
+ const nearLeft=Math.abs(r.x)<=tolX;
+ const nearRight=Math.abs(r.x+r.w-wCanvas)<=tolX;
+ const nearTop=Math.abs(r.y)<=tolY;
+ const nearBottom=Math.abs(r.y+r.h-hCanvas)<=tolY;
+ // When the four edges approach the canvas together, align all four precisely.
+ if(nearLeft&&nearRight&&nearTop&&nearBottom)
+  return {x:0,y:0,w:wCanvas,h:hCanvas};
+ if(uniform){
+  // Cover-snap to the matching axis while preserving the photo's aspect ratio.
+  // The other axis can continue beyond the canvas if the photo is a different shape.
+  if(nearLeft&&nearRight&&r.h>=hCanvas-tolY){
+   const scale=wCanvas/r.w,h=r.h*scale,midY=r.y+r.h/2;
+   return fitPhotoRect({x:0,y:midY-h/2,w:wCanvas,h});
+  }
+  if(nearTop&&nearBottom&&r.w>=wCanvas-tolX){
+   const scale=hCanvas/r.h,w=r.w*scale,midX=r.x+r.w/2;
+   return fitPhotoRect({x:midX-w/2,y:0,w,h:hCanvas});
+  }
+  return r;
+ }
+ // Handles are freeform: snap the edge currently near the canvas boundary.
+ if(nearLeft&&nearRight){r.x=0;r.w=wCanvas}
+ else if(nearLeft){r.w+=r.x;r.x=0}
+ else if(nearRight){r.w=wCanvas-r.x}
+ if(nearTop&&nearBottom){r.y=0;r.h=hCanvas}
+ else if(nearTop){r.h+=r.y;r.y=0}
+ else if(nearBottom){r.h=hCanvas-r.y}
+ return fitPhotoRect(r);
+}
 // The original pixels stay immutable while resizing/moving a photo.
 // Restoring 1276px after reducing to 73px now reads the original 1276px pixels.
 function ensurePhotoTransformSource(){
@@ -182,7 +220,7 @@ function applyPhotoRect(next,record=true,rebuildPanel=true){
  if(rebuildPanel)setStatus('Photo updated to '+next.w+' × '+next.h+' px · canvas unchanged');
  return true;
 }
-function commitPhotoSize(request){if(!applyPhotoRect(request))positionPhotoSelection()}
+function commitPhotoSize(request){if(!applyPhotoRect(snapPhotoRect(request)))positionPhotoSelection()}
 function photoSizeFields(){
  const r=selectedPhotoRect();if(!r)return;
  heading(selectedPhoto.kind==='base'?'Main photo dimensions':'Selected overlay dimensions');
@@ -202,7 +240,7 @@ function resizeRectFromHandle(start,handle,dx,dy){
  if(handle.includes('e'))right=clamp(start.x+start.w+dx,left+minW,left+base.width*4);
  if(handle.includes('n'))top=clamp(start.y+dy,bottom-base.height*4,bottom-minH);
  if(handle.includes('s'))bottom=clamp(start.y+start.h+dy,top+minH,top+base.height*4);
- return fitPhotoRect({x:left,y:top,w:right-left,h:bottom-top});
+ return snapPhotoRect({x:left,y:top,w:right-left,h:bottom-top});
 }
 const photoSelectionBox=$('photoSelectionBox');
 photoSelectionBox.addEventListener('pointerdown',e=>{
@@ -344,7 +382,7 @@ function photoGestureRect(g){
  const w=g.start.w*ratio,h=g.start.h*ratio;
  const fractionX=(g.midpoint.x-g.start.x)/Math.max(1,g.start.w);
  const fractionY=(g.midpoint.y-g.start.y)/Math.max(1,g.start.h);
- return fitPhotoRect({x:mid.x-w*fractionX,y:mid.y-h*fractionY,w,h});
+ return snapPhotoRect({x:mid.x-w*fractionX,y:mid.y-h*fractionY,w,h},true);
 }
 function progressPhotoGesture(){
  const g=photoGesture;if(!g||!selectedPhoto||crop)return;
@@ -600,7 +638,12 @@ function flip(horizontal){if(!base)return;transform((c,old)=>{c.translate(horizo
 function beginCrop(target='canvas',panelTab='tools'){
  if(!base)return;brushActive=false;selectedPhoto=null;positionPhotoSelection();cropTarget=target==='overlay'&&selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false?'overlay':target==='photo'?'photo':'canvas';
  cropIndex=cropTarget==='overlay'?selectedOverlay:-1;cropRatio='free';
- const b=cropBounds(),m=.08;crop={x:Math.round(b.x+b.w*m),y:Math.round(b.y+b.h*m),w:Math.max(1,Math.round(b.w*(1-2*m))),h:Math.max(1,Math.round(b.h*(1-2*m)))};
+ const b=cropBounds();
+ // Oversized photos start cropping at the four visible canvas edges, never outside.
+ const r=cropTarget==='overlay'?overlays[cropIndex]:cropTarget==='photo'?photoBounds:null;
+ const oversized=!!r&&(r.x<0||r.y<0||r.x+r.w>base.width||r.y+r.h>base.height);
+ const m=oversized?0:.08;
+ crop={x:Math.round(b.x+b.w*m),y:Math.round(b.y+b.h*m),w:Math.max(1,Math.round(b.w*(1-2*m))),h:Math.max(1,Math.round(b.h*(1-2*m)))};
  positionCrop();tab=panelTab;document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===panelTab));showPanel();setStatus('Drag inside the crop or its handles; outside clicks are ignored');
 }
 function setCropRatio(ratio){
