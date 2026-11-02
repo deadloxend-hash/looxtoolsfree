@@ -133,7 +133,7 @@ let sliderPreviewActive=false,sliderPreviewFrame=0;
 let quickPreviewBase=null,quickPreviewPixels=null,quickPreviewTone=null,quickPreviewToken=0;
 function makeQuickPreviewBase(){
  if(!base)return;
- const scale=Math.min(1,700/Math.max(base.width,base.height));
+ const scale=Math.min(1,520/Math.max(base.width,base.height));
  const c=makeCanvas(Math.max(1,Math.round(base.width*scale)),Math.max(1,Math.round(base.height*scale)));
  const cx=c.getContext('2d',{willReadFrequently:true});
  cx.drawImage(base,0,0,c.width,c.height);
@@ -1150,6 +1150,63 @@ function paint(p){
  const scale=canvas.width/Math.max(1,canvas.getBoundingClientRect().width),s=Math.max(3,brushSize*scale*(target?m.width/base.width*base.width/target.w:1));
  const c=m.getContext('2d');c.lineCap='round';c.lineJoin='round';c.lineWidth=s;c.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';c.strokeStyle='rgba(255,255,255,'+(intensity/100)+')';c.beginPath();c.moveTo(lastPoint?.x??q.x,lastPoint?.y??q.y);c.lineTo(q.x,q.y);c.stroke();c.beginPath();c.arc(q.x,q.y,s/2,0,Math.PI*2);c.fillStyle=c.strokeStyle;c.fill();c.globalCompositeOperation='source-over';if(!target&&resizeAnchor&&resizePlacement){const r=resizePlacement,a={x:(q.x-r.dx)/r.scale,y:(q.y-r.dy)/r.scale},b=lastPoint?{x:(lastPoint.x-r.dx)/r.scale,y:(lastPoint.y-r.dy)/r.scale}:a;const ac=resizeAnchor.mask.getContext('2d');ac.lineCap='round';ac.lineJoin='round';ac.lineWidth=s/r.scale;ac.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';ac.strokeStyle=c.strokeStyle;ac.fillStyle=c.fillStyle;ac.beginPath();ac.moveTo(b.x,b.y);ac.lineTo(a.x,a.y);ac.stroke();ac.beginPath();ac.arc(a.x,a.y,ac.lineWidth/2,0,Math.PI*2);ac.fill();ac.globalCompositeOperation='source-over'}lastPoint=q;if(target)target.cache=null
 }
+// Drag shapes/elements at display resolution. Commit once on release.
+let overlayDragFrame=0,overlayDragBackground=null;
+function startOverlayDrag(e,index,p){
+ const o=overlays[index];if(!o||o.locked||o.visible===false)return false;
+ e.preventDefault();
+ overlayDrag={id:e.pointerId,index,dx:p.x-o.x,dy:p.y-o.y,
+  origin:{x:o.x,y:o.y},next:{x:o.x,y:o.y},moved:false};
+ try{canvas.setPointerCapture(e.pointerId)}catch{}
+ try{
+  makeQuickPreviewBase();
+  drawQuickComposite(index);
+  const bg=document.createElement('canvas');
+  bg.width=gestureCanvas.width;bg.height=gestureCanvas.height;
+  bg.getContext('2d').drawImage(gestureCanvas,0,0);
+  overlayDragBackground=bg;
+ }catch(err){overlayDragBackground=null;console.warn('Object preview unavailable',err)}
+ return true;
+}
+function paintOverlayDrag(){
+ if(!overlayDrag||!base)return;
+ const g=overlayDrag,o=overlays[g.index];if(!o)return;
+ const c=gestureContext;
+ if(overlayDragBackground){
+  c.setTransform(1,0,0,1,0,0);
+  c.clearRect(0,0,gestureCanvas.width,gestureCanvas.height);
+  c.drawImage(overlayDragBackground,0,0);
+  c.setTransform(gestureCanvas.width/base.width,0,0,gestureCanvas.height/base.height,0,0);
+  c.save();c.globalAlpha=o.opacity??1;
+  const moved={...o,...g.next};
+  if(moved.type==='shape')drawShape(c,moved);
+  else if(moved.type==='text')paintTextLayer(c,moved);
+  c.restore();
+ }else{
+  drawQuickComposite(g.index,{index:g.index,rect:g.next});
+ }
+}
+function progressOverlayDrag(e){
+ const g=overlayDrag;if(!g||e.pointerId!==g.id||!base)return false;
+ e.preventDefault();const p=pointerPosition(e),o=overlays[g.index];if(!o)return true;
+ g.next={x:Math.round(clamp(p.x-g.dx,Math.min(16,base.width*.05)-(o.w||0),base.width-12)),
+  y:Math.round(clamp(p.y-g.dy,Math.min(16,base.height*.05)-(o.h||0),base.height-12))};
+ g.moved=g.moved||Math.abs(g.next.x-g.origin.x)>2||Math.abs(g.next.y-g.origin.y)>2;
+ if(!g.moved)return true;
+ if(!overlayDragFrame)overlayDragFrame=requestAnimationFrame(()=>{overlayDragFrame=0;paintOverlayDrag()});
+ return true;
+}
+function finishOverlayDrag(e,cancel=false){
+ const g=overlayDrag;if(!g||e.pointerId!==g.id)return false;
+ if(overlayDragFrame)cancelAnimationFrame(overlayDragFrame);
+ overlayDragFrame=0;overlayDrag=null;overlayDragBackground=null;
+ quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;
+ const o=overlays[g.index];
+ if(!cancel&&g.moved&&o){saveHistory();Object.assign(o,g.next);render();setStatus('Element moved')}
+ else{hideGesturePreview();if(g.moved)render()}
+ return true;
+}
+
 canvas.addEventListener('pointerdown',e=>{
  if(!base)return;const p=pointerPosition(e);
  if(crop){e.preventDefault();return}
@@ -1162,7 +1219,7 @@ canvas.addEventListener('pointerdown',e=>{
  if(e.pointerType==='touch'&&activePhotoPointers.size&&selectedPhoto&&!brushActive){
   startPhotoPointer(e,true);return;
  }
- const hit=hitOverlay(p,!(tab==='text'||tab==='elements'||tab==='layers'));
+ const hit=hitOverlay(p,!!brushActive);
  if(selectedTextIndex>=0){selectedTextIndex=-1;positionTextSelection()}
  const previous=selectedOverlay,oldPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
  selectedOverlay=hit;
@@ -1176,7 +1233,7 @@ canvas.addEventListener('pointerdown',e=>{
  if(!brushActive&&selectedPhoto){
   startPhotoPointer(e);return;
  }
- if(hit>=0&&!brushActive&&['text','elements','layers'].includes(tab)){e.preventDefault();saveHistory();overlayDrag={dx:p.x-overlays[hit].x,dy:p.y-overlays[hit].y};canvas.setPointerCapture(e.pointerId);return}
+ if(hit>=0&&!brushActive&&overlays[hit]?.type==='shape'){startOverlayDrag(e,hit,p);return}
  if(!brushActive)return;
  e.preventDefault();if(brushActive==='draw'&&!requireRoom('drawing'))return;saveHistory();painting=true;lastPoint=null;canvas.setPointerCapture(e.pointerId);
  if(brushActive==='draw'){activeStroke={type:'stroke',points:[p],size:drawSize*base.width/Math.max(1,canvas.getBoundingClientRect().width),color:drawColor,opacity:1,visible:true,locked:false};overlays.push(activeStroke);selectedOverlay=overlays.length-1}
@@ -1189,10 +1246,10 @@ canvas.addEventListener('pointermove',e=>{
   activePhotoPointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});
   e.preventDefault();progressPhotoGesture();return;
  }
- if(overlayDrag&&base){e.preventDefault();const p=pointerPosition(e),o=overlays[selectedOverlay];if(o&&!o.locked){o.x=Math.round(clamp(p.x-overlayDrag.dx,0,base.width));o.y=Math.round(clamp(p.y-overlayDrag.dy,0,base.height));render()}return}
+ if(progressOverlayDrag(e))return;
  if(!painting||!base)return;e.preventDefault();if(activeStroke)activeStroke.points.push(pointerPosition(e));else paint(pointerPosition(e));render();
 });
-const endPaint=e=>{if(finishTextGesture(e,e.type==='pointercancel'))return;if(finishPhotoPointer(e))return;overlayDrag=null;if(painting){if(brushActive!=='draw'&&!activePaintTarget&&photoTransformSource&&photoTransformMask&&photoBounds&&photoTransformSourceRect){const nextMask=clone(photoTransformMask),r=photoTransformSourceRect,b=photoBounds,mc=nextMask.getContext('2d');mc.clearRect(r.x,r.y,r.w,r.h);mc.drawImage(mask,b.x,b.y,b.w,b.h,r.x,r.y,r.w,r.h);photoTransformMask=nextMask}painting=false;activeStroke=null;activePaintTarget=null;lastPoint=null;render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied')}};
+const endPaint=e=>{if(finishTextGesture(e,e.type==='pointercancel'))return;if(finishPhotoPointer(e))return;if(finishOverlayDrag(e,e.type==='pointercancel'))return;if(painting){if(brushActive!=='draw'&&!activePaintTarget&&photoTransformSource&&photoTransformMask&&photoBounds&&photoTransformSourceRect){const nextMask=clone(photoTransformMask),r=photoTransformSourceRect,b=photoBounds,mc=nextMask.getContext('2d');mc.clearRect(r.x,r.y,r.w,r.h);mc.drawImage(mask,b.x,b.y,b.w,b.h,r.x,r.y,r.w,r.h);photoTransformMask=nextMask}painting=false;activeStroke=null;activePaintTarget=null;lastPoint=null;render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied')}};
 canvas.addEventListener('pointerup',endPaint);canvas.addEventListener('pointercancel',endPaint);
 $('cropBox').addEventListener('pointerdown',e=>{
  if(!crop||!base)return;e.preventDefault();e.stopPropagation();const p=pointerPosition(e),b=cropBounds(),r={x:(crop.x-b.x)/b.w,y:(crop.y-b.y)/b.h,w:crop.w/b.w,h:crop.h/b.h};
