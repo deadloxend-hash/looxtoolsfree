@@ -244,26 +244,88 @@ photoSelectionBox.addEventListener('keydown',e=>{
    Close fingers = larger photo, spread fingers = smaller photo.
    Only the selected photo moves; the canvas dimensions never change. */
 const activePhotoPointers=new Map();
-let photoGesture=null;
+let photoGesture=null,gesturePreview=null,photoGestureFrame=0,queuedGestureRect=null;
+
+// Build layered previews only once per gesture; no per-pixel tone processing during drag.
+function prepareGesturePreview(){
+ if(!base||!selectedPhoto)return;
+ ++renderToken; // Discard a full-quality render already queued before this gesture.
+ const currentBase=base,currentMask=mask;
+ try{
+  if(selectedPhoto.kind==='base'){
+   base=photoTransformSource||currentBase;
+   mask=photoTransformMask||currentMask;
+   const moving=compose({toLayer:0,drawFrame:false});
+   base=currentBase;mask=currentMask;
+   const top=compose({skipBase:true});
+   gesturePreview={kind:'base',moving,top,sourceRect:photoTransformSourceRect||{x:0,y:0,w:base.width,h:base.height}};
+  }else{
+   const index=selectedPhoto.index,o=overlays[index];
+   if(!o||o.type!=='image')return;
+   const under=compose({toLayer:index,drawFrame:false});
+   const moving=processImageLayer(o);
+   const top=compose({skipBase:true,fromLayer:index+1});
+   gesturePreview={kind:'overlay',under,moving,top,opacity:o.opacity??1,border:o.borderWidth||0,borderColor:o.borderColor||'#ffffff'};
+  }
+ }catch(err){
+  console.warn('Photo gesture preview unavailable',err);
+  gesturePreview=null;
+ }finally{base=currentBase;mask=currentMask}
+}
+function paintGesturePreview(rect){
+ const p=gesturePreview;if(!p||!base||!rect)return;
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ if(p.under)ctx.drawImage(p.under,0,0);
+ if(p.kind==='base'){
+  const src=p.sourceRect;
+  ctx.drawImage(p.moving,src.x,src.y,src.w,src.h,rect.x,rect.y,rect.w,rect.h);
+ }else{
+  ctx.save();ctx.globalAlpha=p.opacity;
+  ctx.drawImage(p.moving,rect.x,rect.y,rect.w,rect.h);
+  if(p.border){
+   ctx.strokeStyle=p.borderColor;ctx.lineWidth=p.border;
+   ctx.strokeRect(rect.x+p.border/2,rect.y+p.border/2,Math.max(1,rect.w-p.border),Math.max(1,rect.h-p.border));
+  }
+  ctx.restore();
+ }
+ if(p.top)ctx.drawImage(p.top,0,0);
+}
+function queueGesturePreview(rect){
+ queuedGestureRect=rect;
+ if(photoGestureFrame)return;
+ photoGestureFrame=requestAnimationFrame(()=>{
+  photoGestureFrame=0;
+  const next=queuedGestureRect;queuedGestureRect=null;
+  if(!photoGesture||!next||!selectedPhoto)return;
+  if(gesturePreview)paintGesturePreview(next);
+  positionPhotoSelection(next);
+ });
+}
+function clearGesturePreview(){
+ if(photoGestureFrame)cancelAnimationFrame(photoGestureFrame);
+ photoGestureFrame=0;queuedGestureRect=null;gesturePreview=null;
+}
 const gesturePoint=e=>pointerPosition(e);
 const pointerDistance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function startPhotoPointer(e,keepSelection=false){
  if(!base||crop||brushActive||!selectedPhoto)return false;
- // For the second finger, keep the first finger's selected photo.
  const existing=activePhotoPointers.size;
+ const previous=photoGesture;
+ const previousRect=previous?(photoGestureRect(previous)||previous.last):null;
  activePhotoPointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});
  try{canvas.setPointerCapture(e.pointerId)}catch{}
  e.preventDefault();
  if(existing===0||!photoGesture){
-  photoGesture={mode:'move',id:e.pointerId,first:gesturePoint(e),start:selectedPhotoRect(),last:null,recorded:false,lastPaint:0};
+  photoGesture={mode:'move',id:e.pointerId,first:gesturePoint(e),start:selectedPhotoRect(),last:null};
+  prepareGesturePreview();
  }
  if(activePhotoPointers.size>=2){
   const pts=[...activePhotoPointers.values()].slice(0,2).map(p=>gesturePoint(p));
-  const r=selectedPhotoRect();
+  const r=previousRect||selectedPhotoRect();
   if(r){
    photoGesture={mode:'pinch',start:r,distance:Math.max(1,pointerDistance(pts[0],pts[1])),
-    midpoint:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2},
-    last:null,recorded:photoGesture?.recorded||false,lastPaint:0};
+    midpoint:{x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2},last:r};
+   queueGesturePreview(r);
   }
  }
  return true;
@@ -278,7 +340,7 @@ function photoGestureRect(g){
  const pts=[...activePhotoPointers.values()].slice(0,2).map(p=>gesturePoint(p));
  if(pts.length<2)return g.last;
  const mid={x:(pts[0].x+pts[1].x)/2,y:(pts[0].y+pts[1].y)/2};
- const ratio=clamp(g.distance/Math.max(12,pointerDistance(pts[0],pts[1])),.2,5);
+ const ratio=clamp(Math.max(12,pointerDistance(pts[0],pts[1]))/g.distance,.2,5);
  const w=g.start.w*ratio,h=g.start.h*ratio;
  const fractionX=(g.midpoint.x-g.start.x)/Math.max(1,g.start.w);
  const fractionY=(g.midpoint.y-g.start.y)/Math.max(1,g.start.h);
@@ -287,33 +349,34 @@ function photoGestureRect(g){
 function progressPhotoGesture(){
  const g=photoGesture;if(!g||!selectedPhoto||crop)return;
  const next=photoGestureRect(g);if(!next)return;
- const current=selectedPhotoRect();if(!current)return;
- const moved=['x','y','w','h'].some(k=>Math.abs(next[k]-g.start[k])>2);
- if(!moved&&!g.recorded)return;
- g.last=next;positionPhotoSelection(next);
- // Throttle expensive full-canvas compositing; the handles still follow every touch.
- const now=performance.now();
- if(now-g.lastPaint<110)return;
- if(!g.recorded){saveHistory();g.recorded=true}
- g.lastPaint=now;
- applyPhotoRect(next,false,false);
+ if(['x','y','w','h'].every(k=>Math.abs(next[k]-g.start[k])<.5))return;
+ g.last=next;
+ queueGesturePreview(next);
 }
 function finishPhotoPointer(e){
  if(!activePhotoPointers.has(e.pointerId))return false;
- activePhotoPointers.delete(e.pointerId);
+ // Read final pointer position before releasing capture.
+ activePhotoPointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});
  const g=photoGesture;
+ const finalRect=g?(photoGestureRect(g)||g.last):null;
+ activePhotoPointers.delete(e.pointerId);
  if(g){
-  if(g.last){
-   if(!g.recorded){saveHistory();g.recorded=true}
-   applyPhotoRect(g.last,false,false);
-  }
   if(activePhotoPointers.size===1){
    const [id,p]=activePhotoPointers.entries().next().value;
-   photoGesture={mode:'move',id,first:gesturePoint(p),start:selectedPhotoRect(),last:null,recorded:g.recorded,lastPaint:0};
+   const r=finalRect||g.last||selectedPhotoRect();
+   photoGesture={mode:'move',id,first:gesturePoint(p),start:r,last:r};
+   queueGesturePreview(r);
   }else if(!activePhotoPointers.size){
-   photoGesture=null;
-   positionPhotoSelection();
-   if(g.recorded){if(tab==='tools')showPanel();setStatus('Photo moved or resized · one undo step');}
+   photoGesture=null;clearGesturePreview();
+   const before=selectedPhotoRect();
+   const changed=finalRect&&before&&['x','y','w','h'].some(k=>Math.abs(finalRect[k]-before[k])>=1);
+   if(changed){
+    applyPhotoRect(finalRect,true,false);
+    if(tab==='tools')showPanel();
+    setStatus('Photo moved or resized · one undo step');
+   }else{
+    render();positionPhotoSelection();
+   }
   }
  }
  return true;
