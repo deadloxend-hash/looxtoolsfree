@@ -62,8 +62,16 @@ export function dialog(title){
 export function field(parent,title,type='text',opts={}){
  const wrap=el('label',null,'lx-field'),caption=el('span',title),input=el('input');input.type=type;Object.assign(input,opts);wrap.append(caption,input);parent.append(wrap);return input;
 }
+function friendlyAuthError(err){
+ const code=String(err?.code||'').toLowerCase(),message=String(err?.message||'');
+ if(code==='over_email_send_rate_limit'||/email rate limit exceeded/i.test(message))return 'The verification email limit for LOOX Tools has been reached. Please do not try another email or register repeatedly. If you already verified your account, use Sign in instead. Email delivery will resume when the provider limit resets or when LOOX configures custom email sending.';
+ if(code==='email_address_not_authorized'||/email address not authorized/i.test(message))return 'Email signup is temporarily restricted by the email provider. LOOX must configure custom SMTP before registering other addresses.';
+ if(code==='email_exists'||code==='user_already_exists'||/already registered/i.test(message))return 'That email may already have an account. Choose Sign in instead of registering again.';
+ if(code==='invalid_credentials'||/invalid login credentials/i.test(message))return 'The email or password is incorrect. If you already verified your email, try signing in with the password you used at registration; otherwise use Forgot password.';
+ return message||'The account request failed. Please try again later.';
+}
 function withStatus(form,submit,status,call){
- form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;msg(status,'');try{await call();}catch(err){msg(status,err.message);}finally{submit.disabled=false;}};
+ form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;msg(status,'');try{await call();}catch(err){msg(status,friendlyAuthError(err));}finally{submit.disabled=false;}};
 }
 export function auth(mode='login'){
  const titles={login:'Welcome back',register:'Create your LOOX account',forgot:'Forgot your password?',reset:'Choose a new password'};
@@ -99,7 +107,11 @@ export function auth(mode='login'){
   else if(reset){result=await c.auth.updateUser({password:pass.value});}
   else result=await c.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
   if(result.error)throw result.error;
-  if(forgot||reg){form.replaceChildren(el('p',forgot?'If this email has an account, check your inbox for a recovery link.':'Check your inbox and verify your email to claim your signup credits. Open the link in this browser.'));return;}
+  if(forgot||reg){
+   form.replaceChildren(el('p',forgot?'If this email has an account, check your inbox for a recovery link. Only request another email if needed.':'Registration was submitted. Check your inbox for a verification link. After verifying, return to the LOOX website and choose Sign in with the same email and password. Do not register a second time.'));
+   if(reg)form.append(button('I already verified my email · Sign in',()=>auth('login'),'lx-button lx-primary'));
+   return;
+  }
   if(reset){await c.auth.signOut();history.replaceState(null,'','account.html');auth();return;}
   d.close();await refresh();
  });
