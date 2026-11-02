@@ -52,7 +52,7 @@
  function current(){return catalog.find(t=>t.url===(file+(file==='toolbox.html'?(location.hash||'#image-resizer'):'')))}
  function drawRail(){
   if(!homePage){mountHeader();return}
-  const w=(words[language]||words.en),active=current();
+  const w=(words[language]||words.en),l=(labels[language]||labels.en),active=current();
   const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(location.href.split('?')[0].endsWith(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
   rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">AI-powered tools</h2>'+
    [['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join('')+
