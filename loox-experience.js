@@ -75,7 +75,9 @@
    const here=new URL(location.href);
    if(target.pathname!==here.pathname)return false;
    const category=target.searchParams.get('category');
-   return category?category===here.searchParams.get('category'):true;
+   if(category)return category===here.searchParams.get('category');
+   if(target.pathname.endsWith('/index.html')&&here.searchParams.has('category'))return false;
+   return true;
   };
   const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(activeURL(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
   rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">Navigation</h2>'+[
