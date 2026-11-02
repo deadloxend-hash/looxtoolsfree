@@ -173,3 +173,73 @@
 /* Hardware-assisted slider thumb rendering, while keeping the track stationary. */
 .panel-content input[type=range],#quality{touch-action:none;cursor:grab;min-width:0}
 .panel-content input[type=range]:active{cursor:grabbing}
+
+/* Photo Studio: compact, unobtrusive resize grips and a truly black workspace. */
+#dropzone.viewport{
+ background-color:#090a0e!important;
+ background-image:none!important;
+}
+#dropzone #canvas,
+#dropzone .photo-gesture-preview{
+ background-color:#161a23;
+ background-image:linear-gradient(45deg,#222836 25%,transparent 25%),
+ linear-gradient(-45deg,#222836 25%,transparent 25%),
+ linear-gradient(45deg,transparent 75%,#222836 75%),
+ linear-gradient(-45deg,transparent 75%,#222836 75%);
+ background-size:22px 22px;
+ background-position:0 0,0 11px,11px -11px,-11px 0;
+}
+.photo-gesture-preview{
+ opacity:1!important;
+ background-blend-mode:normal;
+}
+.photo-resize-handle,
+.text-layer-handle,
+.crop-handle{
+ width:24px!important;height:24px!important;
+ border:0!important;border-radius:50%!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ transform:translate(-50%,-50%);
+ touch-action:none;pointer-events:auto;
+}
+.photo-resize-handle::after,
+.text-layer-handle::after,
+.crop-handle::after{
+ content:"";display:block;position:absolute;
+ top:50%;left:50%;width:9px;height:9px;
+ transform:translate(-50%,-50%);
+ border:1.5px solid #c9a9ff;border-radius:3px;
+ background:#322048;
+ box-shadow:0 1px 4px #0604099c;
+}
+.crop-box{border:1.5px solid #c9a9ff}
+.photo-selection-box,.text-layer-frame{
+ border:1.5px solid #b58cff;
+ outline:none;
+ box-shadow:0 0 0 1px #19102080;
+}
+.photo-selection.compact .photo-resize-handle.n,
+.photo-selection.compact .photo-resize-handle.e,
+.photo-selection.compact .photo-resize-handle.s,
+.photo-selection.compact .photo-resize-handle.w,
+.text-layer-selection.compact .text-layer-handle.n,
+.text-layer-selection.compact .text-layer-handle.e,
+.text-layer-selection.compact .text-layer-handle.s,
+.text-layer-selection.compact .text-layer-handle.w{
+ display:none!important;
+}
+.photo-selection.compact .photo-size-badge,
+.text-layer-selection.compact .text-layer-size{
+ bottom:calc(100% + 15px);
+ font-size:10px;
+ padding:3px 6px;
+}
+@media(max-width:767px){
+ .photo-resize-handle,.text-layer-handle,.crop-handle{
+  width:25px!important;height:25px!important;
+ }
+ .photo-resize-handle::after,.text-layer-handle::after,.crop-handle::after{
+  width:9px;height:9px;
+ }
+}
