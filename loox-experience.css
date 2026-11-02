@@ -720,3 +720,14 @@ body.loox-home-rail .loox-rail{display:flex!important;transform:translateX(0);op
 body.loox-home-rail.rail-hidden .loox-rail{display:flex!important;transform:translateX(-105%)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s .34s!important}
 @media(max-width:900px){body.loox-home-rail.rail-hidden .loox-rail{display:flex!important}}
 @media(prefers-reduced-motion:reduce){body.loox-home-rail .loox-rail{transition:none!important}}
+
+/* Mobile rendering: avoid expensive continuous blur and scroll-linked animations. */
+@media(max-width:900px){
+ body.loox-home-rail .topbar{
+   -webkit-backdrop-filter:none!important;
+   backdrop-filter:none!important;
+ }
+ body.loox-home-rail .loox-story [data-reveal]{
+   animation:none!important;
+ }
+}
