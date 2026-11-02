@@ -76,19 +76,44 @@ function drawShape(c,o){
  else c.rect(x,y,w,h);
  c.fill()
 }
+// Text dimensions reflect the actual font plus independent width/height scaling.
+const textMetricsContext=document.createElement('canvas').getContext('2d');
+function textMetrics(o){
+ const lines=String(o.text||'').split('\n');
+ textMetricsContext.font=(o.weight||'bold')+' '+o.size+'px '+(o.font||'system-ui,Arial,sans-serif');
+ return {w:Math.max(6,...lines.map(l=>textMetricsContext.measureText(l).width))+
+  (o.outlineWidth||0)*2+3,h:Math.max(1,lines.length)*o.size*1.25+2};
+}
+function textLayerBounds(o){
+ const m=textMetrics(o);
+ return {x:o.x,y:o.y,w:m.w*(o.scaleX||1),h:m.h*(o.scaleY||1)};
+}
+function paintTextLayer(c,o,x=o.x,y=o.y,scaleX=o.scaleX||1,scaleY=o.scaleY||1){
+ c.save();c.translate(x,y);c.scale(scaleX,scaleY);
+ c.fillStyle=o.color;c.textBaseline='top';
+ c.font=(o.weight||'bold')+' '+o.size+'px '+(o.font||'system-ui,Arial,sans-serif');
+ c.lineJoin='round';c.strokeStyle=o.outlineColor||'#111111';
+ c.lineWidth=(o.outlineWidth||0)*2;c.shadowColor='rgba(0,0,0,.85)';
+ c.shadowBlur=o.shadowBlur||0;
+ String(o.text||'').split('\n').forEach((line,n)=>{
+  const y=n*o.size*1.25;if(o.outlineWidth)c.strokeText(line,0,y);c.fillText(line,0,y)
+ });
+ c.restore();
+}
 function compose(options={}){if(!base)return null;const w=base.width,h=base.height,work=makeCanvas(w,h),wc=work.getContext('2d',{willReadFrequently:true});if(!options.skipBase){wc.drawImage(base,0,0);let data=wc.getImageData(0,0,w,h),out=wc.createImageData(w,h);tone(data.data,out.data,effective());wc.putImageData(out,0,0);
 const mc=mask.getContext('2d',{willReadFrequently:true}),alpha=mc.getImageData(0,0,w,h).data;let any=false;for(let i=3;i<alpha.length;i+=4){if(alpha[i]>0){any=true;break}}
 if(any){const blurred=makeCanvas(w,h),bc=blurred.getContext('2d');bc.filter='blur('+Math.max(12,Math.round(Math.min(w,h)*.018))+'px)';bc.drawImage(work,0,0);bc.filter='none';const bd=bc.getImageData(0,0,w,h).data,od=out.data;for(let i=0;i<od.length;i+=4){const mix=alpha[i+3]/255;for(let j=0;j<3;j++)od[i+j]=od[i+j]*(1-mix)+bd[i+j]*mix}wc.putImageData(out,0,0)}
 applySpecial(work,preset);
 }
 for(let i=options.fromLayer||0;i<Math.min(overlays.length,options.toLayer??overlays.length);i++){
+ if(i===options.skipLayer)continue;
  const o=overlays[i];
   if(o.visible===false)continue;
   wc.save();wc.globalAlpha=o.opacity??1;
   if(o.type==='shape'){drawShape(wc,o)}
   else if(o.type==='image'&&o.image){wc.drawImage(processImageLayer(o),o.x,o.y,o.w,o.h);if(o.borderWidth){wc.strokeStyle=o.borderColor||'#ffffff';wc.lineWidth=o.borderWidth;wc.strokeRect(o.x+o.borderWidth/2,o.y+o.borderWidth/2,o.w-o.borderWidth,o.h-o.borderWidth)}}
   else if(o.type==='stroke'){wc.lineWidth=o.size;wc.lineCap='round';wc.lineJoin='round';wc.strokeStyle=o.color;wc.beginPath();o.points.forEach((p,i)=>i?wc.lineTo(p.x,p.y):wc.moveTo(p.x,p.y));if(o.points.length===1){wc.arc(o.points[0].x,o.points[0].y,o.size/2,0,Math.PI*2);wc.fillStyle=o.color;wc.fill()}else wc.stroke()}
-  else {wc.fillStyle=o.color;wc.textBaseline='top';wc.font=(o.weight||'bold')+' '+o.size+'px '+(o.font||'system-ui,Arial,sans-serif');wc.lineJoin='round';wc.strokeStyle=o.outlineColor||'#111111';wc.lineWidth=(o.outlineWidth||0)*2;wc.shadowColor='rgba(0,0,0,.85)';wc.shadowBlur=o.shadowBlur||0;String(o.text||'').split('\n').forEach((line,n)=>{const y=o.y+n*o.size*1.25;if(o.outlineWidth)wc.strokeText(line,o.x,y);wc.fillText(line,o.x,y)})}
+  else if(o.type==='text'){paintTextLayer(wc,o)}
   wc.restore();
 }
 if(options.drawFrame!==false&&frame.style!=='none'){
@@ -792,10 +817,9 @@ function pointerPosition(e){const r=canvas.getBoundingClientRect();return {x:cla
 let painting=false,lastPoint=null,activeStroke=null,activePaintTarget=null;
 function hitOverlay(p,imagesOnly=false){
  for(let i=overlays.length-1;i>=0;i--){const o=overlays[i];if(o.visible===false||o.locked||o.type==='stroke'||(imagesOnly&&o.type!=='image'))continue;
- const lines=o.type==='text'?String(o.text||'').split('\n'):null;
- const w=o.w||(lines?Math.max(...lines.map(line=>line.length),1)*o.size*.7:String(o.text||'').length*o.size*.65);
- const h=o.h||(lines?Math.max(1,lines.length)*o.size*1.25:o.size*1.3);
- if(p.x>=o.x&&p.x<=o.x+w&&p.y>=o.y&&p.y<=o.y+h)return i}
+ const rect=o.type==='text'?textLayerBounds(o):
+  {x:o.x,y:o.y,w:o.w||String(o.text||'').length*o.size*.65,h:o.h||o.size*1.3};
+ if(p.x>=rect.x&&p.x<=rect.x+rect.w&&p.y>=rect.y&&p.y<=rect.y+rect.h)return i}
  return -1
 }
 function paint(p){
