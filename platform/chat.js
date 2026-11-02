@@ -6,7 +6,7 @@ function bubble(message,role){const node=document.createElement('div');node.clas
 function render(){log.replaceChildren();bubble(model==='free'?"Hi! I'm LOOX AI Free. Ask me anything.":"Welcome to LOOX AI Pro. Premium subscribers can chat here.",'assistant');for(const item of transcripts[model])bubble(item.text,item.role);
  for(const button of switcher.querySelectorAll('[data-chat-model]')){const selected=button.dataset.chatModel===model;button.classList.toggle('selected',selected);button.setAttribute('aria-pressed',String(selected))}
  heading.textContent=model==='free'?'LOOX AI Free':'LOOX AI Pro · Subscribers';
- notice.textContent=!state.user?'Sign in to chat.':model==='free'?'Free model · Up to 8 requests daily.':'Premium model · Active LOOX subscription required.';
+ notice.textContent=!state.user?'Sign in to chat.':model==='free'?'Free model · Up to 25 requests daily.':'Premium model · Active LOOX subscription required.';
 }
 switcher.addEventListener('click',event=>{const target=event.target.closest('[data-chat-model]');if(!target||busy)return;model=target.dataset.chatModel;render()});
 document.getElementById('chatUpgrade')?.addEventListener('click',()=>pricing());
