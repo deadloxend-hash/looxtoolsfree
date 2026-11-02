@@ -127,8 +127,77 @@ if(options.drawFrame!==false&&frame.style!=='none'){
   wc.restore();
 }
 return work}
+// UI interaction preview: work at a fraction of the original pixels during dragging.
+// A single full-quality composition is performed when the gesture completes.
+let sliderPreviewActive=false,sliderPreviewFrame=0;
+let quickPreviewBase=null,quickPreviewPixels=null,quickPreviewTone=null,quickPreviewToken=0;
+function makeQuickPreviewBase(){
+ if(!base)return;
+ const scale=Math.min(1,700/Math.max(base.width,base.height));
+ const c=makeCanvas(Math.max(1,Math.round(base.width*scale)),Math.max(1,Math.round(base.height*scale)));
+ const cx=c.getContext('2d',{willReadFrequently:true});
+ cx.drawImage(base,0,0,c.width,c.height);
+ quickPreviewBase=c;quickPreviewPixels=cx.getImageData(0,0,c.width,c.height);
+ quickPreviewTone=makeCanvas(c.width,c.height);
+}
+function drawQuickComposite(skipLayer=-1,layerOverride=null){
+ if(!base)return;
+ if(!quickPreviewBase)makeQuickPreviewBase();
+ positionGestureCanvas();
+ const pw=gestureCanvas.width,ph=gestureCanvas.height;
+ const c=gestureContext;
+ c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,pw,ph);
+ c.setTransform(pw/base.width,0,0,ph/base.height,0,0);
+ // Exact tone computation only on a small (<=700px) cached image.
+ if(quickPreviewPixels&&quickPreviewTone){
+  const tc=quickPreviewTone.getContext('2d',{willReadFrequently:true});
+  const output=tc.createImageData(quickPreviewBase.width,quickPreviewBase.height);
+  tone(quickPreviewPixels.data,output.data,effective());
+  tc.putImageData(output,0,0);
+  if(preset!=='original')applySpecial(quickPreviewTone,preset);
+  c.drawImage(quickPreviewTone,0,0,base.width,base.height);
+ }else c.drawImage(base,0,0);
+ for(let i=0;i<overlays.length;i++){
+  if(i===skipLayer)continue;
+  const o=i===layerOverride?.index?{...overlays[i],...layerOverride.rect}:overlays[i];
+  if(!o||o.visible===false)continue;
+  c.save();c.globalAlpha=o.opacity??1;
+  if(o.type==='shape')drawShape(c,o);
+  else if(o.type==='text')paintTextLayer(c,o);
+  else if(o.type==='image'&&o.image){
+   const v=o.values||{};
+   c.filter='brightness('+Math.max(.15,1+(v.brightness||0)/180)+') saturate('+Math.max(0,1+(v.saturation||0)/100)+')';
+   c.drawImage(o.cache||o.image,o.x,o.y,o.w,o.h);c.filter='none';
+  }else if(o.type==='stroke'){
+   c.strokeStyle=o.color;c.fillStyle=o.color;c.lineWidth=o.size;c.lineJoin='round';c.lineCap='round';
+   c.beginPath();(o.points||[]).forEach((p,j)=>j?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));
+   if(o.points?.length===1){const p=o.points[0];c.arc(p.x,p.y,o.size/2,0,Math.PI*2);c.fill()}else c.stroke();
+  }
+  c.restore();
+ }
+ if(frame.style!=='none'){
+  c.save();c.strokeStyle=frame.color;c.lineWidth=frame.width;
+  c.strokeRect(frame.width/2,frame.width/2,base.width-frame.width,base.height-frame.width);
+  c.restore();
+ }
+ gestureCanvas.hidden=false;canvas.style.opacity='0';
+}
+function queueQuickPreview(){
+ if(sliderPreviewFrame)return;
+ sliderPreviewFrame=requestAnimationFrame(()=>{
+  sliderPreviewFrame=0;
+  if(!sliderPreviewActive||!base)return;
+  try{drawQuickComposite()}catch(e){console.warn('Preview failed',e)}
+ });
+}
+function stopQuickPreview(){
+ sliderPreviewActive=false;
+ if(sliderPreviewFrame){cancelAnimationFrame(sliderPreviewFrame);sliderPreviewFrame=0}
+ quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;quickPreviewToken++;
+ render();
+}
 let lastRenderedComposite=null;
-function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(()=>{
+function render(){if(!base)return;if(sliderPreviewActive){++renderToken;queueQuickPreview();return}let token=++renderToken;requestAnimationFrame(()=>{
  if(token!==renderToken||!base)return;
  try{const image=compose();lastRenderedComposite=image;
  if(canvas.width!==image.width||canvas.height!==image.height){canvas.width=image.width;canvas.height=image.height}
@@ -136,7 +205,7 @@ function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(
  hideGesturePreview();
  }catch(e){hideGesturePreview();console.error(e);setStatus('Rendering failed — try a smaller image.')}
 })}
-function syncCanvas(){hideGesturePreview();lastRenderedComposite=null;canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
+function syncCanvas(){sliderPreviewActive=false;quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;hideGesturePreview();lastRenderedComposite=null;canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
 function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionTextSelection(activeTextGesture?.next&&textLayerBounds({...overlays[activeTextGesture.index],...activeTextGesture.next}));positionInlineTextEditor()}
 function positionCrop(){if(!crop||!base){$('cropOverlay').hidden=true;return}const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');el.hidden=false;Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',width:crop.w*sx+'px',height:crop.h*sy+'px'})}
 
