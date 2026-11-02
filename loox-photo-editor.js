@@ -207,7 +207,7 @@ function render(){if(!base)return;if(sliderPreviewActive){++renderToken;queueQui
  }catch(e){hideGesturePreview();console.error(e);setStatus('Rendering failed — try a smaller image.')}
 })}
 function syncCanvas(){sliderPreviewActive=false;quickPreviewBase=null;quickPreviewPixels=null;quickPreviewTone=null;hideGesturePreview();lastRenderedComposite=null;canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
-function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionTextSelection(activeTextGesture?.next&&textLayerBounds({...overlays[activeTextGesture.index],...activeTextGesture.next}));positionInlineTextEditor()}
+function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCanvasBackdrop();positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionTextSelection(activeTextGesture?.next&&textLayerBounds({...overlays[activeTextGesture.index],...activeTextGesture.next}));positionInlineTextEditor()}
 const floatingCropCancel=$('cropCancelFloating'),floatingCropApply=$('cropApplyFloating');
 function positionCropActions(){
  const visible=!!(crop&&base);
@@ -418,12 +418,32 @@ photoSelectionBox.addEventListener('keydown',e=>{
    multi-megapixel output resolution, during touch movements. */
 const activePhotoPointers=new Map();
 let photoGesture=null,gesturePreview=null,photoGestureFrame=0,queuedGestureRect=null;
+// Independent transparency checkerboard: stays visible when the image canvas
+// is hidden for a lightweight drag/resize preview.
+const canvasBackdrop=document.createElement('div');
+canvasBackdrop.className='canvas-transparency-backdrop';
+canvasBackdrop.hidden=true;
+$('dropzone').prepend(canvasBackdrop);
+function positionCanvasBackdrop(){
+ if(!base||canvas.style.display==='none'){
+  canvasBackdrop.hidden=true;return;
+ }
+ const r=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
+ if(!r.width||!r.height){canvasBackdrop.hidden=true;return}
+ canvasBackdrop.hidden=false;
+ Object.assign(canvasBackdrop.style,{
+  left:(r.left-v.left+$('dropzone').scrollLeft)+'px',
+  top:(r.top-v.top+$('dropzone').scrollTop)+'px',
+  width:r.width+'px',height:r.height+'px'
+ });
+}
 const gestureCanvas=document.createElement('canvas');
 gestureCanvas.className='photo-gesture-preview';
 gestureCanvas.hidden=true;
 $('dropzone').append(gestureCanvas);
 const gestureContext=gestureCanvas.getContext('2d',{alpha:true});
 function positionGestureCanvas(){
+ positionCanvasBackdrop();
  const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
  const ratio=Math.min(1.6,1000/Math.max(1,b.width,b.height));
  const w=Math.max(1,Math.round(b.width*ratio)),h=Math.max(1,Math.round(b.height*ratio));
