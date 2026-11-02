@@ -714,3 +714,9 @@ body.loox-home-rail .loox-overflow-links .loox-mobile-link{display:none!importan
 
 /* Unified sidebar section headings across Tools Home, AI Home and AI Chat. */
 .loox-rail .loox-rail-list .loox-rail-group-title{color:#c19be9!important;font:700 10px/1.4 system-ui!important;letter-spacing:.12em!important;text-transform:uppercase!important}
+
+/* Animated Tools Home sidebar */
+body.loox-home-rail .loox-rail{display:flex!important;transform:translateX(0);opacity:1;visibility:visible;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s!important}
+body.loox-home-rail.rail-hidden .loox-rail{display:flex!important;transform:translateX(-105%)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s .34s!important}
+@media(max-width:900px){body.loox-home-rail.rail-hidden .loox-rail{display:flex!important}}
+@media(prefers-reduced-motion:reduce){body.loox-home-rail .loox-rail{transition:none!important}}
