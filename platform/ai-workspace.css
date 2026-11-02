@@ -31,3 +31,28 @@
 .ai-chat .ai-composer-wrap{margin-bottom:9px}
 }
 @media(prefers-reduced-motion:reduce){.ai-msg{animation:none}.ai-typing-dot{animation:none}}
+
+/* Full LOOX catalog drawer shared by the AI home and conversation screens. */
+.ai-tools-drawer{width:min(350px,88vw);padding:20px 15px 16px;gap:0}
+.ai-tools-drawer .ai-nav-top{padding:6px 8px 15px;position:sticky;top:-20px;background:#15151e;z-index:2}
+.ai-drawer-search-label{font-size:11px;font-weight:700;color:#afa5c1;margin:2px 11px 7px}
+.ai-drawer-search{width:100%;padding:11px 12px;border-radius:12px;border:1px solid #474053;background:#23212c;color:#f8f6ff;font:inherit;font-size:14px;margin-bottom:13px;outline-offset:2px}
+.ai-drawer-search::placeholder{color:#918ba0}
+.ai-drawer-search:focus{outline:2px solid #a88bec;border-color:transparent}
+.ai-drawer-links{overflow-y:auto;min-height:0;flex:1;scrollbar-color:#52475f transparent;overscroll-behavior:contain}
+.ai-drawer-section{padding:0 0 12px}
+.ai-drawer-section h2{color:#b498dd;font-size:11px;letter-spacing:.11em;text-transform:uppercase;font-weight:800;margin:13px 10px 7px}
+.ai-drawer-section>a,.ai-drawer-section details a{display:block;text-decoration:none;color:#eee9f7;border-radius:10px;padding:11px 12px;margin:1px 2px;font-size:14px;font-weight:550;line-height:1.35}
+.ai-drawer-section>a:hover,.ai-drawer-section details a:hover,.ai-drawer-section>a:focus-visible,.ai-drawer-section details a:focus-visible{background:#302b3b}
+.ai-drawer-section details{margin:3px 0;border-radius:11px}
+.ai-drawer-section summary{list-style:none;cursor:pointer;border-radius:10px;padding:12px 13px;color:#f5f1fb;font-size:14px;font-weight:650}
+.ai-drawer-section summary::-webkit-details-marker{display:none}
+.ai-drawer-section summary:after{content:'⌄';float:right;color:#af9bc5;transition:transform .18s}
+.ai-drawer-section details[open] summary:after{transform:rotate(180deg)}
+.ai-drawer-section summary:hover{background:#2b2635}
+.ai-drawer-section details a{color:#cbc5d9;padding:9px 12px 9px 31px;font-size:13px}
+.ai-drawer-section [hidden]{display:none!important}
+.ai-drawer-section.ai-search-empty{display:none}
+.ai-drawer-empty{font-size:13px;color:#bdb4ce;margin:20px 9px;line-height:1.6}
+.ai-drawer-empty[hidden]{display:none}
+.ai-drawer-empty a{color:#ceaaff}
