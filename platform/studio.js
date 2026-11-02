@@ -1,13 +1,13 @@
 import {el,button,field,msg,config,api,state,refresh,auth,pricing} from './account.js';
 
 const host=document.querySelector('[data-studio]'), tool=host.dataset.studio;
-const isText=tool==='generate',isMask=['erase','fill'].includes(tool);
+const isText=tool==='generate',isMask=['erase','fill'].includes(tool),isUncrop=tool==='uncrop',isSwap=tool==='face_swap';
 const form=el('form',null,'lx-stack'),notice=el('p',null,'lx-note'),result=el('section',null,'lx-result');
 notice.setAttribute('role','status');const progress=el('progress');progress.setAttribute('aria-label','AI processing');progress.hidden=true;host.append(progress);host.append(form,notice,result);
 let source,sourceURL,imageSize,strokes=[],redo=[],current=null,requestId=null,busy=false,generation=0,available=false;
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const settings=el('div',null,'lx-fields');
-let prompt,ratio,seed,file,permission,scale,canvas,scene,brushSize,eraseBrush=false,undo,redoBtn,brushToggle;
+let prompt,ratio,seed,file,permission,scale,canvas,scene,brushSize,eraseBrush=false,undo,redoBtn,brushToggle,swapFile,consent,expand;
 function select(parent,title,options){
  const l=el('label',null,'lx-field'),s=el('select');l.append(el('span',title),s);
  for(const [v,t] of options){const o=el('option',t);o.value=v;s.append(o);}parent.append(l);return s;
@@ -38,6 +38,8 @@ if(isText){
   canvas.onpointerup=canvas.onpointercancel=canvas.onlostpointercapture=()=>{current=null;};
  }
  if(tool==='upscale'){scale=select(settings,'Enlargement',[['upscale2','2×'],['upscale4','4×']]);form.append(settings);}
+ if(isUncrop){expand=select(settings,'Expand canvas',[['1.25','25% wider and taller'],['1.50','50% wider and taller']]);form.append(settings);}
+ if(isSwap){swapFile=field(form,'Source face image (with permission)','file',{accept:'image/jpeg,image/png,image/webp',required:true});const label=el('label',null,'lx-check');consent=el('input');consent.type='checkbox';consent.required=true;label.append(consent,'I confirm every person whose face is used has agreed to this edit.');form.append(label);}
  const consent=el('label',null,'lx-check');permission=el('input');permission.type='checkbox';permission.required=true;consent.append(permission,'I own this image or have permission to edit it.');form.append(consent);
  file.onchange=async()=>{
   const version=++generation;source=null;imageSize=null;scene.hidden=true;strokes=[];redo=[];resetResult();
@@ -67,8 +69,8 @@ function paintMask(target,preview){
 function paint(){paintMask(canvas,true);undo.disabled=!strokes.length;redoBtn.disabled=!redo.length;}
 function asData(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Cannot read image.'));reader.onload=()=>resolve(reader.result);reader.readAsDataURL(blob);});}
 let fillPrompt;
-if(tool==='fill'){
- const label=el('label','Describe the replacement','lx-field');
+if(tool==='fill'||isUncrop){
+ const label=el('label',isUncrop?'Describe the extended scene':'Describe the replacement','lx-field');
  fillPrompt=el('textarea');fillPrompt.required=true;fillPrompt.maxLength=1200;fillPrompt.rows=3;label.append(fillPrompt);form.append(label);
 }
 form.addEventListener('dragover',e=>{if(!file)return;e.preventDefault();});
@@ -107,6 +109,20 @@ form.onsubmit=async e=>{
    if(op==='upscale4'&&imageSize[0]*imageSize[1]>1000000)throw Error('4× upscale accepts images up to 1 megapixel.');
    body.image=await asData(source);body.permission=permission.checked;
    if(isMask){if(!strokes.length)throw Error('Paint the object you want to remove.');const mask=el('canvas');[mask.width,mask.height]=imageSize;paintMask(mask,false);body.mask=mask.toDataURL('image/png');}
+   if(isUncrop){
+    const factor=Number(expand.value),w=Math.round(imageSize[0]*factor),h=Math.round(imageSize[1]*factor);
+    if(w*h>4000000)throw Error('The expanded canvas must be under 4 megapixels. Use a smaller original image.');
+    const x=Math.floor((w-imageSize[0])/2),y=Math.floor((h-imageSize[1])/2);
+    const base=el('canvas'),mask=el('canvas');base.width=mask.width=w;base.height=mask.height=h;
+    const g=base.getContext('2d');g.fillStyle='#202020';g.fillRect(0,0,w,h);g.drawImage(img,x,y,imageSize[0],imageSize[1]);
+    const m=mask.getContext('2d');m.fillStyle='white';m.fillRect(0,0,w,h);m.fillStyle='black';m.fillRect(x,y,imageSize[0],imageSize[1]);
+    body.image=base.toDataURL('image/png');body.mask=mask.toDataURL('image/png');
+   }
+   if(isSwap){
+    if(!swapFile.files[0])throw Error('Choose a source face image.');
+    if(swapFile.files[0].size>2400000||!['image/jpeg','image/png','image/webp'].includes(swapFile.files[0].type))throw Error('Source face must be a JPG, PNG or WebP under 2.4 MB.');
+    body.swap_image=await asData(swapFile.files[0]);body.consent=consent.checked;
+   }
   }
   if(JSON.stringify(body).length>4150000)throw Error('Image and mask together are too large. Use a smaller image.');
   msg(notice,'Submitting your edit…');const j=await api('job',body);lastJob=j.id;result.replaceChildren();await refresh();
