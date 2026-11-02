@@ -709,12 +709,39 @@ $('cropBox').addEventListener('pointerdown',e=>{
  drag={mode:e.target.dataset.handle||'move',from:{x:(p.x-b.x)/b.w,y:(p.y-b.y)/b.h},start:r};
  $('cropBox').setPointerCapture(e.pointerId)
 });
-$('cropBox').addEventListener('pointermove',e=>{
- if(!drag||!crop)return;e.preventDefault();const p=pointerPosition(e),b=cropBounds(),r=canvas.getBoundingClientRect();
+// Crop dragging only updates the selection outline, never reprocesses image pixels.
+let cropMoveFrame=0,queuedCropPointer=null;
+function applyPendingCropPointer(){
+ if(!queuedCropPointer||!drag||!crop||!base)return;
+ const p=pointerPosition(queuedCropPointer),b=cropBounds(),r=canvas.getBoundingClientRect();
  const ratio=cropRatio==='free'?0:Number(cropRatio.split(':')[0])/Number(cropRatio.split(':')[1]);
- const next=window.LOOXCrop.drag(drag.start,drag.mode,drag.from,{x:(p.x-b.x)/b.w,y:(p.y-b.y)/b.h},r.width*b.w/base.width,r.height*b.h/base.height,ratio);crop={x:Math.round(b.x+next.x*b.w),y:Math.round(b.y+next.y*b.h),w:Math.round(next.w*b.w),h:Math.round(next.h*b.h)};positionCrop()
+ const next=window.LOOXCrop.drag(drag.start,drag.mode,drag.from,
+  {x:(p.x-b.x)/b.w,y:(p.y-b.y)/b.h},r.width*b.w/base.width,r.height*b.h/base.height,ratio);
+ crop={x:Math.round(b.x+next.x*b.w),y:Math.round(b.y+next.y*b.h),
+  w:Math.max(1,Math.round(next.w*b.w)),h:Math.max(1,Math.round(next.h*b.h))};
+ positionCrop();
+}
+$('cropBox').addEventListener('pointermove',e=>{
+ if(!drag||!crop)return;
+ e.preventDefault();
+ queuedCropPointer={clientX:e.clientX,clientY:e.clientY};
+ if(cropMoveFrame)return;
+ cropMoveFrame=requestAnimationFrame(()=>{
+  cropMoveFrame=0;
+  applyPendingCropPointer();
+  queuedCropPointer=null;
+ });
 });
-$('cropBox').addEventListener('pointerup',()=>{drag=null;showPanel()});$('cropBox').addEventListener('pointercancel',()=>drag=null);
+function finishCropDrag(e,cancel=false){
+ if(!drag)return;
+ if(cropMoveFrame)cancelAnimationFrame(cropMoveFrame);
+ cropMoveFrame=0;
+ if(!cancel){queuedCropPointer={clientX:e.clientX,clientY:e.clientY};applyPendingCropPointer()}
+ queuedCropPointer=null;drag=null;
+ if(!cancel)showPanel();
+}
+$('cropBox').addEventListener('pointerup',e=>finishCropDrag(e));
+$('cropBox').addEventListener('pointercancel',e=>finishCropDrag(e,true));
 $('cropBox').addEventListener('keydown',e=>{const move={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(!move||!crop)return;e.preventDefault();const step=e.shiftKey?10:1;const b=cropBounds();crop.x=clamp(crop.x+move[0]*step,b.x,b.x+b.w-crop.w);crop.y=clamp(crop.y+move[1]*step,b.y,b.y+b.h-crop.h);positionCrop();showPanel()});
 let exportPreview=null,exportPreviewKey='',exportTimer=0,exportToken=0;
 const fileSizeLabel=bytes=>bytes>=1048576?(bytes/1048576).toFixed(2)+' MB':(bytes/1024).toFixed(1)+' KB';
