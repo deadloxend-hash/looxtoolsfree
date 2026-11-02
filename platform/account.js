@@ -1,6 +1,6 @@
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
-export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image'};
+export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image',enhance:'Image enhancer',uncrop:'Generative uncrop',restore:'Old photo restorer',retouch:'Skin retoucher',face_restore:'Face restoration',face_swap:'Face swap'};
 const proposal=[{id:'free',price_cents:0,credits:10},{id:'pro',price_cents:999,credits:100},{id:'lifetime',price_cents:4900,credits:50}];
 const planName={free:'Free',pro:'LOOX Pro',lifetime:'LOOX Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
