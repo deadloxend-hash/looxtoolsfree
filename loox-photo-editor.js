@@ -14,7 +14,10 @@ const hasRoom=k=>layerCount(k)<MAX_LAYERS;
 function requireRoom(k){if(hasRoom(k))return true;setStatus('Limit reached: 10 '+k+' overlays maximum. Remove one to add more.');return false}
 const countInfo=k=>k+' '+layerCount(k)+'/10';
 function cropBounds(){
- if(cropTarget==='photo'&&photoBounds)return {...photoBounds};
+ if(cropTarget==='photo'&&photoBounds){
+  const x=Math.max(0,photoBounds.x),y=Math.max(0,photoBounds.y);
+  return {x,y,w:Math.max(1,Math.min(base.width,photoBounds.x+photoBounds.w)-x),h:Math.max(1,Math.min(base.height,photoBounds.y+photoBounds.h)-y)};
+ }
  if(cropTarget==='overlay'){const o=overlays[cropIndex];if(o?.image){const x=Math.max(0,o.x),y=Math.max(0,o.y);return {x,y,w:Math.max(1,Math.min(base.width,o.x+o.w)-x),h:Math.max(1,Math.min(base.height,o.y+o.h)-y)}}}
  return {x:0,y:0,w:base.width,h:base.height}
 }
@@ -135,8 +138,12 @@ function positionPhotoSelection(preview){
 function fitPhotoRect(r){
  if(!base)return r;
  const minW=Math.min(12,base.width),minH=Math.min(12,base.height);
- const x=clamp(Math.round(r.x),0,base.width-minW),y=clamp(Math.round(r.y),0,base.height-minH);
- return {x,y,w:clamp(Math.round(r.w),minW,base.width-x),h:clamp(Math.round(r.h),minH,base.height-y)};
+ // The photo can extend beyond the canvas when enlarged, but keep a visible area to grab.
+ const w=clamp(Math.round(r.w),minW,base.width*4),h=clamp(Math.round(r.h),minH,base.height*4);
+ const visibleX=Math.min(24,base.width*.08),visibleY=Math.min(24,base.height*.08);
+ const x=clamp(Math.round(r.x),visibleX-w,base.width-visibleX);
+ const y=clamp(Math.round(r.y),visibleY-h,base.height-visibleY);
+ return {x,y,w,h};
 }
 // The original pixels stay immutable while resizing/moving a photo.
 // Restoring 1276px after reducing to 73px now reads the original 1276px pixels.
@@ -180,7 +187,7 @@ function photoSizeFields(){
  const wrap=document.createElement('div');wrap.className='crop-fields';
  for(const [label,key] of [['Width','w'],['Height','h']]){
   const row=document.createElement('label');row.textContent=label+' (px)';
-  const input=document.createElement('input');input.type='number';input.min='1';input.step='1';input.max=String(key==='w'?base.width-r.x:base.height-r.y);input.value=String(Math.round(r[key]));
+  const input=document.createElement('input');input.type='number';input.min='1';input.step='1';input.max=String(key==='w'?base.width*4:base.height*4);input.value=String(Math.round(r[key]));
   input.addEventListener('change',()=>{const value=Number(input.value);if(!Number.isFinite(value)||value<1){input.value=String(Math.round(r[key]));return}commitPhotoSize({...r,[key]:value})});
   row.append(input);wrap.append(row);
  }
@@ -189,10 +196,10 @@ function photoSizeFields(){
 function resizeRectFromHandle(start,handle,dx,dy){
  const minW=Math.min(12,base.width),minH=Math.min(12,base.height);
  let left=start.x,top=start.y,right=start.x+start.w,bottom=start.y+start.h;
- if(handle.includes('w'))left=clamp(start.x+dx,0,right-minW);
- if(handle.includes('e'))right=clamp(start.x+start.w+dx,left+minW,base.width);
- if(handle.includes('n'))top=clamp(start.y+dy,0,bottom-minH);
- if(handle.includes('s'))bottom=clamp(start.y+start.h+dy,top+minH,base.height);
+ if(handle.includes('w'))left=clamp(start.x+dx,right-base.width*4,right-minW);
+ if(handle.includes('e'))right=clamp(start.x+start.w+dx,left+minW,left+base.width*4);
+ if(handle.includes('n'))top=clamp(start.y+dy,bottom-base.height*4,bottom-minH);
+ if(handle.includes('s'))bottom=clamp(start.y+start.h+dy,top+minH,top+base.height*4);
  return fitPhotoRect({x:left,y:top,w:right-left,h:bottom-top});
 }
 const photoSelectionBox=$('photoSelectionBox');
