@@ -99,7 +99,7 @@ if(frame.style!=='none'){
 return work}
 function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(()=>{if(token!==renderToken||!base)return;try{const image=compose();if(canvas.width!==image.width||canvas.height!==image.height){canvas.width=image.width;canvas.height=image.height}ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0);layoutCanvas()}catch(e){console.error(e);setStatus('Rendering failed — try a smaller image.')}})}
 function syncCanvas(){canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
-function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection()}
+function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined)}
 function positionCrop(){if(!crop||!base){$('cropOverlay').hidden=true;return}const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');el.hidden=false;Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',width:crop.w*sx+'px',height:crop.h*sy+'px'})}
 
 // Main photo and imported overlays share the same selection and sizing controls.
@@ -184,7 +184,7 @@ function photoSizeFields(){
   input.addEventListener('change',()=>{const value=Number(input.value);if(!Number.isFinite(value)||value<1){input.value=String(Math.round(r[key]));return}commitPhotoSize({...r,[key]:value})});
   row.append(input);wrap.append(row);
  }
- panel.append(wrap);hint('Drag purple corners or edges to resize. Tap empty canvas to deselect.');
+ panel.append(wrap);hint('One finger moves the photo. Pinch fingers together to enlarge; spread them to shrink. Tap empty canvas to deselect.');
 }
 function resizeRectFromHandle(start,handle,dx,dy){
  const minW=Math.min(12,base.width),minH=Math.min(12,base.height);
@@ -610,7 +610,7 @@ canvas.addEventListener('pointermove',e=>{
  if(overlayDrag&&base){e.preventDefault();const p=pointerPosition(e),o=overlays[selectedOverlay];if(o&&!o.locked){o.x=Math.round(clamp(p.x-overlayDrag.dx,0,base.width));o.y=Math.round(clamp(p.y-overlayDrag.dy,0,base.height));render()}return}
  if(!painting||!base)return;e.preventDefault();if(activeStroke)activeStroke.points.push(pointerPosition(e));else paint(pointerPosition(e));render();
 });
-const endPaint=e=>{if(finishPhotoPointer(e))return;overlayDrag=null;if(painting){painting=false;activeStroke=null;activePaintTarget=null;lastPoint=null;render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied')}};
+const endPaint=e=>{if(finishPhotoPointer(e))return;overlayDrag=null;if(painting){if(brushActive!=='draw'&&!activePaintTarget&&photoTransformSource&&photoTransformMask&&photoBounds&&photoTransformSourceRect){const nextMask=clone(photoTransformMask),r=photoTransformSourceRect,b=photoBounds,mc=nextMask.getContext('2d');mc.clearRect(r.x,r.y,r.w,r.h);mc.drawImage(mask,b.x,b.y,b.w,b.h,r.x,r.y,r.w,r.h);photoTransformMask=nextMask}painting=false;activeStroke=null;activePaintTarget=null;lastPoint=null;render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied')}};
 canvas.addEventListener('pointerup',endPaint);canvas.addEventListener('pointercancel',endPaint);
 $('cropBox').addEventListener('pointerdown',e=>{
  if(!crop||!base)return;e.preventDefault();e.stopPropagation();const p=pointerPosition(e),b=cropBounds(),r={x:(crop.x-b.x)/b.w,y:(crop.y-b.y)/b.h,w:crop.w/b.w,h:crop.h/b.h};
