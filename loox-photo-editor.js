@@ -221,13 +221,28 @@ function heading(s){const h=document.createElement('h3');h.textContent=s;panel.a
 function hint(s){const p=document.createElement('p');p.className='hint';p.textContent=s;panel.append(p)}
 function actions(items,cls='action-grid'){let g=document.createElement('div');g.className=cls;for(const [title,fn]of items)g.append(button(title,fn));panel.append(g);return g}
 function control(name,min,max,step,value,onChange){const wrap=document.createElement('label');wrap.className='field';let title=document.createElement('div');title.textContent=name;let row=document.createElement('div');row.className='slider-row';const range=document.createElement('input'),num=document.createElement('input');range.type='range';num.type='number';for(const e of [range,num]){e.min=min;e.max=max;e.step=step;e.value=value}range.addEventListener('pointerdown',startAdjustment,{once:true});function startAdjustment(){if(base)saveHistory()}let numEditing=false;num.addEventListener('focus',()=>{numEditing=true;if(base)saveHistory()},{once:true});const apply=v=>{const n=clamp(Number(v)||0,min,max);range.value=n;num.value=n;onChange(n)};range.addEventListener('input',()=>apply(range.value));num.addEventListener('change',()=>apply(num.value));row.append(range,num);wrap.append(title,row);panel.append(wrap)}
+function showCropControls(){
+ heading(cropTarget==='overlay'?'Crop selected overlay':cropTarget==='photo'?'Crop main photo':'Crop entire canvas');
+ heading('Crop ratio');
+ const ratios=['free','1:1','4:5','16:9','9:16','4:3','3:2','2:1','3:1'];
+ const buttons=actions(ratios.map(r=>[r==='free'?'Freeform':r,()=>setCropRatio(r)]));
+ [...buttons.children].forEach((button,i)=>button.classList.toggle('selected',ratios[i]===cropRatio));
+ hint('Drag inside the crop to move it, or drag an edge or corner to resize it.');
+ cropFields();
+ actions([['Apply crop',applyCrop],['Cancel',()=>{crop=null;cropTarget='canvas';cropIndex=-1;positionCrop();showPanel()}]]);
+}
 function showPanel(){
- panel.replaceChildren();$('panelTitle').textContent=tab.charAt(0).toUpperCase()+tab.slice(1);if(['adjust','effects','retouch'].includes(tab)){hint('Editing: '+(selectedImage()?.name||'Background photo'));if(selectedImage()?.locked||selectedImage()?.visible===false){hint('Unlock and show this layer in Layers before editing it.');return}}
+ panel.replaceChildren();$('panelTitle').textContent=tab==='crop'?'Crop Photo':tab.charAt(0).toUpperCase()+tab.slice(1);if(['adjust','effects','retouch'].includes(tab)){hint('Editing: '+(selectedImage()?.name||'Background photo'));if(selectedImage()?.locked||selectedImage()?.visible===false){hint('Unlock and show this layer in Layers before editing it.');return}}
  if(tab==='tools'){
   if(selectedPhoto&&!crop)photoSizeFields();
-  heading('Transform');hint('Crop photo trims only the main picture; Crop canvas trims the entire design, including overlays.');actions([['＋ Open photo',triggerUpload],['⌗ Crop photo',()=>beginCrop('photo')],['⌗ Crop canvas',()=>beginCrop('canvas')],['↻ Rotate 90°',()=>rotate(1)],['↺ Rotate −90°',()=>rotate(-1)],['⇄ Flip H',()=>flip(true)],['⇅ Flip V',()=>flip(false)]]);
-  if(selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false)actions([['⌗ Crop selected photo layer',()=>beginCrop('overlay')]]);if(crop){heading(cropTarget==='overlay'?'Crop selected overlay':cropTarget==='photo'?'Crop main photo':'Crop entire canvas');heading('Crop ratio');const ratios=['free','1:1','4:5','16:9','9:16','4:3','3:2','2:1','3:1'];const g=actions(ratios.map(r=>[r==='free'?'Freeform':r,()=>setCropRatio(r)]));[...g.children].forEach((b,i)=>b.classList.toggle('selected',ratios[i]===cropRatio));hint('Drag inside to move, use any corner or edge handle to resize. Clicking outside the crop will not change it.');cropFields();actions([['Apply crop',applyCrop],['Cancel',()=>{crop=null;positionCrop();showPanel()}]])}
+  heading('Transform');hint('Use Crop in the main toolbar to trim the photo. Crop canvas trims the full design, including overlays.');actions([['＋ Open photo',triggerUpload],['⌗ Crop canvas',()=>beginCrop('canvas')],['↻ Rotate 90°',()=>rotate(1)],['↺ Rotate −90°',()=>rotate(-1)],['⇄ Flip H',()=>flip(true)],['⇅ Flip V',()=>flip(false)]]);
+  if(selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false)actions([['⌗ Crop selected photo layer',()=>beginCrop('overlay')]]);
+  if(crop)showCropControls();
   heading('Quick actions');actions([['Fit canvas',()=>{zoom=1;layoutCanvas()}],['Reset photo',resetImage]]);hint('The image remains centered in a fixed editing workspace. Zoom only changes the preview.');
+ }
+ if(tab==='crop'){
+  if(crop&&cropTarget==='photo')showCropControls();
+  else{heading('Crop your photo');hint('Trim the main photo without changing the canvas size or other layers.');actions([['Start photo crop',()=>beginCrop('photo','crop')]]);}
  }
  if(tab==='resize'){
   heading('Social media sizes');hint('Fit keeps the whole photo; Fill crops the edges to fill the chosen size.');
@@ -349,7 +364,20 @@ function showLayerControls(kind){
 }
 function colorField(name,value,onChange){const color=document.createElement('input');color.type='color';color.value=value;color.onfocus=()=>saveHistory();color.oninput=()=>onChange(color.value);const label=document.createElement('label');label.className='field';label.textContent=name+' ';label.append(color);panel.append(label)}
 function setBrush(s){brushSize=s;brushActive=true;showPanel();setStatus('Blur brush active')}
-function selectTab(t){if(t==='export'){openExport();return}tab=t;document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));if(t!=='retouch'&&t!=='draw')brushActive=false;showPanel();if(innerWidth<768){$('inspector').classList.add('open');document.querySelector('.app').classList.add('drawer-open');layoutCanvas()}}
+function selectTab(t){
+ if(t==='export'){openExport();return}
+ if(t==='crop'){
+  if(!base){setStatus('Open a photo before cropping');triggerUpload();return}
+  beginCrop('photo','crop');
+ }else{
+  if(tab==='crop'&&crop){crop=null;cropTarget='canvas';cropIndex=-1;positionCrop()}
+  tab=t;
+  document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===t));
+  if(t!=='retouch'&&t!=='draw')brushActive=false;
+  showPanel();
+ }
+ if(innerWidth<768){$('inspector').classList.add('open');document.querySelector('.app').classList.add('drawer-open');layoutCanvas()}
+}
 function closeDrawer(){$('inspector').classList.remove('open');document.querySelector('.app').classList.remove('drawer-open');layoutCanvas()}
 function transform(draw,w,h){if(!base)return;saveHistory();resizeAnchor=null;resizePlacement=null;resizeLast=null;for(const name of ['base','mask']){const old=name==='base'?base:mask,n=makeCanvas(w,h),c=n.getContext('2d');draw(c,old);if(name==='base')base=n;else mask=n}crop=null;photoBounds=null;syncCanvas();render();setStatus('Transform applied')}
 function resizeTo(w,h){
@@ -401,11 +429,11 @@ function resizeTo(w,h){
 }
 function rotate(dir){if(!base)return;const oldW=base.width,oldH=base.height;transform((c,old)=>{c.translate(dir>0?old.height:0,dir>0?0:old.width);c.rotate(dir*Math.PI/2);c.drawImage(old,0,0)},base.height,base.width);overlays.forEach(o=>{let x=o.x,y=o.y;o.x=dir>0?oldH-y:y;o.y=dir>0?x:oldW-x});render()}
 function flip(horizontal){if(!base)return;transform((c,old)=>{c.translate(horizontal?old.width:0,horizontal?0:old.height);c.scale(horizontal?-1:1,horizontal?1:-1);c.drawImage(old,0,0)},base.width,base.height);overlays.forEach(o=>{if(horizontal)o.x=base.width-o.x;else o.y=base.height-o.y});render()}
-function beginCrop(target='canvas'){
+function beginCrop(target='canvas',panelTab='tools'){
  if(!base)return;brushActive=false;selectedPhoto=null;positionPhotoSelection();cropTarget=target==='overlay'&&selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false?'overlay':target==='photo'?'photo':'canvas';
  cropIndex=cropTarget==='overlay'?selectedOverlay:-1;cropRatio='free';
  const b=cropBounds(),m=.08;crop={x:Math.round(b.x+b.w*m),y:Math.round(b.y+b.h*m),w:Math.max(1,Math.round(b.w*(1-2*m))),h:Math.max(1,Math.round(b.h*(1-2*m)))};
- positionCrop();tab='tools';document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab==='tools'));showPanel();setStatus('Drag inside the crop or its handles; outside clicks are ignored');
+ positionCrop();tab=panelTab;document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===panelTab));showPanel();setStatus('Drag inside the crop or its handles; outside clicks are ignored');
 }
 function setCropRatio(ratio){
  if(!crop||!base)return;cropRatio=ratio;
