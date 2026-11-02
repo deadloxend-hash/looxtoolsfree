@@ -171,5 +171,5 @@
 .crop-float-btn:active{transform:scale(.94)}
 @media(max-width:767px){.crop-float-btn{width:34px;height:34px}}
 /* Hardware-assisted slider thumb rendering, while keeping the track stationary. */
-.panel-content input[type=range]{touch-action:pan-x;cursor:grab;min-width:0}
+.panel-content input[type=range],#quality{touch-action:none;cursor:grab;min-width:0}
 .panel-content input[type=range]:active{cursor:grabbing}
