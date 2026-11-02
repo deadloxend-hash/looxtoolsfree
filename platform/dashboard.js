@@ -1,5 +1,18 @@
 import {aiTools} from './catalog.js';
 import {el,button,config,state,pricing,auth} from './account.js';
+const aiBannerFiles={
+'bg-remove':'loox_ai_background_remover_hero_banner.jpg',
+'ai-image-upscaler':'loox_ai_image_upscaler_showcase.jpg',
+'ai-image-enhancer':'loox_ai_image_enhancer_banner.jpg',
+'ai-object-eraser':'loox_object_eraser_hero_banner.jpg',
+'ai-watermark-remover':'loox_watermark_removal_workflow.jpg',
+'ai-text-to-image':'neon_loox_ai_image_generator_interface.jpg',
+'ai-generative-fill':'loox_generative_fill_alpine_lake_makeover.jpg',
+'ai-generative-erase':'loox_ai_generative_erase_hero.jpg',
+'ai-uncrop':'loox_ai_generative_uncrop_studio.jpg',
+'ai-photo-restorer':'loox_old_photo_restorer.jpg'
+};
+const aiFallbacks={'ai-skin-retoucher':'ai-skin-retoucher','ai-face-restoration':'ai-photo-restorer','image-to-text':'image-to-text','face-blur':'face-blur','faceswap':'faceswap'};
 const host=document.querySelector('[data-ai-dashboard]');
 if(host){
  const full=host.dataset.aiDashboard==='full';
@@ -27,7 +40,11 @@ if(host){
   for(const t of selected){
    const a=el('a',null,'lx-ai-card');a.href=t.slug+'.html';
    const status=t.operation==='local'?'On-device AI':t.operation?(cfg?.ai?'Uses AI credits':'Cloud setup pending'):'Integration pending';
-   a.append(el('span',t.icon,'lx-ai-icon'),el('small',t.category),el('h3',t.name),el('p',t.description),el('small',status,'lx-status'),el('strong','Open workspace ↗'));
+   const preview=el('img',null,'lx-ai-card-image');preview.alt=t.name+' illustrated workflow preview';preview.loading='lazy';preview.width=800;preview.height=500;
+   const fallback='assets/tool-art/'+(aiFallbacks[t.slug]||t.slug)+'.webp';
+   preview.src=aiBannerFiles[t.slug]?'assets/ai-banners/'+aiBannerFiles[t.slug]:fallback;
+   preview.onerror=()=>{preview.onerror=null;preview.src=fallback};
+   a.append(preview,el('span',t.icon,'lx-ai-icon'),el('small',t.category),el('h3',t.name),el('p',t.description),el('small',status,'lx-status'),el('strong','Open workspace ↗'));
    grid.append(a);
   }count.textContent=selected.length+' tools';if(!selected.length)grid.append(el('p','No tools match your search.'));
  }
