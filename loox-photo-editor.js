@@ -549,7 +549,55 @@ function button(label,fn){const b=document.createElement('button');b.type='butto
 function heading(s){const h=document.createElement('h3');h.textContent=s;panel.append(h)}
 function hint(s){const p=document.createElement('p');p.className='hint';p.textContent=s;panel.append(p)}
 function actions(items,cls='action-grid'){let g=document.createElement('div');g.className=cls;for(const [title,fn]of items)g.append(button(title,fn));panel.append(g);return g}
-function control(name,min,max,step,value,onChange){const wrap=document.createElement('label');wrap.className='field';let title=document.createElement('div');title.textContent=name;let row=document.createElement('div');row.className='slider-row';const range=document.createElement('input'),num=document.createElement('input');range.type='range';num.type='number';for(const e of [range,num]){e.min=min;e.max=max;e.step=step;e.value=value}range.addEventListener('pointerdown',startAdjustment,{once:true});function startAdjustment(){if(base)saveHistory()}let numEditing=false;num.addEventListener('focus',()=>{numEditing=true;if(base)saveHistory()},{once:true});const apply=v=>{const n=clamp(Number(v)||0,min,max);range.value=n;num.value=n;onChange(n)};range.addEventListener('input',()=>apply(range.value));num.addEventListener('change',()=>apply(num.value));row.append(range,num);wrap.append(title,row);panel.append(wrap)}
+function control(name,min,max,step,value,onChange){
+ const wrap=document.createElement('label');wrap.className='field';
+ const title=document.createElement('div');title.textContent=name;
+ const row=document.createElement('div');row.className='slider-row';
+ const range=document.createElement('input'),num=document.createElement('input');
+ range.type='range';num.type='number';
+ for(const e of [range,num]){e.min=min;e.max=max;e.step=step;e.value=value}
+ let dragging=false,hasHistory=false,blockedClick=false,keyboardHistory=false;
+ // Ignore taps on the track: only a pointer starting on the thumb can move it.
+ range.addEventListener('pointerdown',e=>{
+  const r=range.getBoundingClientRect();
+  const fraction=(Number(range.value)-min)/(max-min||1);
+  const thumbCenter=r.left+11+fraction*Math.max(1,r.width-22);
+  if(e.button>0||Math.abs(e.clientX-thumbCenter)>Math.max(20,Math.min(27,r.width*.12))){
+   blockedClick=true;e.preventDefault();return;
+  }
+  blockedClick=false;dragging=true;hasHistory=false;
+  if(base){sliderPreviewActive=true;makeQuickPreviewBase()}
+ });
+ range.addEventListener('click',e=>{if(blockedClick){e.preventDefault();e.stopPropagation();blockedClick=false}},true);
+ function apply(v,save=true){
+  const n=clamp(Number(v)||0,min,max);
+  const current=Number(range.value);
+  if(save&&base&&!hasHistory){saveHistory();hasHistory=true}
+  range.value=n;num.value=n;
+  if(!save||n!==current||dragging)onChange(n);
+ }
+ range.addEventListener('input',()=>{
+  if(!dragging&&!keyboardHistory&&base){saveHistory();keyboardHistory=true}
+  apply(range.value,dragging);
+ });
+ const finish=()=>{
+  if(!dragging)return;
+  dragging=false;hasHistory=false;
+  if(sliderPreviewActive)stopQuickPreview();
+ };
+ range.addEventListener('pointerup',finish);
+ range.addEventListener('pointercancel',finish);
+ range.addEventListener('lostpointercapture',finish);
+ range.addEventListener('keydown',e=>{
+  if(!keyboardHistory&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','PageUp','PageDown'].includes(e.key)){
+   if(base)saveHistory();keyboardHistory=true
+  }
+ });
+ range.addEventListener('keyup',()=>keyboardHistory=false);
+ range.addEventListener('blur',()=>{keyboardHistory=false;finish()});
+ num.addEventListener('change',()=>{hasHistory=false;apply(num.value)});
+ row.append(range,num);wrap.append(title,row);panel.append(wrap);
+}
 function showCropControls(){
  heading(cropTarget==='overlay'?'Crop selected overlay':cropTarget==='photo'?'Crop main photo':'Crop entire canvas');
  heading('Crop ratio');
