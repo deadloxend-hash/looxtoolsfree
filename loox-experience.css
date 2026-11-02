@@ -731,3 +731,14 @@ body.loox-home-rail.rail-hidden .loox-rail{display:flex!important;transform:tran
    animation:none!important;
  }
 }
+
+/* Keep the offscreen drawer at its full size while closed so transform can animate. */
+body.experience-shell.loox-home-rail.rail-hidden > .loox-rail{
+ display:flex!important;
+ width:232px!important;
+}
+@media(max-width:900px){
+ body.experience-shell.loox-home-rail.rail-hidden > .loox-rail{
+   width:min(280px,84vw)!important;
+ }
+}
