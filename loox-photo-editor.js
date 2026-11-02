@@ -619,7 +619,7 @@ canvas.addEventListener('pointerdown',e=>{
  }
  const nextPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
  if(previous!==hit||oldPhoto!==nextPhoto){render();showPanel()}
- if(!brushActive&&selectedPhoto&&(['tools','resize','adjust','effects','elements','layers','text','frames'].includes(tab))){
+ if(!brushActive&&selectedPhoto&&tab!=='crop'){
   startPhotoPointer(e);return;
  }
  if(hit>=0&&!brushActive&&['text','elements','layers'].includes(tab)){e.preventDefault();saveHistory();overlayDrag={dx:p.x-overlays[hit].x,dy:p.y-overlays[hit].y};canvas.setPointerCapture(e.pointerId);return}
