@@ -251,3 +251,24 @@
 .crop-box .crop-handle:focus-visible,
 .photo-resize-handle:focus-visible,
 .text-layer-handle:focus-visible{outline:1px solid #d5bdff;outline-offset:0}
+
+/* A permanent checkerboard marks the actual canvas, independent of
+   image and gesture-preview transparency; the surrounding stage remains black. */
+#dropzone .canvas-transparency-backdrop{
+ position:absolute;z-index:0;pointer-events:none;
+ background-color:#161a23;
+ background-image:linear-gradient(45deg,#222836 25%,transparent 25%),
+ linear-gradient(-45deg,#222836 25%,transparent 25%),
+ linear-gradient(45deg,transparent 75%,#222836 75%),
+ linear-gradient(-45deg,transparent 75%,#222836 75%);
+ background-size:22px 22px;
+ background-position:0 0,0 11px,11px -11px,-11px 0;
+}
+#dropzone .canvas-transparency-backdrop[hidden]{display:none!important}
+#dropzone #canvas{position:relative;z-index:1}
+#dropzone .photo-gesture-preview{
+ z-index:2;
+ background:transparent!important;
+ background-image:none!important;
+}
+#dropzone .crop-overlay{z-index:5}
