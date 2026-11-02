@@ -52,7 +52,7 @@
  function current(){return catalog.find(t=>t.url===(file+(file==='toolbox.html'?(location.hash||'#image-resizer'):'')))}
  function drawRail(){
   if(!homePage){mountHeader();return}
-  const w=(words[language]||words.en),active=current();
+  const w=(words[language]||words.en),l=(labels[language]||labels.en),active=current();
   const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(location.href.split('?')[0].endsWith(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
   rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">AI-powered tools</h2>'+
    [['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join('')+
@@ -179,11 +179,13 @@
    if(a.classList.contains('loox-featured-card')){const art=a.querySelector('.loox-featured-art');if(art&&!art.querySelector('img')){art.textContent='';const img=document.createElement('img');img.src='assets/tool-art/'+t.slug+(t.slug==='chart-maker'?'.svg':'.webp');img.alt=(t.names[language]||t.names.en);img.style.cssText='width:100%;height:100%;object-fit:cover';art.append(img)}}
   });
  }
+ // Render essential navigation immediately: a failed catalog fetch must not hide it.
+ if(homePage)drawRail();else mountHeader();
  Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
   catalog=c;dictionary=d;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
   const grid=document.querySelector('#toolGrid');if(grid)new MutationObserver(()=>brandCards(grid)).observe(grid,{childList:true});
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
- }).catch(()=>{if(homePage)rail.innerHTML='<a class="loox-rail-link" href="index.html">LOOX ↗</a>';else mountHeader()});
+ }).catch(error=>{console.error('LOOX optional catalog or translation setup failed:',error);applyPreferences(); /* Keep the already-rendered sidebar and Settings button visible. */});
  window.addEventListener('hashchange',()=>{drawRail();chooseToolbox();loadGuide()});
  matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>{if(preferences().theme==='system')applyPreferences()});
 })();
