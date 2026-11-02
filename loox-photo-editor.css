@@ -243,3 +243,11 @@
   width:9px;height:9px;
  }
 }
+
+.crop-box.compact .crop-handle.n,
+.crop-box.compact .crop-handle.e,
+.crop-box.compact .crop-handle.s,
+.crop-box.compact .crop-handle.w{display:none!important}
+.crop-box .crop-handle:focus-visible,
+.photo-resize-handle:focus-visible,
+.text-layer-handle:focus-visible{outline:1px solid #d5bdff;outline-offset:0}
