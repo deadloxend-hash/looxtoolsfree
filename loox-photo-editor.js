@@ -102,9 +102,17 @@ if(options.drawFrame!==false&&frame.style!=='none'){
   wc.restore();
 }
 return work}
-function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(()=>{if(token!==renderToken||!base)return;try{const image=compose();if(canvas.width!==image.width||canvas.height!==image.height){canvas.width=image.width;canvas.height=image.height}ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0);layoutCanvas()}catch(e){console.error(e);setStatus('Rendering failed — try a smaller image.')}})}
-function syncCanvas(){canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
-function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined)}
+let lastRenderedComposite=null;
+function render(){if(!base)return;let token=++renderToken;requestAnimationFrame(()=>{
+ if(token!==renderToken||!base)return;
+ try{const image=compose();lastRenderedComposite=image;
+ if(canvas.width!==image.width||canvas.height!==image.height){canvas.width=image.width;canvas.height=image.height}
+ ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0);layoutCanvas();
+ hideGesturePreview();
+ }catch(e){hideGesturePreview();console.error(e);setStatus('Rendering failed — try a smaller image.')}
+})}
+function syncCanvas(){hideGesturePreview();lastRenderedComposite=null;canvas.width=base.width;canvas.height=base.height;$('dimensions').textContent=base.width+' × '+base.height;$('empty').hidden=true;$('empty').style.display='none';canvas.style.display='block';layoutCanvas()}
+function layoutCanvas(){if(!base)return;const vp=$('dropzone'),maxW=Math.max(100,vp.clientWidth-36),maxH=Math.max(100,vp.clientHeight-36);fitScale=Math.min(maxW/base.width,maxH/base.height);const s=fitScale*zoom;canvas.style.width=Math.max(1,Math.round(base.width*s))+'px';canvas.style.height=Math.max(1,Math.round(base.height*s))+'px';$('zoomLabel').textContent=Math.round(s*100)+'%';positionCrop();positionPhotoSelection(photoGesture?.last||photoResizeDrag?.next||undefined);positionInlineTextEditor()}
 function positionCrop(){if(!crop||!base){$('cropOverlay').hidden=true;return}const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect(),el=$('cropOverlay');el.hidden=false;Object.assign(el.style,{left:b.left-v.left+$('dropzone').scrollLeft+'px',top:b.top-v.top+$('dropzone').scrollTop+'px',width:b.width+'px',height:b.height+'px'});const c=$('cropBox'),sx=b.width/base.width,sy=b.height/base.height;Object.assign(c.style,{left:crop.x*sx+'px',top:crop.y*sy+'px',width:crop.w*sx+'px',height:crop.h*sy+'px'})}
 
 // Main photo and imported overlays share the same selection and sizing controls.
@@ -278,55 +286,71 @@ photoSelectionBox.addEventListener('keydown',e=>{
 });
 
 
-/* One-finger move and intentionally reversed two-finger photo scaling.
-   Close fingers = larger photo, spread fingers = smaller photo.
-   Only the selected photo moves; the canvas dimensions never change. */
+/* Standard pinch scaling and one-finger move.
+   Cache the preview, then draw it at DISPLAY resolution, not the full
+   multi-megapixel output resolution, during touch movements. */
 const activePhotoPointers=new Map();
 let photoGesture=null,gesturePreview=null,photoGestureFrame=0,queuedGestureRect=null;
-
-// Build layered previews only once per gesture; no per-pixel tone processing during drag.
+const gestureCanvas=document.createElement('canvas');
+gestureCanvas.className='photo-gesture-preview';
+gestureCanvas.hidden=true;
+$('dropzone').append(gestureCanvas);
+const gestureContext=gestureCanvas.getContext('2d',{alpha:true});
+function positionGestureCanvas(){
+ const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
+ const ratio=Math.min(1.6,1000/Math.max(1,b.width,b.height));
+ const w=Math.max(1,Math.round(b.width*ratio)),h=Math.max(1,Math.round(b.height*ratio));
+ if(gestureCanvas.width!==w||gestureCanvas.height!==h){gestureCanvas.width=w;gestureCanvas.height=h}
+ Object.assign(gestureCanvas.style,{left:(b.left-v.left+$('dropzone').scrollLeft)+'px',
+  top:(b.top-v.top+$('dropzone').scrollTop)+'px',width:b.width+'px',height:b.height+'px'});
+ gestureContext.setTransform(w/base.width,0,0,h/base.height,0,0);
+}
 function prepareGesturePreview(){
  if(!base||!selectedPhoto)return;
- ++renderToken; // Discard a full-quality render already queued before this gesture.
+ ++renderToken;
  const currentBase=base,currentMask=mask;
  try{
   if(selectedPhoto.kind==='base'){
-   base=photoTransformSource||currentBase;
-   mask=photoTransformMask||currentMask;
-   const moving=compose({toLayer:0,drawFrame:false});
-   base=currentBase;mask=currentMask;
-   const top=compose({skipBase:true});
-   gesturePreview={kind:'base',moving,top,sourceRect:photoTransformSourceRect||{x:0,y:0,w:base.width,h:base.height}};
+   const currentRect=selectedPhotoRect();
+   const moving=lastRenderedComposite||currentBase;
+   const hasTop=overlays.some(o=>o.visible!==false)||frame.style!=='none';
+   // The cached final render already includes the current tone settings.
+   // Only create a separate overlay layer if the design actually has one.
+   const top=hasTop?compose({skipBase:true}):null;
+   gesturePreview={kind:'base',moving,top,sourceRect:currentRect};
   }else{
    const index=selectedPhoto.index,o=overlays[index];
    if(!o||o.type!=='image')return;
    const under=compose({toLayer:index,drawFrame:false});
    const moving=processImageLayer(o);
-   const top=compose({skipBase:true,fromLayer:index+1});
+   const top=(index+1<overlays.length||frame.style!=='none')?compose({skipBase:true,fromLayer:index+1}):null;
    gesturePreview={kind:'overlay',under,moving,top,opacity:o.opacity??1,border:o.borderWidth||0,borderColor:o.borderColor||'#ffffff'};
   }
- }catch(err){
-  console.warn('Photo gesture preview unavailable',err);
-  gesturePreview=null;
- }finally{base=currentBase;mask=currentMask}
+  positionGestureCanvas();
+  gestureCanvas.hidden=false;
+  // The main canvas still handles touch events while transparent.
+  canvas.style.opacity='0';
+  paintGesturePreview(selectedPhotoRect());
+ }catch(err){console.warn('Gesture preview unavailable',err);hideGesturePreview();gesturePreview=null}
+ finally{base=currentBase;mask=currentMask}
 }
 function paintGesturePreview(rect){
  const p=gesturePreview;if(!p||!base||!rect)return;
- ctx.clearRect(0,0,canvas.width,canvas.height);
- if(p.under)ctx.drawImage(p.under,0,0);
+ if(gestureCanvas.hidden)return;
+ const wc=gestureContext;
+ wc.clearRect(0,0,base.width,base.height);
+ if(p.under)wc.drawImage(p.under,0,0);
  if(p.kind==='base'){
   const src=p.sourceRect;
-  ctx.drawImage(p.moving,src.x,src.y,src.w,src.h,rect.x,rect.y,rect.w,rect.h);
+  wc.drawImage(p.moving,src.x,src.y,src.w,src.h,rect.x,rect.y,rect.w,rect.h);
  }else{
-  ctx.save();ctx.globalAlpha=p.opacity;
-  ctx.drawImage(p.moving,rect.x,rect.y,rect.w,rect.h);
-  if(p.border){
-   ctx.strokeStyle=p.borderColor;ctx.lineWidth=p.border;
-   ctx.strokeRect(rect.x+p.border/2,rect.y+p.border/2,Math.max(1,rect.w-p.border),Math.max(1,rect.h-p.border));
-  }
-  ctx.restore();
+  wc.save();wc.globalAlpha=p.opacity;
+  wc.drawImage(p.moving,rect.x,rect.y,rect.w,rect.h);
+  if(p.border){wc.strokeStyle=p.borderColor;wc.lineWidth=p.border;
+   wc.strokeRect(rect.x+p.border/2,rect.y+p.border/2,Math.max(1,rect.w-p.border),Math.max(1,rect.h-p.border))}
+  wc.restore();
  }
- if(p.top)ctx.drawImage(p.top,0,0);
+ if(p.top)wc.drawImage(p.top,0,0);
 }
 function queueGesturePreview(rect){
  queuedGestureRect=rect;
@@ -339,9 +363,14 @@ function queueGesturePreview(rect){
   positionPhotoSelection(next);
  });
 }
+function hideGesturePreview(){
+ canvas.style.opacity='';
+ gestureCanvas.hidden=true;
+}
 function clearGesturePreview(){
  if(photoGestureFrame)cancelAnimationFrame(photoGestureFrame);
  photoGestureFrame=0;queuedGestureRect=null;gesturePreview=null;
+ // Keep the last preview visible until the full-resolution render completes.
 }
 const gesturePoint=e=>pointerPosition(e);
 const pointerDistance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
