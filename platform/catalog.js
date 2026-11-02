@@ -1,4 +1,5 @@
 export const aiTools=[
+ ['ai-chat','LOOX AI Chat','Utilities','Chat with your creative AI assistant.','chat','✦'],
  ['bg-remove','Background Remover','Editing','Create a transparent PNG.','background','✂'],
  ['ai-image-upscaler','Image Upscaler','Enhancement','Enlarge images 2× or 4×.','upscale2','↗'],
  ['ai-image-enhancer','Image Enhancer','Enhancement','Enhance details with a 2× AI upscale.','enhance','✧'],
