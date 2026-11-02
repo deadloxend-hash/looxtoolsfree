@@ -48,3 +48,8 @@ body.ai-home .ai-nav-toggle,body.ai-chat .ai-nav-toggle{z-index:124;position:rel
 
 /* Keep the AI drawer identical in dimensions and spacing to the Tools Home drawer. */
 @media(max-width:600px){body.ai-home .loox-rail-link,body.ai-chat .loox-rail-link{min-height:44px!important}}
+
+/* Animated AI side navigation */
+body.ai-home .loox-rail,body.ai-chat .loox-rail{display:flex!important;transform:translateX(0);opacity:1;visibility:visible;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s!important}
+body.ai-home.rail-hidden .loox-rail,body.ai-chat.rail-hidden .loox-rail{display:flex!important;transform:translateX(-105%)!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important;transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s .34s!important}
+@media(prefers-reduced-motion:reduce){body.ai-home .loox-rail,body.ai-chat .loox-rail{transition:none!important}}
