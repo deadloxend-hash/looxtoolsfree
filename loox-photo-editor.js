@@ -456,13 +456,15 @@ canvas.addEventListener('pointerdown',e=>{
  if(!base)return;const p=pointerPosition(e);
  if(crop){e.preventDefault();return}
  const hit=hitOverlay(p,!(tab==='text'||tab==='elements'||tab==='layers'));
- const previous=selectedOverlay;selectedOverlay=hit;
+ const previous=selectedOverlay,oldPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
+ selectedOverlay=hit;
  if(!brushActive){
   const picked=hit>=0&&overlays[hit]?.type==='image'&&!overlays[hit].locked?{kind:'overlay',index:hit}:hit<0&&basePixelAt(p)?{kind:'base'}:null;
   selectedPhoto=picked;
   positionPhotoSelection();
  }
- if(hit>=0||previous!==-1||!brushActive){render();showPanel()}
+ const nextPhoto=selectedPhoto?selectedPhoto.kind+':'+(selectedPhoto.index??-1):'';
+ if(previous!==hit||oldPhoto!==nextPhoto){render();showPanel()}
  if(hit>=0&&!brushActive&&['text','elements','layers'].includes(tab)){e.preventDefault();saveHistory();overlayDrag={dx:p.x-overlays[hit].x,dy:p.y-overlays[hit].y};canvas.setPointerCapture(e.pointerId);return}
  if(!brushActive)return;
  e.preventDefault();if(brushActive==='draw'&&!requireRoom('drawing'))return;saveHistory();painting=true;lastPoint=null;canvas.setPointerCapture(e.pointerId);
