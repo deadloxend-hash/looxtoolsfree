@@ -320,6 +320,28 @@ function snapPhotoRect(request,uniform=false){
  else if(nearBottom){r.h=hCanvas-r.y}
  return fitPhotoRect(r);
 }
+// Magnetic snapping while MOVING: each canvas edge is independent.
+// Unlike resize snapping, moving never changes photo width or height.
+function snapMovedPhotoRect(request){
+ if(!base)return request;
+ const r=fitPhotoRect(request);
+ const tolX=Math.max(8,Math.min(80,base.width*.055));
+ const tolY=Math.max(8,Math.min(120,base.height*.055));
+ const leftDistance=Math.abs(r.x);
+ const rightDistance=Math.abs(r.x+r.w-base.width);
+ const topDistance=Math.abs(r.y);
+ const bottomDistance=Math.abs(r.y+r.h-base.height);
+ // If both sides are close (e.g. nearly canvas-sized photo), use the nearest.
+ if(leftDistance<=tolX||rightDistance<=tolX){
+  r.x=leftDistance<=tolX&&(leftDistance<=rightDistance||rightDistance>tolX)
+   ?0:base.width-r.w;
+ }
+ if(topDistance<=tolY||bottomDistance<=tolY){
+  r.y=topDistance<=tolY&&(topDistance<=bottomDistance||bottomDistance>tolY)
+   ?0:base.height-r.h;
+ }
+ return fitPhotoRect(r);
+}
 // The original pixels stay immutable while resizing/moving a photo.
 // Restoring 1276px after reducing to 73px now reads the original 1276px pixels.
 function ensurePhotoTransformSource(){
@@ -549,7 +571,7 @@ function photoGestureRect(g){
  if(g.mode==='move'){
   const p=activePhotoPointers.get(g.id);if(!p)return g.last;
   const now=gesturePoint(p);
-  return fitPhotoRect({...g.start,x:g.start.x+now.x-g.first.x,y:g.start.y+now.y-g.first.y});
+  return snapMovedPhotoRect({...g.start,x:g.start.x+now.x-g.first.x,y:g.start.y+now.y-g.first.y});
  }
  const pts=[...activePhotoPointers.values()].slice(0,2).map(p=>gesturePoint(p));
  if(pts.length<2)return g.last;
