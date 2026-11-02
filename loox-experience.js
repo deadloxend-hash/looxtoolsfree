@@ -46,7 +46,7 @@
   if(p.theme&&window.LOOXApplyTheme)window.LOOXApplyTheme(light?'white':'dark');
   if(p.imageFormat){const select=document.querySelector('#exportFormat,#format,#watermark-format');if(select&&[...select.options].some(o=>o.value===p.imageFormat))select.value=p.imageFormat}
  }
- const rail=document.createElement('aside');rail.className='loox-rail';rail.setAttribute('aria-label','LOOX tools');if(railPage)document.body.append(rail);
+ const rail=document.createElement('aside');rail.className='loox-rail';rail.setAttribute('aria-label','LOOX tools');rail.id='loox-home-rail';if(railPage)document.body.append(rail);
  let sidebarButton=null;
  function toggleHomeRail(force){if(!railPage)return;sidebarVisible=typeof force==='boolean'?force:!sidebarVisible;if(homePage)save('loox-home-sidebar-visible',String(sidebarVisible));document.body.classList.toggle('rail-hidden',!sidebarVisible);if(sidebarButton){sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar'}if(aiSharedDialog){const button=document.getElementById('aiNavToggle');button?.setAttribute('aria-expanded',String(sidebarVisible));aiRailBackdrop.hidden=!sidebarVisible;document.body.classList.toggle('ai-rail-open',sidebarVisible)}}
  window.LOOXToggleToolRail=toggleHomeRail;
