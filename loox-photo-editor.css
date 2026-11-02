@@ -143,3 +143,33 @@
 .text-layer-handle.w{left:0;top:50%;cursor:ew-resize}
 .text-layer-handle:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media(max-width:767px){.text-layer-handle{width:21px;height:21px;border-radius:5px}.text-layer-size{font-size:10px}}
+
+/* Neutral workspace surrounds the canvas; transparency grid stays inside it. */
+#dropzone.viewport{
+ background:#373b43!important;
+ background-image:none!important;
+}
+#dropzone #canvas{
+ background-color:#222731;
+ background-image:linear-gradient(45deg,#2c323d 25%,transparent 25%),
+ linear-gradient(-45deg,#2c323d 25%,transparent 25%),
+ linear-gradient(45deg,transparent 75%,#2c323d 75%),
+ linear-gradient(-45deg,transparent 75%,#2c323d 75%);
+ background-size:24px 24px;
+ background-position:0 0,0 12px,12px -12px,-12px 0;
+}
+.crop-float-btn{
+ position:absolute;z-index:17;display:grid;place-items:center;
+ width:35px;height:35px;padding:0;
+ border:1px solid rgba(255,255,255,.45);border-radius:11px;
+ box-shadow:0 4px 16px #1118;background:#272a34;color:#fff;
+ font-size:22px;font-weight:700;line-height:1;touch-action:manipulation;
+}
+.crop-float-btn[hidden]{display:none!important}
+.crop-float-btn.crop-float-apply{background:#9661f2;border-color:#b68cff}
+.crop-float-btn:focus-visible{outline:2px solid white;outline-offset:2px}
+.crop-float-btn:active{transform:scale(.94)}
+@media(max-width:767px){.crop-float-btn{width:34px;height:34px}}
+/* Hardware-assisted slider thumb rendering, while keeping the track stationary. */
+.panel-content input[type=range]{touch-action:pan-x;cursor:grab;min-width:0}
+.panel-content input[type=range]:active{cursor:grabbing}
