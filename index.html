@@ -418,6 +418,15 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a995
  .quick-card,.tool-card,.personal-card,.nav-cta,.search-go{transition:none!important;transform:none!important}
 }
 
+
+/* Keep the primary right-hand Settings menu visible and usable on every viewport. */
+.topbar-inner .loox-top-controls{display:flex!important;align-items:center;justify-content:flex-end;flex:0 0 auto;position:relative;margin-left:auto;z-index:50}
+.topbar-inner .loox-overflow-trigger{display:inline-flex!important;align-items:center;justify-content:center;gap:9px;min-height:42px;min-width:42px;padding:9px 13px;border:1px solid #5a5274;border-radius:12px;background:#242135;color:#fff;font-weight:750;font-size:12px;cursor:pointer;opacity:1!important;visibility:visible!important}
+.topbar-inner .loox-overflow-trigger:hover,.topbar-inner .loox-overflow-trigger[aria-expanded="true"]{background:#594294;border-color:#ad92f8}
+.topbar-inner .loox-overflow-trigger svg{display:block;flex:0 0 21px;width:21px;height:21px}
+.topbar-inner .loox-overflow-menu{position:absolute;right:0;top:calc(100% + 10px);z-index:100;max-width:calc(100vw - 24px)}
+.topbar-inner .loox-overflow-menu[hidden]{display:none!important}
+@media(max-width:650px){.topbar-inner{gap:8px}.topbar-inner .loox-overflow-trigger{padding:9px;min-width:42px}.topbar-inner .loox-settings-label{font-size:11px}}
 </style>
 <style>
 .loox-featured{padding:46px 0 10px}.loox-featured-head span{font-size:11px;font-weight:900;letter-spacing:2px;color:#a586ff}.loox-featured-head h2{font-size:clamp(25px,3.5vw,37px);margin:10px 0;letter-spacing:-1.2px}.loox-featured-head p{font-size:13px;color:var(--muted);margin:0 0 22px}.loox-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}.loox-featured-card{display:flex;flex-direction:column;text-decoration:none;border:1px solid var(--line);border-radius:20px;padding:14px;background:var(--white);min-width:0;transition:transform .2s,border-color .2s}.loox-featured-card:hover{transform:translateY(-4px);border-color:var(--purple)}.loox-featured-art{height:140px;border-radius:14px;display:flex;align-items:center;justify-content:center;gap:20px;font-size:60px;color:#fff;position:relative;overflow:hidden}.loox-featured-art i{font-style:normal;font-size:22px;letter-spacing:8px;opacity:.55}.loox-featured-art.video{background:linear-gradient(135deg,#2b215c,#7951d6,#bf69b2)}.loox-featured-art.remove{background:linear-gradient(135deg,#1c4758,#297d9e,#79b2bb)}.loox-featured-art.photo{background:linear-gradient(135deg,#53365d,#a25983,#e19a83)}.loox-featured-card strong{font-size:17px;margin:17px 3px 6px}.loox-featured-card small{font-size:12px;color:var(--muted);margin:0 3px 17px}.loox-featured-card b{font-size:12px;color:var(--purple);margin:0 3px 5px}.loox-featured-card:focus-visible{outline:3px solid var(--purple);outline-offset:3px}@media(max-width:760px){.loox-featured-grid{grid-template-columns:1fr}.loox-featured-art{height:115px}.loox-featured{padding-top:30px}}@media(prefers-reduced-motion:reduce){.loox-featured-card{transition:none}.loox-featured-card:hover{transform:none}}
@@ -827,6 +836,6 @@ applyTheme(savedTheme,readCustomTheme(),false);
 
 
 
-<script src="loox-experience.js?v=115" defer></script>
+<script src="loox-experience.js?v=116" defer></script>
 </body>
 </html>
