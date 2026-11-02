@@ -76,7 +76,7 @@
   let header=document.querySelector('.studio-top,.loox-appbar-inner,.suite-header,.work-header,.topbar-inner,.nav-inner,.info-header-inner')||document.querySelector('header');
   if(!header && !document.body.classList.contains('info-page') && file!=='index.html'){
    header=document.createElement('header');header.className='loox-unified-header';
-   header.innerHTML='<a class="loox-unified-brand" href="index.html"><span class="loox-unified-mark">L</span><span>LOOX <b>Tools</b></span></a>';
+   header.innerHTML='<a class="loox-unified-brand" href="ai-home.html"><span class="loox-unified-mark">L</span><span>LOOX <b>Tools</b></span></a>';
    document.body.prepend(header);document.body.classList.add('loox-has-unified-header');
   }
   if(!header)return;
@@ -86,7 +86,7 @@
      header.matches('.work-header,.suite-header,.loox-unified-header,.topbar,.topbar-inner,.nav-inner') &&
      !header.querySelector('input,select,textarea,canvas,.editor-toolbar')){
     header.classList.add('loox-standard-tool-header');
-    header.innerHTML='<a class="loox-standard-brand" href="index.html" aria-label="LOOX Tools home"><span class="loox-standard-mark">L</span><span class="loox-standard-name">LOOX<span>Tools</span><small>FREE ONLINE WORKSPACE</small></span></a>';
+    header.innerHTML='<a class="loox-standard-brand" href="ai-home.html" aria-label="LOOX Tools home"><span class="loox-standard-mark">L</span><span class="loox-standard-name">LOOX<span>Tools</span><small>FREE ONLINE WORKSPACE</small></span></a>';
   }
   if(!document.body.classList.contains('info-page') && file!=='index.html'){
    header.classList.add('loox-tool-nav-header');
