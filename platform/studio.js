@@ -129,7 +129,7 @@ form.onsubmit=async e=>{
   for(let n=0;n<100;n++){
    await sleep(n===0?800:3500);const job=await api('status',null,{id:j.id});
    if(job.state==='succeeded'){requestId=null;display(job.url);msg(notice,'Complete. Your result is also in My Profile.');break;}
-   if(job.state==='failed'){requestId=null;throw Error('Processing failed. Reserved credits have been released.');}
+   if(job.state==='failed'){requestId=null;const code=job.failure_code;throw Error(code==='provider_billing'?'AI processing is temporarily unavailable because the LOOX service needs additional processing balance. Your AI credits were returned. Please try again after service activation.':code==='provider_auth'?'LOOX AI service configuration needs attention. Your AI credits were returned.':code==='provider_limit'?'The LOOX AI service is busy or has reached its usage limit. Your AI credits were returned.':'AI processing could not complete. Your AI credits were returned. Please try again later.');}
    msg(notice,'Processing. You can close this page and return to your jobs in My Profile.');
   }
  }catch(err){msg(notice,err.message);if(err.status===402)pricing();if(err.status===401)auth();}
