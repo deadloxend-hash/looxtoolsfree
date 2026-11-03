@@ -10,9 +10,9 @@
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-text-to-image.html">
 <link rel="stylesheet" href="platform/platform.css?v=15">
 <link rel="stylesheet" href="loox-experience.css?v=130">
-<link rel="stylesheet" href="platform/loox-image-generator.css?v=6">
+<link rel="stylesheet" href="platform/loox-image-generator.css?v=7">
 <script defer src="loox-experience.js?v=131"></script>
-<script type="module" src="platform/loox-image-generator.js?v=11"></script>
+<script type="module" src="platform/loox-image-generator.js?v=12"></script>
 <link rel="stylesheet" href="loox-page-back.css?v=2">
 </head>
 <body class="lx-shell lig-body lig-shared-ai-nav" data-loox-generator="workspace">
@@ -38,20 +38,22 @@
   <div class="lig-settings-head"><h2>General settings</h2><span class="lig-setting-tag">LOOX Studio</span></div>
   <div class="lig-setting-block">
    <div class="lig-row-label"><label for="lig-model">Model</label></div>
-   <select id="lig-model" aria-label="Image model">
+   <select id="lig-model" class="lig-native-select" aria-label="Image model" tabindex="-1">
     <option selected value="flux">FLUX.1 Schnell</option>
    </select>
+   <div class="lig-custom-select" data-custom-select="lig-model"></div>
    <p class="lig-help">FLUX.1 Schnell is currently the available model. Reference-image generation requires an image-conditioned workflow and is not available with the current FLUX Schnell setup.</p>
   </div>
   <div class="lig-setting-block">
    <label for="lig-ratio">Aspect ratio</label>
-   <select id="lig-ratio">
+   <select id="lig-ratio" class="lig-native-select" tabindex="-1">
     <option value="1:1">Square · 1:1</option>
     <option value="3:4">Portrait · 3:4</option>
     <option value="9:16">Tall portrait · 9:16</option>
     <option value="4:3">Landscape · 4:3</option>
     <option value="16:9">Wide landscape · 16:9</option>
    </select>
+   <div class="lig-custom-select" data-custom-select="lig-ratio"></div>
   </div>
 
  </aside>
