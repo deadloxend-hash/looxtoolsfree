@@ -52,7 +52,7 @@ async function initWorkspace(){
  const generateView=byId('lig-generate-view'),templatesView=byId('lig-templates-view');
  const composeWrap=byId('lig-compose-wrap');
  let isBusy=false,activeUser=null,historyOffset=0,historyLoading=false,autoRequest=false;
- let lastHistoryId=null;
+ let currentGenerationId=null;
  const params=new URLSearchParams(location.search);
  let draft='';
  try {draft=sessionStorage.getItem(storageDraft)||'';} catch {}
@@ -130,8 +130,7 @@ async function initWorkspace(){
         promptLabel=create('span','lig-prompt-label',prompt);
   bottom.append(promptLabel);
   card.append(top,stage,bottom);
-  results.prepend(card);
-  while(results.children.length>4)results.lastElementChild.remove();
+  results.replaceChildren(card);
   const setStage=(label,sub)=>{
    indicator.textContent=label;
    loadingTitle.textContent=label;
@@ -254,6 +253,7 @@ async function initWorkspace(){
     if(promptField.value.trim()===prompt)promptField.value='';
     await loadHistory(true);
    }
+   currentGenerationId=id;
    view=outputCard(prompt,ratio);
    if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
    if(!resumeId){
@@ -276,29 +276,122 @@ async function initWorkspace(){
   submit(promptField.value,ratioField.value);
  });
 
+ // Saved images live in their own viewer; never insert them into the active generation stage.
+ let historyViewer=null;
+ function closeHistoryViewer(){
+  if(!historyViewer)return;
+  const modal=historyViewer;
+  historyViewer=null;
+  modal.remove();
+  document.body.classList.remove('lig-viewer-open');
+ }
+ function openHistoryViewer(item,url){
+  closeHistoryViewer();
+  const modal=create('div','lig-viewer');
+  modal.setAttribute('role','dialog');
+  modal.setAttribute('aria-modal','true');
+  modal.setAttribute('aria-label','Saved image viewer');
+  const shade=create('div','lig-viewer-shade');
+  const panel=create('div','lig-viewer-panel');
+  const image=create('img','lig-viewer-image');
+  image.src=url;image.alt=item.prompt||'Saved FLUX image';
+  const details=create('div','lig-viewer-details');
+  const heading=create('strong',null,'Saved generation');
+  const promptText=create('p',null,item.prompt||'No prompt saved');
+  const actions=create('div','lig-viewer-actions');
+  const close=create('button','lig-viewer-close','×');
+  close.type='button';close.setAttribute('aria-label','Close saved image');
+  close.addEventListener('click',closeHistoryViewer);
+  shade.addEventListener('click',closeHistoryViewer);
+  actions.append(actionButton('Copy prompt',()=>copyPrompt(item.prompt||'')),
+   actionButton('Use prompt',()=>useHistoryPrompt(item.prompt||'')),
+   actionButton('Download PNG',()=>downloadHistoryImage(item.id)));
+  details.append(heading,promptText,actions);
+  panel.append(image,details,close);
+  modal.append(shade,panel);
+  document.body.append(modal);
+  document.body.classList.add('lig-viewer-open');
+  historyViewer=modal;
+  close.focus();
+ }
+ function actionButton(label,fn){
+  const b=create('button','lig-small-action',label);
+  b.type='button';b.addEventListener('click',()=>fn());return b;
+ }
+ async function copyPrompt(prompt){
+  try{
+   await navigator.clipboard.writeText(prompt);
+   setMessage('Prompt copied to clipboard.');
+  }catch{
+   promptField.value=prompt;promptField.focus();
+   setMessage('Clipboard unavailable; the prompt was placed in the editor.');
+  }
+ }
+ function useHistoryPrompt(prompt){
+  promptField.value=prompt;
+  closeHistoryViewer();
+  selectView('generate');
+  promptField.focus();
+  setMessage('Saved prompt added to the editor. Your current generation is still running.');
+ }
+ async function downloadHistoryImage(id){
+  try{
+   const data=await api('status',null,{id});
+   if(!data.url)throw Error('Saved image is unavailable.');
+   const response=await fetch(data.url,{credentials:'omit'});
+   if(!response.ok)throw Error('Download failed. Please try again.');
+   const blob=URL.createObjectURL(await response.blob());
+   const a=create('a');
+   a.href=blob;a.download='loox-flux-'+id.slice(0,8)+'.png';
+   document.body.append(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(blob),30000);
+   setMessage('Image download started.');
+  }catch(err){setMessage(err.message||'Download unavailable.',true);}
+ }
+ async function deleteHistoryImage(item){
+  if(!confirm('Permanently delete this generated image? This cannot be undone.'))return;
+  try{
+   await api('delete_image',{id:item.id});
+   closeHistoryViewer();
+   await loadHistory(true);
+   setMessage('Saved image deleted. Your credit history is unchanged.');
+  }catch(err){setMessage(err.message||'Could not delete image.',true);}
+ }
  function historyCard(item){
-  const b=create('button','lig-history-item');
-  b.type='button';
-  b.title='View this previous generation';
+  const card=create('div','lig-history-item');
+  const preview=create('button','lig-history-preview');
+  preview.type='button';preview.title='View saved image';
   const pic=item.url?create('img','lig-history-cover'):create('div','lig-history-cover lig-history-placeholder','✧');
   if(item.url){pic.src=item.url;pic.alt=item.prompt?'Image for '+item.prompt:'An earlier FLUX generation';pic.loading='lazy';}
-  b.append(pic,create('span','lig-history-name',item.prompt||'Earlier generation'),
-   create('span','lig-history-time',new Date(item.created_at).toLocaleDateString()));
-  b.addEventListener('click',async()=>{
-   b.disabled=true;setMessage('Opening your saved image…');
+  preview.append(pic);
+  preview.addEventListener('click',async()=>{
+   preview.disabled=true;
    try{
     const data=await api('status',null,{id:item.id});
-    if(!data.url)throw Error('Private image not available at the moment.');
-    const label=item.prompt||'Previous FLUX generation';
-    const view=outputCard(label,'1:1');
-    showReady(view,data.url,item.id);
-    selectView('generate');
-    results.scrollIntoView({behavior:'smooth',block:'start'});
-    setMessage('Opened saved image from your LOOX account.');
-   }catch(err){setMessage(err.message,true);}finally{b.disabled=false;}
+    if(!data.url)throw Error('Saved image unavailable right now.');
+    openHistoryViewer(item,data.url);
+   }catch(err){setMessage(err.message,true);}finally{preview.disabled=false;}
   });
-  return b;
+  const info=create('div','lig-history-info');
+  info.append(create('span','lig-history-name',item.prompt||'Earlier generation'),
+   create('span','lig-history-time',new Date(item.created_at).toLocaleDateString()));
+  const tools=create('div','lig-history-tools');
+  const actions=[
+   ['eye','View',()=>preview.click()],
+   ['copy','Copy prompt',()=>copyPrompt(item.prompt||'')],
+   ['pencil','Use prompt',()=>useHistoryPrompt(item.prompt||'')],
+   ['download','Download',()=>downloadHistoryImage(item.id)],
+   ['trash','Delete',()=>deleteHistoryImage(item)]
+  ];
+  for(const [symbol,label,fn] of actions){
+   const b=create('button','lig-history-tool',label==='View'?'◉':label==='Copy prompt'?'⧉':label==='Use prompt'?'✎':label==='Download'?'↓':'×');
+   b.type='button';b.title=label;b.setAttribute('aria-label',label);
+   b.addEventListener('click',fn);tools.append(b);
+  }
+  card.append(preview,tools,info);
+  return card;
  }
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&historyViewer)closeHistoryViewer();});
  async function loadHistory(reset=false){
   if(!state.user){
    historyHeading.textContent='Sign in to view images saved to your account.';
