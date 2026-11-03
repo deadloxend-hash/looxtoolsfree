@@ -135,12 +135,12 @@ async function initWorkspace(){
  try {draft=sessionStorage.getItem(storageDraft)||'';} catch {}
  autoRequest=params.get('start')==='1'&&Boolean(draft.trim());
  if(draft)promptField.value=draft;
- const templateEndpoint='https://looxtoolfree-backend.vercel.app/api/templates';
+ const templateEndpoint='https://looxtoolfree-backend.vercel.app/api/loox';
  async function templateRequest(action,body){
   const session=await state.client?.auth.getSession();
   const token=session?.data?.session?.access_token;
   if(!token)throw Error('Sign in to submit a template.');
-  const response=await fetch(templateEndpoint+'?action='+encodeURIComponent(action),{
+  const response=await fetch(templateEndpoint+'?action=template_'+encodeURIComponent(action),{
    method:body?'POST':'GET',credentials:'omit',
    headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},
    body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000)
@@ -163,7 +163,7 @@ async function initWorkspace(){
   if(!grid)return;
   grid.replaceChildren(create('p','lig-template-empty','Loading approved templates…'));
   try{
-   const response=await fetch(templateEndpoint+'?action=public',{credentials:'omit',signal:AbortSignal.timeout(20000)});
+   const response=await fetch(templateEndpoint+'?action=template_public',{credentials:'omit',signal:AbortSignal.timeout(20000)});
    const data=await response.json();if(!response.ok)throw Error(data.error||'Could not load templates.');
    grid.replaceChildren();
    if(!data.items?.length){grid.append(create('p','lig-template-empty','No approved community templates yet.'));return}
