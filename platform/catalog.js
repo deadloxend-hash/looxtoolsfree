@@ -6,6 +6,7 @@ export const aiTools=[
  ['ai-object-eraser','Object Eraser','Editing','Paint over an unwanted object.','erase','◌'],
  ['ai-watermark-remover','Watermark Remover','Editing','Edit marks on media you have permission to use.','erase','◇'],
  ['ai-text-to-image','Image Generator','Generation','Turn a prompt into a private PNG.','generate','✦'],
+ ['ai-video-generator','Video Generator','Generation','Create short videos with Wan 2.1 using the LOOX GPU worker.','generate_video','▶'],
  ['ai-generative-fill','Generative Fill','Generation','Paint a region and describe its replacement.','fill','▧'],
  ['ai-generative-erase','Generative Erase','Editing','Remove selected content with a mask.','erase','⊖'],
  ['ai-uncrop','Generative Uncrop','Generation','Expand the image beyond its borders.','uncrop','⊞'],
