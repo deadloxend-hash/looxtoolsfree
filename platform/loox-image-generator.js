@@ -59,6 +59,18 @@ async function initWorkspace(){
  autoRequest=params.get('start')==='1'&&Boolean(draft.trim());
  if(draft)promptField.value=draft;
  const price=()=>state.config?.operations?.find(o=>o.id==='generate')?.cost||3;
+ const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
+ creditCost.insertAdjacentElement('afterend',quotaLabel);
+ let remainingImages=null;
+ async function refreshQuota(){
+  if(!state.user){remainingImages=null;quotaLabel.textContent='Daily images: 30/day · sign in to view';return;}
+  try{
+   const data=await api('quota');
+   remainingImages=data.remaining.generate;
+   quotaLabel.textContent='Images left today: '+remainingImages+' / '+data.limit+' · resets 00:00 UTC';
+  }catch{quotaLabel.textContent='Daily images: 30/day · allowance temporarily unavailable';}
+ }
+
 
  function updateAccount(){
   if(state.user&&state.account?.wallet){
@@ -223,6 +235,7 @@ async function initWorkspace(){
    auth('login');
    return;
   }
+  if(!resumeId&&remainingImages===0){setMessage('You have used all 30 image generations today. Resets at 00:00 UTC.',true);return;}
   if(!resumeId&&state.account?.wallet?.balance<price()){
    pricing();setMessage('You need more AI credits to generate this image.',true);return;
   }
@@ -240,11 +253,13 @@ async function initWorkspace(){
     try{sessionStorage.setItem('loox-active-image-'+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
     await refresh().catch(()=>{});
     updateAccount();
+    await refreshQuota();
    }
    await poll(id,view,ratio);
   }catch(error){
    showFailed(view,error.message||'Unable to complete the image.');
    setMessage(error.message||'Generation could not start.',true);
+   await refreshQuota();
   }finally{
    isBusy=false;generateButton.disabled=false;ratioField.disabled=false;
   }
@@ -311,6 +326,7 @@ async function initWorkspace(){
 
  async function refreshUser(){
   updateAccount();
+  refreshQuota().catch(()=>{});
   const id=state.user?.id||null;
   if(id!==activeUser){
    activeUser=id;
@@ -328,7 +344,7 @@ async function initWorkspace(){
   refreshUser();
   if(state.user&&autoRequest)startAuto();
  });
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user)refresh().catch(()=>{});});
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user){refresh().catch(()=>{});refreshQuota().catch(()=>{});}});
  async function startAuto(){
   if(!autoRequest||!draft||isBusy)return;
   if(!state.user){
