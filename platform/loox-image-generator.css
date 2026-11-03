@@ -317,3 +317,24 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
  }
  .lig-history-preview{display:block;width:100%;cursor:pointer}
 }
+
+
+/* LOOX compact dropdowns replace the device-native full-screen picker. */
+.lig-native-select{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important;clip-path:inset(50%)!important}
+.lig-setting-block:has(.lig-custom-select){position:relative;z-index:15}
+.lig-setting-block:has(.lig-custom-select.is-open){z-index:70}
+.lig-custom-select{position:relative;width:100%;min-width:0}
+.lig-select-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:46px;padding:11px 13px;border:1px solid #51445e;border-radius:13px;background:#211d29;color:#eee7fb;text-align:left;font:inherit;font-size:13px;cursor:pointer}
+.lig-select-trigger:hover,.lig-custom-select.is-open .lig-select-trigger{border-color:#a47bfa;background:#292133}
+.lig-select-trigger:focus-visible,.lig-select-option:focus-visible{outline:2px solid #c4a0ff;outline-offset:2px}
+.lig-select-trigger:disabled{opacity:.55;cursor:not-allowed}
+.lig-select-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lig-select-chevron{flex:none;color:#c3a4ff;font-size:21px;line-height:12px;transition:transform .16s}
+.lig-custom-select.is-open .lig-select-chevron{transform:rotate(180deg)}
+.lig-select-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:150;max-height:min(280px,46dvh);overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid #65507e;border-radius:15px;background:#25202f;box-shadow:0 14px 32px #000a}
+.lig-select-menu[hidden]{display:none!important}
+.lig-select-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:42px;padding:10px 12px;border:0;border-radius:10px;background:transparent;color:#eee8f8;font:inherit;font-size:13px;text-align:left;cursor:pointer}
+.lig-select-option:hover,.lig-select-option[aria-selected="true"]{background:#47345d}
+.lig-select-check{color:#c79aff;font-size:16px;opacity:0}
+.lig-select-option[aria-selected="true"] .lig-select-check{opacity:1}
+@media(max-width:680px){.lig-select-trigger{min-height:43px;padding:9px 11px;font-size:12px}.lig-select-menu{max-height:250px}.lig-select-option{font-size:12px;min-height:40px}}
