@@ -295,3 +295,25 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
  .lig-head-tabs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;flex:none;z-index:1}
  .lig-head-start,.lig-header-user{position:relative;z-index:2}
 }
+
+
+/* Mobile generation flow: output -> prompt composer -> recent generations. */
+@media(max-width:680px){
+ #lig-generate-view{display:flex;flex-direction:column;gap:0}
+ #lig-generate-view[hidden]{display:none!important}
+ #lig-generate-view .lig-results{order:1}
+ #lig-generate-view .lig-main-heading{order:0}
+ #lig-generate-view #lig-compose-wrap{
+  order:2;position:static;bottom:auto;z-index:auto;
+  width:100%;margin:18px 0 8px;padding:0;background:transparent;
+  border:0;box-shadow:none;backdrop-filter:none;
+ }
+ #lig-generate-view .lig-history{order:3;margin-top:22px}
+ #lig-generate-view .lig-compose-card{width:100%;box-sizing:border-box}
+ /* Recent image cards stay clean; tap an image to access its actions. */
+ .lig-history-tools,.lig-history-item:hover .lig-history-tools,
+ .lig-history-item:focus-within .lig-history-tools{
+  display:none!important;opacity:0!important;pointer-events:none!important
+ }
+ .lig-history-preview{display:block;width:100%;cursor:pointer}
+}
