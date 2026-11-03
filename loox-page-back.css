@@ -30,3 +30,81 @@ header .info-header-inner:has(> #loox-page-back){min-width:0}
 @media(max-width:410px){
  #loox-page-back.loox-page-back{width:29px!important;min-width:29px!important;margin-right:3px!important}
 }
+
+
+/* Shared left-aligned tool header (desktop and mobile).
+   Older LOOX toolbars used centered fixed-width containers or spaced the logo
+   away from Back; normalize positioning without changing their editor bodies. */
+header.loox-back-header-host.loox-back-header-row,
+header.loox-back-header-host .loox-back-header-row:not(.lig-head-start){
+ display:flex!important;
+ align-items:center!important;
+ justify-content:flex-start!important;
+ gap:clamp(5px,.7vw,10px)!important;
+ width:100%!important;
+ max-width:none!important;
+ margin-left:0!important;
+ margin-right:0!important;
+ box-sizing:border-box!important;
+}
+header.loox-back-header-host.loox-back-header-row{
+ padding-left:clamp(8px,1vw,16px)!important;
+ padding-right:clamp(8px,1vw,16px)!important;
+}
+/* The Face Blur / Crop / Converter toolbar is built inside this inner row. */
+header.loox-appbar .loox-appbar-inner.loox-back-header-row,
+header .loox-back-header-row:is(.topbar-inner,.info-header-inner,.nav-inner,.loox-appbar-inner){
+ width:100%!important;
+ max-width:none!important;
+ padding-left:clamp(8px,1vw,16px)!important;
+ padding-right:clamp(8px,1vw,16px)!important;
+ margin:0!important;
+}
+/* AI generator's narrow navigation group should stay compact, not consume
+   the entire header or push the Generate/credit controls offscreen. */
+header .lig-head-start.loox-back-header-row{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:5px!important;margin-left:0!important;min-width:0;
+}
+header .loox-back-header-row > #loox-page-back,
+header.loox-back-header-row > #loox-page-back{
+ order:-100!important;
+ margin:0 4px 0 0!important;
+ align-self:center!important;
+}
+header .loox-back-header-row > :is(
+ .loox-app-brand,.loox-standard-brand,.loox-unified-brand,
+ .work-brand,.suite-brand,.studio-brand,.info-brand,.lx-brand,.lig-brand,.brand
+),
+header.loox-back-header-row > :is(
+ .loox-app-brand,.loox-standard-brand,.loox-unified-brand,
+ .work-brand,.suite-brand,.studio-brand,.info-brand,.lx-brand,.lig-brand,.brand
+){
+ margin-left:0!important;
+ margin-right:0!important;
+ align-self:center!important;
+ flex-shrink:0!important;
+ white-space:nowrap!important;
+}
+/* Push the action group right; keep Back and logo flush left, side by side. */
+header .loox-back-header-row > :is(
+ .loox-page-name,.loox-app-actions,.top-actions,.studio-top-actions,
+ .suite-header-actions,.work-head-actions,.loox-top-controls,
+ .loox-overflow-controls,[data-loox-account]
+),
+header.loox-back-header-row > :is(
+ .loox-page-name,.loox-app-actions,.top-actions,.studio-top-actions,
+ .suite-header-actions,.work-head-actions,.loox-top-controls,
+ .loox-overflow-controls,[data-loox-account]
+){margin-left:auto!important}
+@media(max-width:900px){
+ header.loox-back-header-host.loox-back-header-row{
+  padding-left:8px!important;padding-right:8px!important;
+  gap:5px!important
+ }
+ header .loox-back-header-row:is(.topbar-inner,.info-header-inner,.nav-inner,.loox-appbar-inner){
+  padding-left:8px!important;padding-right:8px!important;gap:5px!important
+ }
+ header .loox-back-header-row > #loox-page-back,
+ header.loox-back-header-row > #loox-page-back{margin-right:3px!important}
+}
