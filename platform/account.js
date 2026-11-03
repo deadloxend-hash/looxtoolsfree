@@ -117,17 +117,60 @@ export function auth(mode='login'){
  });
 }
 function strong(p){return p.length>=12&&/[a-z]/i.test(p)&&/\d/.test(p);}
+// Shared, compact account header for every LOOX page with [data-loox-account].
+// Personal information is visible only after opening the profile avatar.
 export function renderHeader(){
  for(const host of document.querySelectorAll('[data-loox-account]')){
-  host.replaceChildren();host.classList.add('lx-controls');
-  if(!state.user){host.append(button('Login',()=>auth(),'lx-button'),button('Register',()=>auth('register'),'lx-button lx-primary'));continue;}
-  const name=state.account?.profile?.name||'Account', balance=state.account?.wallet?.balance;
-  const details=el('details',null,'lx-details'),summary=el('summary'),avatar=el('span',name.slice(0,1).toUpperCase(),'lx-avatar');
-  summary.setAttribute('aria-label','Open account menu');summary.append(avatar,el('span',name,'lx-username'),el('span',(balance??'…')+' cr','lx-balance'));
-  const menu=el('nav',null,'lx-menu');for(const [id,label] of sections)menu.append(link(label,'account.html#'+id));menu.append(button('Sign out',signOut,'lx-link'));
-  details.append(summary,menu);host.append(details,button('Upgrade',pricing,'lx-button lx-primary'));
+  host.replaceChildren();
+  host.classList.add('lx-controls','lx-account-header');
+  const signedIn=Boolean(state.user);
+  const balance=state.account?.wallet?.balance;
+  const credit=el('span',null,'lx-credit-chip');
+  credit.setAttribute('aria-label',signedIn?'Your available AI credits':'AI credits');
+  credit.append(el('span','Credit','lx-credit-label'),
+    el('span',' - ','lx-credit-divider'),
+    el('strong',signedIn?(Number.isFinite(Number(balance))?String(balance):'…'):'0','lx-credit-value'));
+  host.append(credit);
+  const upgrade=button('Upgrade',pricing,'lx-button lx-primary lx-upgrade');
+  upgrade.setAttribute('aria-label','View LOOX upgrade plans');
+  host.append(upgrade);
+  const details=el('details',null,'lx-details lx-profile-details');
+  const summary=el('summary',null,'lx-profile-trigger');
+  summary.setAttribute('aria-label',signedIn?'Open your account menu':'Sign in or create an account');
+  summary.setAttribute('title',signedIn?'Account':'Sign in');
+  const name=String(state.account?.profile?.name||state.user?.user_metadata?.full_name||state.user?.email?.split('@')[0]||'Account').trim()||'Account';
+  const initial=(signedIn?name:'?').slice(0,1).toUpperCase();
+  const avatar=el('span',initial,'lx-avatar');
+  avatar.setAttribute('aria-hidden','true');
+  summary.append(avatar);
+  const menu=el('nav',null,'lx-menu lx-profile-menu');
+  menu.setAttribute('aria-label','Account options');
+  if(signedIn){
+   const identity=el('div',null,'lx-profile-identity');
+   identity.append(el('strong',name,'lx-profile-name'));
+   identity.append(el('small',state.user.email||'','lx-profile-email'));
+   menu.append(identity);
+   const links=el('div',null,'lx-profile-links');
+   for(const [id,label] of sections)links.append(link(label,'account.html#'+id));
+   menu.append(links);
+   const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
+   menu.append(signOutButton);
+  }else{
+   menu.append(el('div','Welcome to LOOX','lx-profile-identity'));
+   menu.append(button('Sign in',()=>{details.open=false;auth('login');},'lx-button lx-primary lx-profile-auth'));
+   menu.append(button('Create account',()=>{details.open=false;auth('register');},'lx-button lx-profile-auth'));
+  }
+  details.append(summary,menu);
+  host.append(details);
  }
 }
+document.addEventListener('pointerdown',event=>{
+ if(event.target.closest('.lx-profile-details'))return;
+ document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
+});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape')document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
+});
 export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut();if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
 const sections=[['profile','My Profile'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);}
