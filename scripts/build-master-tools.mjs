@@ -3,7 +3,7 @@ import {imageTools,imageCategories} from '../content/image-tool-definitions.mjs'
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const root='https://deadloxend-hash.github.io/looxtoolsfree/';
 if(process.argv[2]){const incoming=JSON.parse(fs.readFileSync(process.argv[2],'utf8')),all=new Map(JSON.parse(fs.readFileSync('content/generated-assets.json','utf8')).map(a=>[a.slug,a]));incoming.forEach(a=>all.set(a.slug,a));fs.writeFileSync('content/generated-assets.json',JSON.stringify([...all.values()],null,2));}
-const header='<header class="work-header"><a href="index.html" class="work-brand">LOOX <span>Tools</span></a><div class="work-head-actions"><a href="all-image-tools.html">Image tools</a><a href="all-text-tools.html">Text tools</a></div></header>';
+const header='<header class="work-header"><a href="ai-home.html" class="work-brand">LOOX <span>Tools</span></a><div class="work-head-actions"><a href="all-image-tools.html">Image tools</a><a href="all-text-tools.html">Text tools</a></div></header>';
 const head=(title,description,url)=>'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0e111a"><title>'+esc(title)+' — LOOX Tools</title><meta name="description" content="'+esc(description)+'"><link rel="canonical" href="'+root+url+'"><link rel="stylesheet" href="loox-image-workbench.css?v=40">';
 for(const t of imageTools){
  if(["ai-watermark-remover","ai-image-upscaler","bg-remove","ai-generative-fill","image-to-text"].includes(t.slug))continue;
