@@ -1,0 +1,32 @@
+/* Shared compact page-history Back control for LOOX tools. */
+#loox-page-back.loox-page-back{
+ box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;gap:6px!important;flex:0 0 auto!important;
+ min-width:34px!important;height:35px!important;min-height:35px!important;
+ margin:0 9px 0 0!important;padding:0 10px!important;
+ border:1px solid #494153!important;border-radius:10px!important;
+ background:#211e29!important;color:#ece6f5!important;
+ box-shadow:none!important;font:700 12px/1 system-ui,sans-serif!important;
+ white-space:nowrap!important;text-decoration:none!important;
+ cursor:pointer!important;z-index:30!important;
+}
+#loox-page-back.loox-page-back:hover{border-color:#8b70b4!important;background:#31283d!important;color:#fff!important}
+#loox-page-back.loox-page-back:focus-visible{outline:2px solid #c5a1ff!important;outline-offset:2px!important}
+#loox-page-back .loox-page-back-arrow{font:400 27px/1 system-ui,sans-serif!important;transform:translateY(-1px)}
+#loox-page-back .loox-page-back-label{font:700 12px/1 system-ui,sans-serif!important}
+#loox-page-back.loox-page-back-floating{
+ position:fixed!important;left:12px!important;top:calc(env(safe-area-inset-top,0px) + 12px)!important;
+ z-index:999!important;box-shadow:0 5px 16px #0503078c!important;
+}
+/* Do not change existing editor header sizes, flex wrapping, or scroll behavior. */
+header:has(> #loox-page-back),header .lig-head-start:has(> #loox-page-back),
+header .topbar-inner:has(> #loox-page-back),
+header .info-header-inner:has(> #loox-page-back){min-width:0}
+@media(max-width:900px){
+ #loox-page-back.loox-page-back{height:33px!important;min-height:33px!important;min-width:32px!important;
+  width:32px!important;padding:0!important;margin-right:5px!important;border-radius:9px!important}
+ #loox-page-back .loox-page-back-label{display:none!important}
+}
+@media(max-width:410px){
+ #loox-page-back.loox-page-back{width:29px!important;min-width:29px!important;margin-right:3px!important}
+}
