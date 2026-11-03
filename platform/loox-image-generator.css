@@ -259,3 +259,32 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
 .lig-viewer-close{position:absolute;top:10px;right:10px;border:1px solid #665b72;background:#312b3b;color:white;border-radius:50%;width:34px;height:34px;font-size:24px;cursor:pointer;z-index:2}
 @media (hover:none){.lig-history-tools{opacity:1;pointer-events:auto;transform:none}}
 @media (max-width:700px){.lig-viewer-panel{grid-template-columns:minmax(0,1fr);overflow:auto}.lig-viewer-image{height:auto;max-height:55dvh;min-height:0}.lig-viewer-details{padding:16px 16px 24px;max-height:35dvh}.lig-viewer-details p{max-height:15dvh}.lig-history-tool{width:28px;height:28px;flex-basis:28px}}
+
+/* Compact prompt previews and consistently aligned generator controls. */
+.lig-result-prompt{flex:1 1 100%;min-width:0}
+.lig-result-prompt .lig-prompt-label{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
+.lig-result-prompt.is-expanded .lig-prompt-label{display:block;overflow-wrap:anywhere}
+.lig-result-prompt-toggle{margin-top:7px;background:transparent;border:0;padding:5px 0;color:#c9a9ff;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+.lig-result-prompt-toggle:hover{text-decoration:underline}
+.lig-settings .lig-credit-box{order:-2}
+.lig-settings .lig-settings-head{order:-1}
+@media(max-width:950px){
+ .lig-settings{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+ .lig-settings>.lig-credit-box{grid-column:1/-1;grid-row:1;order:initial}
+ .lig-settings>.lig-settings-head{grid-column:1/-1;grid-row:2;order:initial}
+ .lig-settings>.lig-setting-block{min-width:0}
+ .lig-settings>.lig-setting-block select{width:100%;min-width:0;max-width:100%;box-sizing:border-box}
+ .lig-settings>.lig-setting-block .lig-help{font-size:11px;line-height:1.45}
+}
+@media(max-width:680px){
+ .lig-settings{padding:12px;column-gap:10px;row-gap:10px}
+ .lig-settings>.lig-credit-box{padding:11px 13px;gap:5px}
+ .lig-settings>.lig-credit-box strong{font-size:19px}
+ .lig-settings>.lig-settings-head{margin:0}
+ .lig-settings>.lig-setting-block{margin:0;padding:0}
+ .lig-settings>.lig-setting-block select{font-size:12px;height:41px;padding:7px 24px 7px 9px}
+ .lig-output-bottom{align-items:flex-start}
+ .lig-result-prompt .lig-prompt-label{-webkit-line-clamp:2;line-clamp:2}
+ .lig-content-scroll{min-width:0}
+ .lig-output,.lig-output-bottom,.lig-result-prompt{min-width:0;max-width:100%}
+}
