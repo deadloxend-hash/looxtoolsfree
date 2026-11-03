@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b10">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.supabase.co; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<title>Generate AI Images | FLUX Workspace | LOOX Tools</title>
+<meta name="description" content="Private account-based FLUX Schnell image generator with landscape and portrait formats, history, credits and a LOOX PC GPU worker.">
+<link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-image-workspace.html">
+<link rel="stylesheet" href="platform/platform.css?v=9">
+<link rel="stylesheet" href="platform/loox-image-generator.css?v=1">
+<script type="module" src="platform/loox-image-generator.js?v=1"></script>
+</head>
+<body class="lx-shell lig-body" data-loox-generator="workspace">
+<header class="lx-header lig-header">
+ <div class="lig-head-start">
+  <button id="lig-menu-toggle" class="lig-hamburger" type="button" aria-label="Open LOOX navigation" aria-expanded="false" aria-controls="lig-drawer">☰</button>
+  <a href="ai-home.html" class="lig-brand" aria-label="LOOX AI home" title="LOOX AI home">L</a>
+  <span class="lig-page-name">Image generator</span>
+ </div>
+ <nav class="lig-head-tabs" aria-label="Generator navigation">
+  <button class="lig-tab" type="button" data-lig-view="templates" aria-pressed="false">Templates</button>
+  <button class="lig-tab is-active" type="button" data-lig-view="generate" aria-pressed="true">Generate</button>
+  <a class="lig-tab" href="photo-editor.html">Edit</a>
+ </nav>
+ <div class="lig-header-user" data-loox-account></div>
+</header>
+<div class="lig-nav-scrim" id="lig-nav-scrim" hidden></div>
+<aside class="lig-drawer" id="lig-drawer" aria-label="LOOX navigation" hidden>
+ <p>LOOX NAVIGATION</p>
+ <a href="ai-home.html"><span>⌂</span> LOOX AI Home</a>
+ <a href="index.html"><span>▦</span> All LOOX Tools</a>
+ <a href="ai-text-to-image.html"><span>✧</span> AI Image Generator</a>
+ <a href="ai-image-workspace.html#templates"><span>▤</span> Image Templates</a>
+ <a href="ai-video-generator.html"><span>▶</span> AI Video Generator</a>
+ <a href="photo-editor.html"><span>◈</span> Photo Editor</a>
+ <a href="account.html"><span>◎</span> My Account & Credits</a>
+</aside>
+<main class="lig-workspace">
+ <aside class="lig-settings" aria-label="AI generation settings">
+  <div class="lig-settings-head"><h2>General settings</h2><span class="lig-setting-tag">LOOX Studio</span></div>
+  <div class="lig-setting-block">
+   <div class="lig-row-label"><label for="lig-model">Model</label><span class="lig-setting-tag">Local PC</span></div>
+   <select id="lig-model" aria-label="Image model">
+    <option selected value="flux">FLUX.1 Schnell</option>
+   </select>
+   <p class="lig-help">Image generation runs on the LOOX ComfyUI GPU worker. Other models and reference-image uploads are not enabled for this workflow.</p>
+  </div>
+  <div class="lig-setting-block">
+   <label for="lig-ratio">Aspect ratio</label>
+   <select id="lig-ratio">
+    <option value="1:1">Square · 1:1</option>
+    <option value="3:4">Portrait · 3:4</option>
+    <option value="9:16">Tall portrait · 9:16</option>
+    <option value="4:3">Landscape · 4:3</option>
+    <option value="16:9">Wide landscape · 16:9</option>
+   </select>
+  </div>
+  <div class="lig-credit-box">
+   <div class="lig-credit-top"><span class="lig-help">Your AI credits</span><a href="account.html#credits">View balance</a></div>
+   <strong id="lig-credits">Loading…</strong>
+   <small id="lig-credit-cost">Checking image cost…</small>
+  </div>
+  <div id="lig-gpu" class="lig-gpu" data-state="checking"><span class="lig-led" aria-hidden="true"></span><span id="lig-gpu-text">Checking local GPU…</span></div>
+ </aside>
+ <section class="lig-main" aria-label="LOOX image creative workspace">
+  <div class="lig-content-scroll" id="lig-generate-view">
+   <div class="lig-main-heading"><div><h1>Generate images</h1><p>Create with FLUX.1 Schnell and keep your generations in one place.</p></div><span class="lig-icon-badge">✧ &nbsp;LOOX AI</span></div>
+   <div id="lig-results" class="lig-results" aria-live="polite"></div>
+   <section class="lig-history" aria-label="Account generation history">
+    <div class="lig-history-head"><h2>Your recent generations</h2><small id="lig-history-message">Loading account history…</small></div>
+    <div id="lig-history-grid" class="lig-history-grid"></div>
+    <button type="button" id="lig-history-more" class="lig-load-more" hidden>Load more images</button>
+   </section>
+  </div>
+  <div class="lig-content-scroll" id="lig-templates-view" hidden>
+   <div class="lig-main-heading"><div><h1>Templates</h1><p>A space for future LOOX creations.</p></div></div>
+   <div class="lig-template-empty"><div><span aria-hidden="true">▦</span><strong>No templates published yet</strong><p>Templates will appear here when you add them. No examples or placeholder images have been added.</p></div></div>
+  </div>
+  <div id="lig-compose-wrap" class="lig-compose-wrap">
+   <form id="lig-compose" class="lig-compose">
+    <div class="lig-compose-card">
+     <label for="lig-prompt">Prompt</label>
+     <textarea name="prompt" id="lig-prompt" rows="2" maxlength="1200" required placeholder="A snow-covered mountain valley at golden hour…"></textarea>
+     <div class="lig-compose-actions">
+      <span class="lig-image-pill">✧ &nbsp;FLUX Image</span><span class="lig-spacer"></span>
+      <button id="lig-generate" class="lig-primary" type="submit">✧ Generate image</button>
+     </div>
+    </div>
+    <span id="lig-message" class="lig-status-message" role="status" aria-live="polite"></span>
+   </form>
+  </div>
+ </section>
+</main>
+<noscript>Enable JavaScript to use the image generator.</noscript>
+</body></html>
