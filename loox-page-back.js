@@ -46,14 +46,17 @@
 
   const header=document.querySelector('header.lig-header,header.lx-header,header.topbar,header.work-header,header.suite-header,header.studio-top,header.info-header,header,.topbar');
   if(header){
-   const row=header.querySelector('.lig-head-start,.topbar-inner,.info-header-inner,.loox-appbar-inner,.nav-inner')||header;
+   const row=header.querySelector('.lig-head-start,.loox-appbar-inner,.topbar-inner,.info-header-inner,.loox-appbar-inner,.nav-inner')||header;
+   header.classList.add('loox-back-header-host');
+   row.classList.add('loox-back-header-row');
    row.insertBefore(back,row.firstChild);
    // Legacy tools rebuild their headers after loading their catalog. Restore Back
    // without interfering with editor state or observing the whole document.
    if(typeof MutationObserver==='function'){
     const observer=new MutationObserver(()=>{
      if(back.isConnected)return;
-     const latest=header.querySelector('.lig-head-start,.topbar-inner,.info-header-inner,.loox-appbar-inner,.nav-inner')||header;
+     const latest=header.querySelector('.lig-head-start,.loox-appbar-inner,.topbar-inner,.info-header-inner,.loox-appbar-inner,.nav-inner')||header;
+     latest.classList.add('loox-back-header-row');
      latest.insertBefore(back,latest.firstChild);
     });
     observer.observe(header,{childList:true,subtree:true});
