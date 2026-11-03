@@ -1,5 +1,5 @@
 
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=7';
 
 const byId=id=>document.getElementById(id);
 const create=(tag,cls,text)=>{
