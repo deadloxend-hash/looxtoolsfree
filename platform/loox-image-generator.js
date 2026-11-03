@@ -149,8 +149,51 @@ async function initWorkspace(){
   if(!response.ok)throw Error(data.error||'Template request failed.');
   return data;
  }
+ function confirmTemplateSubmission(){
+  return new Promise(resolve=>{
+   const previousFocus=document.activeElement;
+   const overlay=create('div','lig-template-confirm-overlay');
+   const panel=create('section','lig-template-confirm-panel');
+   panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
+   panel.setAttribute('aria-labelledby','lig-template-confirm-title');
+   panel.setAttribute('aria-describedby','lig-template-confirm-description');
+   const heading=create('div','lig-template-confirm-heading');
+   const mark=create('span','lig-template-confirm-mark','✦');mark.setAttribute('aria-hidden','true');
+   const title=create('h2',null,'Submit as Template');title.id='lig-template-confirm-title';
+   const close=create('button','lig-template-confirm-close','×');close.type='button';close.setAttribute('aria-label','Close dialog');
+   heading.append(mark,title,close);
+   const description=create('p','lig-template-confirm-description','Share your creation with the LOOX community. Your image and prompt will only become public after an administrator approves them.');
+   description.id='lig-template-confirm-description';
+   const note=create('div','lig-template-confirm-note');
+   const noteIcon=create('span',null,'✓');noteIcon.setAttribute('aria-hidden','true');
+   note.append(noteIcon,create('span',null,'Please submit only images and prompts you have the rights to share.'));
+   const actions=create('div','lig-template-confirm-actions');
+   const cancel=create('button','lig-template-confirm-cancel','Cancel');cancel.type='button';
+   const submit=create('button','lig-template-confirm-submit','Submit for review');submit.type='button';
+   actions.append(cancel,submit);panel.append(heading,description,note,actions);overlay.append(panel);
+   const previouslyLocked=document.body.style.overflow;
+   document.body.style.overflow='hidden';document.body.append(overlay);
+   const finish=approved=>{
+    overlay.removeEventListener('keydown',onKeydown);
+    overlay.remove();document.body.style.overflow=previouslyLocked;
+    if(previousFocus?.isConnected)previousFocus.focus();resolve(approved);
+   };
+   const onKeydown=e=>{
+    if(e.key==='Escape'){e.preventDefault();finish(false)}
+    if(e.key==='Tab'){
+     const controls=[close,cancel,submit];const index=controls.indexOf(document.activeElement);
+     if(e.shiftKey&&index<=0){e.preventDefault();submit.focus()}
+     else if(!e.shiftKey&&index===controls.length-1){e.preventDefault();close.focus()}
+    }
+   };
+   overlay.addEventListener('keydown',onKeydown);
+   overlay.addEventListener('click',e=>{if(e.target===overlay)finish(false)});
+   close.addEventListener('click',()=>finish(false));cancel.addEventListener('click',()=>finish(false));
+   submit.addEventListener('click',()=>finish(true));submit.focus();
+  });
+ }
  async function submitTemplate(id,button){
-  if(!confirm('Submit this image and its prompt to LOOX for review? If approved, both become publicly visible in Templates. You must own the rights to submit this image.'))return;
+  if(!await confirmTemplateSubmission())return;
   button.disabled=true;
   try{
    await templateRequest('submit',{job_id:id,consent:true});
