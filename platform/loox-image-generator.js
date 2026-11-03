@@ -50,6 +50,70 @@ async function initWorkspace(){
  const results=byId('lig-results'),historyGrid=byId('lig-history-grid');
  const historyMore=byId('lig-history-more'),historyHeading=byId('lig-history-message');
  const generateView=byId('lig-generate-view'),templatesView=byId('lig-templates-view');
+ // Branded, keyboard-accessible dropdowns instead of Android's full-screen select UI.
+ const customDropdowns=[];
+ function closeCustomDropdowns(except=null){
+  for(const d of customDropdowns){
+   if(d===except)continue;
+   d.menu.hidden=true;d.trigger.setAttribute('aria-expanded','false');d.root.classList.remove('is-open');
+  }
+ }
+ for(const root of document.querySelectorAll('[data-custom-select]')){
+  const native=byId(root.dataset.customSelect);
+  if(!native)continue;
+  const trigger=document.createElement('button');
+  trigger.type='button';trigger.className='lig-select-trigger';
+  trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
+  trigger.setAttribute('aria-label',native.id==='lig-model'?'Choose image model':'Choose aspect ratio');
+  const value=document.createElement('span');value.className='lig-select-value';
+  const arrow=document.createElement('span');arrow.className='lig-select-chevron';arrow.textContent='⌄';arrow.setAttribute('aria-hidden','true');
+  trigger.append(value,arrow);
+  const menu=document.createElement('div');menu.className='lig-select-menu';menu.setAttribute('role','listbox');
+  menu.setAttribute('aria-label',trigger.getAttribute('aria-label'));menu.hidden=true;
+  const dropdown={root,trigger,menu,native};
+  customDropdowns.push(dropdown);
+  const choices=[];
+  for(const option of native.options){
+   const item=document.createElement('button');item.type='button';item.className='lig-select-option';
+   item.setAttribute('role','option');item.dataset.value=option.value;
+   const label=document.createElement('span');label.textContent=option.textContent;
+   const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
+   item.append(label,check);menu.append(item);choices.push(item);
+   item.addEventListener('click',()=>{
+    native.value=option.value;native.dispatchEvent(new Event('change',{bubbles:true}));
+    sync();closeCustomDropdowns();trigger.focus();
+   });
+  }
+  function sync(){
+   value.textContent=native.selectedOptions[0]?.textContent||'Select';
+   for(const item of choices)item.setAttribute('aria-selected',String(item.dataset.value===native.value));
+   trigger.disabled=native.disabled;
+  }
+  trigger.addEventListener('click',()=>{
+   if(native.disabled)return;
+   const opening=menu.hidden;closeCustomDropdowns();
+   menu.hidden=!opening;trigger.setAttribute('aria-expanded',String(opening));
+   root.classList.toggle('is-open',opening);
+  });
+  trigger.addEventListener('keydown',e=>{
+   if(e.key==='ArrowDown'||e.key==='Enter'||e.key===' '){
+    if(menu.hidden){e.preventDefault();trigger.click();choices.find(x=>x.dataset.value===native.value)?.focus()}
+   }else if(e.key==='Escape'){closeCustomDropdowns()}
+  });
+  menu.addEventListener('keydown',e=>{
+   if(e.key==='Escape'){e.preventDefault();closeCustomDropdowns();trigger.focus();return}
+   if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+    e.preventDefault();const index=choices.indexOf(document.activeElement);
+    choices[(index+(e.key==='ArrowDown'?1:-1)+choices.length)%choices.length]?.focus();
+   }
+  });
+  native.addEventListener('change',sync);
+  new MutationObserver(sync).observe(native,{attributes:true,attributeFilter:['disabled']});
+  root.append(trigger,menu);sync();
+ }
+ document.addEventListener('pointerdown',e=>{
+  if(!e.target.closest('[data-custom-select]'))closeCustomDropdowns();
+ });
  const composeWrap=byId('lig-compose-wrap');
  const mainWorkspace=composeWrap.parentElement,historySection=byId('lig-history-grid')?.closest('.lig-history');
  // Keep the desktop composer where it is; on phones it belongs between the
