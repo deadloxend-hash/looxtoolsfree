@@ -762,7 +762,7 @@ function showCropControls(){
  actions([['Apply crop',applyCrop],['Cancel',cancelCrop]]);
 }
 function showPanel(){
- panel.replaceChildren();$('panelTitle').textContent=tab==='crop'?'Crop Photo':tab.charAt(0).toUpperCase()+tab.slice(1);if(['adjust','effects','retouch'].includes(tab)){hint('Editing: '+(selectedImage()?.name||'Background photo'));if(selectedImage()?.locked||selectedImage()?.visible===false){hint('Unlock and show this layer in Layers before editing it.');return}}
+ panel.replaceChildren();$('panelTitle').textContent=tab==='crop'?'Crop Photo':tab.charAt(0).toUpperCase()+tab.slice(1);if(['adjust','filters','retouch'].includes(tab)){hint('Editing: '+(selectedImage()?.name||'Background photo'));if(selectedImage()?.locked||selectedImage()?.visible===false){hint('Unlock and show this layer in Layers before editing it.');return}}
  if(tab==='tools'){
   if(selectedPhoto&&!crop)photoSizeFields();
   heading('Transform');hint('Use Crop in the main toolbar to trim the photo. Crop canvas trims the full design, including overlays.');actions([['＋ Open photo',triggerUpload],['⌗ Crop canvas',()=>beginCrop('canvas')],['↻ Rotate 90°',()=>rotate(1)],['↺ Rotate −90°',()=>rotate(-1)],['⇄ Flip H',()=>flip(true)],['⇅ Flip V',()=>flip(false)]]);
@@ -809,8 +809,8 @@ function showPanel(){
   heading('Color');['temperature','tint','saturation','vibrance','fade'].forEach(k=>addAdjustment(k));
   actions([['Auto enhance',()=>{if(!base)return;saveHistory();const target=editTarget();if(target){target.values={...target.values,contrast:14,shadows:18,highlights:-14,vibrance:22};target.cache=null}else values={...values,contrast:14,shadows:18,highlights:-14,vibrance:22};render();showPanel()}],['Reset adjustments',()=>{if(!base)return;saveHistory();const target=editTarget();if(target){target.values=adjustments();target.cache=null}else values=adjustments();render();showPanel()}]]);
  }
- if(tab==='effects'){
-  heading('Looks & filters');const names=Object.keys(presets);const g=actions(names.map(k=>[k==='bw'?'B&W':k.charAt(0).toUpperCase()+k.slice(1),()=>{if(!base)return;saveHistory();const target=editTarget();if(target){target.preset=k;target.cache=null}else preset=k;render();showPanel()}]),'preset-grid');[...g.children].forEach((b,i)=>{b.classList.toggle('selected',names[i]===(editTarget()?.preset||preset));const preview=filterThumbnail(names[i]);if(preview)b.style.backgroundImage='linear-gradient(to top,rgba(11,12,22,.95),rgba(11,12,22,.02) 75%),url('+preview+')'});hint('Layer a look over the adjustments. Original removes the filter.');
+ if(tab==='filters'){
+  heading('Filter library');hint('Choose a category in the bottom panel. ✓ applies, × cancels. Original clears the filter while keeping Adjust settings.');
  }
  if(tab==='retouch'){
   heading('Selective blur');hint('Paint directly on the photo. Erase restores only the masked blur.');
@@ -844,12 +844,15 @@ function showPanel(){
 }
 function filterThumbnail(name){
  if(!base)return '';
- const thumb=makeCanvas(96,72),tc=thumb.getContext('2d',{willReadFrequently:true}),target=editTarget();tc.drawImage(target?.image||base,0,0,96,72);
- const src=tc.getImageData(0,0,96,72),out=tc.createImageData(96,72),v={...(target?.values||values)};
- for(const [k,n] of Object.entries(presets[name]||{}))v[k]+=n;
- tone(src.data,out.data,v);
- if(name==='sepia')for(let i=0;i<out.data.length;i+=4){const r=out.data[i],g=out.data[i+1],b=out.data[i+2];out.data[i]=clamp(r*.393+g*.769+b*.189,0,255);out.data[i+1]=clamp(r*.349+g*.686+b*.168,0,255);out.data[i+2]=clamp(r*.272+g*.534+b*.131,0,255)}
- tc.putImageData(out,0,0);return thumb.toDataURL('image/jpeg',.65);
+ const size=110,thumb=makeCanvas(size,size),tc=thumb.getContext('2d',{willReadFrequently:true});
+ const target=filterSession?.target||editTarget(),img=target?.image||base;
+ const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height,fit=Math.max(size/iw,size/ih);
+ tc.drawImage(img,(size-iw*fit)/2,(size-ih*fit)/2,iw*fit,ih*fit);
+ const input=tc.getImageData(0,0,size,size),out=tc.createImageData(size,size);
+ const v=target?{...adjustments(),...(target.values||{})}:{...values};
+ for(const [k,n] of Object.entries(presets[name]||{}))v[k]=(v[k]||0)+n;
+ tone(input.data,out.data,v);tc.putImageData(out,0,0);applySpecial(thumb,name);
+ return thumb.toDataURL('image/jpeg',.76);
 }
 function addAdjustment(k){const [name,min,max]=definitions[k],target=editTarget();control(name,min,max,k==='exposure'?.1:1,target?.values?.[k]??values[k],v=>{const current=editTarget();if(current){current.values={...current.values,[k]:v};current.cache=null}else values[k]=v;render()})}
 function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;selectedTextIndex=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
@@ -1209,7 +1212,9 @@ function showLayerControls(kind){
 function colorField(name,value,onChange){const color=document.createElement('input');color.type='color';color.value=value;color.onfocus=()=>saveHistory();color.oninput=()=>onChange(color.value);const label=document.createElement('label');label.className='field';label.textContent=name+' ';label.append(color);panel.append(label)}
 function setBrush(s){brushSize=s;brushActive=true;showPanel();setStatus('Blur brush active')}
 function selectTab(t){
+ if(filterSession){if(t==='filters')return;finishFilters(false)}
  if(sliderPreviewActive)stopQuickPreview();
+ if(t==='filters'){openFilters();return}
  if(t==='export'){openExport();return}
  if(t==='crop'){
   if(!base){setStatus('Open a photo before cropping');triggerUpload();return}
@@ -1573,5 +1578,5 @@ qualityRange.addEventListener('input',e=>{$('qualityValue').textContent=e.target
 qualityRange.addEventListener('change',prepareExport);$('format').addEventListener('change',e=>{$('quality').disabled=e.target.value==='image/png';prepareExport()});$('exportSize').addEventListener('change',prepareExport);
 $('zoomIn').addEventListener('click',()=>{zoom=clamp(zoom*1.25,.2,8);layoutCanvas()});$('zoomOut').addEventListener('click',()=>{zoom=clamp(zoom/1.25,.2,8);layoutCanvas()});$('fit').addEventListener('click',()=>{zoom=1;layoutCanvas()});
 const zone=$('dropzone');zone.addEventListener('pointerdown',e=>{if(e.target!==zone||crop||!base)return;if(selectedTextIndex>=0){selectedTextIndex=-1;positionTextSelection()}if(selectedPhoto){selectedPhoto=null;positionPhotoSelection();if(tab==='tools')showPanel()}});zone.addEventListener('dragover',e=>{e.preventDefault();zone.style.outline='2px dashed #a979ff'});zone.addEventListener('dragleave',()=>zone.style.outline='');zone.addEventListener('drop',e=>{e.preventDefault();zone.style.outline='';load([...e.dataTransfer.files].find(f=>f.type.startsWith('image/')))});window.addEventListener('resize',layoutCanvas);
-document.addEventListener('keydown',e=>{if(e.target?.matches?.('input,textarea,[contenteditable]'))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo()}if(e.key==='Escape'&&crop){crop=null;positionCrop();showPanel()}else if(e.key==='Escape'&&selectedPhoto){selectedPhoto=null;positionPhotoSelection();if(tab==='tools')showPanel()}});
+document.addEventListener('keydown',e=>{if(e.target?.matches?.('input,textarea,[contenteditable]'))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();if(e.shiftKey)redo();else undo()}if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo()}if(e.key==='Escape'&&filterSession){e.preventDefault();finishFilters(false)}else if(e.key==='Escape'&&crop){crop=null;positionCrop();showPanel()}else if(e.key==='Escape'&&selectedPhoto){selectedPhoto=null;positionPhotoSelection();if(tab==='tools')showPanel()}});
 updateHistory();showPanel();})();
