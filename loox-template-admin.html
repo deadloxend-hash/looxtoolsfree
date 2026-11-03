@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#100e17">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://*.supabase.co; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'">
+<title>LOOX Template Review</title><link rel="stylesheet" href="platform/platform.css?v=15">
+<style>
+body{margin:0;background:#100e17;color:#f4efff;font:15px system-ui,sans-serif}header{display:flex;align-items:center;justify-content:space-between;padding:18px 5%;border-bottom:1px solid #393145}a{color:#caa4ff}
+main{max-width:1100px;margin:auto;padding:26px 5%}h1{font-size:26px}p{color:#c6bed0}
+button{border:1px solid #775a9e;border-radius:12px;background:#44305e;color:#fff;padding:11px 16px;cursor:pointer;font:inherit}
+button:disabled{opacity:.45}button:hover{background:#60417e}
+#queue{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:16px}
+.card{background:#211c2a;border:1px solid #4c3d5c;border-radius:18px;overflow:hidden}
+.card img{width:100%;aspect-ratio:1/1;object-fit:cover}.card p{padding:0 13px;overflow-wrap:anywhere;max-height:100px;overflow:auto}
+.actions{display:flex;gap:8px;padding:12px}.actions button{flex:1}.reject{background:#482a37}
+</style></head><body>
+<header><strong>LOOX · Template Review</strong><a href="ai-text-to-image.html#templates">Back to Templates</a></header>
+<main><h1>Pending community templates</h1><p id="notice" role="status">Checking administrator access…</p>
+<button id="reload" type="button">Refresh queue</button><section id="queue" aria-label="Pending submissions"></section></main>
+<script type="module">
+import {state,initialize,auth} from './platform/account.js?v=7';
+const notice=document.getElementById('notice'),queue=document.getElementById('queue');
+const endpoint='https://looxtoolfree-backend.vercel.app/api/templates';
+async function request(action,body){
+ const session=await state.client?.auth.getSession(),token=session?.data?.session?.access_token;
+ if(!token)throw Error('Please sign in with your administrator account.');
+ const r=await fetch(endpoint+'?action='+action,{method:body?'POST':'GET',credentials:'omit',
+  headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},
+  body:body?JSON.stringify(body):undefined});
+ const data=await r.json().catch(()=>({}));
+ if(!r.ok)throw Error(data.error||'Request failed');return data;
+}
+async function load(){
+ queue.replaceChildren();notice.textContent='Loading pending submissions…';
+ try{
+  const data=await request('queue');
+  notice.textContent=data.items.length+' pending submission(s).';
+  for(const item of data.items){
+   const card=document.createElement('article');card.className='card';
+   const image=document.createElement('img');image.src=item.url;image.alt='Image awaiting approval';image.loading='lazy';
+   const prompt=document.createElement('p');prompt.textContent=item.prompt;
+   const actions=document.createElement('div');actions.className='actions';
+   for(const [status,label] of [['approved','Approve'],['rejected','Reject']]){
+    const btn=document.createElement('button');btn.textContent=label;
+    if(status==='rejected')btn.className='reject';
+    btn.addEventListener('click',async()=>{
+     if(!confirm(label+' this template?'))return;
+     for(const b of actions.querySelectorAll('button'))b.disabled=true;
+     try{await request('review',{id:item.id,status});card.remove();notice.textContent=label+'d successfully. Refresh to see remaining submissions.'}
+     catch(e){notice.textContent=e.message;for(const b of actions.querySelectorAll('button'))b.disabled=false}
+    });actions.append(btn);
+   }
+   card.append(image,prompt,actions);queue.append(card);
+  }
+ }catch(e){notice.textContent=e.message;if(!state.user){
+  const login=document.createElement('button');login.textContent='Sign in';login.onclick=()=>auth('login');queue.append(login);
+ }}
+}
+document.getElementById('reload').addEventListener('click',load);
+await initialize();await load();
+document.addEventListener('loox-user',load);
+</script></body></html>
