@@ -1,11 +1,11 @@
 
 import {state,initialize,auth} from './account.js?v=7';
 const notice=document.getElementById('notice'),queue=document.getElementById('queue');
-const endpoint='https://looxtoolfree-backend.vercel.app/api/templates';
+const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 async function request(action,body){
  const session=await state.client?.auth.getSession(),token=session?.data?.session?.access_token;
  if(!token)throw Error('Please sign in with your administrator account.');
- const r=await fetch(endpoint+'?action='+action,{method:body?'POST':'GET',credentials:'omit',
+ const r=await fetch(endpoint+'?action=template_'+action,{method:body?'POST':'GET',credentials:'omit',
   headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},
   body:body?JSON.stringify(body):undefined});
  const data=await r.json().catch(()=>({}));
