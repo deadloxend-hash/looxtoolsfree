@@ -13,23 +13,18 @@ const mode=document.body.dataset.looxGenerator;
 const storageDraft='loox-image-generator-draft-v2';
 const ratios=new Set(['1:1','16:9','9:16','4:3','3:4']);
 
-function setupNavigation(){
- const toggle=byId('lig-menu-toggle'),drawer=byId('lig-drawer'),scrim=byId('lig-nav-scrim');
- if(!toggle||!drawer||!scrim)return;
- const close=()=>{
-  drawer.hidden=true;scrim.hidden=true;
-  toggle.setAttribute('aria-expanded','false');
- };
- toggle.addEventListener('click',()=>{
-  const opening=drawer.hidden;
-  drawer.hidden=!opening;scrim.hidden=!opening;
-  toggle.setAttribute('aria-expanded',String(opening));
- });
- scrim.addEventListener('click',close);
- drawer.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
- document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+// The shared LOOX navigation drawer is owned by loox-experience.js.
+// Keep its overlay aligned with the responsive generator header.
+function syncSharedNavPosition(){
+ const header=document.querySelector('.lig-header');
+ if(header)document.documentElement.style.setProperty('--lig-ai-header-height',header.offsetHeight+'px');
 }
-setupNavigation();
+syncSharedNavPosition();
+window.addEventListener('resize',syncSharedNavPosition);
+if('ResizeObserver' in window){
+ const header=document.querySelector('.lig-header');
+ if(header)new ResizeObserver(syncSharedNavPosition).observe(header);
+}
 
 function prepareLanding(){
  const form=byId('lig-landing-form'),prompt=byId('lig-landing-prompt');
