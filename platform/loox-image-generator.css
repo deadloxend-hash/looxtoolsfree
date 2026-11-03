@@ -396,3 +396,21 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
 .lig-template-detail-close{position:absolute;right:12px;top:12px;z-index:2;display:grid;place-items:center;width:36px;height:36px;border:1px solid #665274;border-radius:50%;background:#21192bdd;color:white;font-size:23px;cursor:pointer}
 @media(max-width:700px){.lig-template-detail-panel{display:block}.lig-template-detail-image{height:auto;max-height:50dvh;min-height:0}.lig-template-detail-body{padding:17px;gap:13px}.lig-template-detail-prompt{max-height:23dvh}.lig-template-detail-overlay{padding:12px}.lig-community-content{padding:9px}.lig-template-card-creator{gap:6px}.lig-template-avatar{flex-basis:27px;width:27px;height:27px}.lig-template-card-creator-info strong{font-size:11px}.lig-template-card-creator-info small{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.lig-template-skeleton{animation:none}}
+
+
+/* Mobile community templates: one full-width card at a time. */
+@media(max-width:680px){
+ .lig-public-templates{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;padding:18px 0 28px;align-items:start}
+ .lig-community-card{width:100%;min-width:0;box-sizing:border-box;border-radius:18px}
+ .lig-template-skeleton{width:100%;aspect-ratio:4/5}
+ .lig-community-card .lig-template-card-open{display:flex;flex-direction:column;align-items:stretch;width:100%;height:auto;margin:0;padding:0;text-align:left;box-sizing:border-box}
+ .lig-community-card .lig-template-card-open>img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;object-position:center;background:#14101c;border-radius:17px 17px 0 0}
+ .lig-community-card .lig-community-content{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:16px 18px 18px;width:100%;box-sizing:border-box}
+ .lig-community-card .lig-template-card-creator{display:flex;align-items:center;gap:11px;width:100%;min-width:0}
+ .lig-community-card .lig-template-avatar{flex:0 0 39px;width:39px;height:39px;font-size:13px}
+ .lig-community-card .lig-template-card-creator-info{gap:3px;min-width:0}
+ .lig-community-card .lig-template-card-creator-info strong{font-size:14px}
+ .lig-community-card .lig-template-card-creator-info small{font-size:12px}
+ .lig-community-card .lig-community-content p{margin:0;padding:0;font-size:14px;line-height:1.55;-webkit-line-clamp:3;line-clamp:3;overflow-wrap:anywhere}
+ .lig-community-card .lig-template-card-view{display:inline-block;align-self:flex-start;font-size:13px;margin-top:1px}
+}
