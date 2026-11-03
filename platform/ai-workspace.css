@@ -152,3 +152,37 @@ body.ai-home .lx-header [data-loox-account],body.ai-chat .lx-header [data-loox-a
 @media(prefers-reduced-motion:reduce){
  .ai-recent-panel,.ai-recent-inner{transition:none!important}
 }
+
+
+/* Match the existing LOOX Tools hamburger styling; only position is adjusted. */
+body.ai-home .lx-header,body.ai-chat .lx-header{
+ padding-left:8px!important;
+}
+body.ai-home .lx-header .ai-nav-toggle,body.ai-chat .lx-header .ai-nav-toggle{
+ width:40px!important;height:40px!important;min-width:40px!important;
+ flex:0 0 40px!important;
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ margin:0!important;border:1px solid transparent!important;border-radius:10px!important;
+ background:transparent!important;color:var(--lx-text,#eae6f5)!important;
+ box-shadow:none!important;font-size:21px!important;line-height:1!important;
+}
+body.ai-home .lx-header .ai-nav-toggle:hover,
+body.ai-chat .lx-header .ai-nav-toggle:hover,
+body.ai-home .lx-header .ai-nav-toggle:focus-visible,
+body.ai-chat .lx-header .ai-nav-toggle:focus-visible{
+ background:rgba(144,123,205,.18)!important;
+ border-color:rgba(144,123,205,.3)!important;
+}
+@media(max-width:760px){
+ body.ai-home .lx-header,body.ai-chat .lx-header{padding-left:8px!important;}
+ body.ai-home .lx-header .ai-nav-toggle,body.ai-chat .lx-header .ai-nav-toggle{
+  width:40px!important;height:40px!important;min-width:40px!important;
+ }
+}
+/* Show the first successful user message as a useful two-line recent-chat label. */
+.ai-recent-open{white-space:normal;text-overflow:clip;min-width:0;overflow:hidden;}
+.ai-recent-title{
+ display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+ line-clamp:2;max-width:100%;overflow:hidden;overflow-wrap:anywhere;
+ white-space:normal;text-overflow:ellipsis;line-height:1.45;
+}
