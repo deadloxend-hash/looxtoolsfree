@@ -26,3 +26,116 @@
 .lx-ai-card{overflow:hidden}
 .lx-ai-card-image{display:block;flex:0 0 auto;width:calc(100% + 40px);max-width:none;height:168px;object-fit:cover;object-position:center;margin:-20px -20px 11px;border-radius:14px 14px 0 0;background:#161423}
 @media(max-width:650px){.lx-ai-card-image{height:154px}}
+
+
+/* Unified LOOX account controls: credits · Upgrade · circular profile avatar.
+   Used by all pages mounting the shared [data-loox-account] component. */
+.lx-account-header,
+.lx-header .lx-account-header,
+.lig-header .lx-account-header{
+ display:inline-flex!important;align-items:center!important;justify-content:flex-end!important;
+ flex-wrap:nowrap!important;gap:clamp(6px,.8vw,12px)!important;
+ position:relative;flex:0 0 auto;margin-left:auto!important;min-width:0;
+}
+.lx-account-header .lx-credit-chip{
+ display:inline-flex;align-items:center;justify-content:center;gap:4px;
+ padding:8px 11px;min-height:34px;border-radius:12px;
+ border:1px solid #43394e;background:#24202e;color:#efe9ff;
+ font:700 12px/1 system-ui,sans-serif;white-space:nowrap;
+}
+.lx-account-header .lx-credit-label{color:#c5bdd0;font-weight:650}
+.lx-account-header .lx-credit-divider{color:#887d99}
+.lx-account-header .lx-credit-value{
+ color:#f8f4ff;font-weight:850;font-variant-numeric:tabular-nums;letter-spacing:.01em;
+}
+.lx-account-header .lx-upgrade,
+.lig-header .lx-account-header .lx-upgrade{
+ min-height:34px;padding:8px 14px!important;white-space:nowrap;
+ font:800 12px/1.2 system-ui,sans-serif!important;border-radius:11px!important;
+ background:linear-gradient(115deg,#9f52ed,#6656e7)!important;
+ border:1px solid #a58afb!important;color:#fff!important;
+ box-shadow:0 2px 10px #7142bf28!important;
+}
+.lx-account-header .lx-profile-details{flex:0 0 auto;position:relative}
+.lx-account-header .lx-profile-trigger{
+ display:grid!important;place-items:center!important;
+ width:38px!important;height:38px!important;padding:0!important;
+ border-radius:50%!important;list-style:none!important;
+ border:2px solid #6e5a89!important;background:transparent!important;
+ color:#fff;cursor:pointer;flex:none;
+}
+.lx-account-header .lx-profile-trigger::-webkit-details-marker{display:none}
+.lx-account-header .lx-profile-trigger::marker{content:""}
+.lx-account-header .lx-profile-trigger:hover,
+.lx-account-header .lx-profile-details[open] .lx-profile-trigger{
+ border-color:#bc9bff!important;box-shadow:0 0 0 3px #a17af82a!important;
+}
+.lx-account-header .lx-avatar{
+ display:grid!important;place-items:center!important;
+ width:30px!important;height:30px!important;padding:0!important;
+ border-radius:50%!important;background:linear-gradient(135deg,#8166da,#5331a4)!important;
+ color:#fff;font:750 14px/1 system-ui,sans-serif;flex:none;
+}
+.lx-account-header .lx-profile-menu{
+ position:absolute!important;top:calc(100% + 13px)!important;right:0!important;
+ left:auto!important;min-width:min(285px,calc(100vw - 20px))!important;
+ max-width:min(320px,calc(100vw - 20px))!important;
+ padding:9px!important;gap:0!important;
+ background:#1e1a28!important;border:1px solid #554965!important;
+ color:#f6efff;box-shadow:0 16px 48px #0009!important;
+ border-radius:17px!important;z-index:400!important;
+ display:none!important;
+}
+.lx-account-header .lx-profile-details[open]>.lx-profile-menu{
+ display:grid!important;
+}
+.lx-account-header .lx-profile-identity{
+ display:grid;gap:4px;text-align:left;padding:12px 11px 14px;
+ border-bottom:1px solid #40384e;margin:0 0 7px;
+ overflow:hidden;min-width:0;
+}
+.lx-account-header .lx-profile-name{
+ color:#fff;font:800 14px/1.3 system-ui,sans-serif;
+ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.lx-account-header .lx-profile-email{
+ display:block;color:#b9accd;font:500 12px/1.4 system-ui,sans-serif;
+ max-width:100%;overflow-wrap:anywhere;white-space:normal;
+}
+.lx-account-header .lx-profile-links{display:grid;gap:2px}
+.lx-account-header .lx-profile-menu a,
+.lx-account-header .lx-profile-menu .lx-profile-signout{
+ display:block!important;text-align:left!important;width:100%;font:650 12px/1.4 system-ui,sans-serif;
+ color:#f1e7ff!important;text-decoration:none!important;
+ padding:10px 11px!important;border:0!important;border-radius:9px!important;
+ background:transparent!important;cursor:pointer!important;
+}
+.lx-account-header .lx-profile-menu a:hover,
+.lx-account-header .lx-profile-menu .lx-profile-signout:hover{
+ background:#392f4a!important;
+}
+.lx-account-header .lx-profile-signout{
+ margin-top:6px;border-top:1px solid #40384e!important;border-radius:0!important;
+}
+.lx-account-header .lx-profile-auth{margin:5px 0;width:100%;justify-content:center;}
+.lx-account-header .lx-profile-details:not([open]) .lx-profile-menu{display:none!important}
+.lx-header:has(.lx-account-header){gap:clamp(8px,1.2vw,20px)}
+.lx-header .lx-account-header,
+.lx-header .lig-header-user{margin-left:auto!important}
+.lx-account-header :focus-visible{outline:2px solid #c8afff;outline-offset:3px}
+@media(max-width:720px){
+ .lx-account-header,.lx-header .lx-account-header,.lig-header .lx-account-header{gap:6px!important}
+ .lx-account-header .lx-credit-chip{font-size:11px;padding:7px 8px;min-height:32px}
+ .lx-account-header .lx-upgrade,.lig-header .lx-account-header .lx-upgrade{
+  min-height:32px;padding:7px 9px!important;font-size:11px!important
+ }
+ .lx-account-header .lx-profile-trigger{
+  width:34px!important;height:34px!important;min-width:34px!important
+ }
+ .lx-account-header .lx-avatar{width:26px!important;height:26px!important;font-size:12px!important}
+}
+@media(max-width:390px){
+ .lx-account-header .lx-credit-chip{gap:2px;padding:6px 5px;font-size:10px}
+ .lx-account-header .lx-upgrade{padding:6px 7px!important}
+ .lx-account-header .lx-credit-label{font-size:10px}
+}
