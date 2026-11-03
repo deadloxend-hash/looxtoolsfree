@@ -1,16 +1,89 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b10">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.supabase.co; media-src 'self' blob: https://*.supabase.co; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
-<meta name="referrer" content="no-referrer"><title>AI Video Generator | LOOX Tools</title>
-<meta name="description" content="Create AI video with LOOX Tools when video generation is available.">
+<meta name="referrer" content="no-referrer">
+<title>AI Video Generator | Wan 2.1 Text to Video | LOOX Tools</title>
+<meta name="description" content="Generate AI video from a text prompt with Wan 2.1 in LOOX Studio. Private account history, MP4 previews, aspect ratios and generation credits.">
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-video-generator.html">
-<link rel="stylesheet" href="platform/platform.css?v=15"><script type="module" src="platform/studio.js?v=11"></script><link rel="stylesheet" href="loox-page-back.css?v=2">
+<link rel="stylesheet" href="platform/platform.css?v=15">
+<link rel="stylesheet" href="loox-experience.css?v=130">
+<link rel="stylesheet" href="platform/loox-image-generator.css?v=3">
+<link rel="stylesheet" href="platform/loox-video-generator.css?v=1">
+<script defer src="loox-experience.js?v=131"></script>
+<script type="module" src="platform/loox-video-generator.js?v=1"></script>
+<link rel="stylesheet" href="loox-page-back.css?v=2">
 </head>
-<body class="lx-shell"><header class="lx-header"><a class="lx-brand" href="ai-home.html">LOOX <b>Tools</b></a><div data-loox-account></div></header>
-<main class="lx lx-page"><a href="index.html?category=AI">LOOX Tools / AI</a>
-<p class="lx-eyebrow">LOOX AI CREATION</p><h1>AI Video Generator</h1>
-<p>Enter a description to create an AI video. This feature is unavailable until a compatible video generation model is enabled. Unsupported requests will not be sent to another provider.</p>
-<section class="lx lx-workspace" aria-label="Video generator"><p>Sign in to submit AI jobs and view private results in your account.</p>
-<div data-studio="generate_video"></div></section><p><a href="ai-text-to-image.html">Generate AI images instead</a></p>
-</main><script src="loox-page-back.js?v=2" defer></script>
+<body class="lx-shell lig-body lig-shared-ai-nav lvg-body">
+<header class="lx-header lig-header">
+ <div class="lig-head-start">
+  <button id="aiNavToggle" class="lig-hamburger ai-nav-toggle" type="button" aria-label="Open LOOX AI tools" aria-expanded="false" aria-controls="loox-home-rail">☰</button>
+  <a href="ai-home.html" class="lig-brand" aria-label="LOOX AI home" title="LOOX AI home">L</a>
+  <span class="lig-page-name">Video generator</span>
+ </div>
+ <nav class="lig-head-tabs" aria-label="Video generator navigation">
+  <button class="lig-tab" type="button" data-lvg-view="templates" aria-pressed="false">Templates</button>
+  <button class="lig-tab is-active" type="button" data-lvg-view="generate" aria-pressed="true">Generate</button>
+  <a class="lig-tab" href="video-editor.html">Edit</a>
+ </nav>
+ <div class="lig-header-user" data-loox-account></div>
+</header>
+<main class="lig-workspace">
+ <aside class="lig-settings" aria-label="AI video generation settings">
+  <div class="lig-settings-head"><h2>General settings</h2><span class="lig-setting-tag">LOOX Studio</span></div>
+  <div class="lig-setting-block">
+   <div class="lig-row-label"><label for="lvg-model">Model</label></div>
+   <select id="lvg-model" aria-label="Video model" disabled><option selected value="wan21">Wan 2.1 · T2V 1.3B</option></select>
+   <p class="lig-help">Text to video · 33 frames at 16 fps (about 2 seconds). Your PC's GPU processes each request.</p>
+  </div>
+  <div class="lig-setting-block">
+   <label for="lvg-ratio">Aspect ratio</label>
+   <select id="lvg-ratio">
+    <option value="16:9" selected>Landscape · 16:9</option>
+    <option value="9:16">Vertical · 9:16</option>
+    <option value="1:1">Square · 1:1</option>
+    <option value="4:3">Landscape · 4:3</option>
+    <option value="3:4">Portrait · 3:4</option>
+   </select>
+  </div>
+  <div class="lig-credit-box">
+   <div class="lig-credit-top"><span class="lig-help">Your AI credits</span><a href="account.html#credits">View balance</a></div>
+   <strong id="lvg-credits">Loading…</strong>
+   <small id="lvg-credit-cost">Checking video cost…</small>
+   <p class="lig-help lvg-gpu-message" id="lvg-gpu-state" role="status">Checking GPU availability…</p>
+  </div>
+ </aside>
+ <section class="lig-main" aria-label="LOOX video creative workspace">
+  <div class="lig-content-scroll" id="lvg-generate-view">
+   <div class="lig-main-heading"><div><h1>Generate videos</h1><p>Turn your ideas into short clips with Wan 2.1 and keep finished MP4 videos in your private account.</p></div><span class="lig-icon-badge">✧ &nbsp;LOOX AI</span></div>
+   <div id="lvg-results" class="lig-results" aria-live="polite"></div>
+   <section class="lig-history" aria-label="Account video generation history">
+    <div class="lig-history-head"><h2>Your recent generations</h2><small id="lvg-history-message">Loading account history…</small></div>
+    <div id="lvg-history-grid" class="lig-history-grid"></div>
+    <button type="button" id="lvg-history-more" class="lig-load-more" hidden>Load more videos</button>
+   </section>
+  </div>
+  <div class="lig-content-scroll" id="lvg-templates-view" hidden>
+   <div class="lig-main-heading"><div><h1>Templates</h1><p>Video templates will appear here when available.</p></div></div>
+   <div class="lig-template-empty"><div><span aria-hidden="true">▦</span><strong>No video templates published yet</strong><p>Generate your own original clips from the Generate tab.</p></div></div>
+  </div>
+  <div id="lvg-compose-wrap" class="lig-compose-wrap">
+   <form id="lvg-compose" class="lig-compose">
+    <div class="lig-compose-card">
+     <label for="lvg-prompt">Prompt</label>
+     <textarea name="prompt" id="lvg-prompt" rows="2" maxlength="800" required placeholder="A cinematic tracking shot of a fox running through a snowy forest…"></textarea>
+     <div class="lig-compose-actions">
+      <span class="lig-image-pill">✧ &nbsp;Wan 2.1 Video</span><span class="lig-spacer"></span>
+      <button id="lvg-generate" class="lig-primary" type="submit">✧ Generate video</button>
+     </div>
+    </div>
+    <span id="lvg-message" class="lig-status-message" role="status" aria-live="polite"></span>
+   </form>
+  </div>
+ </section>
+</main>
+<noscript>Enable JavaScript to use LOOX AI video generation.</noscript>
+<script src="loox-page-back.js?v=2" defer></script>
 </body></html>
