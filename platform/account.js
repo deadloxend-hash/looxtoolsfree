@@ -151,7 +151,7 @@ export function renderHeader(){
    identity.append(el('small',state.user.email||'','lx-profile-email'));
    menu.append(identity);
    const links=el('div',null,'lx-profile-links');
-   for(const [id,label] of sections)links.append(link(label,'account.html#'+id));
+   for(const [id,label] of sections)links.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'account.html#'+id));
    menu.append(links);
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
@@ -192,10 +192,14 @@ export async function plans(host){
   grid.append(card);
  }
 }
-export function pricing(){const {box}=dialog('Choose your LOOX plan');plans(box);}
+export function nextAccountUrl(page){
+ const current=(location.pathname.split('/').pop()||'index.html')+location.search+location.hash;
+ return page+'?from='+encodeURIComponent(current);
+}
+export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
 export async function initialize(){
  renderHeader();
- const accountPage=!!document.querySelector('[data-dashboard]');
+ const accountPage=!!document.querySelector('[data-dashboard],[data-upgrade-page],[data-settings-page]');
  if(accountPage||store().getItem(sessionKey)||location.search.includes('code=')){
   try{await client();renderHeader();if(state.user)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
  }
@@ -207,7 +211,7 @@ function drawDashboard(){
  if(!state.user){host.append(el('p','Sign in to see your credits, AI jobs and billing history.'),button('Sign in',()=>auth()));return;}
  if(!state.account){host.append(el('p',accountError||'Loading your account…'),button('Retry',()=>{accountError='';drawDashboard();client().then(()=>refresh()).catch(e=>{accountError=e.message||'Unable to load account.';drawDashboard();});},'lx-button'));return;}
  const a=state.account;
- const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,'#'+id));host.append(nav);
+ const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'#'+id));host.append(nav);
  function section(id,title){const s=el('section',null,'lx-card');s.id=id;s.append(el('h2',title));host.append(s);return s;}
  section('profile','My profile').append(el('h3','Welcome, '+a.profile.name),el('p',a.jobs.length+' recent AI actions'),el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
  section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),button('Buy credits',pricing));
@@ -219,13 +223,10 @@ function drawDashboard(){
  const history=section('history','Transaction history');
  for(const item of a.credits)history.append(el('p',new Date(item.created_at).toLocaleString()+' · '+item.reason+' · '+(item.amount>0?'+':'')+item.amount+' credits'));
  for(const p of a.payments)history.append(el('p',planName[p.plan]+' · '+money(p.amount_cents)+' · '+p.status));
- const settings=section('settings','Account settings'),form=el('form',null,'lx-stack');settings.append(form);
- const name=field(form,'Display name','text',{required:true,maxLength:80,value:a.profile.name}),save=el('button','Save name','lx-button'),note=el('p',null,'lx-note');form.append(save,note);
- withStatus(form,save,note,async()=>{await api('profile',{name:name.value});await refresh();});
- settings.append(button('Send password reset',()=>auth('forgot')),button('Sign out',signOut),button('Delete account',()=>{
-  const {box}=dialog('Permanently delete account');box.append(el('p','This deletes your private outputs, account, remaining credits and local billing history. Cancel recurring billing first.'));
-  const f=el('form',null,'lx-stack');box.append(f);const p=field(f,'Confirm password','password',{required:true,autocomplete:'current-password'}),submit=el('button','Permanently delete','lx-button'),n=el('p',null,'lx-note');f.append(submit,n);withStatus(f,submit,n,async()=>{await api('delete',{password:p.value});await state.client.auth.signOut({scope:'local'});location.replace('index.html');});
- },'lx-link'));
+ const settings=section('settings','Account settings');
+ settings.append(el('p','Update your display name, security and account preferences on the dedicated settings page.'));
+ settings.append(link('Open account settings →',nextAccountUrl('settings.html')));
+
 }
 document.addEventListener('loox-account',drawDashboard);
 document.addEventListener('loox-user',drawDashboard);
