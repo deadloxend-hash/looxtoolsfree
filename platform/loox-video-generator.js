@@ -210,19 +210,20 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   chooseView('generate');
   busy=true;ratioField.disabled=true;refreshButton();
   notice(resumeId?'Restoring your pending video…':'Submitting your video request…');
-  const view=createCard(prompt,ratio);
+  let view=null;
   try{
     const id=resumeId||(await api('job',{
       operation:'generate_video',requestId:crypto.randomUUID(),prompt,ratio
     })).id;
     if(!id)throw Error('The backend did not return a video job ID.');
+    view=createCard(prompt,ratio);
     if(!resumeId){
       try{sessionStorage.setItem(storageKey+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
       await refresh().catch(()=>{});accountInfo();await refreshQuota();
     }
     await poll(id,view);
   }catch(error){
-    showError(view,error.message||'Unable to generate video.');
+    if(view)showError(view,error.message||'Unable to generate video.');
     notice(error.message||'Unable to generate video.',true);
     await refreshQuota();
   }finally{
