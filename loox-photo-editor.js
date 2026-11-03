@@ -39,19 +39,86 @@ function updateHistory(){$('undo').disabled=!history.length;$('redo').disabled=!
 function undo(){if(!history.length||!base)return;future.push(snapshot());restore(history.pop())}
 function redo(){if(!future.length||!base)return;history.push(snapshot());restore(future.pop())}
 const presets={original:{},cinematic:{contrast:20,saturation:-12,highlights:-22,shadows:8,temperature:-12},bw:{saturation:-100,contrast:16,shadows:9},hdr:{contrast:23,saturation:18,highlights:-32,shadows:38},vintage:{saturation:-27,contrast:-10,temperature:35,highlights:-15},grayscale:{saturation:-100},sepia:{saturation:-28,temperature:48,contrast:-5},vignette:{contrast:8,shadows:-8},glow:{brightness:15,contrast:-15,saturation:14,highlights:20},warm:{temperature:35,vibrance:20},cool:{temperature:-35,contrast:8},vibrant:{saturation:25,vibrance:35,contrast:12},matte:{fade:30,contrast:-15,shadows:18},moody:{exposure:-.35,contrast:28,saturation:-15,shadows:-25},sunset:{temperature:42,tint:20,highlights:12},pastel:{fade:24,brightness:10,saturation:-20},film:{fade:15,temperature:15,contrast:10},noir:{saturation:-100,contrast:45,shadows:-20},frost:{temperature:-28,highlights:22,saturation:-10},amber:{temperature:45,contrast:12},rose:{tint:35,fade:8},teal:{temperature:-22,tint:-25,contrast:14},portrait:{shadows:15,highlights:-18,vibrance:12},landscape:{contrast:15,vibrance:30,highlights:-15},soft:{contrast:-22,fade:15,highlights:10},dramatic:{contrast:38,exposure:-.15,shadows:-25},dark:{exposure:-.7,contrast:25,shadows:-30},noise:{contrast:8},blur:{},filmgrain:{fade:12,temperature:10,contrast:12}};
+
+Object.assign(presets,{
+ clean:{brightness:4,contrast:3,saturation:3},fresh:{brightness:8,highlights:-9,shadows:12,vibrance:12},
+ bright:{brightness:17,exposure:.1,shadows:15},naturalGlow:{brightness:7,highlights:12,saturation:6,fade:5},
+ softPortrait:{contrast:-12,shadows:20,saturation:-6},clear:{contrast:12,vibrance:8,highlights:-8},
+ arctic:{temperature:-52,saturation:-12,contrast:14},bluehour:{temperature:-40,tint:15,exposure:-.2,shadows:16},
+ glacier:{temperature:-61,highlights:22,contrast:5},ocean:{temperature:-29,tint:-18,saturation:15},
+ steel:{saturation:-25,temperature:-30,contrast:25},icy:{temperature:-42,brightness:12,vibrance:12},
+ latte:{temperature:33,fade:13,saturation:-8},honey:{temperature:42,shadows:20,brightness:6},
+ bali:{temperature:28,saturation:22,shadows:12},copper:{temperature:56,contrast:13,saturation:-10},
+ goldenHour:{temperature:35,highlights:15,contrast:-7},warmGlow:{temperature:26,fade:15,brightness:9},
+ vividPop:{vibrance:40,saturation:16,contrast:17},neon:{saturation:45,contrast:23,tint:12},
+ punch:{contrast:35,vibrance:20,shadows:-10},colorBurst:{saturation:38,vibrance:30,brightness:5},
+ tropical:{saturation:29,temperature:14,vibrance:25},popArt:{contrast:45,saturation:49},
+ blurSoft:{contrast:-2},blurStrong:{contrast:-4},blurDream:{fade:15,brightness:12},
+ blurGlow:{brightness:15,contrast:-13,highlights:14},blurDeep:{},
+ noiseSoft:{contrast:3},noiseHeavy:{contrast:11},noiseMono:{saturation:-100,contrast:10},
+ noiseColor:{saturation:22},noiseMuted:{fade:15,saturation:-14},
+ grainSoft:{fade:7},grainHeavy:{fade:13,contrast:12},grainVintage:{temperature:24,fade:24},
+ grainMono:{saturation:-100,contrast:13},grainAmber:{temperature:34,contrast:8},
+ faded:{fade:32,saturation:-18,contrast:-15},retro:{temperature:26,saturation:-24,fade:22},
+ silver:{saturation:-100,contrast:15,highlights:10},charcoal:{saturation:-100,contrast:38,shadows:-28},
+ monoSoft:{saturation:-100,fade:14,contrast:-12},monoHigh:{saturation:-100,contrast:48}
+});
+const FILTER_GROUPS={
+ Natural:['original','clean','portrait','fresh','soft','bright','naturalGlow','softPortrait','clear','landscape'],
+ Cool:['original','cool','frost','arctic','bluehour','glacier','teal','ocean','steel','icy'],
+ Warm:['original','warm','sunset','amber','latte','honey','bali','rose','copper','goldenHour','warmGlow'],
+ Vivid:['original','vibrant','hdr','cinematic','vividPop','neon','punch','colorBurst','tropical','popArt'],
+ Blur:['original','blurSoft','blur','blurStrong','blurDream','blurGlow','blurDeep'],
+ Noise:['original','noiseSoft','noise','noiseHeavy','noiseMono','noiseColor','noiseMuted'],
+ Grain:['original','grainSoft','filmgrain','grainHeavy','grainVintage','grainMono','grainAmber'],
+ Vintage:['original','vintage','film','sepia','matte','moody','pastel','faded','retro','vignette'],
+ 'B&W':['original','bw','grayscale','noir','silver','charcoal','monoSoft','monoHigh']
+};
+const FILTER_LABELS={bw:'B&W',hdr:'HDR',filmgrain:'Film Grain',blurSoft:'Soft Focus',blurStrong:'Heavy Blur',
+ blurDream:'Dreamy',blurGlow:'Soft Glow',blurDeep:'Deep Blur',
+ noiseSoft:'Fine Noise',noiseHeavy:'Heavy Noise',noiseMono:'Mono Noise',noiseColor:'Color Noise',noiseMuted:'Faded Noise',
+ grainSoft:'Fine Grain',grainHeavy:'Heavy Grain',grainVintage:'Old Film',grainMono:'Mono Grain',grainAmber:'Warm Grain',
+ naturalGlow:'Natural Glow',softPortrait:'Soft Portrait',bluehour:'Blue Hour',vividPop:'Color Pop',
+ popArt:'Pop Art',colorBurst:'Color Burst',goldenHour:'Golden Hour',warmGlow:'Warm Glow',
+ monoSoft:'Soft Mono',monoHigh:'High Contrast'};
+
 function effective(){let v={...values};for(const [k,n]of Object.entries(presets[preset]||{}))v[k]+=n;return v}
 function tone(input,output,v){const mul=Math.pow(2,v.exposure/1.7),c=(259*(v.contrast+255))/(255*(259-v.contrast));for(let i=0;i<input.length;i+=4){let a=input[i+3];if(!a){output[i]=output[i+1]=output[i+2]=0;output[i+3]=0;continue}let r=input[i]*mul,g=input[i+1]*mul,b=input[i+2]*mul;const lum=clamp((.2126*r+.7152*g+.0722*b)/255,0,1);let shadow=(1-lum)**2,highlight=lum**2;let lift=v.shadows*1.15*shadow+v.highlights*1.15*highlight; r+=lift;g+=lift;b+=lift;const bright=v.brightness*1.65;r+=bright;g+=bright;b+=bright;const t=v.temperature;r+=t*.48;g+=t*.04;b-=t*.48;const tint=v.tint||0;r+=tint*.22;g-=tint*.36;b+=tint*.22;r=c*(r-128)+128;g=c*(g-128)+128;b=c*(b-128)+128;const l=.2126*r+.7152*g+.0722*b,s=1+v.saturation/100+(v.vibrance||0)/200*(1-Math.min(1,(Math.max(r,g,b)-Math.min(r,g,b))/255));const fade=(v.fade||0)/100,gamma=Math.pow(2,-(v.gamma||0)/100);output[i]=clamp(Math.pow(clamp((l+(r-l)*s)*(1-fade)+128*fade,0,255)/255,gamma)*255,0,255);output[i+1]=clamp(Math.pow(clamp((l+(g-l)*s)*(1-fade)+128*fade,0,255)/255,gamma)*255,0,255);output[i+2]=clamp(Math.pow(clamp((l+(b-l)*s)*(1-fade)+128*fade,0,255)/255,gamma)*255,0,255);output[i+3]=a}}
 function applySpecial(c,name){
- if(!['sepia','vignette','noise','filmgrain','blur'].includes(name))return;
+ const blur={blurSoft:.004,blur:.014,blurStrong:.027,blurDream:.011,blurGlow:.020,blurDeep:.042};
+ const noise={noiseSoft:11,noise:24,noiseHeavy:43,noiseMono:26,noiseColor:34,noiseMuted:17};
+ const grain={grainSoft:8,filmgrain:13,grainHeavy:32,grainVintage:17,grainMono:20,grainAmber:17};
+ const isBlur=Object.prototype.hasOwnProperty.call(blur,name);
+ const isNoise=Object.prototype.hasOwnProperty.call(noise,name);
+ const isGrain=Object.prototype.hasOwnProperty.call(grain,name);
+ if(!isBlur&&!isNoise&&!isGrain&&name!=='sepia'&&name!=='vignette')return;
  const cx=c.getContext('2d',{willReadFrequently:true}),w=c.width,h=c.height;
- if(name==='blur'){const temp=clone(c);cx.clearRect(0,0,w,h);cx.filter='blur('+Math.max(8,Math.round(Math.min(w,h)*.025))+'px)';cx.drawImage(temp,0,0);cx.filter='none';return}
- const pic=cx.getImageData(0,0,w,h),d=pic.data;let seed=1515870810;
- for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=(y*w+x)*4;if(!d[i+3])continue;
-  if(name==='sepia'){const r=d[i],g=d[i+1],b=d[i+2];d[i]=clamp(r*.393+g*.769+b*.189,0,255);d[i+1]=clamp(r*.349+g*.686+b*.168,0,255);d[i+2]=clamp(r*.272+g*.534+b*.131,0,255)}
-  else if(name==='vignette'){const dx=(x/w-.5)*2,dy=(y/h-.5)*2,f=1-.55*Math.pow(Math.min(1,Math.sqrt(dx*dx+dy*dy)/1.3),1.7);d[i]*=f;d[i+1]*=f;d[i+2]*=f}
-  else{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;const n=((seed>>>0)%256-128)*(name==='noise'?.18:.10);d[i]=clamp(d[i]+n,0,255);d[i+1]=clamp(d[i+1]+n,0,255);d[i+2]=clamp(d[i+2]+n,0,255)}
+ if(isBlur){
+  const temp=clone(c),radius=Math.max(1,Math.round(Math.min(w,h)*blur[name]));
+  cx.clearRect(0,0,w,h);cx.filter='blur('+radius+'px)';cx.drawImage(temp,0,0);cx.filter='none';return;
  }
- cx.putImageData(pic,0,0)
+ const pic=cx.getImageData(0,0,w,h),d=pic.data;
+ let seed=1515870810;
+ const random=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return (seed>>>0)/4294967295-.5};
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+  const i=(y*w+x)*4;if(!d[i+3])continue;
+  if(name==='sepia'){
+   const r=d[i],g=d[i+1],b=d[i+2];
+   d[i]=clamp(r*.393+g*.769+b*.189,0,255);
+   d[i+1]=clamp(r*.349+g*.686+b*.168,0,255);
+   d[i+2]=clamp(r*.272+g*.534+b*.131,0,255);
+  }else if(name==='vignette'){
+   const dx=(x/w-.5)*2,dy=(y/h-.5)*2,f=1-.55*Math.pow(Math.min(1,Math.hypot(dx,dy)/1.3),1.7);
+   d[i]*=f;d[i+1]*=f;d[i+2]*=f;
+  }else{
+   const strength=isNoise?noise[name]:grain[name],n=random()*strength;
+   const mono=isGrain||name==='noiseMono'||name==='noiseMuted';
+   d[i]=clamp(d[i]+n,0,255);
+   d[i+1]=clamp(d[i+1]+(mono?n:random()*strength),0,255);
+   d[i+2]=clamp(d[i+2]+(mono?n:random()*strength),0,255);
+  }
+ }
+ cx.putImageData(pic,0,0);
 }
 function selectedImage(){const o=overlays[selectedOverlay];return o?.type==='image'?o:null}
 function editTarget(){const o=selectedImage();return o&&!o.locked?o:null}
