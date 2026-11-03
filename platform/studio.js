@@ -93,6 +93,22 @@ function display(url){
  if(isText)result.append(button('Regenerate',()=>form.requestSubmit()));
 }
 let lastJob;
+function showRecentResult(){
+ if(!isText||!state.account||result.childElementCount)return;
+ const recent=state.account.jobs?.find(j=>j.operation===tool&&j.state==='succeeded');
+ if(!recent)return;
+ const open=button('View your last generated '+(tool==='generate_video'?'video':'image'),async()=>{
+  open.disabled=true;
+  try{
+   const previous=await api('status',null,{id:recent.id});
+   if(!previous.url)throw Error('The result is not available yet.');
+   lastJob=recent.id;display(previous.url);msg(notice,'Previous generation recovered from your private LOOX library.');
+  }catch(e){msg(notice,e.message);}finally{open.disabled=false;}
+ },'lx-button');
+ result.append(el('h2','Recent generation'),open);
+}
+document.addEventListener('loox-account',showRecentResult);
+showRecentResult();
 form.onsubmit=async e=>{
  e.preventDefault();if(busy)return;
  if(!state.user){auth();return;}
@@ -130,7 +146,7 @@ form.onsubmit=async e=>{
    await sleep(n===0?800:3500);const job=await api('status',null,{id:j.id});
    if(job.state==='succeeded'){requestId=null;display(job.url);msg(notice,'Complete. Your result is also in My Profile.');break;}
    if(job.state==='failed'){requestId=null;const code=job.failure_code;throw Error(code==='provider_billing'?'AI processing is temporarily unavailable because the LOOX service needs additional processing balance. Your AI credits were returned. Please try again after service activation.':code==='provider_auth'?'LOOX AI service configuration needs attention. Your AI credits were returned.':code==='provider_limit'?'The LOOX AI service is busy or has reached its usage limit. Your AI credits were returned.':'AI processing could not complete. Your AI credits were returned. Please try again later.');}
-   msg(notice,'Processing. You can close this page and return to your jobs in My Profile.');
+   msg(notice,'Your PC is generating. This may take several minutes, especially during model loading. Keep ComfyUI and your worker running.');
   }
  }catch(err){msg(notice,err.message);if(err.status===402)pricing();if(err.status===401)auth();}
  finally{busy=false;progress.hidden=true;run.disabled=false;controls.forEach(n=>n.disabled=false);if(isMask&&imageSize)paint();refresh().catch(()=>{});}
