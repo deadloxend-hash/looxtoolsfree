@@ -134,3 +134,19 @@ button,input,select{font:inherit}
  .lp-settings-card{padding:18px 16px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.lp-plan,.lp-btn{transition:none}}
+
+/* Full-page settings offer preferences without requiring sign-in. */
+.lp-page[data-account-upgrade] .lx-account-header .lx-upgrade{display:none!important}
+.lp-workspace-settings{margin:0 0 26px;scroll-margin-top:20px}
+.lp-pref-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 22px;align-items:end}
+.lp-pref-field{display:grid;gap:9px;color:#e7dcee;font-size:12px;font-weight:770;min-width:0}
+.lp-pref-field .lp-select,.lp-pref-field input[type=number]{
+ display:block;width:100%;max-width:none;margin:0;min-width:0;min-height:42px;
+ background:#111016;color:#f9f6fc;border:1px solid #494053;border-radius:10px;
+ padding:9px 12px;font:500 13px system-ui
+}
+.lp-pref-field input[type=color]{width:100%;height:43px;border:1px solid #494053;border-radius:10px;background:#111016;padding:6px;cursor:pointer}
+.lp-pref-check{align-items:center;display:flex;gap:10px;min-height:42px}
+.lp-pref-check input{width:17px;height:17px;accent-color:#a86cf1}
+.lp-pref-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;grid-column:1/-1;border-top:1px solid #3a3342;margin-top:8px;padding-top:19px}
+@media(max-width:720px){.lp-pref-grid{grid-template-columns:1fr;gap:17px}.lp-pref-actions{grid-column:1}}
