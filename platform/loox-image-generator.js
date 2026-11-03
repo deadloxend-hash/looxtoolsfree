@@ -51,8 +51,8 @@ if(mode==='workspace')initWorkspace();
 async function initWorkspace(){
  const form=byId('lig-compose'),promptField=byId('lig-prompt'),ratioField=byId('lig-ratio');
  const generateButton=byId('lig-generate'),message=byId('lig-message');
- const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost'),gpu=byId('lig-gpu');
- const gpuText=byId('lig-gpu-text'),results=byId('lig-results'),historyGrid=byId('lig-history-grid');
+ const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
+ const results=byId('lig-results'),historyGrid=byId('lig-history-grid');
  const historyMore=byId('lig-history-more'),historyHeading=byId('lig-history-message');
  const generateView=byId('lig-generate-view'),templatesView=byId('lig-templates-view');
  const composeWrap=byId('lig-compose-wrap');
@@ -74,17 +74,6 @@ async function initWorkspace(){
  function setMessage(value,isError=false){
   message.textContent=value||'';
   message.style.color=isError?'#ffb6bc':'';
- }
- function setGpu(online,text){
-  gpu.dataset.state=online===true?'online':online===false?'offline':'checking';
-  gpuText.textContent=text;
- }
- async function checkGpu(){
-  if(!state.user){setGpu(null,'Sign in to check your local GPU');return;}
-  try{
-   const status=await api('gpu');
-   setGpu(status.image===true,status.image?'RTX 4060 worker online':'Local FLUX worker offline · no cloud fallback');
-  }catch{setGpu(null,'GPU status temporarily unavailable');}
  }
  function selectView(view){
   const templates=view==='templates';
@@ -108,7 +97,7 @@ async function initWorkspace(){
   empty.id='lig-empty';
   empty.append(create('div','lig-empty-orb','✧'),
    create('strong',null,'Your ideas start here'),
-   create('p',null,'Write a prompt below. Your generated image will appear here as soon as your own GPU finishes.'));
+   create('p',null,'Write a prompt below. Your generated image will appear here once it is ready.'));
   results.append(empty);
  }
  emptyCanvas();
@@ -127,7 +116,7 @@ async function initWorkspace(){
   const spinner=create('span','lig-spinner');
   spinner.setAttribute('aria-hidden','true');
   const loadingTitle=create('strong',null,'Preparing your generation');
-  const loadingSub=create('small',null,'Your private PC will render the image.');
+  const loadingSub=create('small',null,'Your image is being prepared.');
   overlay.append(spinner,loadingTitle,loadingSub);
   stage.append(loading,overlay);
   const bottom=create('div','lig-output-bottom'),
@@ -222,9 +211,9 @@ async function initWorkspace(){
     throw Error('Generation could not finish. Any reserved AI credits were returned.');
    }
    if(status.state==='processing'){
-    view.setStage('Generating on your PC','ComfyUI is processing your prompt. First renders may take several minutes.');
+    view.setStage('Generating image','Your image is being created. Detailed images may take a few minutes.');
    }else{
-    view.setStage('Waiting in the GPU queue','Your request is safely queued for your own GPU.');
+    view.setStage('Waiting in the queue','Your request is queued and will begin shortly.');
    }
   }
   throw Error('Still waiting for a result. Check Recent AI jobs in your LOOX account.');
@@ -246,7 +235,7 @@ async function initWorkspace(){
   setMessage(resumeId?'Restoring your pending image…':'Preparing a new generation…');
   isBusy=true;generateButton.disabled=true;ratioField.disabled=true;
   const view=outputCard(prompt,ratio);
-  if(resumeId)view.setStage('Restoring generation','Checking the request already running on your GPU.');
+  if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
   try{
    const id=resumeId||(await api('job',{
     operation:'generate',requestId:crypto.randomUUID(),prompt,ratio,...(seed==null?{}:{seed})
@@ -326,7 +315,7 @@ async function initWorkspace(){
  historyMore.addEventListener('click',()=>loadHistory());
 
  async function refreshUser(){
-  updateAccount();checkGpu();
+  updateAccount();
   const id=state.user?.id||null;
   if(id!==activeUser){
    activeUser=id;
@@ -344,8 +333,7 @@ async function initWorkspace(){
   refreshUser();
   if(state.user&&autoRequest)startAuto();
  });
- document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkGpu();if(state.user)refresh().catch(()=>{});}});
- setInterval(()=>{if(!document.hidden)checkGpu();},45000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user)refresh().catch(()=>{});});
  async function startAuto(){
   if(!autoRequest||!draft||isBusy)return;
   if(!state.user){
