@@ -48,6 +48,16 @@
   if(header){
    const row=header.querySelector('.lig-head-start,.topbar-inner,.info-header-inner,.loox-appbar-inner,.nav-inner')||header;
    row.insertBefore(back,row.firstChild);
+   // Legacy tools rebuild their headers after loading their catalog. Restore Back
+   // without interfering with editor state or observing the whole document.
+   if(typeof MutationObserver==='function'){
+    const observer=new MutationObserver(()=>{
+     if(back.isConnected)return;
+     const latest=header.querySelector('.lig-head-start,.topbar-inner,.info-header-inner,.loox-appbar-inner,.nav-inner')||header;
+     latest.insertBefore(back,latest.firstChild);
+    });
+    observer.observe(header,{childList:true,subtree:true});
+   }
    return;
   }
   // Older tools without a header keep their editor layout intact.
