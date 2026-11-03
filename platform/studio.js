@@ -1,7 +1,7 @@
 import {el,button,field,msg,config,api,state,refresh,auth,pricing} from './account.js';
 
 const host=document.querySelector('[data-studio]'), tool=host.dataset.studio;
-const isText=tool==='generate',isMask=['erase','fill'].includes(tool),isUncrop=tool==='uncrop',isSwap=tool==='face_swap';
+const isText=tool==='generate'||tool==='generate_video',isMask=['erase','fill'].includes(tool),isUncrop=tool==='uncrop',isSwap=tool==='face_swap';
 const form=el('form',null,'lx-stack'),notice=el('p',null,'lx-note'),result=el('section',null,'lx-result');
 notice.setAttribute('role','status');const progress=el('progress');progress.setAttribute('aria-label','AI processing');progress.hidden=true;host.append(progress);host.append(form,notice,result);
 let source,sourceURL,imageSize,strokes=[],redo=[],current=null,requestId=null,busy=false,generation=0,available=false;
@@ -14,7 +14,7 @@ function select(parent,title,options){
 }
 function resetResult(){requestId=null;result.replaceChildren();}
 if(isText){
- const l=el('label','Describe your image','lx-field');prompt=el('textarea');prompt.rows=4;prompt.required=true;prompt.maxLength=1200;prompt.placeholder='A lantern-lit street reflected in the rain…';l.append(prompt);form.append(l,settings);
+ const l=el('label',tool==='generate_video'?'Describe your video':'Describe your image','lx-field');prompt=el('textarea');prompt.rows=4;prompt.required=true;prompt.maxLength=1200;prompt.placeholder='A lantern-lit street reflected in the rain…';l.append(prompt);form.append(l,settings);
  ratio=select(settings,'Aspect ratio',['1:1','16:9','9:16','4:3','3:4'].map(v=>[v,v]));
  seed=field(settings,'Seed (optional)','number',{min:'0',max:'2147483647',step:'1',placeholder:'Random'});
 }else{
@@ -76,20 +76,20 @@ if(tool==='fill'||isUncrop){
 form.addEventListener('dragover',e=>{if(!file)return;e.preventDefault();});
 form.addEventListener('drop',e=>{if(!file||busy)return;e.preventDefault();const f=e.dataTransfer.files[0];if(!f)return;const transfer=new DataTransfer();transfer.items.add(f);file.files=transfer.files;file.dispatchEvent(new Event('change'));});
 form.append(button('Reset workspace',()=>{if(busy)return;form.reset();source=null;imageSize=null;strokes=[];redo=[];if(sourceURL)URL.revokeObjectURL(sourceURL);sourceURL=null;if(scene)scene.hidden=true;resetResult();msg(notice,'');}));
-const run=el('button',isText?'Generate image':'Process image','lx-button lx-primary');run.type='submit';
+const run=el('button',tool==='generate_video'?'Generate video':isText?'Generate image':'Process image','lx-button lx-primary');run.type='submit';
 const cost=el('small','Checking service availability…');form.append(cost,run);
 const operation=()=>scale?scale.value:tool;
 function showCost(){const n=state.config?.operations.find(o=>o.id===operation())?.cost;cost.textContent=available&&n?n+' AI credits on success. Failed jobs release reserved credits.':'AI processing is awaiting service configuration. No credits will be used.';}
 config().then(c=>{available=c.ai;showCost();}).catch(()=>{showCost();});
 form.addEventListener('input',()=>{requestId=null;showCost();});
 function display(url){
- const img=el('img');img.alt='AI result';img.src=url;const frame=el('div',null,'lx-compare');frame.append(img);result.replaceChildren(el('h2','Your result'),frame);
+ const img=el(tool==='generate_video'?'video':'img');if(tool==='generate_video'){img.controls=true;img.playsInline=true;img.style.maxWidth='100%';}else img.alt='AI result';img.src=url;const frame=el('div',null,'lx-compare');frame.append(img);result.replaceChildren(el('h2','Your result'),frame);
  if(sourceURL){
   const before=el('img');before.src=sourceURL;before.alt='Original';before.className='lx-before';frame.append(before);
   const slide=field(result,'Before / after comparison','range',{min:0,max:100,value:50});
   const move=()=>before.style.clipPath='inset(0 '+(100-Number(slide.value))+'% 0 0)';slide.oninput=move;move();
  }
- result.append(button('Download PNG',async()=>{try{const response=await api('status',null,{id:lastJob});const r=await fetch(response.url);if(!r.ok)throw Error('Download unavailable.');const blob=URL.createObjectURL(await r.blob()),a=el('a');a.href=blob;a.download='loox-'+operation()+'.png';a.click();setTimeout(()=>URL.revokeObjectURL(blob),30000);}catch(e){msg(notice,e.message);}}));
+ result.append(button(tool==='generate_video'?'Download MP4':'Download PNG',async()=>{try{const response=await api('status',null,{id:lastJob});const r=await fetch(response.url);if(!r.ok)throw Error('Download unavailable.');const blob=URL.createObjectURL(await r.blob()),a=el('a');a.href=blob;a.download='loox-'+operation()+(tool==='generate_video'?'.mp4':'.png');a.click();setTimeout(()=>URL.revokeObjectURL(blob),30000);}catch(e){msg(notice,e.message);}}));
  if(isText)result.append(button('Regenerate',()=>form.requestSubmit()));
 }
 let lastJob;
