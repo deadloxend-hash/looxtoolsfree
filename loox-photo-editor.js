@@ -34,7 +34,7 @@ function cropPhoto(o,r,shiftX=0,shiftY=0){
 function cloneOverlay(o){return {...o,values:o.values?{...o.values}:undefined,blurMask:o.blurMask?clone(o.blurMask):undefined,points:o.points?.map(p=>({...p})),cache:null}}
 function snapshot(){return {canvasBackground:canvasBackground?{...canvasBackground}:null,resizeBackground,base:clone(base),mask:clone(mask),values:{...values},preset,frame:{...frame},overlays:overlays.map(cloneOverlay),selectedOverlay,resizeAnchor,resizePlacement:resizePlacement?{...resizePlacement}:null,resizeLast,photoBounds:photoBounds?{...photoBounds}:null,photoTransformSource,photoTransformMask,photoTransformSourceRect:photoTransformSourceRect?{...photoTransformSourceRect}:null}}
 function saveHistory(){if(!base)return;history.push(snapshot());while(history.length>Math.max(1,Math.min(10,Math.floor(24000000/(base.width*base.height)))))history.shift();future=[];updateHistory()}
-function restore(s){canvasBackground=s.canvasBackground?{...s.canvasBackground}:null;resizeBackground=s.resizeBackground||canvasBackground?.color||'#ffffff';base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(cloneOverlay);selectedOverlay=Math.min(s.selectedOverlay??-1,overlays.length-1);resizeAnchor=s.resizeAnchor||null;resizePlacement=s.resizePlacement?{...s.resizePlacement}:null;resizeLast=s.resizeLast||null;photoBounds=s.photoBounds?{...s.photoBounds}:null;photoTransformSource=s.photoTransformSource||null;photoTransformMask=s.photoTransformMask||null;photoTransformSourceRect=s.photoTransformSourceRect?{...s.photoTransformSourceRect}:null;selectedPhoto=null;photoResizeDrag=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();updateHistory()}
+function restore(s){canvasBackground=s.canvasBackground?{...s.canvasBackground}:null;resizeBackground=s.resizeBackground||canvasBackground?.color||'#ffffff';base=clone(s.base);mask=clone(s.mask);values={...s.values};preset=s.preset;frame={...(s.frame||{style:'none',color:'#ffffff',width:20})};overlays=(s.overlays||[]).map(cloneOverlay);selectedOverlay=Math.min(s.selectedOverlay??-1,overlays.length-1);selectedTextIndex=-1;resizeAnchor=s.resizeAnchor||null;resizePlacement=s.resizePlacement?{...s.resizePlacement}:null;resizeLast=s.resizeLast||null;photoBounds=s.photoBounds?{...s.photoBounds}:null;photoTransformSource=s.photoTransformSource||null;photoTransformMask=s.photoTransformMask||null;photoTransformSourceRect=s.photoTransformSourceRect?{...s.photoTransformSourceRect}:null;selectedPhoto=null;photoResizeDrag=null;crop=null;cropTarget='canvas';cropIndex=-1;syncCanvas();render();showPanel();updateHistory()}
 function updateHistory(){$('undo').disabled=!history.length;$('redo').disabled=!future.length}
 function undo(){if(!history.length||!base)return;future.push(snapshot());restore(history.pop())}
 function redo(){if(!future.length||!base)return;history.push(snapshot());restore(future.pop())}
@@ -629,7 +629,7 @@ function finishPhotoPointer(e){
  return true;
 }
 
-function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
+function load(file){if(!file)return;if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;selectedTextIndex=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();setStatus('Image loaded • full resolution')};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
 function triggerUpload(){$('fileInput').click()}
 function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);return b}
 function heading(s){const h=document.createElement('h3');h.textContent=s;panel.append(h)}
@@ -785,7 +785,7 @@ function filterThumbnail(name){
  tc.putImageData(out,0,0);return thumb.toDataURL('image/jpeg',.65);
 }
 function addAdjustment(k){const [name,min,max]=definitions[k],target=editTarget();control(name,min,max,k==='exposure'?.1:1,target?.values?.[k]??values[k],v=>{const current=editTarget();if(current){current.values={...current.values,[k]:v};current.cache=null}else values[k]=v;render()})}
-function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
+function resetImage(){if(!source)return;saveHistory();base=clone(source);mask=makeCanvas(base.width,base.height);photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;selectedTextIndex=-1;resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;zoom=1;syncCanvas();render();showPanel();setStatus('Original photo restored')}
 // Tap a text/heading/caption on the canvas to type directly over it.
 // Text updates the real layer; the textarea is a temporary editing control only.
 // Text is selectable independently of the photo layer and stays crisp while resizing.
@@ -796,14 +796,24 @@ textSelectionElement.innerHTML='<div class="text-layer-frame"><span class="text-
  ['nw','n','ne','e','se','s','sw','w'].map(h=>
   '<span class="text-layer-handle '+h+'" data-text-handle="'+h+'" role="button" tabindex="0" aria-label="Resize text from '+h+'"></span>').join('')+'</div>';
 $('dropzone').append(textSelectionElement);
+const textQuickToolbar=document.createElement('div');
+textQuickToolbar.className='text-quick-toolbar';
+textQuickToolbar.hidden=true;
+textQuickToolbar.setAttribute('role','toolbar');
+textQuickToolbar.setAttribute('aria-label','Selected text shortcuts');
+textQuickToolbar.innerHTML='<button type="button" data-text-action="edit" aria-label="Edit text" title="Edit text">✎<small>Edit</small></button>'+
+ '<button type="button" data-text-action="duplicate" aria-label="Duplicate text" title="Duplicate text">▣<small>Copy</small></button>'+
+ '<button type="button" data-text-action="delete" aria-label="Delete text" title="Delete text">⌫<small>Delete</small></button>'+
+ '<button type="button" data-text-action="move" aria-label="Hold and drag to move text" title="Hold and drag to move text">✥<small>Move</small></button>';
+$('dropzone').append(textQuickToolbar);
 let selectedTextIndex=-1,activeTextGesture=null,textPreviewFrame=0,textPreviewBackground=null;
 function positionTextSelection(preview){
  const o=overlays[selectedTextIndex],rect=preview||o&&o.type==='text'&&textLayerBounds(o);
- if(!base||!rect||crop||!o||o.visible===false||o.locked){
-  textSelectionElement.hidden=true;return;
+ if(!base||!rect||crop||!o||o.type!=='text'||o.visible===false||o.locked){
+  textSelectionElement.hidden=true;textQuickToolbar.hidden=true;return;
  }
  const b=canvas.getBoundingClientRect(),v=$('dropzone').getBoundingClientRect();
- if(!b.width||!b.height){textSelectionElement.hidden=true;return}
+ if(!b.width||!b.height){textSelectionElement.hidden=true;textQuickToolbar.hidden=true;return}
  textSelectionElement.hidden=false;
  textSelectionElement.classList.toggle('compact',rect.w*b.width/base.width<90||rect.h*b.height/base.height<90);
  Object.assign(textSelectionElement.style,{
@@ -814,6 +824,17 @@ function positionTextSelection(preview){
  });
  textSelectionElement.querySelector('.text-layer-size').textContent=
   Math.round(rect.w)+' × '+Math.round(rect.h)+' px';
+ textQuickToolbar.hidden=!inlineTextInput.hidden;
+ if(!textQuickToolbar.hidden){
+  const vp=$('dropzone'),w=Math.min(246,Math.max(160,vp.clientWidth-12));
+  const x=b.left-v.left+vp.scrollLeft+rect.x*b.width/base.width;
+  const y=b.top-v.top+vp.scrollTop+rect.y*b.height/base.height;
+  const rectWidth=rect.w*b.width/base.width,rectHeight=rect.h*b.height/base.height;
+  const left=clamp(x+rectWidth/2-w/2,vp.scrollLeft+6,Math.max(vp.scrollLeft+6,vp.scrollLeft+vp.clientWidth-w-6));
+  const proposed=y-66>=vp.scrollTop+6?y-66:y+rectHeight+10;
+  const top=clamp(proposed,vp.scrollTop+6,Math.max(vp.scrollTop+6,vp.scrollTop+vp.clientHeight-64));
+  Object.assign(textQuickToolbar.style,{left:left+'px',top:top+'px',width:w+'px'});
+ }
 }
 function selectTextLayer(i){
  selectedTextIndex=i;
@@ -924,7 +945,7 @@ function startTextGesture(e,i,mode='move'){
  activeTextGesture={id:e.pointerId,index:i,mode,from:pointerPosition(e),
   startClient:{x:e.clientX,y:e.clientY},bounds:textLayerBounds(o),original:start,next:start,
   moved:false,previewReady:false};
- try{e.target.setPointerCapture(e.pointerId)}catch{}
+ try{e.currentTarget.setPointerCapture(e.pointerId)}catch{}
  if(tab==='text'||tab==='layers')showPanel();
 }
 function moveTextGesture(e){
@@ -952,7 +973,7 @@ function finishTextGesture(e,cancel=false){
  }else{
   canvas.style.opacity='';gestureCanvas.hidden=true;
   positionTextSelection();
-  if(!cancel&&g.mode==='move')editTextInline(g.index);
+  if(!cancel&&g.mode==='move')setStatus('Text selected · tap Edit or drag Move');
  }
  return true;
 }
@@ -964,6 +985,38 @@ textSelectionElement.addEventListener('pointerdown',e=>{
 textSelectionElement.addEventListener('pointermove',e=>moveTextGesture(e));
 textSelectionElement.addEventListener('pointerup',e=>finishTextGesture(e));
 textSelectionElement.addEventListener('pointercancel',e=>finishTextGesture(e,true));
+textQuickToolbar.addEventListener('pointerdown',e=>{
+ if(e.target.closest('[data-text-action="move"]'))startTextGesture(e,selectedTextIndex,'move');
+});
+textQuickToolbar.addEventListener('pointermove',moveTextGesture);
+textQuickToolbar.addEventListener('pointerup',finishTextGesture);
+textQuickToolbar.addEventListener('pointercancel',e=>finishTextGesture(e,true));
+textQuickToolbar.addEventListener('click',e=>{
+ const action=e.target.closest('[data-text-action]')?.dataset.textAction,index=selectedTextIndex,o=overlays[index];
+ if(!action||!o||o.type!=='text'||o.locked||o.visible===false||crop)return;
+ if(action==='edit'){editTextInline(index);return}
+ if(action==='duplicate'){
+  if(!requireRoom(layerKind(o)))return;
+  saveHistory();const b=canvas.getBoundingClientRect();
+  const dx=Math.max(1,Math.round(18*base.width/Math.max(1,b.width)));
+  const dy=Math.max(1,Math.round(18*base.height/Math.max(1,b.height)));
+  overlays.push({...cloneOverlay(o),x:Math.round(o.x+dx),y:Math.round(o.y+dy)});
+  selectTextLayer(overlays.length-1);render();
+  if(tab==='text'||tab==='layers')showPanel();setStatus('Text duplicated');return;
+ }
+ if(action==='delete'){
+  saveHistory();overlays.splice(index,1);selectedTextIndex=-1;selectedOverlay=-1;
+  positionTextSelection();render();if(tab==='text'||tab==='layers')showPanel();setStatus('Text deleted');return;
+ }
+ if(action==='move')setStatus('Hold and drag Move to reposition text');
+});
+textQuickToolbar.addEventListener('keydown',e=>{
+ if(!e.target.closest('[data-text-action="move"]'))return;
+ const delta={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key],o=overlays[selectedTextIndex];
+ if(!delta||!o||o.type!=='text')return;
+ e.preventDefault();saveHistory();o.x+=delta[0]*(e.shiftKey?10:1);o.y+=delta[1]*(e.shiftKey?10:1);
+ render();setStatus('Text moved');
+});
 
 const inlineTextInput=document.createElement('textarea');
 inlineTextInput.className='photo-inline-text-editor';
