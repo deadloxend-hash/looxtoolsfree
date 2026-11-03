@@ -242,13 +242,14 @@ async function initWorkspace(){
   selectView('generate');
   setMessage(resumeId?'Restoring your pending image…':'Preparing a new generation…');
   isBusy=true;generateButton.disabled=true;ratioField.disabled=true;
-  const view=outputCard(prompt,ratio);
-  if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
+  let view=null;
   try{
    const id=resumeId||(await api('job',{
     operation:'generate',requestId:crypto.randomUUID(),prompt,ratio,...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
+   view=outputCard(prompt,ratio);
+   if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
    if(!resumeId){
     try{sessionStorage.setItem('loox-active-image-'+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
     await refresh().catch(()=>{});
@@ -257,7 +258,7 @@ async function initWorkspace(){
    }
    await poll(id,view,ratio);
   }catch(error){
-   showFailed(view,error.message||'Unable to complete the image.');
+   if(view)showFailed(view,error.message||'Unable to complete the image.');
    setMessage(error.message||'Generation could not start.',true);
    await refreshQuota();
   }finally{
