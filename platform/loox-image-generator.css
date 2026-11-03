@@ -22,12 +22,6 @@
 .lig-header .lx-username{display:none!important}
 .lig-header .lx-header-user{margin-left:auto}
 .lig-header .lx-button{padding:9px 12px}
-.lig-nav-scrim{position:fixed;inset:68px 0 0;background:#0009;z-index:35}
-.lig-drawer{position:fixed;left:10px;top:77px;width:min(295px,calc(100vw - 20px));max-height:calc(100dvh - 89px);overflow-y:auto;border:1px solid #474052;border-radius:20px;padding:16px;background:#1c1925;box-shadow:0 30px 80px #000b;z-index:36}
-.lig-drawer p{font-size:11px;letter-spacing:.14em;font-weight:800;color:#ad9fcb;margin:0 9px 12px}
-.lig-drawer a{display:flex;align-items:center;gap:13px;color:#ece7fa!important;text-decoration:none!important;font-size:14px;padding:13px;border-radius:11px}
-.lig-drawer a:hover{background:#342b46}
-.lig-drawer span{display:grid;place-items:center;width:26px;height:26px;font-weight:800;color:#c5a6ff}
 .lig-landing{background:radial-gradient(ellipse at 75% 18%,#2620394f,transparent 55%),#0b0b10}
 .lig-hero{max-width:1530px;margin:0 auto;min-height:min(750px,calc(100dvh - 70px));display:grid;grid-template-columns: minmax(0,1fr) minmax(0,1.03fr);gap:clamp(30px,5vw,96px);align-items:center;padding:clamp(48px,6.4vw,95px) clamp(24px,5.2vw,94px)}
 .lig-eyebrow{display:inline-flex;align-items:center;gap:9px;text-transform:uppercase;letter-spacing:.13em;font-size:11px;color:#b79cff;font-weight:850;margin:0 0 20px}
@@ -156,8 +150,6 @@
 .lig-header .lx-controls .lx-button{font-size:11px;padding:6px 8px}
 .lig-header .lx-balance{font-size:10px}
 .lig-header .lx-avatar{width:28px;height:28px}
-.lig-drawer{top:60px}
-.lig-nav-scrim{inset:60px 0 0}
 .lig-hero{padding:35px 17px 48px}
 .lig-hero h1{font-size:clamp(35px,9vw,52px)}
 .lig-hero-art{height:280px;border-radius:20px}
@@ -182,3 +174,65 @@
 .lig-compose textarea{min-height:48px;max-height:110px}
 }
 @media(prefers-reduced-motion:reduce){.lig-skeleton,.lig-spinner{animation:none}.lig-primary{transition:none}}
+
+
+/* Image generator uses the SAME AI-powered tools rail from loox-experience.js.
+   Its own drawer has been removed; these selectors only position the shared rail. */
+body.lig-shared-ai-nav .lig-header{
+ position:sticky!important;top:0;z-index:124!important;
+}
+body.lig-shared-ai-nav .lig-header .ai-nav-toggle{
+ width:40px!important;height:40px!important;min-width:40px!important;
+ flex:0 0 40px!important;display:inline-flex!important;
+ align-items:center!important;justify-content:center!important;
+ margin:0!important;border:1px solid transparent!important;border-radius:10px!important;
+ background:transparent!important;color:var(--lx-text,#eae6f5)!important;
+ box-shadow:none!important;font-size:21px!important;line-height:1!important;
+ cursor:pointer;
+}
+body.lig-shared-ai-nav .lig-header .ai-nav-toggle:hover,
+body.lig-shared-ai-nav .lig-header .ai-nav-toggle:focus-visible{
+ background:rgba(144,123,205,.18)!important;
+ border-color:rgba(144,123,205,.3)!important;
+}
+body.lig-shared-ai-nav .loox-rail{
+ top:var(--lig-ai-header-height,68px)!important;
+ bottom:0!important;left:0!important;width:min(280px,84vw)!important;
+ max-width:84vw;display:flex!important;position:fixed!important;z-index:122!important;
+ background:#121722!important;box-shadow:12px 0 36px #0008!important;
+ overflow-y:auto!important;
+ transform:translateX(0);opacity:1;visibility:visible;
+ transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s!important;
+}
+body.lig-shared-ai-nav.rail-hidden .loox-rail{
+ display:flex!important;transform:translateX(-105%)!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ transition:transform .34s cubic-bezier(.22,1,.36,1),opacity .24s ease,visibility 0s .34s!important;
+}
+body.lig-shared-ai-nav .loox-rail .loox-rail-head{display:none!important}
+body.lig-shared-ai-nav .loox-rail-list{padding:10px 8px!important;overflow-y:auto!important}
+body.lig-shared-ai-nav .loox-rail-group-title{display:block!important;font-size:9px!important}
+body.lig-shared-ai-nav .loox-rail-label{display:inline!important}
+body.lig-shared-ai-nav .loox-rail-link{
+ justify-content:flex-start!important;min-height:43px!important;
+ padding:7px 9px!important;font-size:12px!important
+}
+body.lig-shared-ai-nav .loox-rail-icon{min-width:27px!important}
+body.lig-shared-ai-nav .ai-shared-rail-backdrop{
+ position:fixed;z-index:121;inset:var(--lig-ai-header-height,68px) 0 0;
+ background:#05050bbb;backdrop-filter:blur(2px)
+}
+body.lig-shared-ai-nav .ai-shared-rail-backdrop[hidden]{display:none!important}
+body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
+@media(min-width:901px){body.lig-shared-ai-nav .loox-rail{width:280px!important}}
+@media(max-width:600px){
+ body.lig-shared-ai-nav .loox-rail-link{min-height:44px!important}
+}
+@media(max-width:900px){
+ body.lig-shared-ai-nav .ai-shared-rail-backdrop{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.lig-shared-ai-nav .loox-rail{transition:none!important}
+}
