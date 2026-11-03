@@ -1,5 +1,5 @@
 
-import {state,initialize,auth} from './platform/account.js?v=7';
+import {state,initialize,auth} from './account.js?v=7';
 const notice=document.getElementById('notice'),queue=document.getElementById('queue');
 const endpoint='https://looxtoolfree-backend.vercel.app/api/templates';
 async function request(action,body){
