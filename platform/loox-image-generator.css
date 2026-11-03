@@ -288,3 +288,10 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
  .lig-content-scroll{min-width:0}
  .lig-output,.lig-output-bottom,.lig-result-prompt{min-width:0;max-width:100%}
 }
+
+/* Center Templates and Generate against the full desktop viewport, not the remaining header space. */
+@media(min-width:681px){
+ .lig-header{position:relative}
+ .lig-head-tabs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);margin:0;flex:none;z-index:1}
+ .lig-head-start,.lig-header-user{position:relative;z-index:2}
+}
