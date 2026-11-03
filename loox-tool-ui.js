@@ -13,7 +13,7 @@
  header.className='loox-appbar';header.dataset.looxAppbar='true';
  header.innerHTML=
  '<div class="loox-appbar-inner">'+
-  '<a class="loox-app-brand" href="index.html" aria-label="LOOX Tools home"><span class="loox-app-mark">L</span><span><span class="loox-app-brand-name">LOOX<em>Tools</em></span><span class="loox-app-sub">FREE ONLINE WORKSPACE</span></span></a>'+
+  '<a class="loox-app-brand" href="ai-home.html" aria-label="LOOX AI home"><span class="loox-app-mark">L</span><span><span class="loox-app-brand-name">LOOX<em>Tools</em></span><span class="loox-app-sub">FREE ONLINE WORKSPACE</span></span></a>'+
   '<div class="loox-page-name"><small>TOOL WORKSPACE</small><strong></strong></div>'+
   '<div class="loox-app-actions"><a class="loox-back-link" href="index.html"><span aria-hidden="true">←</span> All tools</a>'+
    '<div class="loox-theme"><button class="loox-theme-trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Choose appearance"><span class="theme-glyph" aria-hidden="true">◐</span><span class="theme-label">Theme</span><span aria-hidden="true">⌄</span></button>'+
