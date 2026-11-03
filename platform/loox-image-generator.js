@@ -491,35 +491,51 @@ async function initWorkspace(){
   return card;
  }
  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&historyViewer)closeHistoryViewer();});
+
+ const mobileHistory=()=>window.matchMedia('(max-width:680px)').matches;
+ let historyBuffer=[],historyHasMore=false;
+ function updateHistoryMore(){
+  historyMore.hidden=!historyBuffer.length&&!historyHasMore;
+  historyMore.textContent='Load more';
+  historyHeading.textContent=historyOffset?historyOffset+' saved image'+(historyOffset===1?'':'s')+' shown':'Account-only history';
+ }
  async function loadHistory(reset=false){
   if(!state.user){
    historyHeading.textContent='Sign in to view images saved to your account.';
-   historyMore.hidden=true;
-   return;
+   historyMore.hidden=true;return;
   }
   if(historyLoading)return;
   historyLoading=true;
   if(reset){
-   historyOffset=0;
-   historyGrid.replaceChildren();
-   historyMore.hidden=true;
+   historyOffset=0;historyBuffer=[];historyHasMore=true;
+   historyGrid.replaceChildren();historyMore.hidden=true;
   }
   historyHeading.textContent='Loading your private images…';
+  const count=mobileHistory()?6:12;
   try{
-   const response=await api('gallery',null,{offset:String(historyOffset)});
-   const items=Array.isArray(response.items)?response.items:[];
-   if(!items.length&&historyOffset===0){
-    historyGrid.replaceChildren(create('p','lig-history-empty','Your completed image generations will appear here. They are private to this signed-in account.'));
-   }else{
-    items.forEach(item=>historyGrid.append(historyCard(item)));
+   let remaining=count;
+   while(remaining>0){
+    if(!historyBuffer.length){
+     if(!historyHasMore)break;
+     const response=await api('gallery',null,{offset:String(historyOffset+historyBuffer.length)});
+     const items=Array.isArray(response.items)?response.items:[];
+     historyBuffer.push(...items);
+     historyHasMore=Boolean(response.has_more);
+     if(!items.length){historyHasMore=false;break}
+    }
+    const batch=historyBuffer.splice(0,remaining);
+    batch.forEach(item=>historyGrid.append(historyCard(item)));
+    historyOffset+=batch.length;
+    remaining-=batch.length;
    }
-   historyOffset+=items.length;
-   historyMore.hidden=!response.has_more||historyOffset>240;
-   historyHeading.textContent=historyOffset?historyOffset+' saved image'+(historyOffset===1?'':'s')+' shown':'Account-only history';
+   if(!historyOffset){
+    historyGrid.replaceChildren(create('p','lig-history-empty','Your completed image generations will appear here. They are private to this signed-in account.'));
+   }
+   updateHistoryMore();
   }catch(err){
    historyHeading.textContent='Could not load image history.';
    if(!historyOffset)historyGrid.replaceChildren(create('p','lig-history-empty','Unable to load your saved images right now. Refresh or try again.'));
-  }finally{historyLoading=false;}
+  }finally{historyLoading=false}
  }
  historyMore.addEventListener('click',()=>loadHistory());
 
