@@ -128,7 +128,16 @@ async function initWorkspace(){
   stage.append(loading,overlay);
   const bottom=create('div','lig-output-bottom'),
         promptLabel=create('span','lig-prompt-label',prompt);
-  bottom.append(promptLabel);
+  const promptWrap=create('div','lig-result-prompt');
+  const promptToggle=create('button','lig-result-prompt-toggle','Show more');
+  promptToggle.type='button';promptToggle.setAttribute('aria-expanded','false');
+  promptWrap.append(promptLabel,promptToggle);
+  promptToggle.addEventListener('click',()=>{
+   const expanded=promptWrap.classList.toggle('is-expanded');
+   promptToggle.textContent=expanded?'Show less':'Show more';
+   promptToggle.setAttribute('aria-expanded',String(expanded));
+  });
+  bottom.append(promptWrap);
   card.append(top,stage,bottom);
   results.replaceChildren(card);
   const setStage=(label,sub)=>{
