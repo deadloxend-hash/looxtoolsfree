@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0b10">
+<meta name="description" content="Manage your LOOX AI profile, account security and workspace preferences.">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="same-origin">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.supabase.co; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<title>Account Settings | LOOX AI</title>
+<link rel="stylesheet" href="platform/platform.css?v=16">
+<link rel="stylesheet" href="platform/account-pages.css?v=1">
+<script type="module" src="platform/account-pages.js?v=1"></script>
+</head>
+<body class="lx-shell lp-page" data-settings-page>
+<header class="lx-header lp-header">
+ <a class="lp-brand" href="ai-home.html" aria-label="LOOX AI Home"><span class="lp-brand-mark">L</span><span>LOOX <b>AI</b></span></a>
+ <div data-loox-account></div>
+</header>
+<main class="lp-main lp-settings-main">
+ <a id="lp-back" class="lp-back" href="ai-home.html"><span aria-hidden="true">‹</span> Back</a>
+ <section class="lp-hero lp-settings-hero">
+  <div class="lp-kicker"><span class="lp-kicker-star" aria-hidden="true">⚙</span> YOUR ACCOUNT</div>
+  <h1>Account <span>settings.</span></h1>
+  <p>Manage your profile, security and preferences in one place.</p>
+ </section>
+ <section id="lp-settings-guest" class="lp-settings-guest" hidden>
+  <h2>Sign in to manage your account</h2>
+  <p>Profile and security settings are available after you sign in.</p>
+  <button type="button" id="lp-settings-login" class="lp-btn lp-btn-primary">Sign in</button>
+ </section>
+ <div id="lp-settings-loading" class="lp-loading" role="status">Loading your account…</div>
+ <div id="lp-settings-content" class="lp-settings-layout" hidden>
+  <nav class="lp-settings-nav" aria-label="Settings sections">
+   <a href="#profile">Profile</a>
+   <a href="#appearance">Appearance</a>
+   <a href="#security">Security</a>
+   <a href="#account-management">Account</a>
+  </nav>
+  <div class="lp-settings-sections">
+   <section id="profile" class="lp-settings-card">
+    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◎</span><div><h2>Profile</h2><p>Your display name is shown on your LOOX account.</p></div></div>
+    <form id="lp-profile-form" class="lp-form">
+     <label for="lp-display-name">Display name</label>
+     <input id="lp-display-name" name="name" type="text" maxlength="80" autocomplete="name" required>
+     <label for="lp-email">Email address</label>
+     <input id="lp-email" type="email" readonly aria-describedby="lp-email-help">
+     <small id="lp-email-help" class="lp-subtle">Your sign-in email is managed by your account provider.</small>
+     <div class="lp-form-actions"><button class="lp-btn lp-btn-primary" id="lp-profile-save" type="submit">Save changes</button><span id="lp-profile-status" class="lp-form-status" role="status"></span></div>
+    </form>
+   </section>
+   <section id="appearance" class="lp-settings-card">
+    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◐</span><div><h2>Appearance</h2><p>Choose your theme for LOOX pages that support appearance preferences.</p></div></div>
+    <label for="lp-theme">Theme</label>
+    <select id="lp-theme" class="lp-select"><option value="dark">Dark</option><option value="light">Light</option><option value="system">Use system setting</option></select>
+    <p id="lp-theme-status" class="lp-subtle" role="status">Preference is saved on this device.</p>
+   </section>
+   <section id="security" class="lp-settings-card">
+    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◇</span><div><h2>Security</h2><p>Keep your LOOX account protected.</p></div></div>
+    <div class="lp-setting-row"><div><strong>Password</strong><small>Request a password reset email if you want to change your password.</small></div><button id="lp-password-reset" type="button" class="lp-btn lp-btn-secondary">Reset password</button></div>
+   </section>
+   <section id="account-management" class="lp-settings-card">
+    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">☷</span><div><h2>Account management</h2><p>View your subscription and control your account.</p></div></div>
+    <div class="lp-setting-row"><div><strong>Subscription and credits</strong><small id="lp-plan-info">Manage your plan and credit balance.</small></div><a class="lp-btn lp-btn-secondary" href="account.html#subscription">View account</a></div>
+    <div class="lp-setting-row"><div><strong>Sign out</strong><small>End your session on this device.</small></div><button id="lp-sign-out" type="button" class="lp-btn lp-btn-secondary">Sign out</button></div>
+    <div class="lp-setting-row lp-setting-danger"><div><strong>Delete account</strong><small>This permanently removes your LOOX account, private outputs and remaining credits. Cancel recurring billing first.</small></div><button id="lp-delete-open" type="button" class="lp-btn lp-btn-danger">Delete account</button></div>
+   </section>
+  </div>
+ </div>
+ <footer class="lp-settings-footer"><a href="privacy-policy.html">Privacy Policy</a><a href="terms.html">Terms of Use</a><a href="help.html">Help Center</a></footer>
+</main>
+<dialog id="lp-delete-dialog" class="lp-delete-dialog" aria-labelledby="lp-delete-title">
+ <form id="lp-delete-form">
+  <h2 id="lp-delete-title">Permanently delete your LOOX account?</h2>
+  <p>This cannot be undone. Your private results, account credits and local billing history will be deleted. Cancel any paid subscription first.</p>
+  <label for="lp-delete-password">Confirm your password</label>
+  <input type="password" id="lp-delete-password" name="password" autocomplete="current-password" required>
+  <label class="lp-delete-confirm"><input id="lp-delete-agree" type="checkbox" required> I understand this action is permanent.</label>
+  <div id="lp-delete-status" role="alert" class="lp-form-status"></div>
+  <div class="lp-delete-actions"><button id="lp-delete-cancel" type="button" class="lp-btn lp-btn-secondary">Cancel</button><button id="lp-delete-confirm" type="submit" class="lp-btn lp-btn-danger">Permanently delete</button></div>
+ </form>
+</dialog>
+</body>
+</html>
