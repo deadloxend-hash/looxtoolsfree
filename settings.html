@@ -25,6 +25,18 @@
   <h1>Account <span>settings.</span></h1>
   <p>Manage your profile, security and preferences in one place.</p>
  </section>
+ <section id="workspace-preferences" class="lp-settings-card lp-workspace-settings">
+  <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◐</span><div><h2>Workspace preferences</h2><p>Customize the look and behavior of supported LOOX tools. These settings are stored on this device and do not require an account.</p></div></div>
+  <form id="lp-preferences-form" class="lp-pref-grid">
+   <label class="lp-pref-field" for="lp-theme">Appearance<select id="lp-theme" name="theme" class="lp-select"><option value="dark">Dark</option><option value="light">Light</option><option value="system">Use system setting</option></select></label>
+   <label class="lp-pref-field" for="lp-language">Language<select id="lp-language" name="language" class="lp-select"></select></label>
+   <label class="lp-pref-field" for="lp-accent">Accent color<input id="lp-accent" name="accent" type="color" value="#a791ff"></label>
+   <label class="lp-pref-field" for="lp-password-length">Default password length<input id="lp-password-length" name="passwordLength" type="number" min="12" max="128" value="24"></label>
+   <label class="lp-pref-field" for="lp-image-format">Default image export<select id="lp-image-format" name="imageFormat" class="lp-select"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>
+   <label class="lp-pref-field lp-pref-check" for="lp-live-preview"><input id="lp-live-preview" name="livePreview" type="checkbox" checked> Update text results while typing</label>
+   <div class="lp-pref-actions"><button type="submit" class="lp-btn lp-btn-primary">Save preferences</button><span id="lp-theme-status" role="status" class="lp-form-status">Preferences are stored on this device.</span></div>
+  </form>
+ </section>
  <section id="lp-settings-guest" class="lp-settings-guest" hidden>
   <h2>Sign in to manage your account</h2>
   <p>Profile and security settings are available after you sign in.</p>
@@ -34,7 +46,7 @@
  <div id="lp-settings-content" class="lp-settings-layout" hidden>
   <nav class="lp-settings-nav" aria-label="Settings sections">
    <a href="#profile">Profile</a>
-   <a href="#appearance">Appearance</a>
+   <a href="#workspace-preferences">Workspace</a>
    <a href="#security">Security</a>
    <a href="#account-management">Account</a>
   </nav>
@@ -49,12 +61,6 @@
      <small id="lp-email-help" class="lp-subtle">Your sign-in email is managed by your account provider.</small>
      <div class="lp-form-actions"><button class="lp-btn lp-btn-primary" id="lp-profile-save" type="submit">Save changes</button><span id="lp-profile-status" class="lp-form-status" role="status"></span></div>
     </form>
-   </section>
-   <section id="appearance" class="lp-settings-card">
-    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◐</span><div><h2>Appearance</h2><p>Choose your theme for LOOX pages that support appearance preferences.</p></div></div>
-    <label for="lp-theme">Theme</label>
-    <select id="lp-theme" class="lp-select"><option value="dark">Dark</option><option value="light">Light</option><option value="system">Use system setting</option></select>
-    <p id="lp-theme-status" class="lp-subtle" role="status">Preference is saved on this device.</p>
    </section>
    <section id="security" class="lp-settings-card">
     <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◇</span><div><h2>Security</h2><p>Keep your LOOX account protected.</p></div></div>
