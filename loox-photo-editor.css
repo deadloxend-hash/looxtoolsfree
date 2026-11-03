@@ -288,3 +288,31 @@
 #dropzone .canvas-transparency-backdrop{
  isolation:isolate;
 }
+
+
+/* Selected text action pill — touch-first, never included in image exports. */
+.text-quick-toolbar{
+ position:absolute;z-index:14;display:flex;align-items:stretch;justify-content:space-around;
+ gap:3px;height:58px;padding:5px;border:1px solid #9a74dc;
+ border-radius:18px;background:rgba(24,22,36,.97);color:#f9f5ff;
+ box-shadow:0 9px 26px #0009,0 0 0 1px #1a102d60;
+ pointer-events:auto;touch-action:manipulation;user-select:none;-webkit-user-select:none;
+}
+.text-quick-toolbar[hidden]{display:none!important}
+.text-quick-toolbar button{
+ display:flex;flex:1;min-width:0;align-items:center;justify-content:center;flex-direction:column;
+ gap:1px;border:0;border-radius:12px;padding:3px 2px;background:transparent;
+ color:inherit;font-size:23px;line-height:1;cursor:pointer;touch-action:manipulation;
+}
+.text-quick-toolbar button small{font-size:10px;line-height:13px;font-weight:600;color:#ddd2ef}
+.text-quick-toolbar button:hover,.text-quick-toolbar button:focus-visible{background:#6b4d9a;outline:none}
+.text-quick-toolbar [data-text-action="delete"]{color:#ffb5bd}
+.text-quick-toolbar [data-text-action="move"]{
+ background:#443064;color:#f3e4ff;cursor:grab;touch-action:none;
+}
+.text-quick-toolbar [data-text-action="move"]:active{cursor:grabbing;background:#7651b7}
+@media(max-width:767px){
+ .text-quick-toolbar{height:56px;padding:4px;border-radius:16px}
+ .text-quick-toolbar button{font-size:22px;min-height:44px}
+ .text-quick-toolbar button small{font-size:10px}
+}
