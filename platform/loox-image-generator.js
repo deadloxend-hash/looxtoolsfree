@@ -135,6 +135,51 @@ async function initWorkspace(){
  try {draft=sessionStorage.getItem(storageDraft)||'';} catch {}
  autoRequest=params.get('start')==='1'&&Boolean(draft.trim());
  if(draft)promptField.value=draft;
+ const templateEndpoint='https://looxtoolfree-backend.vercel.app/api/templates';
+ async function templateRequest(action,body){
+  const session=await state.client?.auth.getSession();
+  const token=session?.data?.session?.access_token;
+  if(!token)throw Error('Sign in to submit a template.');
+  const response=await fetch(templateEndpoint+'?action='+encodeURIComponent(action),{
+   method:body?'POST':'GET',credentials:'omit',
+   headers:{Authorization:'Bearer '+token,...(body?{'Content-Type':'application/json'}:{})},
+   body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(20000)
+  });
+  const data=await response.json().catch(()=>({}));
+  if(!response.ok)throw Error(data.error||'Template request failed.');
+  return data;
+ }
+ async function submitTemplate(id,button){
+  if(!confirm('Submit this image and its prompt to LOOX for review? If approved, both become publicly visible in Templates. You must own the rights to submit this image.'))return;
+  button.disabled=true;
+  try{
+   await templateRequest('submit',{job_id:id,consent:true});
+   button.textContent='Pending review';setMessage('Submitted! Your template will appear only after admin approval.');
+  }catch(error){button.disabled=false;setMessage(error.message,true);}
+ }
+ let templatesLoaded=false;
+ async function loadPublicTemplates(){
+  const grid=byId('lig-public-templates');
+  if(!grid)return;
+  grid.replaceChildren(create('p','lig-template-empty','Loading approved templates…'));
+  try{
+   const response=await fetch(templateEndpoint+'?action=public',{credentials:'omit',signal:AbortSignal.timeout(20000)});
+   const data=await response.json();if(!response.ok)throw Error(data.error||'Could not load templates.');
+   grid.replaceChildren();
+   if(!data.items?.length){grid.append(create('p','lig-template-empty','No approved community templates yet.'));return}
+   for(const item of data.items){
+    const card=create('article','lig-community-card'),image=create('img');
+    image.src=item.url;image.alt='Approved community template';image.loading='lazy';
+    const caption=create('p',null,item.prompt),use=create('button','lig-small-action','Use this prompt');
+    use.type='button';use.addEventListener('click',()=>{
+     promptField.value=item.prompt;selectView('generate');
+     location.hash='generate';promptField.focus();
+    });
+    card.append(image,caption,use);grid.append(card);
+   }
+   templatesLoaded=true;
+  }catch(error){grid.replaceChildren(create('p','lig-template-empty','Could not load templates. Try again later.'));}
+ }
  const price=()=>state.config?.operations?.find(o=>o.id==='generate')?.cost||3;
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
@@ -162,6 +207,7 @@ async function initWorkspace(){
  function selectView(view){
   const templates=view==='templates';
   generateView.hidden=templates;templatesView.hidden=!templates;composeWrap.hidden=templates;
+  if(templates)loadPublicTemplates();
   document.querySelectorAll('[data-lig-view]').forEach(el=>{
    el.classList.toggle('is-active',el.dataset.ligView===view);
    if(el.tagName==='BUTTON')el.setAttribute('aria-pressed',String(el.dataset.ligView===view));
@@ -273,7 +319,9 @@ async function initWorkspace(){
    promptField.focus();
    selectView('generate');
   });
-  view.bottom.append(reuse,download);
+  const submitButton=create('button','lig-small-action','Submit as Template');
+  submitButton.type='button';submitButton.addEventListener('click',()=>submitTemplate(id,submitButton));
+  view.bottom.append(reuse,download,submitButton);
  }
  async function poll(id,view,ratio){
   let consecutiveErrors=0;
@@ -392,7 +440,8 @@ async function initWorkspace(){
   actions.append(actionButton('Copy prompt',()=>copyPrompt(item.prompt||'')),
    actionButton('Use prompt',()=>useHistoryPrompt(item.prompt||'')),
    actionButton('Download PNG',()=>downloadHistoryImage(item.id)),
-   actionButton('Delete image',()=>deleteHistoryImage(item)));
+   actionButton('Delete image',()=>deleteHistoryImage(item)),
+   actionButton('Submit as Template',()=>submitTemplate(item.id,actions.lastElementChild)));
   details.append(heading,promptText,actions);
   panel.append(image,details,close);
   modal.append(shade,panel);
