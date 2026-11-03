@@ -215,8 +215,11 @@ function createRecentRow(t){
  row.className='ai-recent-item';row.dataset.id=t.id;
  const open=document.createElement('button');
  open.type='button';open.className='ai-recent-open';
- open.textContent=t.title||'Untitled conversation';
  open.title=t.title||'Open conversation';
+ const excerpt=document.createElement('span');
+ excerpt.className='ai-recent-title';
+ excerpt.textContent=t.title||'Conversation';
+ open.append(excerpt);
  const minor=document.createElement('small');
  minor.textContent=(t.model==='premium'?'Pro · ':'Free · ')+
   new Date(t.updated_at).toLocaleDateString();
@@ -283,13 +286,6 @@ async function sendMessage(message){
  const thinking=showThinking();note('LOOX AI is preparing your reply…');
  let id=currentThreadId;
  try{
-  if(!id){
-   const created=await historyRequest('create',{method:'POST',body:{model:chosen}});
-   id=created.thread?.id;
-   if(!id)throw Error('A new conversation could not be created.');
-   currentThreadId=id;
-   chatURLState(id);
-  }
   const token=await sessionToken();
   const response=await fetch(chatURL,{
    method:'POST',
@@ -301,12 +297,17 @@ async function sendMessage(message){
   if(data.usage)usage[chosen]=data.usage;
   if(!response.ok)throw Error(data.error||'LOOX AI could not answer.');
   const reply=String(data.reply||'').trim();
-  if(!reply)throw Error('LOOX AI returned an empty response.');
+  if(!reply||typeof data.threadId!=='string')throw Error('The reply was not saved. Please retry.');
+  // The backend only returns threadId after a successful, atomic save.
+  id=data.threadId;
+  currentThreadId=id;
+  chatURLState(id);
+  renderSelectedThread();
   messages.push({role:'assistant',text:reply});
   thinking.remove();
   note('LOOX AI is typing…');
+  void loadRecent(true);
   await animateReply(reply,id);
-  await loadRecent(true);
   quotaNote();
  }catch(error){
   thinking.remove();
