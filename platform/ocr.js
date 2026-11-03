@@ -1,4 +1,4 @@
-import {el,button,msg} from './account.js';
+import {el,button,msg} from './account.js?v=7';
 const host=document.querySelector('[data-ocr]');
 const file=el('input');file.type='file';file.accept='image/png,image/jpeg,image/webp';file.setAttribute('aria-label','Choose image for OCR');
 const preview=el('img');preview.alt='OCR source';preview.style.maxWidth='100%';preview.hidden=true;
