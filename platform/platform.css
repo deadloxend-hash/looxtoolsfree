@@ -139,3 +139,9 @@
  .lx-account-header .lx-upgrade{padding:6px 7px!important}
  .lx-account-header .lx-credit-label{font-size:10px}
 }
+
+/* Put account actions at the true right edge, not the old centered 1020px inset. */
+.lx-header:has(.lx-account-header){
+ width:100%!important;max-width:none!important;
+ padding-right:clamp(8px,1.4vw,24px)!important;
+}
