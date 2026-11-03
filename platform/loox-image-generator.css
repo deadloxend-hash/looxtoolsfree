@@ -367,3 +367,32 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
 .lig-template-confirm-overlay button:focus-visible{outline:2px solid #d8b6ff;outline-offset:3px}
 @media(max-width:480px){.lig-template-confirm-panel{padding:20px;border-radius:19px}.lig-template-confirm-heading h2{font-size:18px}.lig-template-confirm-actions{display:grid;grid-template-columns:1fr 1fr}.lig-template-confirm-actions button{padding:10px 8px}}
 @media(prefers-reduced-motion:no-preference){.lig-template-confirm-panel{animation:lig-template-pop .18s ease-out}@keyframes lig-template-pop{from{opacity:.6;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}}
+
+
+/* Fast gallery placeholders, creator identity and image detail viewer. */
+.lig-template-skeleton{aspect-ratio:3/4;border:1px solid #45384e;border-radius:17px;background:linear-gradient(110deg,#211a2a 8%,#382a43 18%,#211a2a 33%);background-size:250% 100%;animation:lig-template-shimmer 1.6s linear infinite}
+@keyframes lig-template-shimmer{to{background-position-x:-250%}}
+.lig-template-card-open{display:block;width:100%;height:100%;padding:0;border:0;background:none;text-align:left;color:inherit;cursor:pointer;font:inherit}
+.lig-template-card-open:focus-visible{outline:2px solid #d6b0ff;outline-offset:-3px}
+.lig-community-content{padding:12px}
+.lig-template-card-creator,.lig-template-creator{display:flex;align-items:center;gap:9px;min-width:0}
+.lig-template-avatar{display:grid;place-items:center;flex:0 0 31px;width:31px;height:31px;border:1px solid #9c6dd6;border-radius:50%;background:linear-gradient(135deg,#8e4cce,#382554);color:white;font-size:11px;font-weight:800}
+.lig-template-card-creator-info,.lig-template-creator-text{display:flex;flex-direction:column;min-width:0;gap:2px}
+.lig-template-card-creator-info strong,.lig-template-creator-text strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#f2eafa;font-size:12px}
+.lig-template-card-creator-info small,.lig-template-creator-text small{color:#b6a8c4;font-size:10px}
+.lig-community-card .lig-community-content p{padding:0;margin:11px 0;color:#e5d9ed;font-size:12px;line-height:1.5;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+.lig-template-card-view{display:inline-block;color:#d3b0ff;font-size:11px;font-weight:700}
+.lig-template-detail-overlay{position:fixed;inset:0;z-index:2147482000;display:grid;place-items:center;padding:16px;background:#08060cdd;backdrop-filter:blur(8px)}
+.lig-template-detail-panel{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(270px,340px);width:min(960px,100%);max-height:calc(100dvh - 32px);overflow:auto;border:1px solid #6a527d;border-radius:20px;background:#201b28;color:#f2eafa;box-shadow:0 20px 70px #000c}
+.lig-template-detail-image{display:block;width:100%;height:100%;max-height:calc(100dvh - 32px);min-height:240px;object-fit:contain;background:#0c0912}
+.lig-template-detail-body{display:flex;flex-direction:column;gap:16px;padding:55px 20px 24px;min-width:0}
+.lig-template-creator .lig-template-avatar{flex-basis:39px;width:39px;height:39px;font-size:13px}
+.lig-template-creator-text strong{font-size:15px}
+.lig-template-creator-text small{font-size:12px}
+.lig-template-detail-label{font-size:13px;color:#e7d5ff}
+.lig-template-detail-prompt{margin:0;max-height:35dvh;overflow:auto;overflow-wrap:anywhere;color:#d8cddd;font-size:13px;line-height:1.7;white-space:pre-wrap}
+.lig-template-detail-actions{display:flex;gap:10px;flex-wrap:wrap}
+.lig-template-detail-actions button{flex:1;min-width:120px}
+.lig-template-detail-close{position:absolute;right:12px;top:12px;z-index:2;display:grid;place-items:center;width:36px;height:36px;border:1px solid #665274;border-radius:50%;background:#21192bdd;color:white;font-size:23px;cursor:pointer}
+@media(max-width:700px){.lig-template-detail-panel{display:block}.lig-template-detail-image{height:auto;max-height:50dvh;min-height:0}.lig-template-detail-body{padding:17px;gap:13px}.lig-template-detail-prompt{max-height:23dvh}.lig-template-detail-overlay{padding:12px}.lig-community-content{padding:9px}.lig-template-card-creator{gap:6px}.lig-template-avatar{flex-basis:27px;width:27px;height:27px}.lig-template-card-creator-info strong{font-size:11px}.lig-template-card-creator-info small{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.lig-template-skeleton{animation:none}}
