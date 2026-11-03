@@ -6,26 +6,24 @@
  if(document.getElementById('loox-page-back'))return;
 
  const prefix=new URL('.',location.href).pathname;
- const here=location.pathname+location.search+location.hash;
- const lastKey='loox-last-visited-page';
  const destination=raw=>{
   if(!raw||raw.startsWith('//')||raw.includes('\\'))return null;
   try{
    const url=new URL(raw,location.href);
    if(url.origin!==location.origin||!url.pathname.startsWith(prefix))return null;
+   if(url.pathname===prefix)url.pathname+='index.html';
    if(url.pathname===location.pathname&&url.search===location.search)return null;
    if(!/\.html$/i.test(url.pathname))return null;
    return url.pathname+url.search+url.hash;
   }catch{return null;}
  };
+ // A tab's last visited tool is not necessarily this entry's predecessor.
+ // Prefer the browser's actual previous entry when available, then referrer.
+ let previous=null;
+ try{previous=destination(window.navigation?.entries().find(entry=>entry.index===window.navigation.currentEntry.index-1)?.url);}catch{}
  const referrer=destination(document.referrer);
- let stored=null;
- try{
-  stored=destination(sessionStorage.getItem(lastKey));
-  sessionStorage.setItem(lastKey,here);
- }catch{/* Private browsing can block storage. */}
- const fallback=new URL('index.html',location.href).pathname;
- const target=referrer||stored||fallback;
+ const fallback=new URL('ai-home.html',location.href).pathname;
+ const target=previous||referrer||fallback;
 
  const mount=()=>{
   if(document.getElementById('loox-page-back'))return;
@@ -38,7 +36,7 @@
   back.innerHTML='<span class="loox-page-back-arrow" aria-hidden="true">‹</span><span class="loox-page-back-label">Back</span>';
   back.addEventListener('click',event=>{
    if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
-   if(referrer&&history.length>1){
+   if(previous&&history.length>1){
     event.preventDefault();
     history.back();
    }
