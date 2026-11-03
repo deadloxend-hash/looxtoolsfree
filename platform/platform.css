@@ -145,3 +145,10 @@
  width:100%!important;max-width:none!important;
  padding-right:clamp(8px,1.4vw,24px)!important;
 }
+
+/* On compact AI image headers, reserve the upper-right corner for credits and profile. */
+@media(max-width:600px){
+ .lig-header .lig-page-name{display:none!important}
+ .lig-header .lig-head-start{flex:0 0 auto!important;gap:6px!important}
+ .lig-header .lig-header-user{margin-left:auto!important}
+}
