@@ -270,6 +270,9 @@ function stopQuickPreview(){
 let lastRenderedComposite=null;
 function render(){if(!base)return;if(sliderPreviewActive){++renderToken;queueQuickPreview();return}let token=++renderToken;requestAnimationFrame(()=>{
  if(token!==renderToken||!base)return;
+ // Do not interrupt a live photo drag or pinch with an older heavy redraw.
+ // A new full-quality frame is requested once all pointers are released.
+ if(photoGesture||activePhotoPointers.size||photoResizeDrag)return;
  try{const image=compose();lastRenderedComposite=image;
  if(canvas.width!==image.width||canvas.height!==image.height){canvas.width=image.width;canvas.height=image.height}
  ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(image,0,0);layoutCanvas();
@@ -624,6 +627,8 @@ const pointerDistance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function startPhotoPointer(e,keepSelection=false){
  if(!base||crop||brushActive||!selectedPhoto)return false;
  const existing=activePhotoPointers.size;
+ // Invalidate a pending full-quality render before making the preview visible.
+ ++renderToken;
  const previous=photoGesture;
  const previousRect=previous?(photoGestureRect(previous)||previous.last):null;
  activePhotoPointers.set(e.pointerId,{clientX:e.clientX,clientY:e.clientY});
@@ -681,7 +686,8 @@ function finishPhotoPointer(e){
    photoGesture={mode:'move',id,first:gesturePoint(p),start:r,last:r};
    queueGesturePreview(r);
   }else if(!activePhotoPointers.size){
-   photoGesture=null;clearGesturePreview();hideGesturePreview();
+   photoGesture=null;clearGesturePreview();
+   // Keep the last preview on screen until the full-resolution canvas is painted.
    const before=selectedPhotoRect();
    const changed=finalRect&&before&&['x','y','w','h'].some(k=>Math.abs(finalRect[k]-before[k])>=1);
    if(changed){
