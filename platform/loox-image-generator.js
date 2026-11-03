@@ -231,28 +231,105 @@ async function initWorkspace(){
    document.querySelectorAll('[data-template-job-id]').forEach(el=>{if(el.dataset.templateJobId===id)applyTemplateStatus(el,'pending');});setMessage('Submitted! Your template will appear only after admin approval.');
   }catch(error){applyTemplateStatus(button,templateStatuses.get(id));setMessage(error.message,true);}
  }
- let templatesLoaded=false;
- async function loadPublicTemplates(){
-  const grid=byId('lig-public-templates');
-  if(!grid)return;
-  grid.replaceChildren(create('p','lig-template-empty','Loading approved templates…'));
-  try{
-   const response=await fetch(templateEndpoint+'?action=template_public',{credentials:'omit',signal:AbortSignal.timeout(20000)});
-   const data=await response.json();if(!response.ok)throw Error(data.error||'Could not load templates.');
-   grid.replaceChildren();
-   if(!data.items?.length){grid.append(create('p','lig-template-empty','No approved community templates yet.'));return}
-   for(const item of data.items){
-    const card=create('article','lig-community-card'),image=create('img');
-    image.src=item.url;image.alt='Approved community template';image.loading='lazy';
-    const caption=create('p',null,item.prompt),use=create('button','lig-small-action','Use this prompt');
-    use.type='button';use.addEventListener('click',()=>{
-     promptField.value=item.prompt;selectView('generate');
-     location.hash='generate';promptField.focus();
-    });
-    card.append(image,caption,use);grid.append(card);
+ const templateGalleryCacheKey='loox-approved-templates-v2';
+ let cachedTemplates=null,templatesFetchedAt=0,templatesPromise=null;
+ try{
+  const cached=JSON.parse(sessionStorage.getItem(templateGalleryCacheKey)||'null');
+  if(cached&&Date.now()-cached.time<240000&&Array.isArray(cached.items)){
+   cachedTemplates=cached.items;templatesFetchedAt=cached.time;
+  }
+ }catch{}
+ function templateDate(value){
+  const date=new Date(value);
+  return Number.isNaN(date.getTime())?'Date unavailable':date.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+ }
+ function templateAvatar(name){
+  const initials=String(name||'LOOX member').trim().split(/\\s+/).slice(0,2).map(s=>s[0]||'').join('').toUpperCase()||'L';
+  const avatar=create('span','lig-template-avatar',initials);
+  avatar.setAttribute('aria-label',name||'LOOX member');return avatar;
+ }
+ function openTemplateDetails(item){
+  const overlay=create('div','lig-template-detail-overlay');
+  const panel=create('section','lig-template-detail-panel');
+  panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
+  panel.setAttribute('aria-label','Community template details');
+  const image=create('img','lig-template-detail-image');image.src=item.url;image.alt='Community template';
+  const body=create('div','lig-template-detail-body');
+  const creator=create('div','lig-template-creator');
+  const who=create('div','lig-template-creator-text');
+  who.append(create('strong',null,item.creator_name||'LOOX member'),create('small',null,'Submitted '+templateDate(item.submitted_at)));
+  creator.append(templateAvatar(item.creator_name),who);
+  const promptTitle=create('strong','lig-template-detail-label','Generation prompt');
+  const prompt=create('p','lig-template-detail-prompt',item.prompt||'No prompt available');
+  const actions=create('div','lig-template-detail-actions');
+  const copy=create('button','lig-small-action','Copy prompt');
+  copy.type='button';copy.addEventListener('click',async()=>{
+   try{await navigator.clipboard.writeText(item.prompt||'');copy.textContent='Copied!';}
+   catch{promptField.value=item.prompt||'';copy.textContent='Added to editor';}
+  });
+  const use=create('button','lig-small-action','Use this prompt');use.type='button';
+  const close=create('button','lig-template-detail-close','×');close.type='button';close.setAttribute('aria-label','Close template');
+  const previous=document.activeElement,overflow=document.body.style.overflow;
+  const dismiss=()=>{overlay.remove();document.body.style.overflow=overflow;previous?.focus?.()};
+  close.addEventListener('click',dismiss);
+  use.addEventListener('click',()=>{promptField.value=item.prompt||'';dismiss();selectView('generate');location.hash='generate';promptField.focus()});
+  overlay.addEventListener('click',e=>{if(e.target===overlay)dismiss()});
+  overlay.addEventListener('keydown',e=>{
+   if(e.key==='Escape'){e.preventDefault();dismiss()}
+   if(e.key==='Tab'){
+    const controls=[close,copy,use],index=controls.indexOf(document.activeElement);
+    if(e.shiftKey&&index<=0){e.preventDefault();use.focus()}
+    else if(!e.shiftKey&&index===2){e.preventDefault();close.focus()}
    }
-   templatesLoaded=true;
-  }catch(error){grid.replaceChildren(create('p','lig-template-empty','Could not load templates. Try again later.'));}
+  });
+  actions.append(copy,use);body.append(creator,promptTitle,prompt,actions);
+  panel.append(image,body,close);overlay.append(panel);
+  document.body.append(overlay);document.body.style.overflow='hidden';close.focus();
+ }
+ function renderPublicTemplates(items){
+  const grid=byId('lig-public-templates');if(!grid)return;
+  grid.replaceChildren();
+  if(!items.length){grid.append(create('p','lig-template-empty','No approved community templates yet.'));return}
+  for(const item of items){
+   const card=create('article','lig-community-card');
+   const open=create('button','lig-template-card-open');open.type='button';
+   open.setAttribute('aria-label','View template by '+(item.creator_name||'LOOX member'));
+   const image=create('img');image.src=item.url;image.alt='Approved community template';image.loading='lazy';
+   const content=create('div','lig-community-content');
+   const creator=create('div','lig-template-card-creator');
+   const info=create('div','lig-template-card-creator-info');
+   info.append(create('strong',null,item.creator_name||'LOOX member'),create('small',null,templateDate(item.submitted_at)));
+   creator.append(templateAvatar(item.creator_name),info);
+   const caption=create('p',null,item.prompt||'');
+   const view=create('span','lig-template-card-view','View image & prompt');
+   content.append(creator,caption,view);open.append(image,content);card.append(open);grid.append(card);
+   open.addEventListener('click',()=>openTemplateDetails(item));
+  }
+ }
+ async function loadPublicTemplates(){
+  const grid=byId('lig-public-templates');if(!grid)return;
+  if(cachedTemplates)renderPublicTemplates(cachedTemplates);
+  else if(!grid.querySelector('.lig-community-card')){
+   grid.replaceChildren();
+   for(let i=0;i<4;i++){
+    const skeleton=create('div','lig-template-skeleton');
+    skeleton.setAttribute('aria-label','Loading template');grid.append(skeleton);
+   }
+  }
+  if(templatesPromise)return templatesPromise;
+  if(cachedTemplates&&Date.now()-templatesFetchedAt<45000)return;
+  templatesPromise=(async()=>{
+   try{
+    const response=await fetch(templateEndpoint+'?action=template_public',{credentials:'omit',signal:AbortSignal.timeout(20000)});
+    const data=await response.json();if(!response.ok)throw Error(data.error||'Could not load templates.');
+    cachedTemplates=data.items||[];templatesFetchedAt=Date.now();
+    try{sessionStorage.setItem(templateGalleryCacheKey,JSON.stringify({time:templatesFetchedAt,items:cachedTemplates}))}catch{}
+    renderPublicTemplates(cachedTemplates);
+   }catch(error){
+    if(!cachedTemplates)grid.replaceChildren(create('p','lig-template-empty','Could not load templates. Please try again.'));
+   }finally{templatesPromise=null}
+  })();
+  return templatesPromise;
  }
  const price=()=>state.config?.operations?.find(o=>o.id==='generate')?.cost||3;
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
