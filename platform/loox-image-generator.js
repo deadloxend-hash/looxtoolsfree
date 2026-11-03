@@ -248,6 +248,12 @@ async function initWorkspace(){
     operation:'generate',requestId:crypto.randomUUID(),prompt,ratio,...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
+   // A newly accepted request starts a fresh preview. Completed images remain in account history.
+   if(!resumeId){
+    results.replaceChildren();
+    if(promptField.value.trim()===prompt)promptField.value='';
+    await loadHistory(true);
+   }
    view=outputCard(prompt,ratio);
    if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
    if(!resumeId){
