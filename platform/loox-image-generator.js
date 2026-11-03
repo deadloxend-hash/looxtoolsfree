@@ -384,8 +384,20 @@ async function initWorkspace(){
    ['trash','Delete',()=>deleteHistoryImage(item)]
   ];
   for(const [symbol,label,fn] of actions){
-   const b=create('button','lig-history-tool',label==='View'?'◉':label==='Copy prompt'?'⧉':label==='Use prompt'?'✎':label==='Download'?'↓':'×');
-   b.type='button';b.title=label;b.setAttribute('aria-label',label);
+   const b=create('button','lig-history-tool lig-history-tool-'+symbol);
+   const paths={
+    eye:'<circle cx="11" cy="11" r="8"/><circle cx="11" cy="11" r="3"/>',
+    copy:'<rect x="8" y="8" width="11" height="11" rx="2"/><path d="M15 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h3"/>',
+    pencil:'<path d="m12 19 7-7 3 3-7 7-4 1 1-4Z"/><path d="m16 15 3 3"/>',
+    download:'<path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/>',
+    trash:'<path d="M4 7h16M10 7V4h4v3M6 7l1 14h10l1-14M10 11v6m4-6v6"/>'
+   };
+   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+   svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('width','18');svg.setAttribute('height','18');
+   svg.setAttribute('fill','none');svg.setAttribute('stroke','currentColor');svg.setAttribute('stroke-width','1.8');
+   svg.setAttribute('stroke-linecap','round');svg.setAttribute('stroke-linejoin','round');
+   svg.innerHTML=paths[symbol];
+   b.append(svg);b.type='button';b.title=label;b.setAttribute('aria-label',label);
    b.addEventListener('click',fn);tools.append(b);
   }
   card.append(preview,tools,info);
