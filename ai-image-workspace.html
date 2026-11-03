@@ -9,8 +9,8 @@
 <meta name="description" content="Private account-based FLUX Schnell image generator with landscape and portrait formats, history, credits and a LOOX PC GPU worker.">
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-image-workspace.html">
 <link rel="stylesheet" href="platform/platform.css?v=9">
-<link rel="stylesheet" href="platform/loox-image-generator.css?v=1">
-<script type="module" src="platform/loox-image-generator.js?v=1"></script>
+<link rel="stylesheet" href="platform/loox-image-generator.css?v=2">
+<script type="module" src="platform/loox-image-generator.js?v=2"></script>
 </head>
 <body class="lx-shell lig-body" data-loox-generator="workspace">
 <header class="lx-header lig-header">
@@ -41,11 +41,11 @@
  <aside class="lig-settings" aria-label="AI generation settings">
   <div class="lig-settings-head"><h2>General settings</h2><span class="lig-setting-tag">LOOX Studio</span></div>
   <div class="lig-setting-block">
-   <div class="lig-row-label"><label for="lig-model">Model</label><span class="lig-setting-tag">Local PC</span></div>
+   <div class="lig-row-label"><label for="lig-model">Model</label></div>
    <select id="lig-model" aria-label="Image model">
     <option selected value="flux">FLUX.1 Schnell</option>
    </select>
-   <p class="lig-help">Image generation runs on the LOOX ComfyUI GPU worker. Other models and reference-image uploads are not enabled for this workflow.</p>
+   <p class="lig-help">FLUX.1 Schnell is currently the available model. Reference images are not supported yet.</p>
   </div>
   <div class="lig-setting-block">
    <label for="lig-ratio">Aspect ratio</label>
@@ -62,7 +62,6 @@
    <strong id="lig-credits">Loading…</strong>
    <small id="lig-credit-cost">Checking image cost…</small>
   </div>
-  <div id="lig-gpu" class="lig-gpu" data-state="checking"><span class="lig-led" aria-hidden="true"></span><span id="lig-gpu-text">Checking local GPU…</span></div>
  </aside>
  <section class="lig-main" aria-label="LOOX image creative workspace">
   <div class="lig-content-scroll" id="lig-generate-view">
