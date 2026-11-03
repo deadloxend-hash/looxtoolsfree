@@ -285,14 +285,21 @@ function fitPhotoRect(r){
  const y=clamp(Math.round(r.y),visibleY-h,base.height-visibleY);
  return {x,y,w,h};
 }
+// Keep magnetic snapping within 3 visible screen pixels at any canvas zoom or image resolution.
+function photoSnapTolerance(){
+ const bounds=canvas.getBoundingClientRect();
+ return {
+  x:3*base.width/Math.max(1,bounds.width||base.width),
+  y:3*base.height/Math.max(1,bounds.height||base.height)
+ };
+}
 // Magnetic canvas-edge snapping for selected photos (base or photo overlays).
 // Works from below and above canvas size, without changing the canvas dimensions.
 // Uniform scaling keeps aspect ratio; freeform handles can snap each axis.
 function snapPhotoRect(request,uniform=false){
  if(!base)return request;
  const wCanvas=base.width,hCanvas=base.height;
- const tolX=Math.max(8,Math.min(80,wCanvas*.055));
- const tolY=Math.max(8,Math.min(120,hCanvas*.055));
+ const {x:tolX,y:tolY}=photoSnapTolerance();
  let r=fitPhotoRect(request);
  const nearLeft=Math.abs(r.x)<=tolX;
  const nearRight=Math.abs(r.x+r.w-wCanvas)<=tolX;
@@ -328,8 +335,7 @@ function snapPhotoRect(request,uniform=false){
 function snapMovedPhotoRect(request){
  if(!base)return request;
  const r=fitPhotoRect(request);
- const tolX=Math.max(8,Math.min(80,base.width*.055));
- const tolY=Math.max(8,Math.min(120,base.height*.055));
+ const {x:tolX,y:tolY}=photoSnapTolerance();
  const leftDistance=Math.abs(r.x);
  const rightDistance=Math.abs(r.x+r.w-base.width);
  const topDistance=Math.abs(r.y);
