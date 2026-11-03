@@ -51,6 +51,19 @@ async function initWorkspace(){
  const historyMore=byId('lig-history-more'),historyHeading=byId('lig-history-message');
  const generateView=byId('lig-generate-view'),templatesView=byId('lig-templates-view');
  const composeWrap=byId('lig-compose-wrap');
+ const mainWorkspace=composeWrap.parentElement,historySection=byId('lig-history-grid')?.closest('.lig-history');
+ // Keep the desktop composer where it is; on phones it belongs between the
+ // current generated image and the recent generations.
+ function positionMobileComposer(){
+  if(!historySection)return;
+  if(window.matchMedia('(max-width:680px)').matches){
+   if(composeWrap.nextElementSibling!==historySection)historySection.before(composeWrap);
+  }else if(composeWrap.parentElement!==mainWorkspace){
+   mainWorkspace.append(composeWrap);
+  }
+ }
+ positionMobileComposer();
+ window.addEventListener('resize',positionMobileComposer);
  let isBusy=false,activeUser=null,historyOffset=0,historyLoading=false,autoRequest=false;
  let currentGenerationId=null;
  const params=new URLSearchParams(location.search);
@@ -314,7 +327,8 @@ async function initWorkspace(){
   shade.addEventListener('click',closeHistoryViewer);
   actions.append(actionButton('Copy prompt',()=>copyPrompt(item.prompt||'')),
    actionButton('Use prompt',()=>useHistoryPrompt(item.prompt||'')),
-   actionButton('Download PNG',()=>downloadHistoryImage(item.id)));
+   actionButton('Download PNG',()=>downloadHistoryImage(item.id)),
+   actionButton('Delete image',()=>deleteHistoryImage(item)));
   details.append(heading,promptText,actions);
   panel.append(image,details,close);
   modal.append(shade,panel);
