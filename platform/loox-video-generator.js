@@ -21,6 +21,18 @@ const generationView=$('lvg-generate-view'),templatesView=$('lvg-templates-view'
 const composer=$('lvg-compose-wrap');
 let busy=false,online=false,knownUser=null,historyOffset=0,historyLoading=false,lastGpuCheck=0;
 const cost=()=>state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8;
+const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
+costLabel.insertAdjacentElement('afterend',quotaLabel);
+let remainingVideos=null;
+async function refreshQuota(){
+  if(!state.user){remainingVideos=null;quotaLabel.textContent='Daily videos: 30/day · sign in to view';return;}
+  try{
+    const data=await api('quota');
+    remainingVideos=data.remaining.generate_video;
+    quotaLabel.textContent='Videos left today: '+remainingVideos+' / '+data.limit+' · resets 00:00 UTC';
+  }catch{quotaLabel.textContent='Daily videos: 30/day · allowance temporarily unavailable';}
+}
+
 function notice(text,error=false){
   message.textContent=text||'';
   message.style.color=error?'#ffb6bc':'';
@@ -187,6 +199,8 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   if(!prompt||prompt.length>800){notice('Write a video prompt of 1–800 characters.',true);return;}
   if(!state.user){notice('Sign in to generate videos.');auth('login');return;}
   if(!resumeId){
+    await refreshQuota();
+    if(remainingVideos===0){notice('You have used all 30 video generations today. Resets at 00:00 UTC.',true);return;}
     await checkGPU();
     if(!online){notice('Your PC GPU is offline. Run ComfyUI and the LOOX worker, then try again.',true);return;}
     if(state.account?.wallet && state.account.wallet.balance<cost()){
@@ -204,12 +218,13 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     if(!id)throw Error('The backend did not return a video job ID.');
     if(!resumeId){
       try{sessionStorage.setItem(storageKey+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
-      await refresh().catch(()=>{});accountInfo();
+      await refresh().catch(()=>{});accountInfo();await refreshQuota();
     }
     await poll(id,view);
   }catch(error){
     showError(view,error.message||'Unable to generate video.');
     notice(error.message||'Unable to generate video.',true);
+    await refreshQuota();
   }finally{
     busy=false;ratioField.disabled=false;refreshButton();
   }
@@ -258,6 +273,7 @@ async function loadHistory(reset=false){
 historyMore.addEventListener('click',()=>loadHistory());
 async function changeUser(){
   accountInfo();
+  refreshQuota().catch(()=>{});
   const id=state.user?.id||null;
   if(id!==knownUser){
     knownUser=id;historyOffset=0;historyGrid.replaceChildren();
@@ -271,6 +287,7 @@ document.addEventListener('loox-user',()=>{changeUser().catch(()=>{});});
 document.addEventListener('visibilitychange',()=>{
   if(!document.hidden&&state.user){
     refresh().catch(()=>{});
+    refreshQuota().catch(()=>{});
     if(Date.now()-lastGpuCheck>15000)checkGPU().catch(()=>{});
   }
 });
