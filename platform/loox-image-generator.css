@@ -359,8 +359,8 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
 .lig-template-confirm-description{margin:20px 0 16px;color:#d0c4dd;font-size:14px;line-height:1.65}
 .lig-template-confirm-note{display:flex;align-items:flex-start;gap:10px;padding:12px 13px;border:1px solid #59486b;border-radius:12px;background:#332740;color:#e6d7f4;font-size:12px;line-height:1.5}
 .lig-template-confirm-note>span:first-child{color:#d1a6ff;font-weight:800}
-.lig-template-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:23px}
-.lig-template-confirm-actions button{min-height:43px;padding:10px 17px;border-radius:12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.lig-template-confirm-actions{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:23px;width:100%}
+ .lig-template-confirm-actions button{flex:1 1 0;max-width:190px;min-width:0;min-height:43px;padding:10px 17px;border-radius:12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .lig-template-confirm-cancel{border:1px solid #695779;background:#2a2333;color:#f0e8f7}
 .lig-template-confirm-submit{border:1px solid #a87cd9;background:#7951ae;color:#fff}
 .lig-template-confirm-submit:hover{background:#8d61c6}
