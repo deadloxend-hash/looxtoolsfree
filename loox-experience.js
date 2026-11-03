@@ -10,7 +10,7 @@
  let language=supportedCodes.has(new URLSearchParams(location.search).get('lang'))?new URLSearchParams(location.search).get('lang'):read('loox-language','en');
  if(!supportedCodes.has(language))language='en';
  const homePage=file==='index.html';
- const aiSharedDialog=document.body.classList.contains('ai-home')||document.body.classList.contains('ai-chat');
+ const aiSharedDialog=document.body.classList.contains('ai-home')||document.body.classList.contains('ai-chat')||document.body.classList.contains('lig-shared-ai-nav');
  const railPage=homePage||aiSharedDialog;
  let sidebarVisible=homePage&&!matchMedia('(max-width:900px)').matches&&read('loox-home-sidebar-visible','true')!=='false';
  if(!aiSharedDialog)document.body.classList.add(homePage?'loox-home-rail':'loox-no-rail');
