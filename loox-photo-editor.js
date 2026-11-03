@@ -1211,6 +1211,90 @@ function showLayerControls(kind){
 }
 function colorField(name,value,onChange){const color=document.createElement('input');color.type='color';color.value=value;color.onfocus=()=>saveHistory();color.oninput=()=>onChange(color.value);const label=document.createElement('label');label.className='field';label.textContent=name+' ';label.append(color);panel.append(label)}
 function setBrush(s){brushSize=s;brushActive=true;showPanel();setStatus('Blur brush active')}
+
+// Filter selection is temporary until confirmed. Only ✓ creates undo history.
+let filterSession=null,filterCategory='Natural';
+const filterSheet=$('filterSheet'),filterChoices=$('filterChoices'),filterCategories=$('filterCategories');
+const filterDisplayName=id=>FILTER_LABELS[id]||id.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,c=>c.toUpperCase());
+function setPreviewPreset(target,name){
+ if(target){target.preset=name;target.cache=null}else preset=name;
+ render();
+}
+function renderFilterChoices(){
+ if(!filterSession)return;
+ filterCategories.replaceChildren();
+ for(const category of Object.keys(FILTER_GROUPS)){
+  const btn=button(category,()=>{filterCategory=category;renderFilterChoices()});
+  btn.className='filter-category'+(category===filterCategory?' active':'');
+  btn.setAttribute('aria-pressed',String(category===filterCategory));filterCategories.append(btn);
+ }
+ filterChoices.replaceChildren();
+ for(const name of FILTER_GROUPS[filterCategory]){
+  const b=button('',()=>previewFilter(name));
+  b.className='filter-choice'+(name===filterSession.choice?' active':'');
+  b.setAttribute('aria-label',filterDisplayName(name)+' filter');
+  b.setAttribute('aria-pressed',String(name===filterSession.choice));
+  const image=document.createElement('img');image.alt='';image.draggable=false;
+  image.src=filterThumbnail(name);
+  const label=document.createElement('span');label.textContent=filterDisplayName(name);
+  b.append(image,label);filterChoices.append(b);
+ }
+ filterChoices.scrollLeft=0;
+ $('filterHelp').textContent=filterSession.choice==='original'?
+  'Original removes the filter; Adjust settings remain.':
+  'Previewing '+filterDisplayName(filterSession.choice)+' · tap ✓ to apply';
+}
+function previewFilter(name){
+ if(!filterSession||!Object.prototype.hasOwnProperty.call(presets,name))return;
+ filterSession.choice=name;
+ setPreviewPreset(filterSession.target,name);
+ [...filterChoices.children].forEach((b,index)=>{
+  const selected=FILTER_GROUPS[filterCategory][index]===name;
+  b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));
+ });
+ $('filterHelp').textContent=name==='original'?'Original removes the filter; Adjust settings remain.':
+  'Previewing '+filterDisplayName(name)+' · tap ✓ to apply';
+}
+function openFilters(){
+ if(!base){setStatus('Open a photo before choosing filters');triggerUpload();return}
+ const selected=selectedImage();
+ if(selected&&(selected.locked||selected.visible===false)){
+  setStatus('Unlock and show this photo layer before filtering');return;
+ }
+ if(crop){crop=null;cropTarget='canvas';cropIndex=-1;positionCrop()}
+ if(!inlineTextInput.hidden)closeInlineTextEditor();
+ if(sliderPreviewActive)stopQuickPreview();
+ closeDrawer();
+ const target=editTarget(),original=target?(target.preset||'original'):preset;
+ const found=Object.keys(FILTER_GROUPS).find(c=>FILTER_GROUPS[c].includes(original));
+ filterSession={target,original,choice:original,returnTab:tab};
+ filterCategory=found||'Natural';
+ filterSheet.hidden=false;document.querySelector('.app').classList.add('filter-open');
+ tab='filters';
+ document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab==='filters'));
+ showPanel();renderFilterChoices();layoutCanvas();
+}
+function finishFilters(apply){
+ const session=filterSession;if(!session)return;
+ const next=session.choice;
+ // Capture the pre-preview filter for undo, then set the confirmed filter.
+ if(apply&&next!==session.original){
+  if(session.target){session.target.preset=session.original;session.target.cache=null}
+  else preset=session.original;
+  saveHistory();
+ }
+ if(session.target){session.target.preset=apply?next:session.original;session.target.cache=null}
+ else preset=apply?next:session.original;
+ filterSession=null;filterSheet.hidden=true;
+ document.querySelector('.app').classList.remove('filter-open');
+ tab=session.returnTab==='filters'?'tools':session.returnTab;
+ document.querySelectorAll('[data-tab]').forEach(e=>e.classList.toggle('active',e.dataset.tab===tab));
+ showPanel();layoutCanvas();render();
+ setStatus(apply?(next==='original'?'Filter removed':filterDisplayName(next)+' filter applied'):'Filter preview cancelled');
+}
+$('filterApply').addEventListener('click',()=>finishFilters(true));
+$('filterCancel').addEventListener('click',()=>finishFilters(false));
+
 function selectTab(t){
  if(filterSession){if(t==='filters')return;finishFilters(false)}
  if(sliderPreviewActive)stopQuickPreview();
