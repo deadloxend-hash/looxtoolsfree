@@ -1,4 +1,4 @@
-import {state,config,api,auth,refresh,signOut} from './account.js';
+import {state,config,api,auth,refresh,signOut} from './account.js?v=7';
 
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{
@@ -163,16 +163,46 @@ if(document.body.hasAttribute('data-settings-page')){
    setStatus(status,error?.message||'Could not save your profile.',true);
   }finally{btn.disabled=false;}
  });
- const theme=byId('lp-theme');
+ const languages=[
+  ['en','English'],['es','Español'],['pt-BR','Português'],['fr','Français'],['de','Deutsch'],
+  ['it','Italiano'],['pl','Polski'],['ja','日本語'],['zh-CN','简体中文'],['ko','한국어'],
+  ['tr','Türkçe'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['hu','Magyar'],
+  ['fi','Suomi'],['cs','Čeština'],['nb','Norsk Bokmål'],['da','Dansk'],
+  ['ar','العربية'],['sk','Slovenčina'],['sl','Slovenščina'],['sv','Svenska'],
+  ['uk','Українська'],['lv','Latviešu'],['et','Eesti'],['bg','Български']
+ ];
+ const language=byId('lp-language');
+ for(const [code,label] of languages){
+  const option=document.createElement('option');option.value=code;option.textContent=label;language.append(option);
+ }
  const readPrefs=()=>{try{const p=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}');return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}catch{return{}}};
- const currentTheme=readPrefs().theme;
- theme.value=['dark','light','system'].includes(currentTheme)?currentTheme:'dark';
- theme.addEventListener('change',()=>{
-  const prefs=readPrefs();prefs.theme=theme.value;
+ const old=readPrefs();
+ const theme=byId('lp-theme');
+ theme.value=['dark','light','system'].includes(old.theme)?old.theme:'dark';
+ const preferredLang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('loox-language')||'en';
+ language.value=languages.some(([code])=>code===preferredLang)?preferredLang:'en';
+ byId('lp-accent').value=/^#[0-9a-f]{6}$/i.test(old.accent||'')?old.accent:'#a791ff';
+ byId('lp-password-length').value=Number.isFinite(Number(old.passwordLength))?Math.max(12,Math.min(128,Number(old.passwordLength))):24;
+ byId('lp-image-format').value=['image/png','image/jpeg','image/webp'].includes(old.imageFormat)?old.imageFormat:'image/png';
+ byId('lp-live-preview').checked=old.livePreview!==false;
+ byId('lp-preferences-form').addEventListener('submit',event=>{
+  event.preventDefault();
+  const values={
+   theme:theme.value,
+   accent:byId('lp-accent').value,
+   livePreview:byId('lp-live-preview').checked,
+   passwordLength:Math.max(12,Math.min(128,Number(byId('lp-password-length').value)||24)),
+   imageFormat:byId('lp-image-format').value
+  };
+  const status=byId('lp-theme-status');
   try{
-   localStorage.setItem('loox-platform-prefs',JSON.stringify(prefs));
-   setStatus(byId('lp-theme-status'),'Theme saved. Supported LOOX pages will use this preference.');
-  }catch{setStatus(byId('lp-theme-status'),'Unable to save this preference on your device.',true);}
+   localStorage.setItem('loox-platform-prefs',JSON.stringify(values));
+   localStorage.setItem('loox-language',language.value);
+   const light=values.theme==='light'||(values.theme==='system'&&matchMedia('(prefers-color-scheme:light)').matches);
+   localStorage.setItem('loox-theme-v1',light?'white':'dark');
+   window.dispatchEvent(new CustomEvent('looxpreferenceschange',{detail:values}));
+   setStatus(status,'Preferences saved. Your supported LOOX pages will use them.');
+  }catch{setStatus(status,'Unable to save your preferences on this device.',true);}
  });
  byId('lp-password-reset').addEventListener('click',()=>auth('forgot'));
  byId('lp-sign-out').addEventListener('click',signOut);
