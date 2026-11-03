@@ -338,3 +338,12 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
 .lig-select-check{color:#c79aff;font-size:16px;opacity:0}
 .lig-select-option[aria-selected="true"] .lig-select-check{opacity:1}
 @media(max-width:680px){.lig-select-trigger{min-height:43px;padding:9px 11px;font-size:12px}.lig-select-menu{max-height:250px}.lig-select-option{font-size:12px;min-height:40px}}
+
+
+/* Moderated community template gallery */
+.lig-public-templates{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,235px),1fr));gap:16px;padding:14px 0 28px}
+.lig-community-card{min-width:0;overflow:hidden;border:1px solid #4a385d;border-radius:18px;background:#211c29}
+.lig-community-card img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover;background:#17121e}
+.lig-community-card p{padding:0 14px;margin:13px 0;color:#e9e2f1;line-height:1.4;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;overflow-wrap:anywhere}
+.lig-community-card button{margin:0 14px 14px}
+@media(max-width:680px){.lig-public-templates{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.lig-community-card{border-radius:14px}.lig-community-card p{font-size:12px;margin:9px 0;padding:0 10px}.lig-community-card button{margin:0 8px 10px;padding:8px;font-size:11px}}
