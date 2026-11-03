@@ -192,13 +192,44 @@ async function initWorkspace(){
    submit.addEventListener('click',()=>finish(true));submit.focus();
   });
  }
+ const templateStatuses=new Map();
+ const templateStatusLabels={pending:'Pending review',approved:'Approved template',rejected:'Rejected'};
+ function applyTemplateStatus(button,status){
+  if(!button?.isConnected)return;
+  const label=templateStatusLabels[status];
+  button.textContent=label||'Submit as Template';
+  button.disabled=Boolean(label);
+  if(label)button.setAttribute('aria-label','Template status: '+label);
+  else button.removeAttribute('aria-label');
+ }
+ async function refreshTemplateStatuses(){
+  if(!state.user)return;
+  try{
+   const response=await templateRequest('mine');
+   if(!state.user)return;
+   templateStatuses.clear();
+   for(const item of response.items||[])templateStatuses.set(item.job_id,item.status);
+   document.querySelectorAll('[data-template-job-id]').forEach(button=>{
+    applyTemplateStatus(button,templateStatuses.get(button.dataset.templateJobId));
+   });
+  }catch(error){console.warn('Could not refresh template submission status:',error.message);}
+ }
+ function templateSubmitButton(id){
+  const button=create('button','lig-small-action','Submit as Template');
+  button.type='button';button.dataset.templateJobId=id;
+  button.addEventListener('click',()=>submitTemplate(id,button));
+  applyTemplateStatus(button,templateStatuses.get(id));
+  refreshTemplateStatuses();
+  return button;
+ }
  async function submitTemplate(id,button){
   if(!await confirmTemplateSubmission())return;
   button.disabled=true;
   try{
    await templateRequest('submit',{job_id:id,consent:true});
-   button.textContent='Pending review';setMessage('Submitted! Your template will appear only after admin approval.');
-  }catch(error){button.disabled=false;setMessage(error.message,true);}
+   templateStatuses.set(id,'pending');
+   document.querySelectorAll('[data-template-job-id]').forEach(el=>{if(el.dataset.templateJobId===id)applyTemplateStatus(el,'pending');});setMessage('Submitted! Your template will appear only after admin approval.');
+  }catch(error){applyTemplateStatus(button,templateStatuses.get(id));setMessage(error.message,true);}
  }
  let templatesLoaded=false;
  async function loadPublicTemplates(){
@@ -362,8 +393,7 @@ async function initWorkspace(){
    promptField.focus();
    selectView('generate');
   });
-  const submitButton=create('button','lig-small-action','Submit as Template');
-  submitButton.type='button';submitButton.addEventListener('click',()=>submitTemplate(id,submitButton));
+  const submitButton=templateSubmitButton(id);
   view.bottom.append(reuse,download,submitButton);
  }
  async function poll(id,view,ratio){
@@ -484,7 +514,7 @@ async function initWorkspace(){
    actionButton('Use prompt',()=>useHistoryPrompt(item.prompt||'')),
    actionButton('Download PNG',()=>downloadHistoryImage(item.id)),
    actionButton('Delete image',()=>deleteHistoryImage(item)),
-   actionButton('Submit as Template',()=>submitTemplate(item.id,actions.lastElementChild)));
+   templateSubmitButton(item.id));
   details.append(heading,promptText,actions);
   panel.append(image,details,close);
   modal.append(shade,panel);
