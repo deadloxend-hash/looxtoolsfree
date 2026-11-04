@@ -287,3 +287,10 @@
  .lx-ai-dashboard-home .lx-feature-stage{height:auto;aspect-ratio:var(--feature-image-ratio, 16 / 9);min-height:0;max-height:none}
  .lx-ai-dashboard-home .lx-feature-image{object-fit:contain;object-position:center}
 }
+
+
+/* Featured AI carousel: retain only the small featured badge and Try Now action.
+   The underlying banner art is unchanged. */
+.lx-ai-dashboard-home .lx-feature-copy h3,
+.lx-ai-dashboard-home .lx-feature-copy p{display:none!important}
+.lx-ai-dashboard-home .lx-feature-copy{gap:12px}
