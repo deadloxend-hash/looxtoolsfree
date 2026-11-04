@@ -219,3 +219,27 @@ body.loox-sitewide-active > .loox-sitewide-simplebar .info-header-inner:has(.loo
   height:calc(100dvh - var(--loox-sitewide-height,104px) - 35px)!important
  }
 }
+
+
+/* Toolbars can live inside application wrappers (not just directly under body). */
+body.loox-sitewide-active header.loox-sitewide-workspacebar,
+body.loox-sitewide-active .topbar.loox-sitewide-workspacebar{
+ position:relative!important;top:auto!important;z-index:12!important;
+ display:flex!important;align-items:center!important;
+ background:#171622!important;border-bottom:1px solid #3e344c!important
+}
+body.loox-sitewide-active .loox-sitewide-workspacebar .brand,
+body.loox-sitewide-active .loox-sitewide-workspacebar .studio-brand,
+body.loox-sitewide-active .loox-sitewide-workspacebar .lig-brand,
+body.loox-sitewide-active .loox-sitewide-workspacebar [data-loox-account]{
+ display:none!important
+}
+body.loox-sitewide-active header.loox-sitewide-simplebar,
+body.loox-sitewide-active .topbar.loox-sitewide-simplebar{display:none!important}
+body.loox-sitewide-active header.loox-sitewide-simplebar:has(#loox-page-back),
+body.loox-sitewide-active .topbar.loox-sitewide-simplebar:has(#loox-page-back){
+ display:flex!important;align-items:center!important;min-height:35px!important;height:35px!important;
+ position:relative!important;top:auto!important;padding:2px 13px!important;
+ background:#161320!important;border-bottom:1px solid #2a2335!important
+}
+body.loox-sitewide-active .loox-sitewide-simplebar:has(#loox-page-back) .loox-page-back{display:inline-flex!important}
