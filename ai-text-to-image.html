@@ -10,9 +10,9 @@
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-text-to-image.html">
 <link rel="stylesheet" href="platform/platform.css?v=15">
 <link rel="stylesheet" href="loox-experience.css?v=130">
-<link rel="stylesheet" href="platform/loox-image-generator.css?v=12">
+<link rel="stylesheet" href="platform/loox-image-generator.css?v=13">
 <script defer src="loox-experience.js?v=131"></script>
-<script type="module" src="platform/loox-image-generator.js?v=18"></script>
+<script type="module" src="platform/loox-image-generator.js?v=19"></script>
 <link rel="stylesheet" href="loox-page-back.css?v=2">
 <link rel="stylesheet" href="loox-sitewide-nav.css?v=7"></head>
 <body class="lx-shell lig-body lig-shared-ai-nav" data-loox-generator="workspace">
@@ -39,10 +39,18 @@
   <div class="lig-setting-block">
    <div class="lig-row-label"><label for="lig-model">Model</label></div>
    <select id="lig-model" class="lig-native-select" aria-label="Image model" tabindex="-1">
-    <option selected value="flux">FLUX.1 Schnell</option>
+    <option value="flux" selected>FLUX.1 Schnell · 3 credits</option>
+    <option value="replicate" disabled>Replicate · FLUX Pro · Premium · Setup pending</option>
+    <option value="google" disabled>Google · image model · Premium · Setup pending</option>
+    <option value="bfl" disabled>Black Forest Labs · FLUX Pro · Premium · Setup pending</option>
+    <option value="ideogram" disabled>Ideogram · Premium · Setup pending</option>
+    <option value="stability" disabled>Stability AI · Premium · Setup pending</option>
+    <option value="byteplus" disabled>BytePlus · Seedream · Premium · Setup pending</option>
+    <option value="openai" disabled>OpenAI · image model · Premium · Setup pending</option>
    </select>
    <div class="lig-custom-select" data-custom-select="lig-model"></div>
-   <p class="lig-help">FLUX.1 Schnell is currently the available model. Reference-image generation requires an image-conditioned workflow and is not available with the current FLUX Schnell setup.</p>
+   <p class="lig-help lig-model-note">FLUX.1 Schnell runs on your local GPU. Premium model integrations are being prepared; their prices and availability will appear here after server activation.</p>
+   <div class="lig-model-catalog" aria-label="Image model availability"><span class="lig-model-live">● FLUX.1 Schnell <b>Available · 3 credits</b></span><span>Replicate · Premium</span><span>Google · Premium</span><span>Black Forest Labs · Premium</span><span>Ideogram · Premium</span><span>Stability AI · Premium</span><span>BytePlus · Premium</span><span>OpenAI · Premium</span><small>Premium choices are locked until secure setup and credit prices are verified.</small></div>
   </div>
   <div class="lig-setting-block">
    <label for="lig-ratio">Aspect ratio</label>
