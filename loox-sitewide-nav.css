@@ -305,3 +305,50 @@ body.loox-sitewide-active .loox-sitewide-drawer-link{display:flex!important}
 @media(max-width:480px){
  #loox-sitewide-header .loox-sitewide-more-button{width:32px;height:34px;flex-basis:32px}
 }
+
+
+/* Unified home/AI pages: suppress the legacy navigation and legacy rail.
+   The site's one shared #loox-sitewide-header and #loox-sitewide-drawer are authoritative. */
+body.loox-sitewide-home > header.topbar,
+body.loox-sitewide-home > header.lx-header{
+ display:none!important;
+}
+body.loox-sitewide-home > aside.loox-rail,
+body.loox-sitewide-home #loox-home-rail,
+body.loox-sitewide-home .ai-shared-rail-backdrop,
+body.loox-sitewide-home .loox-home-rail-button{
+ display:none!important;
+ visibility:hidden!important;
+ pointer-events:none!important;
+}
+body.loox-sitewide-home.experience-shell,
+body.loox-sitewide-home.experience-shell.loox-home-rail,
+body.loox-sitewide-home.experience-shell.loox-home-rail:not(.rail-hidden),
+body.loox-sitewide-home.experience-shell.loox-home-rail.rail-hidden{
+ --lx-rail:0px!important;
+ margin-left:0!important;
+ padding-left:0!important;
+ width:100%!important;
+}
+body.loox-sitewide-home .experience-content,
+body.loox-sitewide-home .loox-guide-host,
+body.loox-sitewide-home main{
+ margin-left:0!important;
+ max-width:100%!important;
+}
+body.loox-sitewide-home.ai-home .ai-stage{
+ height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
+}
+body.loox-sitewide-home.ai-chat .ai-chat-stage{
+ height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
+}
+body.loox-sitewide-home .loox-sitewide-drawer,
+body.loox-sitewide-home .loox-sitewide-drawer.is-open{visibility:visible!important}
+@media(max-width:790px){
+ body.loox-sitewide-home.ai-home .ai-stage{
+  height:calc(100dvh - var(--loox-sitewide-height,104px))!important;
+ }
+ body.loox-sitewide-home.ai-chat .ai-chat-stage{
+  height:calc(100dvh - var(--loox-sitewide-height,104px))!important;
+ }
+}
