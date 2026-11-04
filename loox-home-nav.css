@@ -1,0 +1,138 @@
+/* LOOX unified homepage navigation, wordmark and sidebar (Nov 2026).
+   This stylesheet is loaded only on Tools Home / AI Home / AI Chat. */
+body.loox-new-navigation .topbar{background:#101019!important;border-bottom:1px solid #2b2736!important}
+body.loox-new-navigation .topbar .topbar-inner{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:clamp(8px,1.3vw,18px)!important;height:68px!important;min-height:68px!important;
+ width:min(1450px,calc(100% - 28px))!important;max-width:none!important;margin-inline:auto;
+ padding:0!important;box-sizing:border-box
+}
+body.loox-new-navigation .topbar .brand,body.loox-new-navigation .topbar #menuToggle{display:none!important}
+body.loox-new-navigation .topbar .loox-top-controls{display:none!important}
+body.loox-new-navigation .topbar .loox-home-rail-button{
+ position:static!important;left:auto!important;top:auto!important;
+ transform:none!important;display:flex!important;align-items:center;justify-content:center;
+ width:38px!important;height:38px!important;min-width:38px!important;flex:0 0 38px!important;
+ margin:0!important;padding:0!important;border:1px solid #444057!important;
+ background:#171724!important;border-radius:10px!important;color:#f3effb!important;
+ box-shadow:none!important;font-size:20px!important
+}
+body.loox-new-navigation .topbar .loox-home-rail-button:hover{background:#2f2541!important}
+body.loox-new-navigation .loox-nav-logo-wrap{position:relative;z-index:105;flex:0 0 auto}
+.loox-nav-logo{
+ display:flex;align-items:center;justify-content:center;cursor:pointer;
+ height:44px;min-width:0;padding:3px 5px;margin:0;
+ color:#fff;background:transparent;border:1px solid transparent;border-radius:10px
+}
+.loox-nav-logo:hover,.loox-nav-logo[aria-expanded=true]{background:#201929;border-color:#443453}
+.loox-nav-logo img{display:block;width:clamp(92px,9.1vw,132px);height:auto;max-height:37px;object-fit:contain}
+.loox-nav-logo-menu{
+ position:absolute;top:calc(100% + 9px);left:0;min-width:240px;width:255px;
+ max-height:min(76vh,580px);overflow:auto;display:grid;gap:2px;padding:10px;
+ border:1px solid #514268;border-radius:15px;
+ background:#191522;color:#f4eeff;box-shadow:0 22px 70px #000c;z-index:150
+}
+.loox-nav-logo-menu[hidden]{display:none!important}
+.loox-nav-menu-head{padding:5px 12px 10px;color:#bca1e2;font:800 10px/1.5 system-ui;letter-spacing:.13em}
+.loox-nav-logo-menu>a{display:flex;align-items:center;gap:13px;padding:10px 12px;min-height:36px;border-radius:9px;font:650 13px/1.4 system-ui;text-decoration:none;color:#e8e1f0}
+.loox-nav-logo-menu>a span:first-child{display:inline-grid;place-items:center;flex:0 0 20px;font-size:16px;color:#bc93f5}
+.loox-nav-logo-menu>a:hover,.loox-nav-logo-menu>a[aria-current=page]{background:#342640;color:#fff}
+body.loox-new-navigation .topbar .loox-navbar-links,
+body.loox-new-navigation .lx-header .loox-navbar-links{
+ display:flex!important;align-items:center!important;justify-content:center!important;flex:1 1 auto!important;
+ min-width:0!important;gap:clamp(4px,1.2vw,17px)!important;margin:0!important;overflow:visible!important
+}
+.loox-navbar-links>a{display:inline-flex!important;align-items:center;justify-content:center;white-space:nowrap;
+ height:38px;padding:7px clamp(8px,1vw,15px)!important;border-radius:10px;
+ color:#d6d0df!important;background:transparent!important;text-decoration:none!important;
+ font:750 12px/1.25 system-ui!important;transition:background .15s,color .15s
+}
+.loox-navbar-links>a:hover,.loox-navbar-links>a[aria-current=page]{
+ color:#fff!important;background:#2d203d!important
+}
+.loox-navbar-search{
+ display:flex;align-items:center;gap:9px;flex:0 0 auto;
+ border:1px solid #4a4059;background:#201c2a;color:#c5bcd4;
+ border-radius:11px;padding:8px 11px;height:39px;min-width:146px;
+ font:650 12px system-ui;cursor:pointer;white-space:nowrap
+}
+.loox-navbar-search:hover,.loox-navbar-search:focus-visible{border-color:#9f76db;background:#2e223f;color:#fff}
+.loox-navbar-search svg{color:#bc96ef;flex:0 0 auto}
+.loox-navbar-search kbd{border:1px solid #4c415d;border-radius:5px;padding:2px 5px;font:11px system-ui;color:#b8abc9;margin-left:auto}
+body.loox-new-navigation .lx-header{
+ position:relative;z-index:80;background:#101019!important;
+ display:flex!important;align-items:center!important;
+ gap:clamp(6px,1vw,14px)!important;min-height:68px!important;
+ height:68px!important;padding:5px clamp(12px,2vw,25px)!important;box-sizing:border-box
+}
+body.loox-new-navigation .lx-header .loox-nav-logo-wrap{margin:0!important}
+body.loox-new-navigation .lx-header .loox-navbar-search{margin-left:0}
+body.loox-new-navigation .lx-header .ai-nav-toggle{
+ border:1px solid #444057!important;border-radius:9px!important;
+ background:#171724!important;min-width:38px!important;height:38px!important;flex:0 0 38px!important;
+ font-size:20px!important;margin:0!important
+}
+body.loox-new-navigation .lx-header [data-loox-account],
+body.loox-new-navigation .topbar [data-loox-account]{flex:0 0 auto!important;min-width:0;margin-left:0!important}
+body.loox-new-navigation.ai-home .ai-stage{height:calc(100dvh - 68px)!important}
+body.loox-new-navigation.ai-chat .ai-chat-stage{height:calc(100dvh - 68px)!important}
+/* Shared sidebar is a quiet grouped index, not a highlighted Free Tools list. */
+body.loox-new-navigation .loox-rail{
+ --lx-rail-bg:#111521;--lx-rail-text:#f0eef9;--lx-rail-muted:#b8bed1;
+ width:240px!important;top:68px!important;border-right-color:#2e2b3a!important
+}
+body.loox-new-navigation .loox-rail .loox-rail-head{min-height:45px;padding:7px 15px;border-bottom:1px solid #2a2b3b}
+body.loox-new-navigation .loox-rail .loox-rail-group-title{
+ margin:18px 11px 6px!important;padding:0!important;color:#bca0de!important;
+ font:800 10px/1.35 system-ui!important;letter-spacing:.13em!important
+}
+body.loox-new-navigation .loox-rail .loox-rail-list{padding:7px 9px!important;scrollbar-width:thin}
+body.loox-new-navigation .loox-rail .loox-rail-link{min-height:37px!important;padding:7px 10px!important;gap:10px!important;margin:1px 0!important;border-radius:9px!important}
+body.loox-new-navigation .loox-rail .loox-rail-icon{width:22px!important;flex:0 0 22px!important;height:22px!important;display:grid!important;place-items:center!important;font-size:15px;color:#bcb4d5}
+body.loox-new-navigation .loox-rail .loox-rail-label{font:600 12px/1.4 system-ui!important}
+body.loox-new-navigation .loox-rail .loox-rail-link[aria-current=page]{
+ background:transparent!important;color:#c6a2ff!important;box-shadow:none!important
+}
+body.loox-new-navigation .loox-rail .loox-rail-link[aria-current=page] .loox-rail-label{color:#cfb5fa!important}
+body.loox-new-navigation .loox-rail .loox-rail-link:hover{background:#262139!important;color:#fff!important}
+.loox-rail-more{margin:13px 0 4px}
+.loox-rail-more-head{display:flex;justify-content:space-between;align-items:center;min-height:38px;gap:8px;padding:7px 10px;cursor:pointer;border:1px solid #3e344f;border-radius:10px;color:#ebdfff;font:750 12px system-ui;list-style:none;background:#191b2a}
+.loox-rail-more-head::-webkit-details-marker{display:none}
+.loox-rail-more-head span:last-child{font-size:17px;color:#b6a2d2;transition:transform .2s}
+.loox-rail-more[open] .loox-rail-more-head span:last-child{transform:rotate(180deg)}
+.loox-rail-more-contents{margin-top:6px;padding:5px 0 7px 10px;border-left:1px solid #453759}
+.loox-rail-more-contents .loox-rail-link{font-size:12px!important}
+.loox-rail-secondary{margin:13px 0 9px;padding-top:10px;border-top:1px solid #2c2939}
+.loox-rail .loox-more-trigger{width:100%;border:0;background:transparent;text-align:left;color:#b8bed1;cursor:pointer}
+body.loox-new-navigation.loox-home-rail:not(.rail-hidden){--lx-rail:240px!important}
+body.loox-new-navigation.loox-home-rail:not(.rail-hidden) .topbar .loox-home-rail-button{left:auto!important}
+body.loox-new-navigation .hero .search-panel{display:none!important}
+@media(max-width:1050px){
+ body.loox-new-navigation .loox-navbar-links>a{font-size:11px!important;padding-inline:7px!important}
+ body.loox-new-navigation .loox-navbar-search{min-width:42px;width:42px;justify-content:center;padding:0}
+ body.loox-new-navigation .loox-navbar-search>span,body.loox-new-navigation .loox-navbar-search>kbd{display:none}
+}
+@media(max-width:700px){
+ body.loox-new-navigation .topbar .topbar-inner{height:auto!important;min-height:100px!important;flex-wrap:wrap!important;padding:9px 0 3px!important;gap:5px 9px!important}
+ body.loox-new-navigation .lx-header{height:auto!important;min-height:105px!important;flex-wrap:wrap!important;padding:8px 11px 4px!important;gap:5px 9px!important}
+ body.loox-new-navigation .loox-navbar-links,
+ body.loox-new-navigation .topbar .loox-navbar-links,
+ body.loox-new-navigation .lx-header .loox-navbar-links{
+  order:10!important;flex:0 0 100%!important;width:100%!important;
+  display:flex!important;justify-content:space-evenly!important;gap:2px!important
+ }
+ body.loox-new-navigation .loox-navbar-links>a{font-size:11px!important;height:32px;padding-inline:9px!important}
+ body.loox-new-navigation .loox-nav-logo img{width:110px}
+ body.loox-new-navigation .topbar .loox-navbar-search,body.loox-new-navigation .lx-header .loox-navbar-search{margin-left:auto}
+ body.loox-new-navigation .topbar .loox-home-rail-button{position:static!important;min-width:36px!important;flex-basis:36px!important}
+ body.loox-new-navigation .loox-rail{top:105px!important;width:min(280px,85vw)!important}
+ body.loox-new-navigation.ai-home .ai-stage{height:calc(100dvh - 105px)!important}
+ body.loox-new-navigation.ai-chat .ai-chat-stage{height:calc(100dvh - 105px)!important}
+}
+@media(max-width:440px){
+ body.loox-new-navigation .loox-nav-logo img{width:90px}
+ body.loox-new-navigation .lx-header [data-loox-account],body.loox-new-navigation .topbar [data-loox-account]{max-width:45%;overflow:hidden}
+ body.loox-new-navigation .loox-navbar-links>a{font-size:10px!important;padding-inline:4px!important}
+ .loox-nav-logo-menu{left:-41px;width:250px;max-width:calc(100vw - 16px)}
+}
+@media(prefers-reduced-motion:reduce){.loox-nav-logo-menu,.loox-navbar-links>a{transition:none!important}}
