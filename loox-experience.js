@@ -231,7 +231,8 @@
  }
  // Render essential navigation immediately: a failed catalog fetch must not hide it.
  if(railPage)drawRail();else mountHeader();
- Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
+ if(aiSharedDialog)fetch('assets/tool-catalog.json?v=40').then(r=>r.json()).then(c=>{catalog=c}).catch(()=>{});
+ if(!aiSharedDialog)Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
   catalog=c;dictionary=d;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
   const grid=document.querySelector('#toolGrid');if(grid)new MutationObserver(()=>brandCards(grid)).observe(grid,{childList:true});
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
