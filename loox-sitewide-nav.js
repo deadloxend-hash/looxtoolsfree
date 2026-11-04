@@ -40,7 +40,12 @@
  inner.append(burger,logoWrap,links,search,account,moreWrap);nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
- if(isHome)document.body.classList.add('loox-sitewide-home');
+ if(isHome){
+  document.body.classList.add('loox-sitewide-home');
+  // The old Home/AI rail is retired. Keep one real, interactive drawer.
+  document.querySelectorAll('aside#loox-home-rail,button.loox-home-rail-button,.ai-shared-rail-backdrop').forEach(node=>node.remove());
+  document.body.classList.remove('ai-rail-open');
+ }
  // Preserve tool actions (Undo, Export, Generate, editor tabs) as a second workspace bar.
  const native=document.querySelector('header');
  if(native){
