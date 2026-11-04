@@ -294,3 +294,33 @@
 .lx-ai-dashboard-home .lx-feature-copy h3,
 .lx-ai-dashboard-home .lx-feature-copy p{display:none!important}
 .lx-ai-dashboard-home .lx-feature-copy{gap:12px}
+
+
+/* Compact carousel controls: consistent offsets, no overlapping labels. */
+.lx-ai-dashboard-home .lx-row{align-items:center}
+.lx-ai-dashboard-home .lx-feature-copy{
+  left:clamp(18px,4vw,42px);
+  bottom:clamp(52px,6vw,72px);
+  right:auto;top:auto;
+  max-width:calc(100% - 36px);
+  gap:8px;
+  align-items:flex-start;
+}
+.lx-ai-dashboard-home .lx-feature-kicker{margin:0;line-height:1.2}
+.lx-ai-dashboard-home .lx-feature-cta{margin:0;min-height:40px}
+.lx-ai-dashboard-home .lx-feature-controls{
+  bottom:12px;left:0;right:0;display:flex;align-items:center;
+  justify-content:center;gap:10px;
+}
+.lx-ai-dashboard-home .lx-feature-dots{display:flex;align-items:center;justify-content:center;gap:5px}
+.lx-ai-dashboard-home .lx-feature-arrow{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.lx-ai-dashboard-home .lx-feature-browse{margin:14px auto 0}
+@media(max-width:650px){
+  .lx-ai-dashboard-home .lx-feature-copy{left:14px;bottom:48px;gap:7px;max-width:calc(100% - 28px)}
+  .lx-ai-dashboard-home .lx-feature-kicker{font-size:10px;padding:6px 9px}
+  .lx-ai-dashboard-home .lx-feature-cta{min-height:36px;padding:8px 14px;font-size:12px}
+  .lx-ai-dashboard-home .lx-feature-controls{bottom:8px;gap:6px}
+  .lx-ai-dashboard-home .lx-feature-arrow{width:26px;height:26px;min-width:26px;min-height:26px}
+  .lx-ai-dashboard-home .lx-feature-dot{width:12px}
+  .lx-ai-dashboard-home .lx-feature-dot[aria-current=true]{width:19px}
+}
