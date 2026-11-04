@@ -12,7 +12,7 @@
   ['Guides','guides.html','?'],
   ['Pricing & Credits','pricing.html','◇'],
   ['My Account','account.html','◎'],
-  ['Privacy','privacy.html','♧'],
+  ['Privacy','index.html#privacy','♧'],
   ['Settings','settings.html','⚙']
  ];
  function mount(){
