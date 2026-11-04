@@ -74,12 +74,13 @@ async function initWorkspace(){
   customDropdowns.push(dropdown);
   const choices=[];
   for(const option of native.options){
-   const item=document.createElement('button');item.type='button';item.className='lig-select-option';
+   const item=document.createElement('button');item.type='button';item.className='lig-select-option';item.disabled=option.disabled;if(option.disabled)item.title='Secure server setup pending';
    item.setAttribute('role','option');item.dataset.value=option.value;
    const label=document.createElement('span');label.textContent=option.textContent;
    const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
    item.append(label,check);menu.append(item);choices.push(item);
    item.addEventListener('click',()=>{
+    if(option.disabled)return;
     native.value=option.value;native.dispatchEvent(new Event('change',{bubbles:true}));
     sync();closeCustomDropdowns();trigger.focus();
    });
@@ -104,7 +105,7 @@ async function initWorkspace(){
    if(e.key==='Escape'){e.preventDefault();closeCustomDropdowns();trigger.focus();return}
    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
     e.preventDefault();const index=choices.indexOf(document.activeElement);
-    choices[(index+(e.key==='ArrowDown'?1:-1)+choices.length)%choices.length]?.focus();
+    let next=index;do{next=(next+(e.key==='ArrowDown'?1:-1)+choices.length)%choices.length}while(choices[next].disabled&&next!==index);choices[next]?.focus();
    }
   });
   native.addEventListener('change',sync);
