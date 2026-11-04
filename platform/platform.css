@@ -261,3 +261,29 @@
   .lx-ai-dashboard-home{width:calc(100% - 20px)}
   .lx-ai-dashboard-home .lx-feature-stage{aspect-ratio:4/5;min-height:0;max-height:none}
 }
+
+
+/* Match each original feature image's real width/height instead of cropping it.
+   The JS sets --feature-image-ratio when that slide's image loads. */
+.lx-ai-dashboard-home .lx-feature-stage{
+  width:100%;
+  height:auto;
+  aspect-ratio:var(--feature-image-ratio, 16 / 9);
+  min-height:0;
+  max-height:none;
+}
+.lx-ai-dashboard-home .lx-feature-image,
+.lx-ai-dashboard-home .lx-feature-stage.is-art-banner .lx-feature-image{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+}
+.lx-ai-dashboard-home .lx-feature-stage::before{display:none}
+@media(max-width:900px){
+ .lx-ai-dashboard-home .lx-feature-stage{aspect-ratio:var(--feature-image-ratio, 16 / 9);min-height:0;max-height:none}
+}
+@media(max-width:650px){
+ .lx-ai-dashboard-home .lx-feature-stage{height:auto;aspect-ratio:var(--feature-image-ratio, 16 / 9);min-height:0;max-height:none}
+ .lx-ai-dashboard-home .lx-feature-image{object-fit:contain;object-position:center}
+}
