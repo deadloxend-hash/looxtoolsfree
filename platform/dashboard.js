@@ -60,6 +60,7 @@ if(host){
    if(!featured.length)return;
    active=(n+featured.length)%featured.length;
    const t=featured[active];slide.href=t.slug+'.html';image.src=imageFor(t);
+   stage.style.setProperty('--feature-art', 'url("'+imageFor(t)+'")');
    image.onerror=()=>{image.onerror=null;image.src=fallbackFor(t);};
    image.alt=t.name+' preview';heading.textContent=t.name;description.textContent=t.description;
    markers.forEach((m,i)=>{m.setAttribute('aria-current',i===active?'true':'false');});
