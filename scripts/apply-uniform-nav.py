@@ -29,11 +29,10 @@ for path in sorted(pages):
         else:
             skipped.append((path.name, "No closing body"))
             continue
-    # Keep every tool and localized guide on the identical shared version.
-    for version in (1, 2, 3, 4):
-        result = result.replace(f"loox-sitewide-nav.css?v={version}", "loox-sitewide-nav.css?v=5")
-    for version in (1, 2, 3, 4):
-        result = result.replace(f"loox-sitewide-nav.js?v={version}", "loox-sitewide-nav.js?v=5")
+    # Keep all tool/guide pages on the same classic LOOX sidebar revision.
+    for version in (1, 2, 3, 4, 5):
+        result = result.replace(f"loox-sitewide-nav.css?v={version}", "loox-sitewide-nav.css?v=6")
+        result = result.replace(f"loox-sitewide-nav.js?v={version}", "loox-sitewide-nav.js?v=6")
     if result != source:
         path.write_text(result, encoding="utf-8")
         modified.append(path.name)
