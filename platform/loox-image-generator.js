@@ -47,9 +47,9 @@ async function initWorkspace(){
  const form=byId('lig-compose'),promptField=byId('lig-prompt'),ratioField=byId('lig-ratio'),modelField=byId('lig-model');
  await config().catch(()=>{});
  const availableModels=new Map((state.config?.models||[]).filter(m=>m.available).map(m=>[m.id,m]));
- for(const option of modelField.options){if(option.value==='flux')continue;const m=availableModels.get(option.value);if(m){option.disabled=false;option.textContent=m.name+' · Premium · '+m.cost+' credits';}}
+ for(const option of modelField.options){if(option.value==='flux')continue;const m=availableModels.get(option.value);if(m){option.disabled=false;option.textContent=m.provider+' · '+m.name+' · '+m.cost+' credits';}}
  const catalog=byId('lig-model-catalog')||document.querySelector('.lig-model-catalog');
- for(const span of catalog?.querySelectorAll('[data-model]')||[]){const m=availableModels.get(span.dataset.model);if(m){span.textContent=m.name+' · '+m.cost+' credits';span.classList.add('lig-model-active');}}
+ for(const span of catalog?.querySelectorAll('[data-model]')||[]){const m=availableModels.get(span.dataset.model);if(m){span.textContent=m.provider+' · '+m.name+' · '+m.cost+' credits';span.classList.add('lig-model-active');}}
  if(availableModels.size){const note=document.querySelector('.lig-model-note');if(note)note.textContent='Choose a model to see its credit cost. Premium models require an active plan.';const foot=catalog?.querySelector('.lig-model-grid small');if(foot)foot.textContent='Premium models require an active LOOX plan. Credits are reserved when a request starts and returned if generation fails.';}
  const generateButton=byId('lig-generate'),message=byId('lig-message');
  const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
@@ -358,7 +358,7 @@ async function initWorkspace(){
   }else credits.textContent=state.user?'Loading credits…':'Sign in to view';
   creditCost.textContent=(modelField.value==='flux'?'Local image':'Premium image')+' · '+price()+' credits on success';
  }
- modelField.addEventListener('change',updateAccount);
+ modelField.addEventListener('change',()=>{updateAccount();const m=availableModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
  function setMessage(value,isError=false){
   message.textContent=value||'';
   message.style.color=isError?'#ffb6bc':'';
