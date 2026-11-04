@@ -416,12 +416,14 @@ body.lig-shared-ai-nav.ai-rail-open{overflow:hidden}
 }
 
 /* Image model availability: costs are shown only for active backend models. */
-.lig-model-catalog{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
-.lig-model-catalog>span{display:flex;flex-direction:column;justify-content:center;min-width:0;min-height:38px;padding:9px 10px;border:1px solid #40364d;border-radius:11px;background:#191620;color:#a99eb4;font-size:11px;line-height:1.35}
-.lig-model-catalog .lig-model-live{grid-column:1/-1;border-color:#8152a7;background:#2b2039;color:#efe1ff}
+.lig-model-catalog{grid-column:1/-1;margin-top:4px;border:1px solid #47394f;border-radius:12px;background:#1d1924}.lig-model-catalog summary{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 12px;color:#e5d6f2;font-weight:700;font-size:12px;cursor:pointer;list-style:none}.lig-model-catalog summary::-webkit-details-marker{display:none}.lig-model-catalog summary:after{content:'⌄';color:#c79aff}.lig-model-catalog[open] summary:after{transform:rotate(180deg)}.lig-model-catalog summary small{font-size:10px;font-weight:400;color:#a99eb4}.lig-model-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:0 10px 10px}
+.lig-model-grid>span{display:flex;flex-direction:column;justify-content:center;min-width:0;min-height:38px;padding:9px 10px;border:1px solid #40364d;border-radius:11px;background:#191620;color:#a99eb4;font-size:11px;line-height:1.35}
+.lig-model-grid .lig-model-live{grid-column:1/-1;border-color:#8152a7;background:#2b2039;color:#efe1ff}
 .lig-model-catalog b{font-size:10px;color:#cf9fff;font-weight:700}
-.lig-model-catalog small{grid-column:1/-1;color:#a99eb4;line-height:1.5}
+.lig-model-grid small{grid-column:1/-1;color:#a99eb4;line-height:1.5}
 .lig-select-option:disabled{opacity:.52;cursor:not-allowed}
 .lig-select-option:disabled:hover{background:transparent}
 .lig-model-note{line-height:1.5}
-@media(max-width:680px){.lig-model-catalog{gap:6px}.lig-model-catalog>span{padding:8px;font-size:10px}}
+@media(max-width:680px){.lig-model-grid{gap:6px}.lig-model-grid>span{padding:8px;font-size:10px}}
+
+.lig-model-grid .lig-model-active{border-color:#735392;color:#e5d6f2;background:#282135}
