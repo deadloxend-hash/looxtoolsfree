@@ -71,12 +71,15 @@
  group('Navigation',[['LOOX Tools Home','index.html','⌂'],['LOOX AI Home','ai-home.html','✦']]);
  group('Editors',[['Photo Editor','photo-editor.html','▧'],['Video Editor','video-editor.html','▶']]);
  group('Featured',[['Background Remover','bg-remove.html','✂'],['Face Blur','face-blur.html','◌'],['Face Swap','faceswap.html','✦'],['Photo Generator','ai-text-to-image.html','▧'],['Video Generator','ai-video-generator.html','▶']]);
- const more=el('details','loox-sitewide-more');const summary=el('summary','','More Tools  ⌄');
+ const more=el('details','loox-sitewide-more');const summary=el('summary');
+ summary.append(el('span','','More Tools'),el('span','loox-sitewide-more-chevron','⌄'));
  more.append(summary);const moreLinks=el('div','loox-sitewide-more-links');
  [['Image Tools','all-image-tools.html'],['Text Tools','all-text-tools.html'],['Video Tools','all-video-tools.html'],['AI Tools','all-ai-tools.html'],['All tools','index.html#tools'],['Image','index.html?category=Image#tools'],['Video','index.html?category=Video#tools'],['Audio','index.html?category=Audio#tools'],['YouTube','index.html?category=YouTube#tools'],['PDF','index.html?category=PDF#tools'],['AI','index.html?category=AI#tools'],['Text','index.html?category=Text#tools']].forEach(([label,href])=>{
   const a=el('a','',label);a.href=url(href);moreLinks.append(a);
  });more.append(moreLinks);sideContent.append(more);
- group('Account',[['Guides','guides.html','?'],['Pricing & Credits','pricing.html','◇'],['My Account','account.html','◎']]);
+ const secondary=el('div','loox-sitewide-secondary');sideContent.append(secondary);
+ const secondaryRows=[['Guides','guides.html','?'],['Pricing & Credits','pricing.html','◇'],['My Account','account.html','◎']];
+ secondaryRows.forEach(([label,href,icon])=>{const a=el('a','loox-sitewide-drawer-link');a.href=url(href);a.append(el('span','loox-sitewide-drawer-icon',icon),el('span','',label));secondary.append(a);});
  sidebar.append(sideContent);
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  document.body.append(scrim,sidebar);
