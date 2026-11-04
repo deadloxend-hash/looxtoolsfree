@@ -22,9 +22,8 @@
   const oldBrand=header.querySelector(isTools?'.brand':'.lx-brand');
   if(!oldBrand)return;
   const logoWrap=document.createElement('div');logoWrap.className='loox-nav-logo-wrap';
-  const logo=document.createElement('button');logo.type='button';logo.className='loox-nav-logo';
-  logo.setAttribute('aria-label','Open LOOX menu');logo.setAttribute('aria-haspopup','true');
-  logo.setAttribute('aria-expanded','false');logo.setAttribute('aria-controls','loox-logo-menu');
+  const logo=document.createElement('a');logo.href='ai-home.html';logo.className='loox-nav-logo';
+  logo.setAttribute('aria-label','LOOX AI Home');
   logo.innerHTML='<img src="assets/loox-wordmark.svg?v=1" alt="LOOX" width="132" height="35">';
   const dropdown=document.createElement('nav');dropdown.className='loox-nav-logo-menu';dropdown.id='loox-logo-menu';
   dropdown.setAttribute('aria-label','LOOX menu');dropdown.hidden=true;
@@ -51,9 +50,14 @@
    }
    dropdown.append(appearance);
   }
-  const close=()=>{dropdown.hidden=true;logo.setAttribute('aria-expanded','false')};
-  logo.addEventListener('click',e=>{e.stopPropagation();const opening=dropdown.hidden;dropdown.hidden=!opening;logo.setAttribute('aria-expanded',String(opening))});
-  logoWrap.append(logo,dropdown);
+  const more=document.createElement('button');more.type='button';more.className='loox-nav-more';
+  more.setAttribute('aria-label','Open LOOX workspace menu');more.setAttribute('aria-haspopup','true');
+  more.setAttribute('aria-expanded','false');more.setAttribute('aria-controls','loox-logo-menu');
+  more.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
+  const close=()=>{dropdown.hidden=true;more.setAttribute('aria-expanded','false')};
+  more.addEventListener('click',e=>{e.stopPropagation();const opening=dropdown.hidden;dropdown.hidden=!opening;more.setAttribute('aria-expanded',String(opening))});
+  logoWrap.append(logo);
+  const menuWrap=document.createElement('div');menuWrap.className='loox-nav-more-wrap';menuWrap.append(more,dropdown);
   oldBrand.replaceWith(logoWrap);
   const nav=isTools?header.querySelector('#mainNav'):document.createElement('nav');
   nav.className='loox-navbar-links';nav.setAttribute('aria-label','LOOX primary navigation');
@@ -69,6 +73,7 @@
   search.innerHTML='<svg width="19" height="19" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.4 16.4 4 4"/></svg><span>Search tools</span><kbd>/</kbd>';
   const acct=header.querySelector('[data-loox-account]');
   if(acct)header.insertBefore(search,acct);else header.append(search);
+  header.append(menuWrap);
   const showSearch=()=>{
    close();
    if(typeof window.LOOXOpenAllTools==='function'){window.LOOXOpenAllTools();return;}
@@ -76,9 +81,9 @@
   };
   search.addEventListener('click',showSearch);
   dropdown.addEventListener('click',e=>{if(e.target.closest('a'))close()});
-  document.addEventListener('click',e=>{if(!logoWrap.contains(e.target))close()});
+  document.addEventListener('click',e=>{if(!menuWrap.contains(e.target))close()});
   document.addEventListener('keydown',e=>{
-   if(e.key==='Escape'&&!dropdown.hidden){close();logo.focus();return;}
+   if(e.key==='Escape'&&!dropdown.hidden){close();more.focus();return;}
    const editable=e.target.closest('input,textarea,select,[contenteditable="true"]');
    if(!editable&&!e.repeat&&(e.key==='/'||(e.key.toLowerCase()==='k'&&(e.ctrlKey||e.metaKey)))){
     e.preventDefault();e.stopImmediatePropagation();showSearch();
