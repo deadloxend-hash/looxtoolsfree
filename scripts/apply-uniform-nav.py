@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Install a common LOOX navigation on root-level site pages.
 Preserves each page's existing HTML, scripts, editors and SEO metadata.
-Guide fragments in assets/guides and learn pages are not modified.
+SEO guide articles under learn/* are included; assets/guides fragments are not modified.
 """
 from pathlib import Path
 
@@ -11,8 +11,9 @@ css = '<link rel="stylesheet" href="loox-sitewide-nav.css?v=1">'
 js = '<script defer src="loox-sitewide-nav.js?v=1"></script>'
 modified = []
 skipped = []
-for path in sorted(root.glob("*.html")):
-    if path.name in excluded:
+pages = list(root.glob("*.html")) + list(root.glob("learn/*/*.html"))
+for path in sorted(pages):
+    if path.parent == root and path.name in excluded:
         continue
     source = path.read_text(encoding="utf-8")
     result = source
