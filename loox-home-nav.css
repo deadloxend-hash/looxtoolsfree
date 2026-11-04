@@ -136,3 +136,18 @@ body.loox-new-navigation .hero .search-panel{display:none!important}
  .loox-nav-logo-menu{left:-41px;width:250px;max-width:calc(100vw - 16px)}
 }
 @media(prefers-reduced-motion:reduce){.loox-nav-logo-menu,.loox-navbar-links>a{transition:none!important}}
+
+
+/* Keep the logo menu above the tool drawer and AI overlay. */
+body.loox-new-navigation .topbar{z-index:130!important}
+body.loox-new-navigation .lx-header{z-index:130!important}
+body.loox-new-navigation .loox-nav-logo-wrap{z-index:141}
+.loox-logo-appearance{border-top:1px solid #40334e;padding-top:6px;margin-top:5px}
+.loox-logo-appearance summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;padding:10px 12px;color:#eee3f7;border-radius:9px;font:650 13px system-ui}
+.loox-logo-appearance summary:hover{background:#342640}
+.loox-logo-appearance summary::-webkit-details-marker{display:none}
+.loox-logo-theme-options{display:flex;gap:5px;flex-wrap:wrap;padding:4px 8px 8px}
+.loox-logo-theme-options button{border:1px solid #514063;background:#282034;color:#e9ddf7;cursor:pointer;border-radius:8px;padding:7px 10px;font:650 11px system-ui}
+.loox-logo-theme-options button:hover{border-color:#bd8ee9;background:#403052}
+/* Logo display remains legible even before the deferred navigation initializes. */
+body:not(.loox-new-navigation) .topbar a.brand>img{display:block;width:132px;height:auto}
