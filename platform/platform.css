@@ -189,3 +189,12 @@
  .lx-ai-dashboard-home .lx-feature-cta{min-height:40px;padding:9px 20px}
 }
 @media(prefers-reduced-motion:reduce){.lx-ai-dashboard-home .lx-feature-slide{transition:none}}
+
+
+/* Keep every featured artwork fully visible without leaving empty card edges.
+   A soft edge-to-edge copy fills the stage behind the contained image. */
+.lx-ai-dashboard-home .lx-feature-stage::before{content:"";position:absolute;inset:-16px;background-image:var(--feature-art);background-repeat:no-repeat;background-size:cover;background-position:center;filter:blur(18px) brightness(.55);transform:scale(1.05);pointer-events:none;z-index:0}
+.lx-ai-dashboard-home .lx-feature-slide{z-index:1}
+.lx-ai-dashboard-home .lx-feature-image{object-fit:contain;object-position:center;width:100%;height:100%;background:transparent}
+.lx-ai-dashboard-home .lx-feature-controls{z-index:3}
+@media(max-width:650px){.lx-ai-dashboard-home .lx-feature-image{object-fit:contain;object-position:center}}
