@@ -1,0 +1,92 @@
+/* Directory pages only: consistent LOOX navigation and centered functional search. */
+body.work-page.loox-dir-enhanced{background:#0d0c13;color:#f6f1ff}
+.work-page.loox-dir-enhanced .loox-dir-header{
+ display:flex;align-items:center;justify-content:space-between;gap:clamp(12px,2vw,30px);
+ min-height:74px;padding:13px clamp(16px,3vw,44px);
+ background:#110e19;border-bottom:1px solid #332a43;
+ position:relative;z-index:50;flex-wrap:nowrap
+}
+.loox-dir-header .work-brand{flex:0 0 auto;font-size:23px;white-space:nowrap;letter-spacing:-.045em;color:#fff}
+.loox-dir-header .work-brand span{font-weight:800;color:#ac80fa}
+.loox-dir-nav{display:flex;align-items:center;justify-content:center;gap:clamp(3px,.7vw,10px);flex:1 1 auto;min-width:0}
+.loox-dir-nav>a,.loox-dir-menu>summary{
+ display:inline-flex;align-items:center;justify-content:center;min-height:38px;
+ padding:8px clamp(9px,1.1vw,17px);border-radius:11px;font-size:13px;
+ line-height:1.2;font-weight:780;text-transform:uppercase;letter-spacing:.02em;
+ color:#e4ddec;text-decoration:none;white-space:nowrap;cursor:pointer;list-style:none;
+ border:1px solid transparent;background:transparent;transition:background .16s,border-color .16s
+}
+.loox-dir-nav>a:hover,.loox-dir-menu>summary:hover,.loox-dir-nav>a[aria-current=page]{background:#312039;border-color:#54346a;color:#fff}
+.loox-dir-nav>a[aria-current=page]{box-shadow:inset 0 -2px #ad73f7}
+.loox-dir-menu{position:relative;flex:0 0 auto}
+.loox-dir-menu>summary::-webkit-details-marker{display:none}
+.loox-dir-menu>summary::after{content:'⌄';margin-left:7px;color:#bda8d7;font-size:14px}
+.loox-dir-menu[open]>summary{background:#312039;border-color:#7655a0}
+.loox-dir-menu-list{
+ position:absolute;top:calc(100% + 10px);right:0;width:min(355px,calc(100vw - 24px));
+ max-height:min(60vh,460px);overflow-y:auto;padding:9px;
+ background:#1b1527;border:1px solid #5a4673;border-radius:15px;
+ box-shadow:0 22px 48px #000b;display:grid;gap:4px;z-index:80
+}
+.loox-dir-menu-list a{display:block;padding:12px 13px;color:#f1e8fc;text-decoration:none;font-size:13px;line-height:1.3;border-radius:9px}
+.loox-dir-menu-list a:hover,.loox-dir-menu-list a[aria-current=page]{background:#49305d;color:#fff}
+.loox-dir-perks{display:flex;gap:11px;justify-content:flex-end;align-items:center;flex-wrap:wrap;max-width:305px;flex:0 0 auto;color:#cabbd9;font-size:10px;line-height:1.35;font-weight:700}
+.loox-dir-perks span{white-space:nowrap}
+.loox-dir-search-section{
+ padding:clamp(22px,3vw,34px) 16px 8px;
+ display:flex;justify-content:center;align-items:center;width:100%;box-sizing:border-box;
+ background:linear-gradient(180deg,#171120 0%,#0d0c13 100%)
+}
+.loox-dir-searchbox{
+ display:flex;align-items:center;gap:13px;width:min(730px,100%);min-height:60px;
+ padding:8px 9px 8px 18px;border:1px solid #4c405b;border-radius:18px;
+ background:#23212d;box-shadow:0 12px 36px #0003;box-sizing:border-box
+}
+.loox-dir-searchbox:focus-within{border-color:#ad74ed;box-shadow:0 0 0 3px #a66cff24,0 12px 36px #0004}
+.loox-dir-search-icon{font-size:29px;line-height:1;color:#bbaacf;flex:0 0 auto}
+.loox-dir-global-search,.loox-dir-searchbox #directory-search{
+ flex:1 1 auto;min-width:0;width:100%;height:40px;min-height:40px;
+ border:0!important;outline:0!important;background:transparent!important;
+ box-shadow:none!important;color:#fff!important;margin:0!important;padding:4px 0!important;
+ font-size:15px;line-height:1.3;font-family:inherit
+}
+.loox-dir-global-search::placeholder{color:#bbaacf;opacity:1}
+.loox-dir-searchbox kbd{white-space:nowrap;border:1px solid #494050;border-radius:6px;color:#aaa0b8;font-size:10px;padding:4px 7px;font-family:inherit}
+.loox-dir-search-button{flex:0 0 auto;min-height:44px;padding:10px 18px;background:#9a5be4;color:#fff;border:0;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap}
+.loox-dir-search-button:hover{background:#b275fa}
+.work-page.loox-dir-enhanced .work-category-tabs,
+.work-page.loox-dir-enhanced .work-category-links{display:none!important}
+.work-page.loox-dir-enhanced .work-main.work-directory{max-width:1370px;margin:0 auto;padding-top:26px}
+.work-page.loox-dir-enhanced .work-main .loox-eyebrow{color:#c8a3ee;font-size:11px;font-weight:800;letter-spacing:.14em}
+.work-page.loox-dir-enhanced .work-main.work-directory h1{font-size:clamp(30px,4vw,47px);margin:9px 0 10px}
+.work-page.loox-dir-enhanced .work-main.work-directory .work-lead{margin:0 0 17px;max-width:850px;color:#bdb5c9}
+.work-page.loox-dir-enhanced .work-main.work-directory #directory-count{text-align:right;margin:0 0 10px;color:#b7a9ca}
+.work-page.loox-dir-enhanced .work-directory-grid{margin-top:12px}
+.work-page.loox-dir-enhanced .work-tool-card{border-radius:16px;background:#1b1724;border-color:#3b3048}
+.work-page.loox-dir-enhanced .work-tool-card:hover{border-color:#ad74ed}
+.work-page.loox-dir-enhanced .lx-ai-dashboard-full{margin-top:14px}
+.work-page.loox-dir-enhanced .lx-ai-dashboard-full .lx-ai-search{display:none!important}
+@media(max-width:1230px){
+ .loox-dir-perks{display:none}
+ .loox-dir-header .work-brand{font-size:20px}
+}
+@media(max-width:760px){
+ .work-page.loox-dir-enhanced .loox-dir-header{flex-wrap:wrap;gap:9px;padding:11px 12px;min-height:0}
+ .loox-dir-header .work-brand{font-size:20px;width:100%;text-align:center}
+ .loox-dir-nav{width:100%;flex:1 0 100%;justify-content:flex-start;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;gap:4px;overscroll-behavior-x:contain}
+ .loox-dir-nav::-webkit-scrollbar{display:none}
+ .loox-dir-nav>a,.loox-dir-menu>summary{font-size:11px;padding:8px 11px;min-height:36px}
+ .loox-dir-menu{position:static}
+ .loox-dir-menu-list{right:10px;top:calc(100% - 2px)}
+ .loox-dir-search-section{padding:16px 10px 4px}
+ .loox-dir-searchbox{min-height:54px;padding:5px 6px 5px 12px;border-radius:14px;gap:7px}
+ .loox-dir-searchbox kbd{display:none}
+ .loox-dir-search-icon{font-size:24px}
+ .loox-dir-global-search{font-size:13px}
+ .loox-dir-search-button{padding:9px 11px;min-height:41px;font-size:12px}
+ .work-page.loox-dir-enhanced .work-main.work-directory{padding:20px 14px 36px}
+}
+@media(max-width:370px){
+ .loox-dir-search-button{font-size:11px;padding-inline:9px}
+ .loox-dir-global-search{font-size:12px}
+}
