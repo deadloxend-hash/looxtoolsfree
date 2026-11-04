@@ -452,3 +452,14 @@ body.loox-sitewide-active .loox-sitewide-secondary{
  body.loox-sitewide-active > aside#loox-sitewide-drawer{scrollbar-width:none!important}
  body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
 }
+
+
+/* Keep narrow AI workspaces centered instead of stretching their form cards. */
+@media(min-width:901px){
+ body.lx-shell.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main{
+  margin-left:calc(240px + max(0px,(100% - 240px - 850px)/2))!important;
+  width:min(850px,calc(100% - 264px))!important;
+  max-width:850px!important;
+  padding-left:24px!important;padding-right:24px!important
+ }
+}
