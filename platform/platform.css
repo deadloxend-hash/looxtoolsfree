@@ -237,3 +237,27 @@
  .lx-ai-dashboard-home{width:calc(100% - 20px)}
  .lx-ai-dashboard-home .lx-feature-stage{aspect-ratio:4/5;height:auto;min-height:340px;max-height:500px}
 }
+
+
+/* Compact featured carousel proportions inspired by the supplied reference.
+   Keep the rest of the homepage and the AI directory unchanged. */
+.lx-ai-dashboard-home{
+  width:min(1080px,calc(100% - 32px));
+  max-width:1080px;
+  margin-inline:auto;
+}
+.lx-ai-dashboard-home .lx-feature-stage{
+  width:100%;
+  aspect-ratio:2.3/1;
+  height:auto;
+  min-height:0;
+  max-height:440px;
+}
+@media(max-width:900px){
+  .lx-ai-dashboard-home{width:calc(100% - 28px);max-width:1080px}
+  .lx-ai-dashboard-home .lx-feature-stage{aspect-ratio:2.1/1;min-height:0;max-height:none}
+}
+@media(max-width:650px){
+  .lx-ai-dashboard-home{width:calc(100% - 20px)}
+  .lx-ai-dashboard-home .lx-feature-stage{aspect-ratio:4/5;min-height:0;max-height:none}
+}
