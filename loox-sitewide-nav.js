@@ -1,11 +1,12 @@
-/* One consistent LOOX navigation on non-home pages.
- * The home/AI headers remain powered by loox-home-nav.js.
+/* One consistent LOOX navigation on EVERY page.
+ * All pages use the same header, sidebar and tool finder.
  * Existing editor controls are preserved in their native toolbar.
  */
 (() => {
  'use strict';
  const page=location.pathname.split('/').pop()||'index.html';
- if(['index.html','ai-home.html','ai-chat.html'].includes(page)||document.getElementById('loox-sitewide-header'))return;
+ if(document.getElementById('loox-sitewide-header'))return;
+ const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
  const root=new URL('./',document.currentScript?.src||new URL('loox-sitewide-nav.js',location.href).href);
  const url=name=>new URL(name,root).href;
  const icons={search:'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.4 16.4 4 4"/></svg>'};
@@ -39,15 +40,18 @@
  inner.append(burger,logoWrap,links,search,account,moreWrap);nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
+ if(isHome)document.body.classList.add('loox-sitewide-home');
  // Preserve tool actions (Undo, Export, Generate, editor tabs) as a second workspace bar.
  const native=document.querySelector('header');
  if(native){
   native.classList.add('loox-sitewide-native');
+  if(isHome){native.classList.add('loox-sitewide-simplebar');}else{
   const buttons=[...native.querySelectorAll('button')].filter(b=>!b.matches('#loox-page-back,.loox-tool-menu,.loox-overflow-trigger,.loox-rail-toggle,#menuToggle'));
   const editor=native.matches('.studio-top,.lig-header,.studio-header,.editor-header')||
       !!native.querySelector('.lig-head-tabs,.studio-top-actions,.top-actions,.editor-toolbar,.lig-head-start')||
       buttons.some(b=>/^(undo|redo|export|save|openImage|import|render)/i.test(b.id||''));
   native.classList.add(editor?'loox-sitewide-workspacebar':'loox-sitewide-simplebar');
+  }
  }
  // Clickable sidebar, matching the Home/AI grouping.
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';sidebar.setAttribute('aria-label','LOOX tools navigation');
