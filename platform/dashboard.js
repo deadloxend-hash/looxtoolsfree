@@ -18,14 +18,20 @@ if(host){
  const full=host.dataset.aiDashboard==='full';
  host.className='lx lx-ai-dashboard '+(full?'lx-ai-dashboard-full':'lx-ai-dashboard-home');
  const top=el('div',null,'lx-row'),copy=el('div');
- copy.append(el('p','CREATE WITH LOOX','lx-eyebrow'),el(full?'h1':'h2','AI tools for your next idea'),el('p','Edit, enhance and generate images in one workspace.'));
- const credits=button('Sign in for AI credits',()=>state.user?pricing():auth(),'lx-button lx-primary');
- function balance(){credits.textContent=state.user?(state.account?.wallet.balance??'…')+' credits · Upgrade':'Sign in for AI credits';}
- document.addEventListener('loox-account',balance);document.addEventListener('loox-user',balance);balance();
- top.append(copy,credits);host.append(top);
- const note=el('p','Checking cloud AI availability…','lx-note');note.setAttribute('role','status');host.append(note);
+ copy.append(el('p','CREATE WITH LOOX','lx-eyebrow'),el(full?'h1':'h2','AI tools for your next idea'));
+ if(full){
+  copy.append(el('p','Edit, enhance and generate images in one workspace.'));
+  const credits=button('Sign in for AI credits',()=>state.user?pricing():auth(),'lx-button lx-primary');
+  function balance(){credits.textContent=state.user?(state.account?.wallet.balance??'…')+' credits · Upgrade':'Sign in for AI credits';}
+  document.addEventListener('loox-account',balance);document.addEventListener('loox-user',balance);balance();
+  top.append(copy,credits);
+ }else top.append(copy);
+ host.append(top);
  let cfg=null;
- config().then(c=>{cfg=c;note.textContent=c.ai?'Cloud jobs require an account and AI credits.':'Cloud AI activation is pending. Browse workspaces and settings below. Automatic face blur runs on your device.';if(full)draw();}).catch(()=>{note.textContent='Cloud service is unavailable. Local tools are available.';if(full)draw();});
+ if(full){
+  const note=el('p','Checking cloud AI availability…','lx-note');note.setAttribute('role','status');host.append(note);
+  config().then(c=>{cfg=c;note.textContent=c.ai?'Cloud jobs require an account and AI credits.':'Cloud AI activation is pending. Browse workspaces and settings below. Automatic face blur runs on your device.';draw();}).catch(()=>{note.textContent='Cloud service is unavailable. Local tools are available.';draw();});
+ }
  const imageFor=t=>aiBannerFiles[t.slug]?'assets/ai-banners/'+aiBannerFiles[t.slug]:'assets/tool-art/'+(aiFallbacks[t.slug]||t.slug)+'.webp';
  const fallbackFor=t=>'assets/tool-art/'+(aiFallbacks[t.slug]||t.slug)+'.webp';
  function picture(t,cls){
