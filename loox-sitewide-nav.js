@@ -34,7 +34,7 @@
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
  // Preserve tool actions (Undo, Export, Generate, editor tabs) as a second workspace bar.
- const native=document.querySelector('body > header,body > .topbar,body > .info-header');
+ const native=document.querySelector('header');
  if(native){
   native.classList.add('loox-sitewide-native');
   const buttons=[...native.querySelectorAll('button')].filter(b=>!b.matches('#loox-page-back,.loox-tool-menu,.loox-overflow-trigger,.loox-rail-toggle,#menuToggle'));
