@@ -418,3 +418,37 @@ body.loox-sitewide-active .loox-sitewide-secondary{
  margin:13px 0 9px!important;padding-top:10px!important;
  border-top:1px solid #2c2939!important
 }
+
+
+/* Desktop navigation is a docked workspace sidebar, not a modal overlay.
+   Prevent the darkened/disabled-looking content shown on Background Remover. */
+@media(min-width:901px){
+ body.loox-sitewide-active > button.loox-sitewide-scrim,
+ body.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
+  display:none!important;visibility:hidden!important;pointer-events:none!important
+ }
+ body.loox-sitewide-active > aside#loox-sitewide-drawer{
+  width:240px!important;max-width:240px!important;
+  scrollbar-width:none!important;
+  box-shadow:none!important;
+ }
+ body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
+ /* Reserve room only while the sidebar is open. The header remains full width. */
+ body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main,
+ body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > .experience-content,
+ body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > .loox-guide-host{
+  margin-left:240px!important;
+  width:calc(100% - 240px)!important;
+  max-width:calc(100% - 240px)!important;
+  box-sizing:border-box!important;
+ }
+ /* Center standard narrow AI tool content within the remaining workspace. */
+ body.lx-shell.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main{
+  padding-left:max(24px,calc((100% - 1150px)/2))!important;
+  padding-right:24px!important;
+ }
+}
+@media(max-width:900px){
+ body.loox-sitewide-active > aside#loox-sitewide-drawer{scrollbar-width:none!important}
+ body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
+}
