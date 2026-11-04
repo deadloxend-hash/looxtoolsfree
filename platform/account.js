@@ -45,7 +45,7 @@ async function client(){
 export async function api(action,body,extra={}){
  const c=await client(),{data}=await c.auth.getSession();if(!data.session)throw Error('Sign in to continue.');
  const r=await fetch(endpoint+'?'+new URLSearchParams({action,...extra}),{method:body==null?'GET':'POST',credentials:'omit',
-  headers:{Authorization:'Bearer '+data.session.access_token,...(body==null?{}:{'Content-Type':'application/json'})},body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(60000)});
+  headers:{Authorization:'Bearer '+data.session.access_token,...(body==null?{}:{'Content-Type':'application/json'})},body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(action==='cloud_job'?115000:60000)});
  const result=await r.json().catch(()=>({}));if(!r.ok){const e=Error(result.error||'Request failed. Please retry.');e.status=r.status;throw e;}return result;
 }
 export async function refresh(){
