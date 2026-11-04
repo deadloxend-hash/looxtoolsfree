@@ -5,8 +5,8 @@
 if(document.documentElement.dataset.looxDirectoryNavReady)return;
 document.documentElement.dataset.looxDirectoryNavReady='1';
 const collections=[
- ['Images','all-image-tools.html'],['Text','all-text-tools.html'],
- ['Video','all-video-tools.html'],['AI Tools','all-ai-tools.html']
+ ['Image Tools','all-image-tools.html'],['Text Tools','all-text-tools.html'],
+ ['Video Tools','all-video-tools.html'],['AI Tools','all-ai-tools.html']
 ];
 const categories=[
  ['Image Resizing & Canvas Scaling','image-resizing-tools.html'],
