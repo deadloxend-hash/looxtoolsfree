@@ -12,8 +12,6 @@ const aiBannerFiles={
 'ai-uncrop':'loox_ai_generative_uncrop_studio.jpg',
 'ai-photo-restorer':'loox_old_photo_restorer.jpg'
 };
-const featuredArtwork=new Set(['ai-image-upscaler','bg-remove','ai-watermark-remover','face-blur','ai-text-to-image','ai-photo-restorer']);
-const featuredArtworkPath=t=>'assets/ai-featured/'+t.slug+'.webp';
 const aiFallbacks={'ai-chat':'ai-generative-fill','ai-skin-retoucher':'ai-skin-retoucher','ai-face-restoration':'ai-photo-restorer','image-to-text':'image-to-text','face-blur':'face-blur','faceswap':'faceswap'};
 const host=document.querySelector('[data-ai-dashboard]');
 if(host){
@@ -37,7 +35,7 @@ if(host){
  }
  let draw=()=>{};
  if(!full){
-  const featured=aiTools.filter(t=>aiBannerFiles[t.slug]||featuredArtwork.has(t.slug));
+  const featured=aiTools.filter(t=>aiBannerFiles[t.slug]);
   // Use only image-backed, existing AI tools for a polished slideshow.
   const stage=el('div',null,'lx-feature-stage');
   const slide=el('a',null,'lx-feature-slide');slide.setAttribute('aria-label','Try featured AI tool');
@@ -62,15 +60,15 @@ if(host){
    if(!featured.length)return;
    active=(n+featured.length)%featured.length;
    const t=featured[active];slide.href=t.slug+'.html';
-   const preferred=featuredArtwork.has(t.slug)?featuredArtworkPath(t):imageFor(t);
-   stage.classList.remove('is-art-banner');
-   image.onload=()=>{if(image.currentSrc.includes('/ai-featured/'))stage.classList.add('is-art-banner');};
-   image.onerror=()=>{
-    image.onerror=()=>{image.onerror=null;image.src=fallbackFor(t);stage.style.setProperty('--feature-art','url("'+fallbackFor(t)+'")');};
-    image.src=imageFor(t);stage.style.setProperty('--feature-art','url("'+imageFor(t)+'")');
+   // Reuse the original banner. Size the card to its natural aspect ratio
+   // so no photo is stretched, letterboxed, or cropped.
+   image.onload=()=>{
+    if(image.naturalWidth&&image.naturalHeight){
+     stage.style.setProperty('--feature-image-ratio',image.naturalWidth+' / '+image.naturalHeight);
+    }
    };
-   image.src=preferred;
-   stage.style.setProperty('--feature-art','url("'+preferred+'")');
+   image.onerror=()=>{image.onerror=null;image.src=fallbackFor(t);};
+   image.src=imageFor(t);
    image.alt=t.name+' preview';heading.textContent=t.name;description.textContent=t.description;
    markers.forEach((m,i)=>{m.setAttribute('aria-current',i===active?'true':'false');});
   }
