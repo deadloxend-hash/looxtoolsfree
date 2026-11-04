@@ -50,7 +50,7 @@ async function initWorkspace(){
  for(const option of modelField.options){if(option.value==='flux')continue;const m=availableModels.get(option.value);if(m){option.disabled=false;option.textContent=m.name+' · Premium · '+m.cost+' credits';}}
  const catalog=byId('lig-model-catalog')||document.querySelector('.lig-model-catalog');
  for(const span of catalog?.querySelectorAll('[data-model]')||[]){const m=availableModels.get(span.dataset.model);if(m){span.textContent=m.name+' · '+m.cost+' credits';span.classList.add('lig-model-active');}}
- if(availableModels.size){const note=document.querySelector('.lig-model-note');if(note)note.textContent='Choose a model to see its credit cost. Premium models require an active plan.';const foot=catalog?.querySelector('small');if(foot)foot.textContent='Premium models require an active LOOX plan. Credits are reserved when a request starts and returned if generation fails.';}
+ if(availableModels.size){const note=document.querySelector('.lig-model-note');if(note)note.textContent='Choose a model to see its credit cost. Premium models require an active plan.';const foot=catalog?.querySelector('.lig-model-grid small');if(foot)foot.textContent='Premium models require an active LOOX plan. Credits are reserved when a request starts and returned if generation fails.';}
  const generateButton=byId('lig-generate'),message=byId('lig-message');
  const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
  const results=byId('lig-results'),historyGrid=byId('lig-history-grid');
