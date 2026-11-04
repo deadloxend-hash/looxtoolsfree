@@ -211,3 +211,12 @@
  .lx-ai-dashboard-home .lx-feature-image{object-fit:cover;object-position:center center}
  .lx-ai-dashboard-home .lx-feature-stage{height:clamp(300px,78vw,420px)}
 }
+
+
+/* Custom generated banners already contain their own headings and call-to-action.
+   Avoid duplicating copy over the art. The whole card remains a real clickable link. */
+.lx-ai-dashboard-home .lx-feature-stage.is-art-banner .lx-feature-copy,
+.lx-ai-dashboard-home .lx-feature-stage.is-art-banner .lx-feature-shade{display:none}
+.lx-ai-dashboard-home .lx-feature-stage.is-art-banner .lx-feature-image{object-fit:cover;object-position:center}
+.lx-ai-dashboard-home .lx-feature-stage.is-art-banner .lx-feature-controls{bottom:7px}
+.lx-ai-dashboard-home .lx-feature-stage.is-art-banner .lx-feature-controls .lx-feature-arrow{background:#130d24dd}
