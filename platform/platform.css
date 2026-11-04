@@ -152,3 +152,40 @@
  .lig-header .lig-head-start{flex:0 0 auto!important;gap:6px!important}
  .lig-header .lig-header-user{margin-left:auto!important}
 }
+
+
+/* LOOX AI homepage: rotating editorial showcase. Full directory keeps its filters. */
+.lx-ai-dashboard-home{width:min(1240px,calc(100% - 32px));padding:clamp(16px,2.4vw,30px);background:#121018;border-color:#3b304b}
+.lx-ai-dashboard-home .lx-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.lx-ai-dashboard-home .lx-feature-stage{height:clamp(320px,38vw,490px);margin-top:18px;position:relative;border-radius:20px;overflow:hidden;background:#171323;border:1px solid #453750;isolation:isolate}
+.lx-ai-dashboard-home .lx-feature-slide{position:absolute;inset:0;display:block;color:#fff!important;text-decoration:none!important;overflow:hidden}
+.lx-ai-dashboard-home .lx-feature-image{display:block;width:100%;height:100%;object-fit:cover;object-position:center;background:linear-gradient(120deg,#211932,#332049)}
+.lx-ai-dashboard-home .lx-feature-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,8,16,.94) 0%,rgba(13,9,21,.76) 37%,rgba(10,8,17,.15) 82%),linear-gradient(0deg,rgba(8,6,13,.68),transparent 60%)}
+.lx-ai-dashboard-home .lx-feature-copy{position:absolute;inset:auto auto 68px clamp(22px,5vw,68px);z-index:1;max-width:min(490px,72%);display:flex;flex-direction:column;align-items:flex-start;gap:12px;text-shadow:0 1px 8px #120d20}
+.lx-ai-dashboard-home .lx-feature-kicker{display:inline-block;color:#dcbcff;background:rgba(77,41,115,.65);border:1px solid #9f74cc;border-radius:99px;padding:7px 12px;font-size:11px;font-weight:800;letter-spacing:.1em}
+.lx-ai-dashboard-home .lx-feature-copy h3{font-size:clamp(31px,4.5vw,60px);line-height:1.03;letter-spacing:-.045em;margin:0;color:white}
+.lx-ai-dashboard-home .lx-feature-copy p{font-size:clamp(14px,1.5vw,17px);line-height:1.5;color:#f3eefd;margin:0}
+.lx-ai-dashboard-home .lx-feature-cta{display:inline-flex;align-items:center;justify-content:center;min-height:43px;border-radius:11px;padding:10px 22px;background:#8a50e8;color:white;font-weight:800;box-shadow:0 8px 24px #12091d66;text-shadow:none}
+.lx-ai-dashboard-home .lx-feature-slide:hover .lx-feature-cta{background:#a46df9}
+.lx-ai-dashboard-home .lx-feature-controls{position:absolute;z-index:2;left:0;right:0;bottom:12px;display:flex;align-items:center;justify-content:center;gap:12px;pointer-events:none}
+.lx-ai-dashboard-home .lx-feature-controls>*{pointer-events:auto}
+.lx-ai-dashboard-home .lx-feature-dots{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:5px;max-width:68%}
+.lx-ai-dashboard-home .lx-feature-dot{width:17px;height:5px;min-width:0;min-height:0;padding:0;border:0;background:#b3a6be80;border-radius:5px;cursor:pointer}
+.lx-ai-dashboard-home .lx-feature-dot[aria-current=true]{background:#b37bff;width:30px}
+.lx-ai-dashboard-home .lx-feature-arrow{width:29px;height:29px;min-width:29px;min-height:29px;padding:0;border-radius:99px;border:1px solid #ffffff40;background:#191221bb;color:#fff;font-size:23px;line-height:1;cursor:pointer}
+.lx-ai-dashboard-home .lx-feature-arrow:hover{background:#6d3eac}
+.lx-ai-dashboard-home .lx-feature-browse{display:flex;align-items:center;justify-content:center;width:fit-content;margin:17px auto 0;padding:10px 20px;border:1px solid #68517f;border-radius:12px;background:#251932;color:#f5eaff!important;text-decoration:none!important;font-size:14px;font-weight:750}
+.lx-ai-dashboard-home .lx-feature-browse:hover{background:#37244e}
+@media(max-width:650px){
+ .lx-ai-dashboard-home{width:calc(100% - 20px);margin:18px auto;padding:12px;border-radius:17px}
+ .lx-ai-dashboard-home .lx-row{align-items:flex-start}
+ .lx-ai-dashboard-home .lx-row .lx-button{font-size:12px}
+ .lx-ai-dashboard-home .lx-feature-stage{height:420px;margin-top:14px;border-radius:14px}
+ .lx-ai-dashboard-home .lx-feature-image{object-position:60% center}
+ .lx-ai-dashboard-home .lx-feature-shade{background:linear-gradient(0deg,#0b0815f2 0%,#110d1cbf 35%,#0d0b1412 87%)}
+ .lx-ai-dashboard-home .lx-feature-copy{left:19px;bottom:63px;max-width:calc(100% - 38px);gap:9px}
+ .lx-ai-dashboard-home .lx-feature-copy h3{font-size:clamp(29px,8vw,42px)}
+ .lx-ai-dashboard-home .lx-feature-copy p{font-size:13px;line-height:1.4}
+ .lx-ai-dashboard-home .lx-feature-cta{min-height:40px;padding:9px 20px}
+}
+@media(prefers-reduced-motion:reduce){.lx-ai-dashboard-home .lx-feature-slide{transition:none}}
