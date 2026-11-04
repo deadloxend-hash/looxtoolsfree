@@ -6,7 +6,7 @@
  'use strict';
  const page=location.pathname.split('/').pop()||'index.html';
  if(['index.html','ai-home.html','ai-chat.html'].includes(page)||document.getElementById('loox-sitewide-header'))return;
- const root=new URL('./',location.href);
+ const root=new URL('./',document.currentScript?.src||new URL('loox-sitewide-nav.js',location.href).href);
  const url=name=>new URL(name,root).href;
  const icons={search:'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.4 16.4 4 4"/></svg>'};
  const el=(tag,cls,text)=>{
