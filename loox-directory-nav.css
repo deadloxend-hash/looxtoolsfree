@@ -90,3 +90,13 @@ body.work-page.loox-dir-enhanced{background:#0d0c13;color:#f6f1ff}
  .loox-dir-search-button{font-size:11px;padding-inline:9px}
  .loox-dir-global-search{font-size:12px}
 }
+
+/* Trust notes remain visible on every screen, without crowding category links. */
+@media(min-width:761px) and (max-width:1230px){
+ .loox-dir-perks{display:flex;flex:0 0 100%;max-width:none;justify-content:center;gap:15px;padding-top:2px}
+ .work-page.loox-dir-enhanced .loox-dir-header{flex-wrap:wrap}
+}
+@media(max-width:760px){
+ .loox-dir-perks{display:flex;flex:0 0 100%;max-width:100%;width:100%;justify-content:center;gap:5px 12px;margin-top:2px;font-size:9px}
+ .loox-dir-perks span{white-space:normal;text-align:center}
+}
