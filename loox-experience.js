@@ -80,13 +80,34 @@
    return true;
   };
   const item=(url,name,icon)=>'<a class="loox-rail-link" href="'+esc(url)+'" '+(activeURL(url)?'aria-current="page"':'')+'><span class="loox-rail-icon">'+icon+'</span><span class="loox-rail-label">'+esc(name)+'</span></a>';
-  rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX TOOLS</span><button class="loox-rail-toggle" aria-label="Toggle sidebar">☰</button></div><nav class="loox-rail-list" aria-label="Tools"><h2 class="loox-rail-group-title">Navigation</h2>'+[
-   ['index.html','LOOX Tools Home','⌂'],['ai-home.html','LOOX AI Home','✦']].map(t=>item(...t)).join('')+
-   (aiSharedDialog?'<h2 class="loox-rail-group-title">AI-powered tools</h2>'+[
-   ['all-ai-tools.html','All AI Tools','✦'],['bg-remove.html','Background Remover','✂'],['ai-image-upscaler.html','Image Upscaler','↗'],['ai-image-enhancer.html','Image Enhancer','✧'],['ai-object-eraser.html','Object Eraser','◌'],['ai-text-to-image.html','Image Generator','✦'],['ai-video-generator.html','Video Generator','▶'],['ai-photo-restorer.html','Photo Restoration','◷']].map(t=>item(...t)).join(''):'')+
-   (aiSharedDialog?'':'<h2 class="loox-rail-group-title">Free tools</h2>'+[
-   ['all-image-tools.html','Image Tools','▧'],['all-video-tools.html','Video Tools','▶'],['index.html?category=Audio#tools','Audio Tools','♫'],['all-text-tools.html','Text Tools','Aa'],['index.html?category=PDF#tools','PDF Tools','▤'],['index.html?category=Developer#tools','Developer Tools','⌘'],['pricing.html','Pricing & Credits','◇'],['account.html','My Account','◎']].map(t=>item(...t)).join('')+
-   '<button class="loox-rail-link loox-more-trigger"><span class="loox-rail-label">More tools</span></button>')+'</nav>';
+  const quickLinks=[
+   ['all-image-tools.html','Image Tools','▧'],
+   ['all-text-tools.html','Text Tools','Aa'],
+   ['all-video-tools.html','Video Tools','▶'],
+   ['all-ai-tools.html','AI Tools','✦'],
+   ['index.html#tools','All tools','✧'],
+   ['index.html?category=Image#tools','Image','▧'],
+   ['index.html?category=Video#tools','Video','▶'],
+   ['index.html?category=Audio#tools','Audio','♫'],
+   ['index.html?category=YouTube#tools','YouTube','▷'],
+   ['index.html?category=PDF#tools','PDF','▤'],
+   ['index.html?category=AI#tools','AI','✦'],
+   ['index.html?category=Text#tools','Text','Aa']
+  ];
+  rail.innerHTML='<div class="loox-rail-head"><span class="loox-rail-heading">LOOX</span><button class="loox-rail-toggle" type="button" aria-label="Toggle sidebar">☰</button></div>'+
+   '<nav class="loox-rail-list" aria-label="LOOX navigation">'+
+   '<h2 class="loox-rail-group-title">Navigation</h2>'+
+   [['index.html','LOOX Tools Home','⌂'],['ai-home.html','LOOX AI Home','✦']].map(t=>item(...t)).join('')+
+   '<h2 class="loox-rail-group-title">Editors</h2>'+
+   [['photo-editor.html','Photo Editor','▧'],['video-editor.html','Video Editor','▶']].map(t=>item(...t)).join('')+
+   '<h2 class="loox-rail-group-title">Featured</h2>'+
+   [['bg-remove.html','Background Remover','✂'],['face-blur.html','Face Blur','◌'],['faceswap.html','Face Swap','✦'],['ai-text-to-image.html','Photo Generator','▧'],['ai-video-generator.html','Video Generator','▶']].map(t=>item(...t)).join('')+
+   '<details class="loox-rail-more"><summary class="loox-rail-more-head"><span>More Tools</span><span aria-hidden="true">⌄</span></summary>'+
+   '<div class="loox-rail-more-contents">'+quickLinks.map(t=>item(...t)).join('')+
+   '<button type="button" class="loox-rail-link loox-more-trigger"><span class="loox-rail-icon">⌕</span><span class="loox-rail-label">Search every tool</span></button></div></details>'+
+   '<div class="loox-rail-secondary">'+[
+    ['guides.html','Guides','?'],['pricing.html','Pricing & Credits','◇'],['account.html','My Account','◎']
+   ].map(t=>item(...t)).join('')+'</div></nav>';
   rail.querySelector('.loox-rail-toggle').onclick=toggleHomeRail;
   const moreTrigger=rail.querySelector('.loox-more-trigger');
   if(moreTrigger){moreTrigger.onclick=openMore;moreTrigger.setAttribute('aria-label',l.more);moreTrigger.title=l.more;}
@@ -148,7 +169,7 @@
   if(t.kind==='text')return 3;
   return 4
  }
- if(!aiSharedDialog)window.LOOXOpenAllTools=openMore;
+ window.LOOXOpenAllTools=openMore;
  function openMore(){
   if(!moreDialog){moreDialog=document.createElement('dialog');moreDialog.className='loox-more-dialog';document.body.append(moreDialog)}
   const l=(labels[language]||labels.en),li=Math.max(0,['en','es','fr','de'].indexOf(language)),categoryNames=[['Image Resizing & Canvas Scaling','Tamaño y lienzo','Dimensions et canevas','Bildgröße und Leinwand'],['Compression & File Optimization','Compresión y optimización','Compression et optimisation','Komprimierung und Optimierung'],['Image Cropping & Framing','Recorte y encuadre','Recadrage et formes','Zuschnitt und Formen'],['Image Format Converters','Conversores de imagen','Conversion d’images','Bildformatkonverter'],['Photo Editing & Filters','Edición y filtros','Retouche et filtres','Bildbearbeitung und Filter'],['Watermarking & Branding','Marcas de agua y diseño','Filigranes et identité','Wasserzeichen und Gestaltung'],['AI-Powered Media Suite','Herramientas de IA','Outils IA','KI-Medienwerkzeuge'],['Video & Animation Utilities','Vídeo y animación','Vidéo et animation','Video und Animation']],ids=['resize','compress','crop','convert','edit','brand','ai','video'],routes=['image-resizing-tools','image-compression-tools','image-cropping-tools','image-converter-tools','photo-editing-tools','watermark-branding-tools','ai-media-tools','video-animation-tools'];
@@ -210,7 +231,7 @@
  }
  // Render essential navigation immediately: a failed catalog fetch must not hide it.
  if(railPage)drawRail();else mountHeader();
- if(!aiSharedDialog)Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
+ Promise.all([fetch('assets/tool-catalog.json?v=40').then(r=>r.json()),fetch('assets/locales/interface.json?v=40').then(r=>r.json())]).then(([c,d])=>{
   catalog=c;dictionary=d;drawRail();chooseToolbox();applyLanguage();loadGuide();brandCards();applyPreferences();
   const grid=document.querySelector('#toolGrid');if(grid)new MutationObserver(()=>brandCards(grid)).observe(grid,{childList:true});
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
