@@ -36,6 +36,21 @@
    if(href===file)link.setAttribute('aria-current','page');
    dropdown.append(link);
   }
+  if(isTools){
+   const appearance=document.createElement('details');appearance.className='loox-logo-appearance';
+   appearance.innerHTML='<summary>◐ &nbsp; Appearance <span aria-hidden="true">⌄</span></summary><div class="loox-logo-theme-options"></div>';
+   const themes=appearance.querySelector('.loox-logo-theme-options');
+   for(const [name,value] of [['Black','dark'],['White','white'],['Light grey','grey']]){
+    const choice=document.createElement('button');choice.type='button';choice.textContent=name;
+    choice.addEventListener('click',e=>{
+     e.stopPropagation();
+     const original=document.querySelector('#themeControl [data-theme-choice="'+value+'"]');
+     if(original){original.click();appearance.open=false;}else location.assign('settings.html');
+    });
+    themes.append(choice);
+   }
+   dropdown.append(appearance);
+  }
   const close=()=>{dropdown.hidden=true;logo.setAttribute('aria-expanded','false')};
   logo.addEventListener('click',e=>{e.stopPropagation();const opening=dropdown.hidden;dropdown.hidden=!opening;logo.setAttribute('aria-expanded',String(opening))});
   logoWrap.append(logo,dropdown);
