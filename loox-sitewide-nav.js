@@ -16,13 +16,19 @@
  const inner=el('div','loox-sitewide-inner');
  const burger=el('button','loox-sitewide-burger','☰');burger.type='button';burger.setAttribute('aria-label','Open LOOX tool navigation');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-controls','loox-sitewide-drawer');
  const logoWrap=el('div','loox-sitewide-logo-wrap');
- const logo=el('button','loox-sitewide-logo');logo.type='button';logo.setAttribute('aria-expanded','false');logo.setAttribute('aria-label','Open LOOX menu');
+ const logo=el('a','loox-sitewide-logo');logo.href=url('ai-home.html');logo.setAttribute('aria-label','LOOX AI Home');
+ const moreWrap=el('div','loox-sitewide-more-wrap');
+ const moreButton=el('button','loox-sitewide-more-button');moreButton.type='button';
+ moreButton.setAttribute('aria-label','Open LOOX workspace menu');
+ moreButton.setAttribute('aria-haspopup','true');moreButton.setAttribute('aria-expanded','false');
+ moreButton.setAttribute('aria-controls','loox-sitewide-logo-menu');
+ moreButton.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
  const image=el('img');image.src=url('assets/loox-wordmark.svg?v=1');image.alt='LOOX';image.width=132;image.height=35;logo.append(image);
- const logoMenu=el('nav','loox-sitewide-logo-menu');logoMenu.setAttribute('aria-label','LOOX site menu');logoMenu.hidden=true;
+ const logoMenu=el('nav','loox-sitewide-logo-menu');logoMenu.id='loox-sitewide-logo-menu';logoMenu.setAttribute('aria-label','LOOX workspace menu');logoMenu.hidden=true;
  [['LOOX Tools Home','index.html'],['LOOX AI Home','ai-home.html'],['All tools','index.html#tools'],['Favorites','index.html#favorites'],['Guides','guides.html'],['Pricing & Credits','pricing.html'],['My Account','account.html'],['Privacy','privacy-policy.html'],['Settings','settings.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);logoMenu.append(link);
  });
- logoWrap.append(logo,logoMenu);
+ logoWrap.append(logo);moreWrap.append(moreButton,logoMenu);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
  [['Home','index.html'],['AI Studio','ai-home.html'],['Guides','guides.html'],['Pricing','pricing.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);if(href===page)link.setAttribute('aria-current','page');links.append(link);
@@ -30,7 +36,7 @@
  const search=el('button','loox-sitewide-search');search.type='button';
  search.setAttribute('aria-label','Search all LOOX tools');search.innerHTML=icons.search+'<span>Search tools</span><kbd>/</kbd>';
  const account=el('div','loox-sitewide-account');account.setAttribute('data-loox-account','');
- inner.append(burger,logoWrap,links,search,account);nav.append(inner);
+ inner.append(burger,logoWrap,links,search,account,moreWrap);nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
  // Preserve tool actions (Undo, Export, Generate, editor tabs) as a second workspace bar.
@@ -68,9 +74,9 @@
  const closeDrawer=()=>{sidebar.classList.remove('is-open');scrim.classList.remove('is-open');burger.setAttribute('aria-expanded','false')};
  burger.addEventListener('click',()=>{const open=!sidebar.classList.contains('is-open');sidebar.classList.toggle('is-open',open);scrim.classList.toggle('is-open',open);burger.setAttribute('aria-expanded',String(open))});
  scrim.addEventListener('click',closeDrawer);
- const closeLogo=()=>{logoMenu.hidden=true;logo.setAttribute('aria-expanded','false')};
- logo.addEventListener('click',e=>{e.stopPropagation();const open=logoMenu.hidden;logoMenu.hidden=!open;logo.setAttribute('aria-expanded',String(open))});
- document.addEventListener('pointerdown',e=>{if(!logoWrap.contains(e.target))closeLogo()});
+ const closeLogo=()=>{logoMenu.hidden=true;moreButton.setAttribute('aria-expanded','false')};
+ moreButton.addEventListener('click',e=>{e.stopPropagation();const open=logoMenu.hidden;logoMenu.hidden=!open;moreButton.setAttribute('aria-expanded',String(open))});
+ document.addEventListener('pointerdown',e=>{if(!moreWrap.contains(e.target))closeLogo()});
  // Unified full tool finder. Uses the existing public tool catalog and real tool links.
  const dialog=el('dialog','loox-sitewide-finder');
  dialog.innerHTML='<div class="loox-sitewide-finder-head"><div><small>LOOX WORKSPACES</small><h2>Find a tool</h2></div><button type="button" aria-label="Close tool search" class="loox-sitewide-finder-close">×</button></div><div class="loox-sitewide-finder-input">'+icons.search+'<input type="search" placeholder="Search every tool…" aria-label="Search every LOOX tool"></div><div class="loox-sitewide-finder-tabs" role="group" aria-label="Filter tools"><button type="button" data-filter="all" aria-pressed="true">All tools</button><button type="button" data-filter="image">Image</button><button type="button" data-filter="video">Video</button><button type="button" data-filter="text">Text</button><button type="button" data-filter="ai">AI</button></div><p class="loox-sitewide-finder-status" role="status"></p><div class="loox-sitewide-finder-results"></div>';
