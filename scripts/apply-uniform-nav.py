@@ -29,11 +29,11 @@ for path in sorted(pages):
         else:
             skipped.append((path.name, "No closing body"))
             continue
-    # Cache-bust the finished responsive navigation across every page.
+    # Keep every tool and localized guide on the identical shared version.
+    for version in (1, 2, 3, 4):
+        result = result.replace(f"loox-sitewide-nav.css?v={version}", "loox-sitewide-nav.css?v=5")
     for version in (1, 2, 3):
-        result = result.replace(f"loox-sitewide-nav.css?v={version}", "loox-sitewide-nav.css?v=4")
-    for version in (1, 2):
-        result = result.replace(f"loox-sitewide-nav.js?v={version}", "loox-sitewide-nav.js?v=3")
+        result = result.replace(f"loox-sitewide-nav.js?v={version}", "loox-sitewide-nav.js?v=4")
     if result != source:
         path.write_text(result, encoding="utf-8")
         modified.append(path.name)
