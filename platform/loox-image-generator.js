@@ -44,7 +44,13 @@ if(mode==='landing')prepareLanding();
 if(mode==='workspace')initWorkspace();
 
 async function initWorkspace(){
- const form=byId('lig-compose'),promptField=byId('lig-prompt'),ratioField=byId('lig-ratio');
+ const form=byId('lig-compose'),promptField=byId('lig-prompt'),ratioField=byId('lig-ratio'),modelField=byId('lig-model');
+ await config().catch(()=>{});
+ const availableModels=new Map((state.config?.models||[]).filter(m=>m.available).map(m=>[m.id,m]));
+ for(const option of modelField.options){if(option.value==='flux')continue;const m=availableModels.get(option.value);if(m){option.disabled=false;option.textContent=m.name+' · Premium · '+m.cost+' credits';}}
+ const catalog=byId('lig-model-catalog')||document.querySelector('.lig-model-catalog');
+ for(const span of catalog?.querySelectorAll('[data-model]')||[]){const m=availableModels.get(span.dataset.model);if(m){span.textContent=m.name+' · '+m.cost+' credits';span.classList.add('lig-model-active');}}
+ if(availableModels.size){const note=document.querySelector('.lig-model-note');if(note)note.textContent='Choose a model to see its credit cost. Premium models require an active plan.';const foot=catalog?.querySelector('small');if(foot)foot.textContent='Premium models require an active LOOX plan. Credits are reserved when a request starts and returned if generation fails.';}
  const generateButton=byId('lig-generate'),message=byId('lig-message');
  const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
  const results=byId('lig-results'),historyGrid=byId('lig-history-grid');
@@ -332,7 +338,7 @@ async function initWorkspace(){
   })();
   return templatesPromise;
  }
- const price=()=>state.config?.operations?.find(o=>o.id==='generate')?.cost||3;
+ const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelField.value)?.cost||Infinity);
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
  let remainingImages=null;
@@ -350,8 +356,9 @@ async function initWorkspace(){
   if(state.user&&state.account?.wallet){
    credits.textContent=state.account.wallet.balance+' credits';
   }else credits.textContent=state.user?'Loading credits…':'Sign in to view';
-  creditCost.textContent='Image generation · '+price()+' credits on success';
+  creditCost.textContent=(modelField.value==='flux'?'Local image':'Premium image')+' · '+price()+' credits on success';
  }
+ modelField.addEventListener('change',updateAccount);
  function setMessage(value,isError=false){
   message.textContent=value||'';
   message.style.color=isError?'#ffb6bc':'';
@@ -383,7 +390,7 @@ async function initWorkspace(){
   results.append(empty);
  }
  emptyCanvas();
- function outputCard(prompt,ratio){
+ function outputCard(prompt,ratio,modelLabel='FLUX.1 Schnell'){
   byId('lig-empty')?.remove();
   const card=create('article','lig-output');
   const top=create('div','lig-output-top'),
@@ -420,7 +427,7 @@ async function initWorkspace(){
    loadingTitle.textContent=label;
    if(sub)loadingSub.textContent=sub;
   };
-  return {card,stage,bottom,indicator,overlay,setStage,prompt};
+  return {card,stage,bottom,indicator,overlay,setStage,prompt,modelLabel};
  }
  function showFailed(view,error){
   view.stage.replaceChildren();
@@ -442,12 +449,12 @@ async function initWorkspace(){
   view.stage.replaceChildren();
   const image=create('img');
   image.src=url;
-  image.alt='Generated with FLUX Schnell: '+view.prompt;
+  image.alt='Generated with '+view.modelLabel+': '+view.prompt;
   image.loading='eager';
   image.decoding='async';
   image.onerror=()=>{view.indicator.textContent='Preview unavailable';};
   view.stage.append(image);
-  view.indicator.textContent='Completed · FLUX.1 Schnell';
+  view.indicator.textContent='Completed · '+view.modelLabel;
   const download=create('button','lig-small-action','Download PNG');
   download.type='button';
   download.addEventListener('click',async()=>{
@@ -489,7 +496,7 @@ async function initWorkspace(){
    if(status.state==='succeeded'){
     showReady(view,status.url,id);
     try{sessionStorage.removeItem('loox-active-image-'+state.user.id);}catch{}
-    setMessage('Your FLUX image is ready. Saved privately to your LOOX account.');
+    setMessage('Your image is ready. Saved privately to your LOOX account.');
     await refresh().catch(()=>{});
     updateAccount();
     await loadHistory(true);
@@ -509,7 +516,7 @@ async function initWorkspace(){
   }
   throw Error('Still waiting for a result. Check Recent AI jobs in your LOOX account.');
  }
- async function submit(text,ratio=ratioField.value,seed=null,resumeId=null){
+ async function submit(text,ratio=ratioField.value,seed=null,resumeId=null,modelId=modelField.value){
   if(isBusy)return;
   const prompt=String(text||'').trim();
   if(!prompt){setMessage('Enter a prompt to generate an image.',true);promptField.focus();return;}
@@ -520,16 +527,19 @@ async function initWorkspace(){
    return;
   }
   if(!resumeId&&remainingImages===0){setMessage('You have used all 30 image generations today. Resets at 00:00 UTC.',true);return;}
-  if(!resumeId&&state.account?.wallet?.balance<price()){
+  const modelCost=modelId==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelId)?.cost||Infinity);
+  if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage('This premium model is not active yet.',true);return;}
+  if(modelId!=='flux'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
+  if(!resumeId&&state.account?.wallet?.balance<modelCost){
    pricing();setMessage('You need more AI credits to generate this image.',true);return;
   }
   selectView('generate');
   setMessage(resumeId?'Restoring your pending image…':'Preparing a new generation…');
-  isBusy=true;generateButton.disabled=true;ratioField.disabled=true;
+  isBusy=true;generateButton.disabled=true;ratioField.disabled=true;modelField.disabled=true;
   let view=null;
   try{
-   const id=resumeId||(await api('job',{
-    operation:'generate',requestId:crypto.randomUUID(),prompt,ratio,...(seed==null?{}:{seed})
+   const id=resumeId||(await api(modelId==='flux'?'job':'cloud_job',{
+    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:crypto.randomUUID(),prompt,ratio,...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
    // A newly accepted request starts a fresh preview. Completed images remain in account history.
@@ -539,10 +549,10 @@ async function initWorkspace(){
     await loadHistory(true);
    }
    currentGenerationId=id;
-   view=outputCard(prompt,ratio);
+   view=outputCard(prompt,ratio,modelId==='flux'?'FLUX.1 Schnell':availableModels.get(modelId)?.name||'AI image');
    if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
    if(!resumeId){
-    try{sessionStorage.setItem('loox-active-image-'+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
+    try{sessionStorage.setItem('loox-active-image-'+state.user.id,JSON.stringify({id,prompt,ratio,modelId}));}catch{}
     await refresh().catch(()=>{});
     updateAccount();
     await refreshQuota();
@@ -553,7 +563,7 @@ async function initWorkspace(){
    setMessage(error.message||'Generation could not start.',true);
    await refreshQuota();
   }finally{
-   isBusy=false;generateButton.disabled=false;ratioField.disabled=false;
+   isBusy=false;generateButton.disabled=false;ratioField.disabled=false;modelField.disabled=false;
   }
  }
  form?.addEventListener('submit',event=>{
@@ -781,7 +791,7 @@ async function initWorkspace(){
    const saved=JSON.parse(sessionStorage.getItem(key)||'null');
    if(saved&&saved.id&&saved.prompt&&ratios.has(saved.ratio)){
     // A reload should resume polling rather than resubmit and double-charge.
-    await submit(saved.prompt,saved.ratio,null,saved.id);
+    await submit(saved.prompt,saved.ratio,null,saved.id,saved.modelId||'flux');
    }
   }catch{}
  }
