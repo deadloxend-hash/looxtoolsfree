@@ -243,3 +243,40 @@ body.loox-sitewide-active .topbar.loox-sitewide-simplebar:has(#loox-page-back){
  background:#161320!important;border-bottom:1px solid #2a2335!important
 }
 body.loox-sitewide-active .loox-sitewide-simplebar:has(#loox-page-back) .loox-page-back{display:inline-flex!important}
+
+
+/* Critical: legacy .experience-shell>aside:not(.loox-rail) hides our new
+   directory drawer, leaving only a dark scrim after clicking ☰. */
+body.loox-sitewide-active > aside#loox-sitewide-drawer,
+body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer{
+ display:block!important;
+ visibility:visible!important;
+ opacity:1!important;
+ position:fixed!important;
+ top:var(--loox-sitewide-height,64px)!important;
+ left:0!important;right:auto!important;bottom:0!important;
+ width:min(270px,88vw)!important;max-width:88vw!important;
+ height:auto!important;max-height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
+ padding:17px 12px 30px!important;
+ z-index:10002!important;
+ overflow-y:auto!important;
+ box-sizing:border-box!important;
+ transform:translate3d(-110%,0,0)!important;
+ transition:transform .26s cubic-bezier(.22,1,.36,1)!important;
+ pointer-events:none!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer.is-open,
+body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer.is-open{
+ transform:translate3d(0,0,0)!important;
+ pointer-events:auto!important
+}
+body.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
+ position:fixed!important;inset:var(--loox-sitewide-height,64px) 0 0!important;
+ display:block!important;z-index:10001!important
+}
+body.loox-sitewide-active #loox-sitewide-header{z-index:10003!important}
+body.loox-sitewide-active .loox-sitewide-drawer-list{display:grid!important}
+body.loox-sitewide-active .loox-sitewide-drawer-link{display:flex!important}
+@media(prefers-reduced-motion:reduce){
+ body.loox-sitewide-active > aside#loox-sitewide-drawer{transition:none!important}
+}
