@@ -30,9 +30,10 @@ for path in sorted(pages):
             skipped.append((path.name, "No closing body"))
             continue
     # Cache-bust the finished responsive navigation across every page.
-    result = result.replace("loox-sitewide-nav.css?v=1", "loox-sitewide-nav.css?v=3")
-    result = result.replace("loox-sitewide-nav.css?v=2", "loox-sitewide-nav.css?v=3")
-    result = result.replace("loox-sitewide-nav.js?v=1", "loox-sitewide-nav.js?v=2")
+    for version in (1, 2, 3):
+        result = result.replace(f"loox-sitewide-nav.css?v={version}", "loox-sitewide-nav.css?v=4")
+    for version in (1, 2):
+        result = result.replace(f"loox-sitewide-nav.js?v={version}", "loox-sitewide-nav.js?v=3")
     if result != source:
         path.write_text(result, encoding="utf-8")
         modified.append(path.name)
