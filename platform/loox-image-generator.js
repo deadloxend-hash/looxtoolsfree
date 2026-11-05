@@ -394,6 +394,22 @@ async function initWorkspace(){
  }
 
 
+ const settingFields={
+  resolution:{block:byId('lig-resolution-block'),select:byId('lig-resolution')},
+  quality:{block:byId('lig-quality-block'),select:byId('lig-quality')}
+ };
+ function updateModelSettings(){
+  const id=modelField.value;
+  const choices={
+   resolution:id.startsWith('google_')?['1K','2K','4K']:id==='ideogram_p_image'?['1k','2k']:[],
+   quality:id==='ideogram_p_image'?['medium','high']:id==='openai_gpt_image'?['low','medium','high']:[]
+  };
+  for(const [key,field] of Object.entries(settingFields)){
+   field.block.hidden=!choices[key].length;
+   field.select.replaceChildren(...choices[key].map(value=>new Option(value==='1k'?'1K':value==='2k'?'2K':value,value)));
+  }
+ }
+ updateModelSettings();
  function updateAccount(){
   if(state.user&&state.account?.wallet){
    credits.textContent=state.account.wallet.balance+' credits';
@@ -403,7 +419,7 @@ async function initWorkspace(){
   modelNote.textContent=selected.reason;
   generateButton.disabled=!isBusy&&modelField.value!=='flux'&&!availableModels.has(modelField.value);
  }
- modelField.addEventListener('change',()=>{updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
+ modelField.addEventListener('change',()=>{updateModelSettings();updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
  function setMessage(value,isError=false){
   message.textContent=value||'';
   message.style.color=isError?'#ffb6bc':'';
@@ -584,7 +600,7 @@ async function initWorkspace(){
   let view=null;
   try{
    const id=resumeId||(await api(modelId==='flux'?'job':'cloud_job',{
-    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:crypto.randomUUID(),prompt,ratio,...(seed==null?{}:{seed})
+    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:crypto.randomUUID(),prompt,ratio,...(modelId==='flux'?{}:{settings:Object.fromEntries(Object.entries(settingFields).filter(([,field])=>!field.block.hidden).map(([key,field])=>[key,field.select.value]))}),...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
    // A newly accepted request starts a fresh preview. Completed images remain in account history.
