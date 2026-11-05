@@ -157,7 +157,94 @@
   theme:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>'
  };
  const pict=kind=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+profileIcon[kind]+'</svg>';
+ function toggleSiteTheme(trigger){
+  let pref={};try{pref=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}')||{}}catch{}
+  const themeIsLight=pref.theme==='light'||(!pref.theme&&document.documentElement.dataset.lxTheme==='light');
+  const mode=themeIsLight?'dark':'light';
+  pref.theme=mode;
+  try{
+   localStorage.setItem('loox-platform-prefs',JSON.stringify(pref));
+   localStorage.setItem('loox-theme-v1',mode==='light'?'white':'dark');
+  }catch{}
+  document.documentElement.dataset.lxTheme=mode;
+  if(typeof window.LOOXApplyTheme==='function')window.LOOXApplyTheme(mode==='light'?'white':'dark');
+  window.dispatchEvent(new CustomEvent('looxpreferenceschange',{detail:pref}));
+  if(trigger)trigger.title=mode==='light'?'Switch to dark theme':'Switch to light theme';
+ }
+
  const closeLogo=()=>{const details=account.querySelector('.lx-profile-details');if(details)details.open=false;};
+
+ // Small persistent account panel pinned to the bottom of the shared sidebar.
+ // Keep it separate from the scrollable navigation; mirror the real account name.
+ const sideFooter=el('div','loox-sidebar-footer');
+ const sideAccount=el('a','loox-sidebar-account-row');sideAccount.href=url('account.html');
+ sideAccount.setAttribute('aria-label','Manage your LOOX account');
+ const avatarMark=el('span','loox-sidebar-avatar');
+ avatarMark.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/><path d="M5.5 19c.8-4 12.2-4 13 0"/></svg>';
+ const sideIdentity=el('span','loox-sidebar-identity');
+ const sideName=el('strong','loox-sidebar-account-name','My Account');
+ const sideSubtitle=el('small','','Manage account');sideIdentity.append(sideName,sideSubtitle);
+ sideAccount.append(avatarMark,sideIdentity);
+ const sideOptions=el('div','loox-sidebar-utility-panel');sideOptions.hidden=true;
+ sideOptions.id='loox-sidebar-utility-panel';
+ const sideActions=el('div','loox-sidebar-actions');sideActions.setAttribute('role','group');
+ sideActions.setAttribute('aria-label','Workspace quick settings');
+ const sidebarIcons={};
+ function makeSideAction(kind,label,href){
+  const node=el(href?'a':'button','loox-sidebar-action');
+  if(href)node.href=url(href);else node.type='button';
+  node.title=label;node.setAttribute('aria-label',label);node.innerHTML=pict(kind);
+  sideActions.append(node);sidebarIcons[kind]=node;return node;
+ }
+ const bell=makeSideAction('notifications','Notifications');
+ makeSideAction('settings','Account settings','settings.html#workspace-preferences');
+ const globe=makeSideAction('language','Change language');
+ const moon=makeSideAction('theme','Toggle light and dark theme');
+ bell.setAttribute('aria-controls',sideOptions.id);bell.setAttribute('aria-expanded','false');
+ globe.setAttribute('aria-controls',sideOptions.id);globe.setAttribute('aria-expanded','false');
+ let panelKind='';
+ function closeSideOptions(){
+  panelKind='';sideOptions.hidden=true;
+  bell.setAttribute('aria-expanded','false');globe.setAttribute('aria-expanded','false');
+ }
+ function showSideOptions(kind){
+  if(panelKind===kind&&!sideOptions.hidden){closeSideOptions();return}
+  panelKind=kind;sideOptions.replaceChildren();
+  sideOptions.append(el('strong','loox-sidebar-panel-title',kind==='language'?'Language':'Notifications'));
+  if(kind==='language'){
+   const languages=el('div','loox-sidebar-language-grid');
+   [['en','English'],['es','Español'],['fr','Français'],['de','Deutsch']].forEach(([code,label])=>{
+    const option=el('button','',label);option.type='button';
+    option.addEventListener('click',()=>{
+     try{localStorage.setItem('loox-language',code)}catch{}
+     const next=new URL(location.href);
+     if(code==='en')next.searchParams.delete('lang');else next.searchParams.set('lang',code);
+     location.assign(next.href);
+    });
+    languages.append(option);
+   });
+   sideOptions.append(languages);
+   const more=el('a','','More language settings');more.href=url('settings.html#workspace-preferences');sideOptions.append(more);
+  }else{
+   sideOptions.append(el('p','','Site notifications are not available yet.'));
+   const activity=el('a','','View account activity');activity.href=url('account.html#usage');sideOptions.append(activity);
+  }
+  sideOptions.hidden=false;
+  bell.setAttribute('aria-expanded',String(kind==='notifications'));
+  globe.setAttribute('aria-expanded',String(kind==='language'));
+ }
+ bell.addEventListener('click',()=>showSideOptions('notifications'));
+ globe.addEventListener('click',()=>showSideOptions('language'));
+ moon.addEventListener('click',()=>{closeSideOptions();toggleSiteTheme(moon)});
+ document.addEventListener('pointerdown',event=>{
+  if(!sideFooter.contains(event.target))closeSideOptions();
+ });
+ document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&!sideOptions.hidden)closeSideOptions();
+ });
+ sideFooter.append(sideAccount,sideOptions,sideActions);
+ sidebar.append(sideFooter);
+
  function enableProfileShortcuts(menu){
   if(menu.querySelector('.loox-profile-actions'))return;
   const actions=el('div','loox-profile-actions');
@@ -201,20 +288,7 @@
    notificationsPanel.hidden=!notificationsPanel.hidden;options.hidden=true;
    notifications.setAttribute('aria-expanded',String(!notificationsPanel.hidden));languages.setAttribute('aria-expanded','false');
   });
-  theme.addEventListener('click',()=>{
-   let pref={};try{pref=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}')||{}}catch{}
-   const themeIsLight=pref.theme==='light'||(!pref.theme&&document.documentElement.dataset.lxTheme==='light');
-   const mode=themeIsLight?'dark':'light';
-   pref.theme=mode;
-   try{
-    localStorage.setItem('loox-platform-prefs',JSON.stringify(pref));
-    localStorage.setItem('loox-theme-v1',mode==='light'?'white':'dark');
-   }catch{}
-   document.documentElement.dataset.lxTheme=mode;
-   if(typeof window.LOOXApplyTheme==='function')window.LOOXApplyTheme(mode==='light'?'white':'dark');
-   window.dispatchEvent(new CustomEvent('looxpreferenceschange',{detail:pref}));
-   theme.title=mode==='light'?'Switch to dark theme':'Switch to light theme';
-  });
+  theme.addEventListener('click',()=>toggleSiteTheme(theme));
  }
  function syncAccountHeader(){
   const credit=account.querySelector('.lx-credit-chip');
@@ -222,6 +296,9 @@
   if(credit&&upgrade)creditBundle.replaceChildren(credit,upgrade);
   const menu=account.querySelector('.lx-profile-menu');
   if(menu)enableProfileShortcuts(menu);
+  const userName=account.querySelector('.lx-profile-name')?.textContent?.trim();
+  sideName.textContent=userName||'My Account';
+  sideSubtitle.textContent=userName?'Manage account':'Sign in or create account';
  }
  const accountObserver=new MutationObserver(syncAccountHeader);
  accountObserver.observe(account,{childList:true});
