@@ -130,28 +130,6 @@ body.ai-home .loox-category-pill>span{font-size:18px;color:#cbb3e2;line-height:1
 body.ai-home .loox-category-pill:hover{background:#292039;border-color:#785aa0;transform:translateY(-1px)}
 body.ai-home .loox-category-primary{background:linear-gradient(115deg,#a344c6,#332367)!important;border-color:#a05ac8!important;box-shadow:0 0 13px #9243d465!important}
 body.ai-home .loox-category-primary>span{color:#fff}
-@media(min-width:901px){
- body.ai-home.loox-sitewide-active > aside#loox-sitewide-drawer{
-  width:215px!important;max-width:215px!important;padding:12px 9px 24px!important;
-  background:linear-gradient(180deg,#100e1b,#0c0b15)!important;border-color:#30263d!important
- }
- body.ai-home.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{left:205px!important}
- body.ai-home.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main.ai-stage.loox-dashboard-main{
-  margin-left:215px!important;width:calc(100% - 215px)!important;max-width:calc(100% - 215px)!important;
-  padding:0!important
- }
-}
-body.ai-home.loox-sitewide-active .loox-sitewide-workspace-card,
-body.ai-home.loox-sitewide-active .loox-sitewide-upgrade-card{display:none!important}
-body.ai-home.loox-sitewide-active .loox-sitewide-drawer-list .loox-sitewide-group{
- margin:9px 9px 4px!important;color:#af8fc6!important;font-size:9px!important;letter-spacing:.13em!important
-}
-body.ai-home.loox-sitewide-active .loox-sitewide-drawer-link{
- min-height:30px!important;padding:6px 9px!important;border-radius:7px!important;font-size:11px!important
-}
-body.ai-home.loox-sitewide-active .loox-sitewide-drawer-icon svg{width:17px;height:17px}
-body.ai-home.loox-sitewide-active .loox-sitewide-drawer-icon{width:18px!important;min-width:18px!important}
-body.ai-home.loox-sitewide-active .loox-sitewide-more>summary{min-height:30px!important;padding:6px 9px!important}
 body.ai-home #loox-sitewide-header{background:#0e0c17!important;border-color:#30283f!important;box-shadow:none!important}
 body.ai-home #loox-sitewide-header .loox-sitewide-inner{height:55px!important;min-height:55px!important;padding-top:5px!important;padding-bottom:5px!important}
 body.ai-home #loox-sitewide-header{min-height:55px!important}
@@ -205,3 +183,5 @@ body.ai-home.loox-sitewide-active > button.loox-sitewide-scrim.is-open{top:var(-
 @media(prefers-reduced-motion:reduce){
  body.ai-home .loox-simple-tool-card,body.ai-home .loox-category-pill,body.ai-home .loox-simple-shortcuts a{transition:none}
 }
+
+/* AI home uses the exact same shared sidebar presentation as Tools Home. */

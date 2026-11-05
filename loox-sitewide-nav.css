@@ -615,3 +615,10 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link:hover
 body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{
  color:#ffffff!important;
 }
+
+/* Consistent sidebar styling across the Tools and AI dashboards. */
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-workspace-card,
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-upgrade-card{display:none!important}
+body.loox-sitewide-active #loox-sitewide-drawer{background:#100e19!important;border-right-color:#30263d!important}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{background:#35214f!important;color:#fff!important}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-list .loox-sitewide-group{color:#fff!important;opacity:.78}
