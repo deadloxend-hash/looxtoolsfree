@@ -2,7 +2,7 @@
 body.ai-home{
  --loox-page-bg:#0b0a13;--loox-ink:#f7f5fc;--loox-subtle:#aea8bd;
  --loox-violet:#a35be2;
- margin:0!important;background:#0b0a13!important;color:var(--loox-ink)!important
+ margin:0!important;background:#0b0a13!important;color:var(--loox-ink)!important;overflow-x:clip!important
 }
 body.ai-home.loox-sitewide-home main.ai-stage.loox-dashboard-main{
  display:block!important;overflow:visible!important;height:auto!important;
@@ -49,8 +49,8 @@ body.ai-home .loox-simple-hero .ai-composer{
 body.ai-home .loox-simple-hero .ai-composer:focus-within{border-color:#b184d8!important;box-shadow:0 0 0 2px #975fdb33!important}
 body.ai-home .loox-simple-hero .ai-composer textarea{
  grid-column:1!important;grid-row:1!important;
- min-width:0!important;width:100%!important;height:39px!important;
- min-height:39px!important;max-height:92px!important;
+ min-width:0!important;width:100%!important;height:39px;
+ min-height:39px!important;max-height:120px!important;
  border:0!important;resize:none!important;margin:0!important;
  background:transparent!important;color:#f7f2ff!important;
  font:400 13px/1.5 system-ui!important;padding:9px 5px!important;
