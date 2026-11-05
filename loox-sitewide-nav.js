@@ -46,13 +46,45 @@
  const native=document.querySelector('header');
  if(native){
   native.classList.add('loox-sitewide-native');
-  if(isHome){native.classList.add('loox-sitewide-simplebar');}else{
+  if(page==='ai-chat.html'){native.classList.add('loox-sitewide-chatbar');}
+  else if(isHome){native.classList.add('loox-sitewide-simplebar');}else{
   const buttons=[...native.querySelectorAll('button')].filter(b=>!b.matches('#loox-page-back,.loox-tool-menu,.loox-overflow-trigger,.loox-rail-toggle,#menuToggle'));
   const editor=native.matches('.studio-top,.lig-header,.studio-header,.editor-header')||
       !!native.querySelector('.lig-head-tabs,.studio-top-actions,.top-actions,.editor-toolbar,.lig-head-start')||
       buttons.some(b=>/^(undo|redo|export|save|openImage|import|render)/i.test(b.id||''));
   native.classList.add(editor?'loox-sitewide-workspacebar':'loox-sitewide-simplebar');
   }
+ }
+ // In focused AI workspaces replace only the mode navigation, not the
+ // existing generation forms, templates controllers or account controls.
+ const workspaces={
+  'ai-chat.html':'agent',
+  'ai-text-to-image.html':'image',
+  'ai-video-generator.html':'video'
+ };
+ if(native&&workspaces[page]&&!native.querySelector('.loox-ai-workspace-tabs')){
+  const tabs=el('nav','loox-ai-workspace-tabs');
+  tabs.setAttribute('aria-label','LOOX AI workspaces');
+  const rows=[
+   ['AI Agent','ai-chat.html','agent','✧'],
+   ['AI Image','ai-text-to-image.html#generate','image','▧'],
+   ['AI Video','ai-video-generator.html#generate','video','▷'],
+   ['AI Audio','index.html?category=Audio#tools','audio','♫']
+  ];
+  rows.forEach(([label,href,kind,symbol])=>{
+   const link=el('a','loox-ai-workspace-tab');
+   link.href=url(href);link.setAttribute('data-ai-tab',kind);
+   const ico=el('span','loox-ai-workspace-symbol',symbol);
+   ico.setAttribute('aria-hidden','true');
+   link.append(ico,document.createTextNode(label));
+   if(workspaces[page]===kind){link.classList.add('is-active');link.setAttribute('aria-current','page');}
+   tabs.append(link);
+  });
+  const templateTabs=native.querySelector('.lig-head-tabs');
+  const accountHost=native.querySelector('[data-loox-account]');
+  if(templateTabs)native.insertBefore(tabs,templateTabs);
+  else if(accountHost)native.insertBefore(tabs,accountHost);
+  else native.append(tabs);
  }
  // Clickable sidebar, matching the Home/AI grouping.
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';sidebar.setAttribute('aria-label','LOOX tools navigation');
