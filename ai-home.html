@@ -1,68 +1,32 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0d11"><title>LOOX AI – Home | LOOX Tools</title><meta name="description" content="Create with LOOX AI: discover image and video generators, powerful photo editing and creative tools in one workspace."><link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-home.html"><link rel="stylesheet" href="platform/platform.css?v=15"><link rel="stylesheet" href="loox-experience.css?v=130"><link rel="stylesheet" href="platform/ai-workspace.css?v=12"><script defer src="loox-experience.js?v=134"></script><script type="module" src="platform/ai-workspace.js?v=14"></script><link rel="stylesheet" href="loox-sitewide-nav.css?v=35"><link rel="stylesheet" href="loox-dashboard.css?v=6"></head><body class="lx-shell ai-home"><header class="lx-header"><button type="button" id="aiNavToggle" class="ai-nav-toggle" aria-label="Open tool categories" aria-controls="loox-home-rail" aria-expanded="false">☰</button><a class="lx-brand" href="ai-home.html" aria-label="LOOX"><img src="assets/loox-ornamental-logo.png?v=1" alt="LOOX" width="144" height="48" style="display:block;max-width:100%;object-fit:contain"></a><div data-loox-account></div></header><main class="ai-stage loox-dashboard-main">
-<div class="loox-simple-dashboard">
-<section class="loox-simple-hero" aria-labelledby="looxHomeTitle">
- <div class="loox-simple-hero-copy">
-  <p class="loox-simple-eyebrow">YOUR LOOX AI WORKSPACE</p>
-  <h1 id="looxHomeTitle">Create, Edit &amp; Generate<br>with <span>LOOX</span></h1>
-  <p class="loox-simple-intro">A complete AI creative suite for images, videos, design, and more.</p>
-  <div class="ai-composer-wrap"><div id="aiModelMenu" class="ai-menu" hidden aria-label="Select LOOX AI model"><button type="button" data-model="free"><span class="ai-model-icon">✦</span><span><strong>LOOX AI Free</strong><small>25 messages per day</small></span><span class="ai-menu-lock">✓</span></button><button type="button" data-model="premium"><span class="ai-model-icon">♛</span><span><strong>LOOX AI Pro</strong><small>Subscriber-only assistant</small></span><span class="ai-menu-lock">🔒</span></button></div><div id="aiToolsMenu" class="ai-menu ai-tools-menu" hidden aria-label="LOOX creative tools"><a href="all-ai-tools.html">✦ Browse AI tools</a><a href="ai-text-to-image.html">◈ AI image generator</a><a href="ai-video-generator.html">▣ AI video generator</a><a href="photo-editor.html">◈ Photo editor</a><a href="index.html">⌂ All LOOX tools</a></div><form id="aiForm" class="ai-composer"><textarea id="aiPrompt" maxlength="1800" aria-label="Ask LOOX AI" placeholder="Ask LOOX AI anything…" required></textarea><div class="ai-actions"><button id="aiToolsButton" type="button" class="ai-round" title="Explore creative tools" aria-label="Explore creative tools" aria-expanded="false">+</button><button id="aiModelButton" type="button" class="ai-model" aria-expanded="false" aria-label="Choose LOOX AI model"><span id="aiModelName">✦ LOOX Free</span><span class="ai-arrow">⌄</span></button><span class="ai-spacer"></span><button id="aiSend" type="submit" class="ai-send" aria-label="Send message"><span aria-hidden="true">✦</span> Ask LOOX</button></div></form><div class="ai-foot" id="aiStatus" role="status">Free: 25 messages per day · Pro: paid subscribers</div></div>
-  <nav class="loox-simple-shortcuts" aria-label="Quick actions">
-    <a href="ai-text-to-image.html"><span aria-hidden="true">▧</span>Generate Image</a>
-    <a href="ai-video-generator.html"><span aria-hidden="true">▷</span>Generate Video</a>
-    <a href="photo-editor.html"><span aria-hidden="true">☷</span>Edit Photo</a>
-    <a href="bg-remove.html"><span aria-hidden="true">◇</span>Remove Background</a>
-    <a href="all-ai-tools.html"><span aria-hidden="true">▦</span>More Tools</a>
-  </nav>
- </div>
- <div class="loox-simple-hero-art" role="img" aria-label="Purple creative AI sparkle card with flowing ribbons"><svg class="loox-minimal-hero-svg" viewBox="0 0 680 350" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-<defs>
-  <linearGradient id="lxWaveA" x1="36" y1="100" x2="625" y2="268" gradientUnits="userSpaceOnUse"><stop stop-color="#170e30" stop-opacity="0"/><stop offset=".28" stop-color="#6434ba"/><stop offset=".58" stop-color="#b858f1"/><stop offset=".9" stop-color="#752bce"/><stop offset="1" stop-color="#9c4fec" stop-opacity=".18"/></linearGradient>
-  <linearGradient id="lxWaveB" x1="160" y1="89" x2="646" y2="320" gradientUnits="userSpaceOnUse"><stop stop-color="#39156d" stop-opacity=".05"/><stop offset=".45" stop-color="#6229bb"/><stop offset=".72" stop-color="#f3a4fe"/><stop offset="1" stop-color="#a359ff" stop-opacity=".08"/></linearGradient>
-  <linearGradient id="lxTile" x1="416" y1="105" x2="596" y2="312" gradientUnits="userSpaceOnUse"><stop stop-color="#b26cf1"/><stop offset=".23" stop-color="#4e287d"/><stop offset=".67" stop-color="#221539"/><stop offset="1" stop-color="#341956"/></linearGradient>
-  <linearGradient id="lxTileEdge" x1="400" y1="90" x2="612" y2="315" gradientUnits="userSpaceOnUse"><stop stop-color="#f9cfff"/><stop offset=".43" stop-color="#a97aff"/><stop offset="1" stop-color="#6136b0"/></linearGradient>
-  <radialGradient id="lxBloom" cx="0" cy="0" r="1" gradientTransform="translate(452 195) rotate(90) scale(153 210)" gradientUnits="userSpaceOnUse"><stop stop-color="#8b30dc" stop-opacity=".40"/><stop offset="1" stop-color="#1c0c38" stop-opacity="0"/></radialGradient>
-  <filter id="lxGlow" x="-30%" y="-150%" width="170%" height="400%"><feGaussianBlur stdDeviation="13"/></filter>
-  <filter id="lxTileShadow" x="-40%" y="-40%" width="190%" height="190%"><feDropShadow dx="0" dy="19" stdDeviation="15" flood-color="#2b0c60" flood-opacity=".8"/></filter>
-  <filter id="lxStarGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7"/></filter>
-</defs>
-<ellipse cx="444" cy="200" rx="225" ry="144" fill="url(#lxBloom)"/>
-<path d="M6 183C120 112 213 66 295 98C369 128 398 225 482 233C549 241 600 195 674 107" stroke="#4c22a8" stroke-opacity=".72" stroke-width="35" filter="url(#lxGlow)"/>
-<path d="M-10 194C120 121 219 64 289 99C379 144 393 245 486 233C569 222 630 159 687 89" stroke="url(#lxWaveA)" stroke-width="22" stroke-linecap="round" opacity=".94"/>
-<path d="M8 180C144 114 217 80 292 114C376 152 388 247 488 240C554 232 622 185 673 129" stroke="url(#lxWaveB)" stroke-width="3" stroke-linecap="round" opacity=".85"/>
-<path d="M-24 316C106 317 240 310 316 269C391 229 473 301 548 282C602 268 643 225 691 178" stroke="#6d26bd" stroke-opacity=".6" stroke-width="34" filter="url(#lxGlow)"/>
-<path d="M-14 314C135 332 240 293 316 266C397 237 445 305 532 288C607 275 651 225 697 169" stroke="url(#lxWaveB)" stroke-width="13" stroke-linecap="round" opacity=".92"/>
-<path d="M-14 313C112 315 226 310 315 273C394 240 450 307 528 292C608 277 663 229 704 188" stroke="#dc9dff" stroke-opacity=".67" stroke-width="2"/>
-<g transform="rotate(-14 505 182)" filter="url(#lxTileShadow)">
- <rect x="414" y="71" width="194" height="225" rx="26" fill="#372157" stroke="#7253a3" stroke-width="1.2" opacity=".56" transform="translate(16 12)"/>
- <rect x="396" y="54" width="208" height="225" rx="27" fill="url(#lxTile)" stroke="url(#lxTileEdge)" stroke-width="2"/>
- <path d="M420 72C440 59 493 60 548 57" stroke="#ffe8ff" stroke-width="3" stroke-linecap="round" opacity=".7"/>
- <path d="M498 118C507 153 516 163 552 173C516 181 508 191 499 229C490 191 482 181 446 173C483 164 491 155 498 118Z" fill="#e9d0ff" filter="url(#lxStarGlow)"/>
- <path d="M498 118C507 153 516 163 552 173C516 181 508 191 499 229C490 191 482 181 446 173C483 164 491 155 498 118Z" fill="#fff" stroke="#d9bbff" stroke-width="2"/>
- <path d="M558 193C562 210 566 214 581 218C566 221 562 225 558 241C555 226 550 221 536 218C551 214 555 209 558 193Z" fill="#fff" filter="url(#lxStarGlow)"/>
- <path d="M558 193C562 210 566 214 581 218C566 221 562 225 558 241C555 226 550 221 536 218C551 214 555 209 558 193Z" fill="#fff"/>
-</g>
-</svg></div>
-</section>
-<section class="loox-simple-section" aria-labelledby="looxFeaturedTitle">
- <div class="loox-simple-section-header">
-  <div><h2 id="looxFeaturedTitle">Featured Tools</h2><p>Powerful tools to bring your ideas to life.</p></div>
-  <a href="all-ai-tools.html">View All Tools <span aria-hidden="true">→</span></a>
- </div>
- <div class="loox-simple-card-grid"><a class="loox-simple-tool-card" href="ai-text-to-image.html"><span class="loox-card-icon" aria-hidden="true">▧</span><strong>AI Photo Generator</strong><small>Create images with powerful AI models.</small><svg class="loox-card-art loox-art-mountain" viewBox="0 0 200 105" aria-hidden="true"><defs><linearGradient id="lxMt" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f5c3ff"/><stop offset=".45" stop-color="#8b4edb"/><stop offset="1" stop-color="#371e69"/></linearGradient></defs><path d="M0 105L42 73 65 87 118 10 196 105Z" fill="url(#lxMt)"/><path d="M118 10 96 53 114 47 127 57 137 45Z" fill="#ffedff"/><path d="M118 10 160 82 197 105 128 49Z" fill="#462575"/><path d="M0 105 64 81 102 103 142 70 200 105Z" fill="#7b36d0" opacity=".6"/></svg></a>
-<a class="loox-simple-tool-card" href="ai-video-generator.html"><span class="loox-card-icon" aria-hidden="true">▷</span><strong>AI Video Generator</strong><small>Turn your ideas into stunning videos.</small><svg class="loox-card-art loox-art-clapper" viewBox="0 0 165 120" aria-hidden="true"><defs><linearGradient id="lxVid" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d778ff"/><stop offset="1" stop-color="#532da0"/></linearGradient></defs><g transform="rotate(-13 86 65)"><rect x="26" y="34" width="118" height="71" rx="10" fill="url(#lxVid)" stroke="#d49afa"/><path d="M30 15h108v25H30z" fill="#422466" stroke="#c38df1"/><path d="M39 16h19L42 39H24zM77 16h19L80 39H63zM112 16h19l-16 23H97z" fill="#dca8ff"/><path d="m76 54 31 17-31 18z" fill="#f7eaff"/></g></svg></a>
-<a class="loox-simple-tool-card" href="photo-editor.html"><span class="loox-card-icon" aria-hidden="true">✎</span><strong>Photo Editor</strong><small>Edit, retouch and enhance your photos.</small><svg class="loox-card-art loox-art-flower" viewBox="0 0 170 120" aria-hidden="true"><defs><linearGradient id="lxFlower" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#f4bbff"/><stop offset="1" stop-color="#6f31cd"/></linearGradient></defs><g transform="translate(116 105)"><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(45)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(90)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(135)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(180)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(225)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(270)"/><ellipse cx="0" cy="-35" rx="17" ry="42" fill="url(#lxFlower)" transform="rotate(315)"/><circle r="17" fill="#a35ad9"/><circle r="9" fill="#5e258a"/></g></svg></a>
-<a class="loox-simple-tool-card" href="bg-remove.html"><span class="loox-card-icon" aria-hidden="true">◈</span><strong>Background Remover</strong><small>Remove backgrounds in just a few clicks.</small><svg class="loox-card-art loox-art-checker" viewBox="0 0 140 100" aria-hidden="true"><defs><pattern id="lxChecker" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#41235f"/><rect width="12" height="12" fill="#b5a0c9"/><rect x="12" y="12" width="12" height="12" fill="#b5a0c9"/></pattern><linearGradient id="lxCheckFade" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a35fe7" stop-opacity="0"/><stop offset=".5" stop-color="#a35fe7" stop-opacity=".45"/><stop offset="1" stop-color="#a35fe7"/></linearGradient></defs><path d="M32 96 103 12 139 0V100H32Z" fill="url(#lxChecker)" opacity=".8"/><path d="M27 100 101 11 140 0V100H27Z" fill="url(#lxCheckFade)"/></svg></a>
-<a class="loox-simple-tool-card" href="faceswap.html"><span class="loox-card-icon" aria-hidden="true">♙</span><strong>Face Swap</strong><small>Transform portraits with AI face swapping.</small><svg class="loox-card-art loox-art-faces" viewBox="0 0 168 108" aria-hidden="true"><defs><linearGradient id="lxFaces" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e2b4ff"/><stop offset="1" stop-color="#5e2aab"/></linearGradient></defs><g transform="rotate(-9 70 58)"><rect x="34" y="22" width="76" height="80" rx="11" fill="#2f1b50" stroke="#ad70e9" stroke-width="2"/><circle cx="71" cy="53" r="14" fill="url(#lxFaces)"/><path d="M45 87c2-25 49-25 52 0" fill="url(#lxFaces)"/></g><g transform="rotate(10 127 58)"><rect x="91" y="15" width="70" height="85" rx="12" fill="#352052" stroke="#deafff" stroke-width="2"/><circle cx="127" cy="48" r="14" fill="url(#lxFaces)"/><path d="M102 89c3-27 49-27 51 0" fill="url(#lxFaces)"/></g></svg></a></div>
-</section>
-<section class="loox-simple-section loox-simple-categories" aria-labelledby="looxCategoryTitle">
- <div class="loox-simple-section-header"><div><h2 id="looxCategoryTitle">Browse by Category</h2><p>Explore tools by what you want to create.</p></div></div>
- <nav class="loox-simple-category-row" aria-label="Browse LOOX tool categories"><a class="loox-category-pill loox-category-primary" href="index.html#tools"><span aria-hidden="true">▦</span>All Tools</a>
-<a class="loox-category-pill" href="all-image-tools.html"><span aria-hidden="true">▧</span>Image</a>
-<a class="loox-category-pill" href="all-video-tools.html"><span aria-hidden="true">▷</span>Video</a>
-<a class="loox-category-pill" href="index.html?category=Audio#tools"><span aria-hidden="true">◉</span>Audio</a>
-<a class="loox-category-pill" href="index.html?category=Design#tools"><span aria-hidden="true">◇</span>Design</a>
-<a class="loox-category-pill" href="index.html?category=PDF#tools"><span aria-hidden="true">▤</span>PDF</a>
-<a class="loox-category-pill" href="index.html#tools"><span aria-hidden="true">⚒</span>Utilities</a></nav>
-</section>
-</div>
-</main><script defer src="loox-sitewide-nav.js?v=35"></script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c0d11"><title>AI Image Generator Online | Create AI Images with LOOX</title><meta name="description" content="Create AI images from text prompts with LOOX AI Image Generator. Describe your idea, choose your settings and start creating online."><link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-home.html"><link rel="stylesheet" href="platform/platform.css?v=15"><link rel="stylesheet" href="loox-experience.css?v=130"><link rel="stylesheet" href="platform/ai-workspace.css?v=12"><script defer src="loox-experience.js?v=134"></script><link rel="stylesheet" href="loox-sitewide-nav.css?v=35"><link rel="stylesheet" href="loox-ai-landing.css?v=1"></head><body class="lx-shell ai-home loox-image-landing">
+<header class="lx-header"><a class="lx-brand" href="ai-home.html" aria-label="LOOX"><img src="assets/loox-infinity-white.svg?v=1" alt="LOOX" width="144" height="48"></a><div data-loox-account></div></header>
+<main class="ai-stage loox-image-landing-main">
+ <section class="loox-landing-hero" aria-labelledby="loox-landing-heading">
+  <div class="loox-landing-inner">
+   <p class="loox-landing-kicker">LOOX AI IMAGE GENERATOR</p>
+   <h1 id="loox-landing-heading">Create AI Images from Your Ideas</h1>
+   <p class="loox-landing-subtitle">Describe what you imagine. Turn your words into images with LOOX AI.</p>
+   <div class="loox-landing-heading-pill">Generate AI Image Now</div>
+   <form id="loox-image-landing-form" class="loox-landing-form" action="ai-text-to-image.html" method="get">
+    <div class="loox-landing-input-row">
+     <button type="button" class="loox-landing-add" id="loox-landing-add" aria-label="Open AI Image Generator to add a reference image" title="Add a reference image in the generator">+</button>
+     <label class="loox-visually-hidden" for="loox-landing-prompt">Describe the image you want to create</label>
+     <textarea id="loox-landing-prompt" name="prompt" maxlength="1200" required placeholder="Describe the image you want to create…"></textarea>
+    </div>
+    <div class="loox-landing-form-bottom">
+     <div class="loox-landing-pills"><span class="loox-landing-type"><span aria-hidden="true">▧</span> AI Image</span><span class="loox-landing-model"><span aria-hidden="true">⬡</span> Choose model in generator</span></div>
+     <button class="loox-landing-generate" type="submit">Generate</button>
+    </div>
+   </form>
+   <div class="loox-landing-ideas" aria-label="Prompt examples">
+    <button type="button" data-prompt="A cinematic portrait with soft studio lighting, realistic details and a clean background">Cinematic Portrait</button>
+    <button type="button" data-prompt="A futuristic city at sunset, atmospheric lighting, cinematic wide-angle view">Futuristic City</button>
+    <button type="button" data-prompt="A premium product photograph on a minimal background with soft shadows and realistic reflections">Product Photography</button>
+    <button type="button" data-prompt="A peaceful mountain lake at sunrise with mist and natural colors, photorealistic">Nature Scene</button>
+   </div>
+  </div>
+ </section>
+</main>
+<script defer src="loox-sitewide-nav.js?v=35"></script>
+<script defer src="loox-ai-landing.js?v=1"></script>
+</body></html>

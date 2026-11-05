@@ -1,0 +1,102 @@
+/* Focused AI image landing page. The global header and shared sidebar are unchanged. */
+body.loox-image-landing{background:#0c0c10!important;color:#fff!important;overflow-x:hidden!important}
+body.loox-image-landing.loox-sitewide-home main.loox-image-landing-main{
+ display:block!important;position:relative!important;width:100%!important;max-width:none!important;
+ margin:0!important;padding:0!important;overflow:visible!important;
+ min-height:calc(100dvh - var(--loox-sitewide-height,64px))!important;height:auto!important;
+ background:#101014!important;
+}
+body.loox-image-landing .loox-landing-hero{
+ position:relative;isolation:isolate;min-height:min(790px,calc(100dvh - 64px));
+ display:flex;align-items:flex-start;justify-content:center;padding:clamp(64px,11vh,135px) 24px 90px;
+ background:radial-gradient(ellipse 70% 56% at 50% 0%,#302a2c 0%,transparent 76%),linear-gradient(180deg,#151417 0%,#101014 72%);
+}
+body.loox-image-landing .loox-landing-hero:before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:linear-gradient(120deg,transparent 14%,#ffffff04 30%,transparent 48%,#ffffff03 64%,transparent 82%);
+}
+body.loox-image-landing .loox-landing-inner{width:min(100%,790px);margin:0 auto;text-align:center}
+body.loox-image-landing .loox-landing-kicker{
+ margin:0 0 16px;font:700 11px/1.3 system-ui;letter-spacing:.16em;color:#aaa6b2
+}
+body.loox-image-landing h1#loox-landing-heading{
+ font:800 clamp(31px,4vw,54px)/1.13 system-ui;letter-spacing:-.045em;color:#fff;
+ margin:0 auto 13px;max-width:740px
+}
+body.loox-image-landing .loox-landing-subtitle{
+ margin:0 auto 30px;max-width:620px;color:#c6c3ca;font:400 clamp(14px,1.5vw,17px)/1.55 system-ui
+}
+body.loox-image-landing .loox-landing-heading-pill{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:47px;padding:9px 28px;margin:0 auto 20px;
+ border-radius:100px;background:#35e5f1;color:#071417;
+ font:700 clamp(15px,1.6vw,19px)/1.2 system-ui
+}
+body.loox-image-landing .loox-landing-form{
+ display:block!important;width:100%;max-width:750px;margin:0 auto!important;
+ padding:16px!important;background:#fff!important;color:#17191c!important;
+ border:1px solid #e5e5e5!important;border-radius:17px!important;
+ box-shadow:0 20px 55px #0006!important;text-align:left!important
+}
+body.loox-image-landing .loox-landing-input-row{display:flex;align-items:flex-start;gap:13px;min-height:98px}
+body.loox-image-landing .loox-landing-add{
+ flex:0 0 46px;width:46px;height:56px;border:1px solid #e0e3e6;
+ border-radius:5px;background:#f3f5f7;color:#91a0aa;font-size:27px;cursor:pointer;
+ transform:rotate(-7deg);transition:background .2s,transform .2s
+}
+body.loox-image-landing .loox-landing-add:hover{background:#e7f6f8;transform:rotate(0)}
+body.loox-image-landing #loox-landing-prompt{
+ flex:1;display:block!important;width:100%;min-width:0;min-height:94px!important;
+ resize:vertical!important;max-height:280px;padding:7px 2px!important;
+ border:0!important;outline:0!important;box-shadow:none!important;
+ background:transparent!important;color:#1d242a!important;
+ font:400 15px/1.55 system-ui!important
+}
+body.loox-image-landing #loox-landing-prompt::placeholder{color:#687783!important;opacity:1}
+body.loox-image-landing .loox-landing-form-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px}
+body.loox-image-landing .loox-landing-pills{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+body.loox-image-landing .loox-landing-type,
+body.loox-image-landing .loox-landing-model{
+ display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:7px 12px;
+ border-radius:10px;background:#f1f1f1;color:#282b30;font:650 12px/1.2 system-ui
+}
+body.loox-image-landing .loox-landing-type{background:#dcf7fb;color:#008caa}
+body.loox-image-landing .loox-landing-generate{
+ min-width:103px;min-height:38px;padding:9px 15px;border:0;border-radius:10px;
+ background:#080808;color:#fff;font:750 13px/1 system-ui;cursor:pointer;
+ transition:transform .16s,background .16s
+}
+body.loox-image-landing .loox-landing-generate:hover{background:#26262a;transform:translateY(-1px)}
+body.loox-image-landing .loox-landing-ideas{
+ display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:25px
+}
+body.loox-image-landing .loox-landing-ideas button{
+ border:1px solid #747477;background:#3a3a3dcc;color:#f5f5f5;
+ border-radius:30px;padding:11px 16px;font:600 12px/1.3 system-ui;
+ cursor:pointer;transition:background .16s,border-color .16s,transform .16s
+}
+body.loox-image-landing .loox-landing-ideas button:hover,
+body.loox-image-landing .loox-landing-ideas button:focus-visible{
+ background:#55545a;border-color:#bbb;transform:translateY(-1px)
+}
+body.loox-image-landing .loox-visually-hidden{
+ position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;
+ overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0
+}
+@media(max-width:600px){
+ body.loox-image-landing .loox-landing-hero{padding:58px 15px 65px;min-height:calc(100dvh - 64px)}
+ body.loox-image-landing .loox-landing-form{padding:13px!important}
+ body.loox-image-landing .loox-landing-input-row{gap:9px;min-height:118px}
+ body.loox-image-landing .loox-landing-add{flex-basis:38px;width:38px;height:48px}
+ body.loox-image-landing #loox-landing-prompt{min-height:113px!important;font-size:14px!important}
+ body.loox-image-landing .loox-landing-form-bottom{align-items:flex-end}
+ body.loox-image-landing .loox-landing-type,
+ body.loox-image-landing .loox-landing-model{font-size:10px;min-height:32px;padding:6px 9px}
+ body.loox-image-landing .loox-landing-generate{min-width:89px;font-size:12px}
+ body.loox-image-landing .loox-landing-ideas button{padding:9px 11px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-image-landing .loox-landing-add,
+ body.loox-image-landing .loox-landing-generate,
+ body.loox-image-landing .loox-landing-ideas button{transition:none;transform:none}
+}
