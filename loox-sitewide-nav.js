@@ -18,26 +18,23 @@
  const burger=el('button','loox-sitewide-burger','☰');burger.type='button';burger.setAttribute('aria-label','Open LOOX tool navigation');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-controls','loox-sitewide-drawer');
  const logoWrap=el('div','loox-sitewide-logo-wrap');
  const logo=el('a','loox-sitewide-logo');logo.href=url('ai-home.html');logo.setAttribute('aria-label','LOOX AI Home');
- const moreWrap=el('div','loox-sitewide-more-wrap');
- const moreButton=el('button','loox-sitewide-more-button');moreButton.type='button';
- moreButton.setAttribute('aria-label','Open LOOX workspace menu');
- moreButton.setAttribute('aria-haspopup','true');moreButton.setAttribute('aria-expanded','false');
- moreButton.setAttribute('aria-controls','loox-sitewide-logo-menu');
- moreButton.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
- const image=el('img');image.src=url('assets/loox-ornamental-logo.png?v=3');image.alt='LOOX';image.width=132;image.height=35;logo.append(image);
- const logoMenu=el('nav','loox-sitewide-logo-menu');logoMenu.id='loox-sitewide-logo-menu';logoMenu.setAttribute('aria-label','LOOX workspace menu');logoMenu.hidden=true;
- [['LOOX Tools Home','index.html'],['LOOX AI Home','ai-home.html'],['All tools','index.html#tools'],['Favorites','index.html#favorites'],['Guides','guides.html'],['Pricing & Credits','pricing.html'],['My Account','account.html'],['Privacy','privacy-policy.html'],['Settings','settings.html']].forEach(([name,href])=>{
-  const link=el('a','',name);link.href=url(href);logoMenu.append(link);
- });
- logoWrap.append(logo);moreWrap.append(moreButton,logoMenu);
+
+ const creditDock=el('div','loox-sitewide-credit-dock');
+ const creditBundle=el('div','loox-sitewide-credit-bundle');
+ creditDock.append(creditBundle);
+ const image=el('img');image.src=url('assets/loox-infinity-white.svg?v=1');image.alt='LOOX';image.width=139;image.height=42;
+ logo.append(image);
+ logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
- [['Home','index.html'],['AI Studio','ai-home.html'],['Guides','guides.html'],['Pricing','pricing.html']].forEach(([name,href])=>{
-  const link=el('a','',name);link.href=url(href);if(href===page)link.setAttribute('aria-current','page');links.append(link);
+ [['AI Image','ai-text-to-image.html'],['AI Videos','ai-video-generator.html'],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
+  const link=el('a','',name);link.href=url(href);if(href===page)link.setAttribute('aria-current','page');
+  if(name==='Blog'){const outbound=el('span','loox-blog-arrow','↗');outbound.setAttribute('aria-hidden','true');link.append(outbound);}
+  links.append(link);
  });
  const search=el('button','loox-sitewide-search');search.type='button';
  search.setAttribute('aria-label','Search all LOOX tools');search.title='Search tools';search.innerHTML=icons.search;
  const account=el('div','loox-sitewide-account');account.setAttribute('data-loox-account','');
- inner.append(logoWrap,links,search,account,moreWrap);nav.append(inner);
+ inner.append(logoWrap,creditDock,links,search,account);nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
  // Retire the earlier navigation rail on EVERY page, including AI tools.
@@ -150,9 +147,84 @@
  desktop.addEventListener('change',()=>setDrawer(desktop.matches&&isHome));
  setDrawer(desktop.matches&&isHome);
  scrim.addEventListener('click',closeDrawer);
- const closeLogo=()=>{logoMenu.hidden=true;moreButton.setAttribute('aria-expanded','false')};
- moreButton.addEventListener('click',e=>{e.stopPropagation();const open=logoMenu.hidden;logoMenu.hidden=!open;moreButton.setAttribute('aria-expanded',String(open))});
- document.addEventListener('pointerdown',e=>{if(!moreWrap.contains(e.target))closeLogo()});
+
+ // Keep real account data and existing sign-in/sign-out actions. Rehome only
+ // the rendered credits and Upgrade controls to the small bundle beside LOOX.
+ const profileIcon={
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a2 2 0 0 0 .4 2.2l-1.6 1.6a2 2 0 0 0-2.2-.4L15 21h-6l-1-2.6a2 2 0 0 0-2.2.4l-1.6-1.6A2 2 0 0 0 4.6 15L2 14v-4l2.6-1a2 2 0 0 0-.4-2.2l1.6-1.6A2 2 0 0 0 8 5.6L9 3h6l1 2.6a2 2 0 0 0 2.2-.4l1.6 1.6a2 2 0 0 0-.4 2.2L22 10v4z"/>',
+  language:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-5 4-5 14 0 18M12 3c5 4 5 14 0 18M5 7h14M5 17h14"/>',
+  notifications:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>',
+  theme:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/>'
+ };
+ const pict=kind=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+profileIcon[kind]+'</svg>';
+ const closeLogo=()=>{const details=account.querySelector('.lx-profile-details');if(details)details.open=false;};
+ function enableProfileShortcuts(menu){
+  if(menu.querySelector('.loox-profile-actions'))return;
+  const actions=el('div','loox-profile-actions');
+  actions.setAttribute('role','group');actions.setAttribute('aria-label','Account quick settings');
+  function action(kind,label){
+   const b=el('button','loox-profile-action');b.type='button';b.title=label;b.setAttribute('aria-label',label);b.innerHTML=pict(kind);
+   actions.append(b);return b;
+  }
+  const settings=action('settings','Account settings');
+  const notifications=action('notifications','Notifications');
+  const languages=action('language','Change language');
+  const theme=action('theme','Toggle light and dark theme');
+  const options=el('div','loox-profile-panel');
+  options.hidden=true;options.setAttribute('aria-label','Choose site language');
+  const optionsTitle=el('strong','','Language');options.append(optionsTitle);
+  const optionsGrid=el('div','loox-profile-languages');
+  [['en','English'],['es','Español'],['fr','Français'],['de','Deutsch']].forEach(([code,label])=>{
+   const b=el('button','',label);b.type='button';b.dataset.code=code;
+   b.addEventListener('click',()=>{
+    try{localStorage.setItem('loox-language',code);}catch{}
+    const next=new URL(location.href);if(code==='en')next.searchParams.delete('lang');else next.searchParams.set('lang',code);
+    location.assign(next.href);
+   });
+   optionsGrid.append(b);
+  });
+  options.append(optionsGrid);
+  const moreLanguages=el('a','','More language settings');moreLanguages.href=url('settings.html#workspace-preferences');options.append(moreLanguages);
+  const notificationsPanel=el('div','loox-profile-panel');
+  notificationsPanel.hidden=true;notificationsPanel.setAttribute('aria-label','Notifications');
+  notificationsPanel.append(el('strong','','Notifications'),el('p','','Site notifications are not available yet.'));
+  const activity=el('a','','View account activity');activity.href=url('account.html#usage');notificationsPanel.append(activity);
+  const identity=menu.querySelector('.lx-profile-identity');
+  if(identity)identity.after(actions);else menu.prepend(actions);
+  actions.after(options,notificationsPanel);
+  settings.addEventListener('click',()=>location.assign(url('settings.html#workspace-preferences')));
+  languages.addEventListener('click',()=>{
+   options.hidden=!options.hidden;notificationsPanel.hidden=true;
+   languages.setAttribute('aria-expanded',String(!options.hidden));notifications.setAttribute('aria-expanded','false');
+  });
+  notifications.addEventListener('click',()=>{
+   notificationsPanel.hidden=!notificationsPanel.hidden;options.hidden=true;
+   notifications.setAttribute('aria-expanded',String(!notificationsPanel.hidden));languages.setAttribute('aria-expanded','false');
+  });
+  theme.addEventListener('click',()=>{
+   let pref={};try{pref=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}')||{}}catch{}
+   const themeIsLight=pref.theme==='light'||(!pref.theme&&document.documentElement.dataset.lxTheme==='light');
+   const mode=themeIsLight?'dark':'light';
+   pref.theme=mode;
+   try{
+    localStorage.setItem('loox-platform-prefs',JSON.stringify(pref));
+    localStorage.setItem('loox-theme-v1',mode==='light'?'white':'dark');
+   }catch{}
+   document.documentElement.dataset.lxTheme=mode;
+   if(typeof window.LOOXApplyTheme==='function')window.LOOXApplyTheme(mode==='light'?'white':'dark');
+   window.dispatchEvent(new CustomEvent('looxpreferenceschange',{detail:pref}));
+   theme.title=mode==='light'?'Switch to dark theme':'Switch to light theme';
+  });
+ }
+ function syncAccountHeader(){
+  const credit=account.querySelector('.lx-credit-chip');
+  const upgrade=account.querySelector('.lx-upgrade');
+  if(credit&&upgrade)creditBundle.replaceChildren(credit,upgrade);
+  const menu=account.querySelector('.lx-profile-menu');
+  if(menu)enableProfileShortcuts(menu);
+ }
+ const accountObserver=new MutationObserver(syncAccountHeader);
+ accountObserver.observe(account,{childList:true});
  // Unified full tool finder. Uses the existing public tool catalog and real tool links.
  const dialog=el('dialog','loox-sitewide-finder');
  dialog.innerHTML='<div class="loox-sitewide-finder-head"><div><small>LOOX WORKSPACES</small><h2>Find a tool</h2></div><button type="button" aria-label="Close tool search" class="loox-sitewide-finder-close">×</button></div><div class="loox-sitewide-finder-input">'+icons.search+'<input type="search" placeholder="Search every tool…" aria-label="Search every LOOX tool"></div><div class="loox-sitewide-finder-tabs" role="group" aria-label="Filter tools"><button type="button" data-filter="all" aria-pressed="true">All tools</button><button type="button" data-filter="image">Image</button><button type="button" data-filter="video">Video</button><button type="button" data-filter="text">Text</button><button type="button" data-filter="ai">AI</button></div><p class="loox-sitewide-finder-status" role="status"></p><div class="loox-sitewide-finder-results"></div>';
@@ -200,7 +272,7 @@
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=25');document.head.append(style);
  }
- import(url('platform/account.js?v=7')).then(m=>m.renderHeader()).catch(()=>{
+ import(url('platform/account.js?v=7')).then(m=>{m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);
  });
