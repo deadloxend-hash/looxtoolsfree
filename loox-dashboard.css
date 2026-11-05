@@ -130,17 +130,6 @@ body.ai-home .loox-category-pill>span{font-size:18px;color:#cbb3e2;line-height:1
 body.ai-home .loox-category-pill:hover{background:#292039;border-color:#785aa0;transform:translateY(-1px)}
 body.ai-home .loox-category-primary{background:linear-gradient(115deg,#a344c6,#332367)!important;border-color:#a05ac8!important;box-shadow:0 0 13px #9243d465!important}
 body.ai-home .loox-category-primary>span{color:#fff}
-body.ai-home #loox-sitewide-header{background:#0e0c17!important;border-color:#30283f!important;box-shadow:none!important}
-body.ai-home #loox-sitewide-header .loox-sitewide-inner{height:55px!important;min-height:55px!important;padding-top:5px!important;padding-bottom:5px!important}
-body.ai-home #loox-sitewide-header{min-height:55px!important}
-body.ai-home.loox-sitewide-active{--loox-sitewide-height:55px!important}
-body.ai-home #loox-sitewide-header .loox-sitewide-links a{font-weight:650!important}
-body.ai-home #loox-sitewide-header .loox-sitewide-links a[aria-current=page]{background:#302047!important}
-body.ai-home #loox-sitewide-header .loox-sitewide-search{background:#1a1726!important;border-color:#3f3455!important;min-width:195px!important;height:34px!important}
-body.ai-home #loox-sitewide-header .loox-sitewide-logo img{max-height:39px}
-body.ai-home #loox-sitewide-header .loox-sitewide-more-button{background:#1b1629!important}
-body.ai-home.loox-sitewide-active > aside#loox-sitewide-drawer{top:var(--loox-sitewide-height,55px)!important;max-height:calc(100dvh - var(--loox-sitewide-height,55px))!important}
-body.ai-home.loox-sitewide-active > button.loox-sitewide-scrim.is-open{top:var(--loox-sitewide-height,55px)!important}
 @media(max-width:1180px){
  body.ai-home .loox-simple-dashboard{padding-inline:22px}
  body.ai-home .loox-simple-card-grid{gap:9px}
@@ -155,9 +144,6 @@ body.ai-home.loox-sitewide-active > button.loox-sitewide-scrim.is-open{top:var(-
  body.ai-home .loox-simple-category-row{grid-template-columns:repeat(4,minmax(0,1fr))}
 }
 @media(max-width:790px){
- body.ai-home.loox-sitewide-active{--loox-sitewide-height:104px!important}
- body.ai-home #loox-sitewide-header{min-height:104px!important}
- body.ai-home #loox-sitewide-header .loox-sitewide-inner{min-height:104px!important;height:auto!important}
  body.ai-home .loox-simple-dashboard{padding:25px 17px 48px}
  body.ai-home .loox-simple-hero{grid-template-columns:1fr;gap:0}
  body.ai-home .loox-simple-hero-art{height:165px;order:-1;display:none}

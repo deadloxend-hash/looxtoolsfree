@@ -1,43 +1,51 @@
 #!/usr/bin/env python3
-"""Install a common LOOX navigation on root-level site pages.
-Preserves each page's existing HTML, scripts, editors and SEO metadata.
-SEO guide articles under learn/* are included; assets/guides fragments are not modified.
+"""Apply one consistent LOOX navigation revision to every standalone site page.
+
+Only page shell references are updated. Tool markup, editor logic, SEO and assets
+are preserved. Full guide pages in learn/*/*.html use root-relative depth.
 """
+import re
 from pathlib import Path
 
-root = Path(__file__).resolve().parents[1]
-excluded = {"index.html", "ai-home.html", "ai-chat.html"}
-css = '<link rel="stylesheet" href="loox-sitewide-nav.css?v=1">'
-js = '<script defer src="loox-sitewide-nav.js?v=1"></script>'
-modified = []
+ROOT = Path(__file__).resolve().parents[1]
+VERSION = "25"
+HOME_PAGES = {"index.html", "ai-home.html", "ai-chat.html"}
+ASSETS = (
+    ("loox-sitewide-nav.css", "href", "head",
+     lambda url: f'<link rel="stylesheet" href="{url}">'),
+    ("loox-sitewide-nav.js", "src", "body",
+     lambda url: f'<script defer src="{url}"></script>'),
+)
+changed = []
 skipped = []
-pages = list(root.glob("*.html")) + list(root.glob("learn/*/*.html"))
-for path in sorted(pages):
-    if path.parent == root and path.name in excluded:
+pages = sorted(ROOT.glob("*.html")) + sorted(ROOT.glob("learn/*/*.html"))
+
+for page in pages:
+    if page.parent == ROOT and page.name in HOME_PAGES:
         continue
-    source = path.read_text(encoding="utf-8")
-    result = source
-    if "loox-sitewide-nav.css" not in result:
-        if "</head>" in result:
-            result = result.replace("</head>", css + "</head>", 1)
-        else:
-            skipped.append((path.name, "No closing head"))
-            continue
-    if "loox-sitewide-nav.js" not in result:
-        if "</body>" in result:
-            result = result.replace("</body>", js + "</body>", 1)
-        else:
-            skipped.append((path.name, "No closing body"))
-            continue
-    # Keep all tool/guide pages on the same classic LOOX sidebar revision.
-    for version in (1, 2, 3, 4, 5, 6):
-        result = result.replace(f"loox-sitewide-nav.css?v={version}", "loox-sitewide-nav.css?v=7")
-        result = result.replace(f"loox-sitewide-nav.js?v={version}", "loox-sitewide-nav.js?v=6")
-    if result != source:
-        path.write_text(result, encoding="utf-8")
-        modified.append(path.name)
-print(f"Updated {len(modified)} pages; skipped {len(skipped)} pages")
+    content = page.read_text(encoding="utf-8")
+    result = content
+    prefix = "../" * (len(page.relative_to(ROOT).parts) - 1)
+    for filename, attr, section, markup in ASSETS:
+        new_url = f"{prefix}{filename}?v={VERSION}"
+        pattern = re.compile(
+            rf'(?P<before>\b{attr}\s*=\s*["\'])(?:[^"\']*/)?{re.escape(filename)}(?:\?[^"\']*)?(?P<after>["\'])',
+            re.IGNORECASE,
+        )
+        result, count = pattern.subn(
+            lambda m: m.group("before") + new_url + m.group("after"), result
+        )
+        if not count:
+            closing = re.compile(rf"</{section}\s*>", re.IGNORECASE)
+            if not closing.search(result):
+                skipped.append((page.relative_to(ROOT).as_posix(), section))
+                break
+            result = closing.sub(markup(new_url) + rf"</{section}>", result, count=1)
+    else:
+        if result != content:
+            page.write_text(result, encoding="utf-8")
+            changed.append(page.relative_to(ROOT).as_posix())
+
+print(f"Updated {len(changed)} navigation pages; skipped {len(skipped)}")
 if skipped:
-    print("Skipped:", skipped)
-if not modified and not skipped:
-    print("All root pages already include the navigation")
+    print("Missing closing tags:", skipped)

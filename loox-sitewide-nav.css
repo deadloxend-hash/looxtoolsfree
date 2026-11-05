@@ -622,3 +622,94 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-upgrade-card{disp
 body.loox-sitewide-active #loox-sitewide-drawer{background:#100e19!important;border-right-color:#30263d!important}
 body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{background:#35214f!important;color:#fff!important}
 body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-list .loox-sitewide-group{color:#fff!important;opacity:.78}
+
+/* Shared LOOX sidebar design — identical on every page, no page-local variants. */
+body.loox-sitewide-active > aside#loox-sitewide-drawer{
+ width:240px!important;max-width:min(240px,88vw)!important;
+ padding:8px 9px 24px!important; background:#100e19!important;
+ color:#fff!important;border-right:1px solid #30263d!important;
+ font:500 12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ scrollbar-width:none!important;
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
+body.loox-sitewide-active > aside#loox-sitewide-drawer *,
+body.loox-sitewide-active > aside#loox-sitewide-drawer *::before,
+body.loox-sitewide-active > aside#loox-sitewide-drawer *::after{box-sizing:border-box!important}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-list{
+ display:flex!important;flex-direction:column!important;gap:1px!important;
+ width:100%!important;padding:0!important;margin:0!important;
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-group{
+ display:block!important;margin:16px 10px 5px!important;padding:0!important;
+ color:#fff!important;opacity:.78!important;
+ font:800 10px/1.35 system-ui!important;letter-spacing:.115em!important;
+ text-transform:uppercase!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:10px!important;width:100%!important;min-height:37px!important;
+ padding:7px 10px!important;margin:0!important;
+ background:transparent!important;border:0!important;border-radius:9px!important;
+ color:#fff!important;opacity:1!important;text-decoration:none!important;
+ font:600 12px/1.4 system-ui!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:hover{
+ background:#292038!important;color:#fff!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{
+ background:#35214f!important;color:#fff!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-icon{
+ width:22px!important;min-width:22px!important;height:22px!important;
+ display:grid!important;place-items:center!important;flex:none!important;
+ color:#fff!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-icon svg{
+ display:block!important;width:19px!important;height:19px!important;color:#fff!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-label{
+ color:#fff!important;font:inherit!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more{
+ width:100%!important;margin:4px 0 0!important;padding:0!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more>summary{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ width:100%!important;min-height:37px!important;gap:10px!important;
+ margin:0!important;padding:7px 10px!important;
+ background:transparent!important;border:0!important;border-radius:9px!important;
+ color:#fff!important;font:600 12px/1.4 system-ui!important;cursor:pointer
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more>summary:hover{
+ background:#292038!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more-chevron{
+ color:#fff!important;margin-left:auto!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more-links{
+ margin-top:2px!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more-links a{
+ color:#fff!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-workspace-card,
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-upgrade-card{
+ display:none!important
+}
+/* Older experience bundles must not create a second visible rail or offset. */
+body.loox-sitewide-active > #loox-home-rail,
+body.loox-sitewide-active > .loox-home-rail-button,
+body.loox-sitewide-active > .ai-shared-rail-backdrop{
+ display:none!important;visibility:hidden!important;pointer-events:none!important
+}
+body.loox-sitewide-active.experience-shell{--lx-rail:0px!important}
+body.loox-sitewide-active.experience-shell:not(.experience-studio) .experience-content{
+ margin-left:0!important
+}
+@media(min-width:901px){
+ body.loox-sitewide-active.experience-shell:has(> #loox-sitewide-drawer.is-open) > .experience-content,
+ body.loox-sitewide-active.experience-shell:has(> #loox-sitewide-drawer.is-open) > main.experience-content{
+  margin-left:240px!important;width:calc(100% - 240px)!important;
+  max-width:calc(100% - 240px)!important
+ }
+}

@@ -40,12 +40,11 @@
  inner.append(logoWrap,links,search,account,moreWrap);nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
- if(isHome){
-  document.body.classList.add('loox-sitewide-home');
-  // The old Home/AI rail is retired. Keep one real, interactive drawer.
-  document.querySelectorAll('aside#loox-home-rail,button.loox-home-rail-button,.ai-shared-rail-backdrop').forEach(node=>node.remove());
-  document.body.classList.remove('ai-rail-open');
- }
+ // Retire the earlier navigation rail on EVERY page, including AI tools.
+ // Older cached experience bundles can still create it before this script runs.
+ document.querySelectorAll('aside#loox-home-rail,button.loox-home-rail-button,.ai-shared-rail-backdrop').forEach(node=>node.remove());
+ document.body.classList.remove('ai-rail-open');
+ if(isHome)document.body.classList.add('loox-sitewide-home');
  // Preserve tool actions (Undo, Export, Generate, editor tabs) as a second workspace bar.
  const native=document.querySelector('header');
  if(native){
