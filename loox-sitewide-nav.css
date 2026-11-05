@@ -581,3 +581,21 @@ body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-ar
 @media(prefers-reduced-motion:reduce){
  body.loox-sitewide-active > button.loox-sitewide-dock-toggle{transition:none!important}
 }
+
+/* Minimal single-line sidebar grip, keeping a generous clickable hit area. */
+body.loox-sitewide-active > button.loox-sitewide-dock-toggle{
+ width:20px!important;height:64px!important;border:none!important;
+ border-radius:0 9px 9px 0!important;background:transparent!important;
+ box-shadow:none!important;color:#d7c0ed!important;
+}
+body.loox-sitewide-active .loox-sitewide-dock-toggle .loox-dock-bars{
+ display:block;width:2px;height:32px;line-height:0;font-size:0!important;
+ background:#cbb4e5;border-radius:6px;letter-spacing:0!important;
+ box-shadow:0 0 7px #8a4fc06b;
+}
+body.loox-sitewide-active > button.loox-sitewide-dock-toggle:hover,
+body.loox-sitewide-active > button.loox-sitewide-dock-toggle:focus-visible{
+ background:#3b2655!important;
+}
+body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-bars,
+body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-bars{display:none}

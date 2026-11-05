@@ -113,7 +113,7 @@
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
  dockToggle.setAttribute('aria-controls','loox-sitewide-drawer');dockToggle.setAttribute('aria-expanded','false');
- dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true">Ⅱ</span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
+ dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true">|</span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
  document.body.append(scrim,sidebar,dockToggle);
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
