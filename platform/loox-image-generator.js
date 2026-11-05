@@ -46,11 +46,15 @@ if(mode==='workspace')initWorkspace();
 async function initWorkspace(){
  const form=byId('lig-compose'),promptField=byId('lig-prompt'),ratioField=byId('lig-ratio'),modelField=byId('lig-model');
  await config().catch(()=>{});
- const availableModels=new Map((state.config?.models||[]).filter(m=>m.available).map(m=>[m.id,m]));
- for(const option of modelField.options){if(option.value==='flux')continue;const m=availableModels.get(option.value);if(m){option.disabled=false;option.textContent=m.provider+' · '+m.name+' · '+m.cost+' credits';}}
- const catalog=byId('lig-model-catalog')||document.querySelector('.lig-model-catalog');
- for(const span of catalog?.querySelectorAll('[data-model]')||[]){const m=availableModels.get(span.dataset.model);if(m){span.textContent=m.provider+' · '+m.name+' · '+m.cost+' credits';span.classList.add('lig-model-active');}}
- if(availableModels.size){const note=document.querySelector('.lig-model-note');if(note)note.textContent='Choose a model to see its credit cost. Premium models require an active plan.';const foot=catalog?.querySelector('.lig-model-grid small');if(foot)foot.textContent='Premium models require an active LOOX plan. Credits are reserved when a request starts and returned if generation fails.';}
+ const allModels=new Map((state.config?.models||[]).map(m=>[m.id,m]));
+ const availableModels=new Map([...allModels].filter(([,m])=>m.available));
+ const modelNote=document.querySelector('.lig-model-note');
+ function modelStatus(id){
+  if(id==='flux')return {label:'Local model',reason:'Uses the LOOX private GPU worker.'};
+  const m=allModels.get(id);
+  return {label:m?.status==='available'?'Available':m?.status==='temporarily_unavailable'?'Temporarily Unavailable':'Coming Soon',
+   reason:m?.reason||'Requires rotated credentials, provider billing and a verified generation.'};
+ }
  const generateButton=byId('lig-generate'),message=byId('lig-message');
  const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
  const results=byId('lig-results'),historyGrid=byId('lig-history-grid');
@@ -79,17 +83,53 @@ async function initWorkspace(){
   const dropdown={root,trigger,menu,native};
   customDropdowns.push(dropdown);
   const choices=[];
+  const isModel=native.id==='lig-model';
+  let search;
+  if(isModel){
+   search=create('input','lig-model-search');
+   search.type='search';search.placeholder='Search 17 models or providers';
+   search.setAttribute('aria-label','Search image models');
+   menu.append(search);
+  }
   for(const option of native.options){
-   const item=document.createElement('button');item.type='button';item.className='lig-select-option';item.disabled=option.disabled;if(option.disabled)item.title='Secure server setup pending';
+   if(isModel&&option.parentElement?.tagName==='OPTGROUP'&&!menu.querySelector('[data-group="'+option.parentElement.label+'"]')){
+    const group=create('div','lig-model-group',option.parentElement.label);
+    group.dataset.group=option.parentElement.label;menu.append(group);
+   }
+   const item=document.createElement('button');item.type='button';item.className='lig-select-option';
+   item.disabled=option.disabled;
    item.setAttribute('role','option');item.dataset.value=option.value;
-   const label=document.createElement('span');label.textContent=option.textContent;
+   const label=document.createElement('span');label.className='lig-model-choice-name';label.textContent=option.textContent;
    const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
-   item.append(label,check);menu.append(item);choices.push(item);
+   if(isModel){
+    const m=allModels.get(option.value);
+    const detail=create('small','lig-model-choice-detail',m?.description||'Private generation on your GPU');
+    const status=modelStatus(option.value);
+    const meta=create('small','lig-model-choice-meta',status.label+' · '+(m?.cost||3)+' credits');
+    const body=create('span','lig-model-choice-body');body.append(label,detail,meta);
+    item.append(body,check);
+   }else item.append(label,check);
+   menu.append(item);choices.push(item);
    item.addEventListener('click',()=>{
     if(option.disabled)return;
     native.value=option.value;native.dispatchEvent(new Event('change',{bubbles:true}));
     sync();closeCustomDropdowns();trigger.focus();
    });
+  }
+  if(search){
+   search.addEventListener('input',()=>{
+    const query=search.value.trim().toLocaleLowerCase();
+    for(const item of choices){
+     const m=allModels.get(item.dataset.value);
+     item.hidden=Boolean(query)&&!(item.textContent+' '+(m?.provider||'LOOX Studio')).toLocaleLowerCase().includes(query);
+    }
+    for(const group of menu.querySelectorAll('.lig-model-group')){
+     let next=group.nextElementSibling,shown=false;
+     while(next&&!next.classList.contains('lig-model-group')){shown ||= !next.hidden;next=next.nextElementSibling;}
+     group.hidden=!shown;
+    }
+   });
+   menu.addEventListener('click',e=>{if(e.target===menu)search.focus()});
   }
   function sync(){
    value.textContent=native.selectedOptions[0]?.textContent||'Select';
@@ -100,6 +140,7 @@ async function initWorkspace(){
    if(native.disabled)return;
    const opening=menu.hidden;closeCustomDropdowns();
    menu.hidden=!opening;trigger.setAttribute('aria-expanded',String(opening));
+   if(opening&&search){search.value='';search.dispatchEvent(new Event('input'));search.focus();}
    root.classList.toggle('is-open',opening);
   });
   trigger.addEventListener('keydown',e=>{
@@ -110,8 +151,9 @@ async function initWorkspace(){
   menu.addEventListener('keydown',e=>{
    if(e.key==='Escape'){e.preventDefault();closeCustomDropdowns();trigger.focus();return}
    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
-    e.preventDefault();const index=choices.indexOf(document.activeElement);
-    let next=index;do{next=(next+(e.key==='ArrowDown'?1:-1)+choices.length)%choices.length}while(choices[next].disabled&&next!==index);choices[next]?.focus();
+    e.preventDefault();const visible=choices.filter(item=>!item.disabled&&!item.hidden);
+    const index=visible.indexOf(document.activeElement);
+    if(visible.length)visible[(index+(e.key==='ArrowDown'?1:-1)+visible.length)%visible.length]?.focus();
    }
   });
   native.addEventListener('change',sync);
@@ -356,9 +398,12 @@ async function initWorkspace(){
   if(state.user&&state.account?.wallet){
    credits.textContent=state.account.wallet.balance+' credits';
   }else credits.textContent=state.user?'Loading credits…':'Sign in to view';
-  creditCost.textContent=(modelField.value==='flux'?'Local image':'Premium image')+' · '+price()+' credits on success';
+  const selected=modelStatus(modelField.value);
+  creditCost.textContent=selected.label+' · '+price()+' credits on success';
+  modelNote.textContent=selected.reason;
+  generateButton.disabled=!isBusy&&modelField.value!=='flux'&&!availableModels.has(modelField.value);
  }
- modelField.addEventListener('change',()=>{updateAccount();const m=availableModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
+ modelField.addEventListener('change',()=>{updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
  function setMessage(value,isError=false){
   message.textContent=value||'';
   message.style.color=isError?'#ffb6bc':'';
@@ -528,7 +573,7 @@ async function initWorkspace(){
   }
   if(!resumeId&&remainingImages===0){setMessage('You have used all 30 image generations today. Resets at 00:00 UTC.',true);return;}
   const modelCost=modelId==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelId)?.cost||Infinity);
-  if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage('This premium model is not active yet.',true);return;}
+  if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage(modelStatus(modelId).reason,true);return;}
   if(modelId!=='flux'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
   if(!resumeId&&state.account?.wallet?.balance<modelCost){
    pricing();setMessage('You need more AI credits to generate this image.',true);return;
@@ -549,7 +594,7 @@ async function initWorkspace(){
     await loadHistory(true);
    }
    currentGenerationId=id;
-   view=outputCard(prompt,ratio,modelId==='flux'?'FLUX.1 Schnell':availableModels.get(modelId)?.name||'AI image');
+   view=outputCard(prompt,ratio,modelId==='flux'?'FLUX.1 Schnell':allModels.get(modelId)?.name||'AI image');
    if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
    if(!resumeId){
     try{sessionStorage.setItem('loox-active-image-'+state.user.id,JSON.stringify({id,prompt,ratio,modelId}));}catch{}
@@ -563,7 +608,7 @@ async function initWorkspace(){
    setMessage(error.message||'Generation could not start.',true);
    await refreshQuota();
   }finally{
-   isBusy=false;generateButton.disabled=false;ratioField.disabled=false;modelField.disabled=false;
+   isBusy=false;ratioField.disabled=false;modelField.disabled=false;updateAccount();
   }
  }
  form?.addEventListener('submit',event=>{
