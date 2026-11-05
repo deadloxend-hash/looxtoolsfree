@@ -50,7 +50,7 @@ async function initWorkspace(){
  const availableModels=new Map([...allModels].filter(([,m])=>m.available));
  const modelNote=document.querySelector('.lig-model-note');
  function modelStatus(id){
-  if(id==='flux')return {label:'Local model',reason:'Uses the LOOX private GPU worker.'};
+  if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'The private LOOX GPU worker is online.'}:{label:'Temporarily Unavailable',reason:'The private GPU worker is offline. Try again when it reconnects.'};
   const m=allModels.get(id);
   return {label:m?.status==='available'?'Available':m?.status==='temporarily_unavailable'?'Temporarily Unavailable':'Coming Soon',
    reason:m?.reason||'Requires rotated credentials, provider billing and a verified generation.'};
@@ -417,7 +417,7 @@ async function initWorkspace(){
   const selected=modelStatus(modelField.value);
   creditCost.textContent=selected.label+' · '+price()+' credits on success';
   modelNote.textContent=selected.reason;
-  generateButton.disabled=!isBusy&&modelField.value!=='flux'&&!availableModels.has(modelField.value);
+  generateButton.disabled=!isBusy&&(modelField.value==='flux'?!state.config?.local?.available:!availableModels.has(modelField.value));
  }
  modelField.addEventListener('change',()=>{updateModelSettings();updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
  function setMessage(value,isError=false){
@@ -587,6 +587,7 @@ async function initWorkspace(){
    auth('login');
    return;
   }
+  if(!resumeId&&modelId==='flux'&&!state.config?.local?.available){setMessage(modelStatus('flux').reason,true);return;}
   if(!resumeId&&remainingImages===0){setMessage('You have used all 30 image generations today. Resets at 00:00 UTC.',true);return;}
   const modelCost=modelId==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelId)?.cost||Infinity);
   if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage(modelStatus(modelId).reason,true);return;}
