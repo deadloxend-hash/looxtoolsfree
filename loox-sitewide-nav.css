@@ -599,3 +599,19 @@ body.loox-sitewide-active > button.loox-sitewide-dock-toggle:focus-visible{
 }
 body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-bars,
 body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-bars{display:none}
+
+/* Unified sidebar: white labels and icons on every LOOX page. */
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link,
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-label,
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-more > summary,
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-icon{
+ color:#ffffff!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-group{
+ color:#ffffff!important;
+ opacity:.83;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link:hover,
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{
+ color:#ffffff!important;
+}

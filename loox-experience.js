@@ -11,7 +11,7 @@
  if(!supportedCodes.has(language))language='en';
  const homePage=file==='index.html';
  const aiSharedDialog=document.body.classList.contains('ai-home')||document.body.classList.contains('ai-chat')||document.body.classList.contains('lig-shared-ai-nav');
- const railPage=homePage||aiSharedDialog;
+ const railPage=(homePage||aiSharedDialog)&&!document.querySelector('script[src*="loox-sitewide-nav.js"]');
  let sidebarVisible=homePage&&!matchMedia('(max-width:900px)').matches&&read('loox-home-sidebar-visible','true')!=='false';
  if(!aiSharedDialog)document.body.classList.add(homePage?'loox-home-rail':'loox-no-rail');
  document.body.classList.toggle('rail-hidden',!sidebarVisible);
@@ -50,7 +50,7 @@
  let sidebarButton=null;
  function toggleHomeRail(force){if(!railPage)return;sidebarVisible=typeof force==='boolean'?force:!sidebarVisible;if(homePage)save('loox-home-sidebar-visible',String(sidebarVisible));document.body.classList.toggle('rail-hidden',!sidebarVisible);if(sidebarButton){sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar'}if(aiSharedDialog){const button=document.getElementById('aiNavToggle');button?.setAttribute('aria-expanded',String(sidebarVisible));aiRailBackdrop.hidden=!sidebarVisible;document.body.classList.toggle('ai-rail-open',sidebarVisible)}}
  window.LOOXToggleToolRail=toggleHomeRail;
- if(aiSharedDialog){
+ if(aiSharedDialog&&railPage){
   const aiToggle=document.getElementById('aiNavToggle');
   aiToggle?.addEventListener('click',event=>{
    event.preventDefault();event.stopImmediatePropagation();
@@ -61,10 +61,10 @@
   document.addEventListener('keydown',event=>{if(event.key==='Escape'&&sidebarVisible)toggleHomeRail(false)});
  }
 
- const aiRailBackdrop=aiSharedDialog?document.createElement('div'):null;
+ const aiRailBackdrop=aiSharedDialog&&railPage?document.createElement('div'):null;
  if(aiRailBackdrop){aiRailBackdrop.className='ai-shared-rail-backdrop';aiRailBackdrop.hidden=true;aiRailBackdrop.addEventListener('click',()=>toggleHomeRail(false));document.body.append(aiRailBackdrop)}
 
- if(homePage){sidebarButton=document.createElement('button');sidebarButton.type='button';sidebarButton.className='loox-home-rail-button';sidebarButton.textContent='☰';sidebarButton.setAttribute('aria-controls','loox-home-rail');sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar';sidebarButton.addEventListener('click',toggleHomeRail);rail.id='loox-home-rail';(document.querySelector('.topbar-inner')||document.body).prepend(sidebarButton)} 
+ if(homePage&&railPage){sidebarButton=document.createElement('button');sidebarButton.type='button';sidebarButton.className='loox-home-rail-button';sidebarButton.textContent='☰';sidebarButton.setAttribute('aria-controls','loox-home-rail');sidebarButton.setAttribute('aria-expanded',String(sidebarVisible));sidebarButton.setAttribute('aria-label',sidebarVisible?'Hide tool sidebar':'Show tool sidebar');sidebarButton.title=sidebarVisible?'Hide sidebar':'Show sidebar';sidebarButton.addEventListener('click',toggleHomeRail);rail.id='loox-home-rail';(document.querySelector('.topbar-inner')||document.body).prepend(sidebarButton)} 
  const localizedURL=href=>{const u=new URL(href,location.href);if(language!=='en')u.searchParams.set('lang',language);return u.pathname+u.search+u.hash};
  function current(){return catalog.find(t=>t.url===(file+(file==='toolbox.html'?(location.hash||'#image-resizer'):'')))}
  function drawRail(){
