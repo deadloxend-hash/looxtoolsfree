@@ -344,7 +344,10 @@
   notificationsPanel.append(el('strong','','Notifications'),el('p','','Site notifications are not available yet.'));
   const activity=el('a','','View account activity');activity.href=url('account.html#usage');notificationsPanel.append(activity);
   const identity=menu.querySelector('.lx-profile-identity');
-  if(identity)identity.after(actions);else menu.prepend(actions);
+  const logout=menu.querySelector('.lx-profile-signout');
+  if(logout)logout.before(actions);
+  else if(identity)identity.after(actions);
+  else menu.prepend(actions);
   actions.after(options,notificationsPanel);
   settings.addEventListener('click',()=>location.assign(url('settings.html#workspace-preferences')));
   languages.addEventListener('click',()=>{
@@ -357,13 +360,123 @@
   });
   theme.addEventListener('click',()=>toggleSiteTheme(theme));
  }
+
+ // One real account menu on every page, including the native image/video/chat headers.
+ // The existing account module still owns authentication, balances and sign-out.
+ let looxAccountModule=null;
+ const accountGlyphs={
+  profile:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  subscription:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>',
+  usage:'<path d="M4.9 17a8 8 0 1 1 14.2 0"/><path d="m12 13 3-4"/><circle cx="12" cy="13" r="1"/>',
+  settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1m10 10 2.1 2.1M19.1 4.9 17 7m-10 10-2.1 2.1"/>',
+  mcp:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="m8 10-2 2 2 2m8-4 2 2-2 2m-5-3-2 6"/>',
+  faq:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.4 1.9c-1.1 1-1.9 1.4-1.9 2.7M12 17h.01"/>',
+  bug:'<path d="M8 4 7 2m9 2 1-2M5 12H2m20 0h-3M6 8 3.8 6m14.4 0L20 8M6 17l-2.2 2m14.4-2 1.8 2"/><rect x="6" y="5" width="12" height="16" rx="6"/><path d="M6 12h12M12 12v9"/>',
+  logout:'<path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="m15 7 5 5-5 5M20 12H9"/>',
+  crown:'<path d="M2 7 7 11 12 4 17 11 22 7l-2 12H4L2 7z"/>',
+  account:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="3"/><path d="M5.5 19c.8-4 12.2-4 13 0"/>'
+ };
+ const accountGlyph=name=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+accountGlyphs[name]+'</svg>';
+ function enhancePopover(menu){
+  if(menu.dataset.looxAccountEnhanced==='yes')return;
+  menu.dataset.looxAccountEnhanced='yes';
+  menu.classList.add('loox-account-popover');
+  const details=menu.closest('.lx-profile-details');
+  if(details){
+   let timer;
+   details.addEventListener('pointerenter',event=>{
+    if(event.pointerType!=='mouse')return;
+    clearTimeout(timer);
+    details.open=true;
+   });
+   details.addEventListener('pointerleave',event=>{
+    if(event.pointerType!=='mouse')return;
+    clearTimeout(timer);
+    timer=setTimeout(()=>{if(!details.matches(':focus-within'))details.open=false;},170);
+   });
+   details.addEventListener('focusout',()=>{
+    requestAnimationFrame(()=>{
+     if(!details.contains(document.activeElement)&&!details.matches(':hover'))details.open=false;
+    });
+   });
+  }
+  // For signed-out users retain the original functional sign-in and register buttons.
+  const identity=menu.querySelector('.lx-profile-identity');
+  const name=identity?.querySelector('.lx-profile-name')?.textContent?.trim();
+  if(!name)return;
+  const originalSignout=menu.querySelector('.lx-profile-signout');
+  const existingLinks=menu.querySelector('.lx-profile-links');
+  const plan=looxAccountModule?.state?.account?.plan;
+  const planText={free:'Free Plan',pro:'LOOX Pro',lifetime:'LOOX Lifetime'}[plan]||'Account plan';
+  const avatar=el('span','loox-popover-avatar');
+  avatar.setAttribute('aria-hidden','true');
+  avatar.textContent=name.slice(0,1).toUpperCase();
+  const identityText=el('div','loox-popover-identity-text');
+  identityText.append(el('strong','loox-popover-name',name),el('small','loox-popover-plan',planText));
+  identity.replaceChildren(avatar,identityText);
+  identity.classList.add('loox-popover-identity');
+  const creditBox=el('section','loox-popover-credits');
+  creditBox.setAttribute('aria-label','Your AI credits');
+  const balanceRow=el('div','loox-popover-credit-top');
+  balanceRow.append(el('strong','','Credits'));
+  const available=looxAccountModule?.state?.account?.wallet?.balance;
+  const count=Number.isFinite(Number(available))&&available!=null?String(available):'…';
+  balanceRow.append(el('span','',count+' available'));
+  const accent=el('div','loox-popover-accent');accent.setAttribute('aria-hidden','true');
+  const premium=el('div','loox-popover-premium');
+  premium.append(el('span','loox-popover-crown'),el('strong','','Go Premium'));
+  premium.querySelector('.loox-popover-crown').innerHTML=accountGlyph('crown');
+  const upgrade=el('a','loox-popover-upgrade','Upgrade');
+  upgrade.href=url('upgrade.html');
+  premium.append(upgrade);
+  creditBox.append(balanceRow,accent,premium);
+  identity.after(creditBox);
+  if(existingLinks){
+   existingLinks.replaceChildren();
+   existingLinks.classList.add('loox-popover-links');
+   const items=[
+    ['Profile','profile','account.html#profile'],
+    ['Subscriptions','subscription','account.html#subscription'],
+    ['Usage','usage','account.html#usage'],
+    ['Settings','settings','settings.html#workspace-preferences'],
+    ['FAQs','faq','help.html'],
+    ['Report a bug','bug','contact.html']
+   ];
+   const makeRow=(label,icon,href)=>{
+    const row=el('a','loox-popover-link');
+    row.href=url(href);row.innerHTML=accountGlyph(icon);
+    row.append(el('span','',label));
+    existingLinks.append(row);
+   };
+   items.forEach(([label,icon,href],i)=>{
+    makeRow(label,icon,href);
+    if(i===3){
+     const soon=el('span','loox-popover-link loox-popover-disabled');
+     soon.innerHTML=accountGlyph('mcp');
+     soon.append(el('span','','Connect MCP & CLI'),el('small','','Soon'));
+     soon.setAttribute('title','MCP and CLI connections are not available in LOOX yet');
+     existingLinks.append(soon);
+    }
+   });
+  }
+  if(originalSignout){
+   originalSignout.classList.add('loox-popover-logout');
+   originalSignout.textContent='Logout';
+   originalSignout.insertAdjacentHTML('afterbegin',accountGlyph('logout'));
+  }
+ }
+
  function syncAccountHeader(){
   const credit=account.querySelector('.lx-credit-chip');
   const upgrade=account.querySelector('.lx-upgrade');
   if(credit&&upgrade)creditBundle.replaceChildren(credit,upgrade);
-  const menu=account.querySelector('.lx-profile-menu');
-  if(menu)enableProfileShortcuts(menu);
-  const userName=account.querySelector('.lx-profile-name')?.textContent?.trim();
+  // The same real account component appears in tool headers and in the sitewide header.
+  document.querySelectorAll('[data-loox-account] .lx-profile-menu').forEach(menu=>{
+   enhancePopover(menu);
+   if(menu.querySelector('.lx-profile-name')||menu.querySelector('.loox-popover-name'))
+    enableProfileShortcuts(menu);
+  });
+  const userName=account.querySelector('.loox-popover-name,.lx-profile-name')?.textContent?.trim();
   sideName.textContent=userName||'My Account';
   sideSubtitle.textContent=userName?'Manage account':'Sign in or create account';
  }
@@ -416,7 +529,7 @@
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=25');document.head.append(style);
  }
- import(url('platform/account.js?v=7')).then(m=>{m.renderHeader();syncAccountHeader();}).catch(()=>{
+ import(url('platform/account.js?v=7')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);
  });
