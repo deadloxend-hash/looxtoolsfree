@@ -34,7 +34,7 @@
  const search=el('button','loox-sitewide-search');search.type='button';
  search.setAttribute('aria-label','Search all LOOX tools');search.title='Search tools';search.innerHTML=icons.search;
  const account=el('div','loox-sitewide-account');account.setAttribute('data-loox-account','');
- inner.append(logoWrap,creditDock,links,search,account);nav.append(inner);
+ inner.append(logoWrap,links,search,creditDock,account);nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
  // Retire the earlier navigation rail on EVERY page, including AI tools.

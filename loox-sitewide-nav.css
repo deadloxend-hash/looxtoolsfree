@@ -802,7 +802,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-lin
 }
 
 
-/* LOOX editorial topbar: supplied infinity wordmark, compact real credits and account */
+/* LOOX editorial topbar: infinity wordmark, search, compact real credits/upgrade, account */
 #loox-sitewide-header .loox-sitewide-logo img{
  width:clamp(112px,9.4vw,144px)!important;max-height:40px!important;height:auto!important;
  object-fit:contain!important
