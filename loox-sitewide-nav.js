@@ -85,6 +85,41 @@
   if(templateTabs)native.insertBefore(tabs,templateTabs);
   else if(accountHost)native.insertBefore(tabs,accountHost);
   else native.append(tabs);
+  // Reuse the actual Templates button so the existing image/video
+  // template handlers remain attached. Do not stack a second tab bar.
+  if(templateTabs){
+   const templatesButton=templateTabs.querySelector('[data-lig-view="templates"],[data-lvg-view="templates"]');
+   if(templatesButton){
+    templatesButton.classList.remove('lig-tab');
+    templatesButton.classList.add('loox-ai-workspace-tab','loox-ai-template-tab');
+    templatesButton.setAttribute('aria-label','Browse templates');
+    tabs.append(templatesButton);
+    const activeTool=tabs.querySelector('[data-ai-tab="'+workspaces[page]+'"]');
+    const refreshTemplateState=()=>{
+     const templatesOpen=location.hash==='#templates';
+     templatesButton.classList.toggle('is-active',templatesOpen);
+     templatesButton.setAttribute('aria-pressed',String(templatesOpen));
+     if(activeTool){
+      activeTool.classList.toggle('is-active',!templatesOpen);
+      if(templatesOpen)activeTool.removeAttribute('aria-current');
+      else activeTool.setAttribute('aria-current','page');
+     }
+    };
+    templatesButton.addEventListener('click',()=>queueMicrotask(refreshTemplateState));
+    window.addEventListener('hashchange',refreshTemplateState);
+    refreshTemplateState();
+   }
+   // Video editor remains available as a small contextual action.
+   const editAction=templateTabs.querySelector('a[href*="video-editor.html"]');
+   if(editAction){
+    editAction.classList.remove('lig-tab');
+    editAction.classList.add('loox-generator-edit-link');
+    const headStart=native.querySelector('.lig-head-start');
+    if(headStart)headStart.append(editAction);
+    else native.insertBefore(editAction,tabs);
+   }
+   templateTabs.remove();
+  }
  }
  // Clickable sidebar, matching the Home/AI grouping.
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';sidebar.setAttribute('aria-label','LOOX tools navigation');
