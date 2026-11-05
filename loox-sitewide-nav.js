@@ -35,7 +35,7 @@
   const link=el('a','',name);link.href=url(href);if(href===page)link.setAttribute('aria-current','page');links.append(link);
  });
  const search=el('button','loox-sitewide-search');search.type='button';
- search.setAttribute('aria-label','Search all LOOX tools');search.innerHTML=icons.search+'<span>Search tools</span><kbd>/</kbd>';
+ search.setAttribute('aria-label','Search all LOOX tools');search.title='Search tools';search.innerHTML=icons.search;
  const account=el('div','loox-sitewide-account');account.setAttribute('data-loox-account','');
  inner.append(logoWrap,links,search,account,moreWrap);nav.append(inner);
  document.body.prepend(nav);

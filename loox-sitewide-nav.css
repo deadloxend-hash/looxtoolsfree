@@ -716,3 +716,87 @@ body.loox-sitewide-active.experience-shell:not(.experience-studio) .experience-c
 
 /* Explore All Tools is a navigation action, not a separate promo block. */
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-explore-link{margin:12px 0 5px!important;font-weight:750!important}
+
+
+/* Compact Search icon and subtle zoom interactions shared by every page. */
+#loox-sitewide-header .loox-sitewide-search{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:40px!important;min-width:40px!important;max-width:40px!important;
+ height:40px!important;flex:0 0 40px!important;
+ padding:0!important;gap:0!important;border-radius:12px!important;
+ color:#f6edff!important;background:#1c172c!important;
+ border:1px solid #524068!important;cursor:pointer!important;
+ transform:scale(1);
+ transition:transform .19s cubic-bezier(.2,.8,.2,1),
+            background-color .19s ease,border-color .19s ease,
+            box-shadow .19s ease!important;
+}
+#loox-sitewide-header .loox-sitewide-search svg{
+ width:19px!important;height:19px!important;flex:0 0 19px!important;
+ color:#e9d5ff!important;stroke:currentColor!important
+}
+#loox-sitewide-header .loox-sitewide-search>span,
+#loox-sitewide-header .loox-sitewide-search>kbd{display:none!important}
+#loox-sitewide-header .loox-sitewide-search:hover,
+#loox-sitewide-header .loox-sitewide-search:focus-visible{
+ transform:scale(1.12)!important;background:#322341!important;
+ border-color:#a878e4!important;box-shadow:0 0 0 3px #8f55cc26,0 5px 16px #0005!important;
+}
+#loox-sitewide-header .loox-sitewide-search:active{
+ transform:scale(.94)!important
+}
+/* Use the same gentle animation for navigation links, overflow, and account actions. */
+#loox-sitewide-header .loox-sitewide-links>a,
+#loox-sitewide-header .loox-sitewide-more-button,
+#loox-sitewide-header .loox-sitewide-account a,
+#loox-sitewide-header .loox-sitewide-account button{
+ transform:scale(1);
+ transition:transform .19s cubic-bezier(.2,.8,.2,1),
+            background-color .19s ease,border-color .19s ease,
+            box-shadow .19s ease!important;
+ transform-origin:center center;
+}
+#loox-sitewide-header .loox-sitewide-links>a:hover,
+#loox-sitewide-header .loox-sitewide-links>a:focus-visible,
+#loox-sitewide-header .loox-sitewide-more-button:hover,
+#loox-sitewide-header .loox-sitewide-more-button:focus-visible,
+#loox-sitewide-header .loox-sitewide-account a:hover,
+#loox-sitewide-header .loox-sitewide-account a:focus-visible,
+#loox-sitewide-header .loox-sitewide-account button:hover,
+#loox-sitewide-header .loox-sitewide-account button:focus-visible{
+ transform:scale(1.07)!important
+}
+#loox-sitewide-header .loox-sitewide-links>a:active,
+#loox-sitewide-header .loox-sitewide-more-button:active,
+#loox-sitewide-header .loox-sitewide-account a:active,
+#loox-sitewide-header .loox-sitewide-account button:active{
+ transform:scale(.97)!important
+}
+/* Sidebar menu links share restrained hover motion without changing layout size. */
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link{
+ transform:translateX(0);
+ transition:transform .18s ease,background-color .18s ease!important
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:hover,
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:focus-visible{
+ transform:translateX(3px)
+}
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:active{
+ transform:translateX(1px) scale(.99)
+}
+@media(max-width:480px){
+ #loox-sitewide-header .loox-sitewide-search{
+  width:35px!important;min-width:35px!important;max-width:35px!important;
+  height:35px!important;flex-basis:35px!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #loox-sitewide-header .loox-sitewide-search,
+ #loox-sitewide-header .loox-sitewide-links>a,
+ #loox-sitewide-header .loox-sitewide-more-button,
+ #loox-sitewide-header .loox-sitewide-account a,
+ #loox-sitewide-header .loox-sitewide-account button,
+ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link{
+  transition:none!important;transform:none!important
+ }
+}
