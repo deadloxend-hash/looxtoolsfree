@@ -10,9 +10,9 @@
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-image-workspace.html">
 <link rel="stylesheet" href="platform/platform.css?v=15">
 <link rel="stylesheet" href="loox-experience.css?v=130">
-<link rel="stylesheet" href="platform/loox-image-generator.css?v=14">
+<link rel="stylesheet" href="platform/loox-image-generator.css?v=15">
 <script defer src="loox-experience.js?v=131"></script>
-<script type="module" src="platform/loox-image-generator.js?v=23"></script>
+<script type="module" src="platform/loox-image-generator.js?v=24"></script>
 <link rel="stylesheet" href="loox-page-back.css?v=2">
 <link rel="stylesheet" href="loox-sitewide-nav.css?v=7"></head>
 <body class="lx-shell lig-body lig-shared-ai-nav" data-loox-generator="workspace">
@@ -34,17 +34,15 @@
   <div class="lig-settings-head"><h2>General settings</h2><span class="lig-setting-tag">LOOX Studio</span></div>
   <div class="lig-setting-block">
    <div class="lig-row-label"><label for="lig-model">Model</label></div>
-   <select id="lig-model" aria-label="Image model">
-    <option value="flux" selected>FLUX.1 Schnell · 3 credits</option>
-    <option value="replicate" disabled>Replicate · FLUX Pro · Premium · Setup pending</option>
-    <option value="google" disabled>Google · image model · Premium · Setup pending</option>
-    <option value="bfl" disabled>Black Forest Labs · FLUX Pro · Premium · Setup pending</option>
-    <option value="ideogram" disabled>Ideogram · Premium · Setup pending</option>
-    <option value="stability" disabled>Stability AI · Premium · Setup pending</option>
-    <option value="byteplus" disabled>BytePlus · Seedream · Premium · Setup pending</option>
-    <option value="openai" disabled>OpenAI · image model · Premium · Setup pending</option>
-   </select>
-   <p class="lig-help lig-model-note">FLUX.1 Schnell runs on your local GPU. Premium model integrations are being prepared; their prices and availability will appear here after server activation.</p>
+   <select id="lig-model" aria-label="Image model"><optgroup label="LOOX Studio"><option value="flux" selected>FLUX.1 Schnell</option></optgroup>
+    <optgroup label="Google AI"><option value="google_nano_2">Nano Banana 2</option><option value="google_nano_pro">Nano Banana Pro</option></optgroup>
+    <optgroup label="Black Forest Labs"><option value="bfl_flux2_pro">FLUX.2 Pro</option><option value="bfl_klein_4b">FLUX.2 Klein 4B</option></optgroup>
+    <optgroup label="Ideogram"><option value="ideogram_p_image">Ideogram P-Image</option><option value="ideogram_45">Ideogram 4.5</option></optgroup>
+    <optgroup label="Stability AI"><option value="stability_sd35">Stable Diffusion 3.5 Large</option><option value="stability_ultra">Stable Image Ultra</option></optgroup>
+    <optgroup label="BytePlus"><option value="byteplus_45">Seedream 4.5</option><option value="byteplus_50_flash">Seedream 5.0 Flash</option></optgroup>
+    <optgroup label="OpenAI"><option value="openai_gpt_image">GPT Image</option></optgroup>
+    <optgroup label="Replicate"><option value="replicate_qwen2">Qwen Image 2</option><option value="replicate_hidream">HiDream-I1 Fast</option><option value="replicate_imagen4">Imagen 4 Fast</option><option value="replicate_photon">Luma Photon</option><option value="replicate_flux_ultra">FLUX 1.1 Pro Ultra</option></optgroup></select>
+   <p class="lig-help lig-model-note">Choose a model to see its credit price and availability.</p>
   </div>
   <div class="lig-setting-block">
    <label for="lig-ratio">Aspect ratio</label>
@@ -56,7 +54,7 @@
     <option value="16:9">Wide landscape · 16:9</option>
    </select>
   </div>
-  <details id="lig-model-catalog" class="lig-model-catalog"><summary>Explore image models <small>Local and premium choices</small></summary><div class="lig-model-grid"><span class="lig-model-live">● FLUX.1 Schnell <b>Available · 3 credits</b></span><span data-model="replicate">Replicate · Setup pending</span><span data-model="google">Google · Setup pending</span><span data-model="bfl">Black Forest Labs · Setup pending</span><span data-model="ideogram">Ideogram · Setup pending</span><span data-model="stability">Stability AI · Setup pending</span><span data-model="byteplus">BytePlus · Setup pending</span><span data-model="openai">OpenAI · Setup pending</span><small>Premium choices are locked until secure setup and credit prices are verified.</small></div></details>
+  
   <div class="lig-credit-box">
    <div class="lig-credit-top"><span class="lig-help">Your AI credits</span><a href="account.html#credits">View balance</a></div>
    <strong id="lig-credits">Loading…</strong>
