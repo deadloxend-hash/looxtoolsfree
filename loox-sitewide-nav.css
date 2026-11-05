@@ -713,3 +713,6 @@ body.loox-sitewide-active.experience-shell:not(.experience-studio) .experience-c
   max-width:calc(100% - 240px)!important
  }
 }
+
+/* Explore All Tools is a navigation action, not a separate promo block. */
+body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-explore-link{margin:12px 0 5px!important;font-weight:750!important}

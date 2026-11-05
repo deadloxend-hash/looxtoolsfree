@@ -72,6 +72,8 @@
   guide:'<path d="M4 5a2 2 0 0 1 2-2h6v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 1 2 2z"/>',
   diamond:'<path d="m6 3-4 6 10 12L22 9l-4-6zM2 9h20M9 3l-2 6 5 12 5-12-2-6"/>',
   user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  design:'<path d="m12 2 9 5-9 5-9-5 9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
+  audio:'<path d="M3 10v4M7 6v12M11 3v18M15 7v10M19 4v16M23 10v4"/>',
   grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
  };
  const iconNode=name=>{
@@ -79,34 +81,52 @@
   wrap.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(svgIcons[name]||svgIcons.grid)+'</svg>';
   return wrap;
  };
- const promo=el('a','loox-sitewide-workspace-card');promo.href=url('ai-home.html');
- promo.innerHTML='<span class="loox-promo-sparkle">✦</span><strong>LOOX AI Workspace</strong><small>Create, edit and explore with LOOX AI.</small>';
- sideContent.append(promo);
+ // The same navigation structure is shared by every desktop and mobile page.
+ // No separate promotional tiles or PDF dropdowns in the sidebar.
+ const targetIsCurrent=href=>{
+  const target=new URL(href,root),here=new URL(location.href);
+  if(target.pathname!==here.pathname||target.search!==here.search)return false;
+  if(target.hash)return target.hash===here.hash;
+  return !here.hash || page!=='index.html';
+ };
+ const addLink=([label,href,icon])=>{
+  const a=el('a','loox-sitewide-drawer-link');a.href=url(href);
+  a.append(iconNode(icon),el('span','loox-sitewide-drawer-label',label));
+  if(targetIsCurrent(href))a.setAttribute('aria-current','page');
+  sideContent.append(a);
+  return a;
+ };
  const group=(name,rows)=>{
   sideContent.append(el('h2','loox-sitewide-group',name));
-  rows.forEach(([label,href,icon])=>{
-   const a=el('a','loox-sitewide-drawer-link');a.href=url(href);
-   a.append(iconNode(icon),el('span','loox-sitewide-drawer-label',label));
-   if(page===href.split('?')[0].split('#')[0])a.setAttribute('aria-current','page');
-   sideContent.append(a);
-  });
+  rows.forEach(addLink);
  };
- group('Navigation',[['Home Dashboard','index.html','home'],['AI Studio · Models Hub','ai-home.html','ai']]);
- group('Canvas Editors',[['Photo Editor','photo-editor.html','photo'],['Video Editor','video-editor.html','video']]);
- group('AI Generators',[['Photo Generator · Models','ai-text-to-image.html','photo'],['Video Generator','ai-video-generator.html','video'],['Face Swap','faceswap.html','face']]);
- group('Quick Utilities',[['Background Remover','bg-remove.html','remove'],['Face Blur','face-blur.html','blur']]);
- const more=el('details','loox-sitewide-more');
- const summary=el('summary');summary.append(iconNode('folder'),el('span','loox-sitewide-drawer-label','File & PDF Utilities'),el('span','loox-sitewide-more-chevron','⌄'));more.append(summary);
- const moreLinks=el('div','loox-sitewide-more-links');
- const disabled=el('span','loox-sitewide-unavailable','PDF Compressor');disabled.title='PDF compression is not currently available';disabled.append(el('small','','Soon'));moreLinks.append(disabled);
- [['PDF to JPG','pdf-to-jpg.html'],['Image Converter','imgformatconverter.html'],['Text Utilities','all-text-tools.html'],['All PDF tools','index.html?category=PDF#tools']].forEach(([label,href])=>{
-  const a=el('a','',label);a.href=url(href);if(page===href)a.setAttribute('aria-current','page');moreLinks.append(a);
- });
- more.append(moreLinks);sideContent.append(more);
- group('System / User',[['Guides & Tutorials','guides.html','guide'],['Pricing & Credits','pricing.html','diamond'],['My Account','account.html','user']]);
- const upgrade=el('a','loox-sitewide-upgrade-card');upgrade.href=url('pricing.html');
- upgrade.innerHTML='<span class="loox-upgrade-sparkle">✦</span><strong>Explore LOOX Pro</strong><small>More power for your creative projects.</small><span class="loox-upgrade-cta">View plans&nbsp; →</span>';
- sideContent.append(upgrade);
+ group('Navigation',[
+  ['Home','index.html','home'],
+  ['AI Studio','ai-home.html','ai']
+ ]);
+ group('Editors',[
+  ['Photo Editor','photo-editor.html','photo'],
+  ['Video Editor','video-editor.html','video'],
+  ['Design Studio','design-studio.html','design']
+ ]);
+ group('AI Generators',[
+  ['AI Photo Generator','ai-text-to-image.html','photo'],
+  ['AI Video Generator','ai-video-generator.html','video'],
+  // Dedicated AI audio generation is not available yet; link to working audio utilities.
+  ['AI Audio Generator','index.html?category=Audio#tools','audio'],
+  ['AI Face Swap','faceswap.html','face']
+ ]);
+ group('Utilities',[
+  ['AI Background Remover','bg-remove.html','remove'],
+  ['AI Face Blur','face-blur.html','blur']
+ ]);
+ const explore=addLink(['Explore All Tools','index.html#tools','grid']);
+ explore.classList.add('loox-sitewide-explore-link');
+ group('System / User',[
+  ['Guides & Tutorials','guides.html','guide'],
+  ['Pricing & Credits','pricing.html','diamond'],
+  ['My Account','account.html','user']
+ ]);
  sidebar.append(sideContent);
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
