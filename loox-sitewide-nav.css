@@ -1014,3 +1014,25 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-gr
   transition:none!important;transform:none!important
  }
 }
+
+
+/* Focused generator workspace: hide ONLY the global sitewide top navigation.
+   Keep the image/video generator's own header, tabs, account and sidebar. */
+body.loox-generator-no-topnav.loox-sitewide-active{
+ --loox-sitewide-height:0px!important;
+}
+body.loox-generator-no-topnav #loox-sitewide-header{
+ display:none!important;
+ visibility:hidden!important;
+ height:0!important;
+ min-height:0!important;
+ padding:0!important;
+ margin:0!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active > aside#loox-sitewide-drawer{
+ top:0!important;
+ max-height:100dvh!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
+ inset:0!important;
+}
