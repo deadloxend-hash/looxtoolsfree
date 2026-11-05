@@ -1036,3 +1036,113 @@ body.loox-generator-no-topnav.loox-sitewide-active > aside#loox-sitewide-drawer{
 body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
  inset:0!important;
 }
+
+
+/* AI image/video workspaces: retain their real credit, Upgrade and avatar actions.
+   The sitewide menu stays hidden; the generator's native header remains in use. */
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header.loox-sitewide-workspacebar > .lig-header-user[data-loox-account]{
+ display:inline-flex!important;
+ visibility:visible!important;
+ opacity:1!important;
+ align-items:center!important;
+ justify-content:flex-end!important;
+ flex:0 0 auto!important;
+ margin-left:auto!important;
+ min-width:0!important;
+ position:relative!important;
+ z-index:35!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header.loox-sitewide-workspacebar > .lig-header-user.lx-account-header{
+ gap:0!important;
+ flex-wrap:nowrap!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-credit-chip{
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:4px!important;
+ height:36px!important;
+ min-height:36px!important;
+ min-width:47px!important;
+ padding:0 9px!important;
+ border:1px solid #564167!important;
+ border-right:0!important;
+ border-radius:11px 0 0 11px!important;
+ background:#211a2b!important;
+ box-shadow:none!important;
+ color:#fff!important;
+ font:750 12px/1 system-ui!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-credit-chip::before{
+ content:"✦";color:#d4a5ff;font-size:12px;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-credit-label,
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-credit-divider{
+ display:none!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-credit-value{
+ color:#fff!important;font:750 12px/1 system-ui!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-upgrade{
+ display:inline-flex!important;
+ align-items:center!important;
+ justify-content:center!important;
+ flex:0 0 auto!important;
+ min-height:36px!important;height:36px!important;
+ padding:0 11px!important;
+ margin:0!important;
+ border:1px solid #564167!important;
+ border-left:0!important;
+ border-radius:0 11px 11px 0!important;
+ background:linear-gradient(110deg,#9f54d8,#8142c2)!important;
+ color:#fff!important;
+ box-shadow:none!important;
+ font:750 11px/1 system-ui!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-upgrade:hover{
+ filter:brightness(1.11);
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-profile-details{
+ margin-left:14px!important;
+ flex:0 0 auto!important;
+ z-index:40!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-profile-trigger{
+ display:grid!important;place-items:center!important;
+ width:38px!important;height:38px!important;
+}
+body.loox-generator-no-topnav.loox-sitewide-active
+ header.lig-header .lig-header-user .lx-profile-menu{
+ z-index:150!important;
+}
+@media(max-width:680px){
+ body.loox-generator-no-topnav.loox-sitewide-active
+  header.lig-header .lig-header-user .lx-credit-chip{
+  height:32px!important;min-height:32px!important;
+  padding:0 6px!important;min-width:37px!important;
+ }
+ body.loox-generator-no-topnav.loox-sitewide-active
+  header.lig-header .lig-header-user .lx-upgrade{
+  height:32px!important;min-height:32px!important;
+  padding:0 7px!important;font-size:10px!important;
+ }
+ body.loox-generator-no-topnav.loox-sitewide-active
+  header.lig-header .lig-header-user .lx-profile-details{
+  margin-left:8px!important;
+ }
+ body.loox-generator-no-topnav.loox-sitewide-active
+  header.lig-header .lig-header-user .lx-profile-trigger{
+  width:34px!important;height:34px!important;
+ }
+}
