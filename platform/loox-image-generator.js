@@ -380,7 +380,7 @@ async function initWorkspace(){
   })();
   return templatesPromise;
  }
- const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelField.value)?.cost||Infinity);
+ const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(allModels.get(modelField.value)?.cost||0);
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
  let remainingImages=null;
