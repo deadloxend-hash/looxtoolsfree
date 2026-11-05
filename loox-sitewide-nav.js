@@ -24,7 +24,7 @@
  moreButton.setAttribute('aria-haspopup','true');moreButton.setAttribute('aria-expanded','false');
  moreButton.setAttribute('aria-controls','loox-sitewide-logo-menu');
  moreButton.innerHTML='<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>';
- const image=el('img');image.src=url('assets/loox-wordmark.svg?v=1');image.alt='LOOX';image.width=132;image.height=35;logo.append(image);
+ const image=el('img');image.src=url('assets/loox-ornamental-logo.png?v=2');image.alt='LOOX';image.width=132;image.height=35;logo.append(image);
  const logoMenu=el('nav','loox-sitewide-logo-menu');logoMenu.id='loox-sitewide-logo-menu';logoMenu.setAttribute('aria-label','LOOX workspace menu');logoMenu.hidden=true;
  [['LOOX Tools Home','index.html'],['LOOX AI Home','ai-home.html'],['All tools','index.html#tools'],['Favorites','index.html#favorites'],['Guides','guides.html'],['Pricing & Credits','pricing.html'],['My Account','account.html'],['Privacy','privacy-policy.html'],['Settings','settings.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);logoMenu.append(link);
