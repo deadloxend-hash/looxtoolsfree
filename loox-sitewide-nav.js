@@ -87,7 +87,7 @@
   });
   // AI Agent has no in-page template controller: link to Image templates.
    if(page==='ai-chat.html'){
-    const templatesLink=el('a','loox-ai-workspace-tab loox-ai-template-tab','Templates');
+    const templatesLink=el('a','loox-ai-workspace-tab loox-ai-template-tab','Community');
     templatesLink.href=url('ai-text-to-image.html#templates');
     tabs.append(templatesLink);
    }
@@ -103,7 +103,8 @@
    if(templatesButton){
     templatesButton.classList.remove('lig-tab');
     templatesButton.classList.add('loox-ai-workspace-tab','loox-ai-template-tab');
-    templatesButton.setAttribute('aria-label','Browse templates');
+    templatesButton.textContent='Community';
+    templatesButton.setAttribute('aria-label','Browse community');
     tabs.append(templatesButton);
     const activeTool=tabs.querySelector('[data-ai-tab="'+workspaces[page]+'"]');
     const refreshTemplateState=()=>{
