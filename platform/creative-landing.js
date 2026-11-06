@@ -2,7 +2,18 @@ import {state,config,initialize} from './account.js?v=9';
 const kind=document.body.dataset.creativeMode,video=kind==='video';
 const prompt=document.getElementById('creative-prompt'),model=document.getElementById('creative-model'),status=document.getElementById('creative-landing-status');
 const key='loox-creative-launch-v1',destination=video?'ai-video-generator.html':'ai-text-to-image.html';
-try{const saved=JSON.parse(sessionStorage.getItem(key)||'null');if(saved?.kind===kind){prompt.value=saved.prompt||'';}else if(!video){prompt.value=sessionStorage.getItem('loox-image-generator-draft-v2')||'';}}catch{}
+// Landing pages always start with a blank, real input. Previous homepage drafts
+// and generator launch data must never be restored into the landing composer.
+// The animated examples are placeholders, not user-submitted text.
+prompt.value='';
+const landingForm=document.getElementById('creative-landing-form');
+landingForm.setAttribute('autocomplete','off');
+prompt.setAttribute('autocomplete','off');
+// Browsers can restore form values when returning via Back/Forward cache.
+window.addEventListener('pageshow',()=>{
+  prompt.value='';
+  if(document.activeElement===prompt)prompt.blur();
+});
 function enter(event){event.preventDefault();try{sessionStorage.setItem(key,JSON.stringify({kind,prompt:prompt.value.trim(),model:model.value}));}catch{}location.assign(destination+'#generate');}
 document.getElementById('creative-landing-form').addEventListener('submit',enter);document.getElementById('creative-cta').addEventListener('click',enter);
 for(const b of document.querySelectorAll('[data-example]'))b.addEventListener('click',()=>{prompt.value=b.dataset.example;prompt.focus();});
