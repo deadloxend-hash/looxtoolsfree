@@ -7,12 +7,15 @@ export class MediaSessions {
   Object.assign(this,options);this.id=null;this.epoch=0;this.user=undefined;this.offset=0;
   this.root.classList.add('loox-sessions-layout');document.body.classList.add('loox-conversations','loox-focus-generator');
   this.scroll=this.feed.closest('.lig-content-scroll');
-  this.rail=el('aside','loox-session-rail');this.rail.setAttribute('aria-label','Generative sessions');
+  // Reuse the rail rendered in HTML so the layout exists before the async model config finishes.
+  this.rail=this.root.querySelector(':scope > .loox-session-rail')||el('aside','loox-session-rail');
+  this.rail.className='loox-session-rail';this.rail.setAttribute('aria-label','Generative sessions');
   const head=el('div','loox-session-head');head.append(el('strong','','Generative sessions'));
   this.toggle=this.button('‹',()=>this.collapse(!this.rail.classList.contains('collapsed')));this.toggle.className='loox-session-toggle';this.toggle.setAttribute('aria-label','Toggle generative sessions');head.append(this.toggle);
   this.list=el('div','loox-session-list');this.list.id='loox-media-sessions';this.toggle.setAttribute('aria-controls',this.list.id);
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
-  this.rail.append(head,this.button('＋ New session',()=>this.fresh()),this.list,this.more);this.root.append(this.rail);
+  this.rail.replaceChildren(head,this.button('＋ New session',()=>this.fresh()),this.list,this.more);
+  if(!this.rail.isConnected)this.root.append(this.rail);
   this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim);
   // New generator workspaces begin with Generative sessions expanded on every screen size.
   this.collapse(false);
