@@ -9,7 +9,7 @@ export class MediaSessions {
   this.scroll=this.feed.closest('.lig-content-scroll');
   this.rail=el('aside','loox-session-rail');this.rail.setAttribute('aria-label','Generative sessions');
   const head=el('div','loox-session-head');head.append(el('strong','','Generative sessions'));
-  this.toggle=this.button('›',()=>this.collapse(!this.rail.classList.contains('collapsed')));this.toggle.className='loox-session-toggle';this.toggle.setAttribute('aria-label','Toggle generative sessions');head.append(this.toggle);
+  this.toggle=this.button('‹',()=>this.collapse(!this.rail.classList.contains('collapsed')));this.toggle.className='loox-session-toggle';this.toggle.setAttribute('aria-label','Toggle generative sessions');head.append(this.toggle);
   this.list=el('div','loox-session-list');this.list.id='loox-media-sessions';this.toggle.setAttribute('aria-controls',this.list.id);
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
   this.rail.append(head,this.button('＋ New session',()=>this.fresh()),this.list,this.more);this.root.append(this.rail);
@@ -25,7 +25,7 @@ export class MediaSessions {
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&matchMedia('(max-width:900px)').matches)this.collapse(true);});
  }
  button(label,fn){const b=el('button','lig-small-action',label);b.type='button';b.addEventListener('click',()=>Promise.resolve().then(fn).catch(e=>this.notice(e.message,true)));return b;}
- collapse(closed){this.rail.classList.toggle('collapsed',closed);this.root.classList.toggle('loox-sessions-collapsed',closed);this.toggle.textContent=closed?'‹':'›';this.toggle.setAttribute('aria-expanded',String(!closed));this.scrim.hidden=closed||!matchMedia('(max-width:900px)').matches;}
+ collapse(closed){this.rail.classList.toggle('collapsed',closed);this.root.classList.toggle('loox-sessions-collapsed',closed);this.toggle.textContent=closed?'›':'‹';this.toggle.setAttribute('aria-expanded',String(!closed));this.scrim.hidden=closed||!matchMedia('(max-width:900px)').matches;}
  url(){const u=new URL(location.href);if(this.id)u.searchParams.set('session',this.id);else u.searchParams.delete('session');history.replaceState(null,'',u.pathname+u.search+u.hash);}
  nearBottom(){return this.scroll.scrollHeight-this.scroll.scrollTop-this.scroll.clientHeight<160;}
  bottom(near){if(near)requestAnimationFrame(()=>this.scroll.scrollTo({top:this.scroll.scrollHeight,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'}));}
