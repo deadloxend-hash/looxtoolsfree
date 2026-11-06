@@ -5,6 +5,11 @@
 (() => {
  'use strict';
  const page=location.pathname.split('/').pop()||'index.html';
+ // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.
+ // AI Audio currently links to the Audio-filtered tools listing, not an audio generator.
+ const aiSessionsOnly=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page)
+   || (page==='index.html'&&new URLSearchParams(location.search).get('category')?.toLowerCase()==='audio');
+ if(aiSessionsOnly)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
  const root=new URL('./',document.currentScript?.src||new URL('loox-sitewide-nav.js',location.href).href);
@@ -203,9 +208,11 @@
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
  dockToggle.setAttribute('aria-controls','loox-sitewide-drawer');dockToggle.setAttribute('aria-expanded','false');
  dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true">|</span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
- document.body.append(scrim,sidebar,dockToggle);
+ // Do not mount the unrelated sitewide tools drawer in the focused AI workspaces.
+ if(!aiSessionsOnly)document.body.append(scrim,sidebar,dockToggle);
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
+  if(aiSessionsOnly)open=false;
   sidebar.classList.toggle('is-open',open);
   scrim.classList.toggle('is-open',open&&!desktop.matches);
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
@@ -218,8 +225,8 @@
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
  // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
-  desktop.addEventListener('change',()=>setDrawer(desktop.matches&&isHome&&page!=='ai-chat.html'));
- setDrawer(desktop.matches&&isHome&&page!=='ai-chat.html');
+  desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches&&isHome&&page!=='ai-chat.html'));
+ setDrawer(!aiSessionsOnly&&desktop.matches&&isHome&&page!=='ai-chat.html');
  scrim.addEventListener('click',closeDrawer);
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only
