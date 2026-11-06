@@ -124,9 +124,9 @@ function drawThread(){
  activeAnimation++;
  if(!thread)return;
  thread.replaceChildren();
- if(!messages.length){
-  addBubble("Hi! I'm LOOX AI. What would you like to explore today?",'assistant');
- }else for(const msg of messages)addBubble(msg.text,msg.role,Boolean(msg.error));
+ // A fresh AI Agent session uses the same uncluttered empty workspace as Image/Video.
+ // Messages appear only after the user starts the conversation.
+ for(const msg of messages)addBubble(msg.text,msg.role,Boolean(msg.error));
 }
 function showThinking(){
  const el=document.createElement('div');
@@ -180,12 +180,12 @@ function setRecentOpen(open){
  document.body.classList.toggle('ai-recent-open',open);
  recentToggle.setAttribute('aria-expanded',String(open));
  recentToggle.textContent=open?'‹':'›';
- recentToggle.title=open?'Hide recent chats':'Show recent chats';
+ recentToggle.title=open?'Hide generative sessions':'Show generative sessions';
  if(recentScrim)recentScrim.hidden=!open||!mobile.matches;
 }
 recentToggle?.addEventListener('click',()=>setRecentOpen(recentClosed));
 recentScrim?.addEventListener('click',()=>setRecentOpen(false));
-mobile.addEventListener('change',()=>setRecentOpen(!mobile.matches));
+mobile.addEventListener('change',()=>{if(recentScrim)recentScrim.hidden=recentClosed||!mobile.matches;});
 setRecentOpen(true);
 
 function chatURLState(id){
