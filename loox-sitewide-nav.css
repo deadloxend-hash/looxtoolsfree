@@ -466,7 +466,15 @@ body.loox-sitewide-active .loox-sitewide-secondary{
 
 
 /* LOOX 2026 premium navigation and persistent sidebar. Single shared implementation. */
-#loox-sitewide-header{background:rgba(12,10,22,.97)!important;border-bottom:1px solid #332544!important;box-shadow:0 6px 24px #07040e45}
+/* Shared frosted-glass navigation: matches the LOOX AI homepage on every page
+   that uses the sitewide navigation. Keep layout and menus unchanged. */
+#loox-sitewide-header{
+ background:rgba(16,10,27,.56)!important;
+ -webkit-backdrop-filter:blur(20px) saturate(145%)!important;
+ backdrop-filter:blur(20px) saturate(145%)!important;
+ border-bottom:1px solid rgba(224,188,255,.20)!important;
+ box-shadow:0 8px 26px rgba(0,0,0,.14)!important;
+}
 #loox-sitewide-header .loox-sitewide-inner{padding-left:clamp(12px,1.7vw,30px);gap:clamp(9px,1.3vw,20px)}
 #loox-sitewide-header .loox-sitewide-burger{display:none!important}
 #loox-sitewide-header .loox-sitewide-logo{margin:0;padding:0;height:46px;justify-content:flex-start}
