@@ -796,6 +796,8 @@ async function initWorkspace(){
   history.replaceState(null,'',location.pathname+location.search+'#generate');
   await submit(draft,ratioField.value);
  }
+ // Composer may become visible only after all synchronous model and session UI exists.
+ document.body.classList.add('loox-generator-ready');
  try{await initialize();}catch{}
  await config().catch(()=>{});
  await sessions.init().catch(e=>setMessage(e.message,true));
