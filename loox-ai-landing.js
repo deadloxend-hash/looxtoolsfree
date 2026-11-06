@@ -29,7 +29,7 @@
  });
 })();
 
-/* Hero background: crossfade between six locally hosted images every three seconds. */
+/* Hero background: crossfade between six locally hosted images every six seconds. */
 (() => {
  'use strict';
  const layers=[...document.querySelectorAll('.loox-landing-art .loox-landing-slide')];
@@ -79,6 +79,6 @@
    void preload(sources[(currentIndex+1)%sources.length]);
   }finally{busy=false;}
  }
- const timer=setInterval(changeSlide,3000);
+ const timer=setInterval(changeSlide,6000);
  window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
 })();
