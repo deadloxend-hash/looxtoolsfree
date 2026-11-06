@@ -109,6 +109,11 @@
     const activeTool=tabs.querySelector('[data-ai-tab="'+workspaces[page]+'"]');
     const refreshTemplateState=()=>{
      const templatesOpen=location.hash==='#templates';
+     // Apply the route before the async model/account bootstrap finishes.
+     document.body.classList.toggle('loox-community-route',templatesOpen);
+     const generate=document.getElementById('lig-generate-view')||document.getElementById('lvg-generate-view');
+     const community=document.getElementById('lig-templates-view')||document.getElementById('lvg-templates-view');
+     if(generate&&community){generate.hidden=templatesOpen;community.hidden=!templatesOpen;}
      templatesButton.classList.toggle('is-active',templatesOpen);
      templatesButton.setAttribute('aria-pressed',String(templatesOpen));
      if(activeTool){

@@ -137,3 +137,6 @@ body.loox-conversations .lig-main.loox-sessions-layout,body.loox-conversations .
 body.loox-conversations .lig-content-scroll:has(.loox-community){padding:24px clamp(12px,3vw,40px)!important}
 @media(max-width:900px){.loox-session-scrim:not([hidden]),.ai-recent-scrim:not([hidden]){display:block;position:absolute;inset:0;border:0;background:#0007;z-index:24}}
 @media(prefers-reduced-motion:reduce){.loox-session-rail,.ai-recent-panel{transition:none}}
+
+/* Community never flashes session controls while model configuration loads. */
+body.loox-community-route .loox-session-rail,body.loox-community-route .loox-session-scrim,body.loox-community-route .lig-compose-wrap{display:none!important}
