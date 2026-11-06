@@ -38,13 +38,18 @@
     shape.style.aspectRatio=ratio.value.replace(':',' / ');
     choices.querySelectorAll('button').forEach(b=>{b.classList.toggle('selected',b.dataset.ratio===ratio.value);b.setAttribute('aria-checked',String(b.dataset.ratio===ratio.value));});
    }
+   const previewRatio=value=>{shape.style.aspectRatio=value.replace(':',' / ');};
    ratio.querySelectorAll('option').forEach(opt=>{
     const item=document.createElement('button');item.type='button';item.dataset.ratio=opt.value;item.setAttribute('role','menuitemradio');
     item.innerHTML='<span class="loox-ratio-value"></span><span class="loox-ratio-name"></span><span class="loox-ratio-tick">✓</span>';
     item.children[0].textContent=opt.value;item.children[1].textContent=labels[opt.value]||opt.textContent;
+    item.addEventListener('pointerenter',()=>previewRatio(opt.value));
+    item.addEventListener('focus',()=>previewRatio(opt.value));
     item.addEventListener('click',()=>{ratio.value=opt.value;ratio.dispatchEvent(new Event('change',{bubbles:true}));pop.hidden=true;button.setAttribute('aria-expanded','false');refresh();});
     choices.append(item);
    });
+   choices.addEventListener('pointerleave',()=>previewRatio(ratio.value));
+   choices.addEventListener('focusout',e=>{if(!choices.contains(e.relatedTarget))previewRatio(ratio.value);});
    pop.append(preview,choices);ratioBlock.append(button,pop);ratio.addEventListener('change',refresh);refresh();
    button.addEventListener('click',()=>{pop.hidden=!pop.hidden;button.setAttribute('aria-expanded',String(!pop.hidden));});
    document.addEventListener('pointerdown',e=>{if(!ratioBlock.contains(e.target)){pop.hidden=true;button.setAttribute('aria-expanded','false');}});
