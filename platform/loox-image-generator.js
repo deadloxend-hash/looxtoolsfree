@@ -1,4 +1,4 @@
-import {MediaSessions} from './loox-image-sessions.js?v=4';
+import {MediaSessions} from './loox-image-sessions.js?v=5';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=8';
 
