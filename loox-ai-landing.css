@@ -140,3 +140,14 @@ body.loox-image-landing .loox-landing-subtitle {
 @media(prefers-reduced-motion:reduce) {
  body.loox-image-landing .loox-landing-slide {transition:none;will-change:auto}
 }
+
+
+/* Desktop: remove the old 790px hero cap so the image reaches the viewport bottom.
+   Preserve the existing phone and small-tablet layouts. */
+@media(min-width:791px){
+ body.loox-image-landing .loox-landing-hero{
+  min-height:calc(100vh - var(--loox-sitewide-height,64px))!important;
+  min-height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
+  box-sizing:border-box;
+ }
+}
