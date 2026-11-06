@@ -1,6 +1,5 @@
 /* Shared LOOX AI glass composer — image, video, and agent. */
 :root{--loox-composer-glass:linear-gradient(115deg,rgba(65,39,81,.76),rgba(101,58,84,.48)),rgba(27,20,36,.58)}
-.ai-chat .ai-composer,
 .lig-body .lig-compose-card{
  background:var(--loox-composer-glass)!important;
  border:1px solid rgba(230,201,238,.52)!important;
@@ -10,20 +9,17 @@
  -webkit-backdrop-filter:blur(22px) saturate(125%);
  backdrop-filter:blur(22px) saturate(125%);
 }
-.ai-chat .ai-composer:focus-within,.lig-body .lig-compose-card:focus-within{border-color:rgba(242,215,255,.85)!important}
-.ai-chat .ai-composer textarea,.lig-body .lig-compose textarea{
+.lig-body .lig-compose-card:focus-within{border-color:rgba(242,215,255,.85)!important}
+.lig-body .lig-compose textarea{
  background:transparent!important;color:#fff!important;
  min-height:76px!important;line-height:1.55!important;
  padding:8px 10px!important;margin:0 0 10px!important;
  border:0!important;outline:0!important;box-shadow:none!important;
 }
-.ai-chat .ai-composer textarea::placeholder,.lig-body .lig-compose textarea::placeholder{color:rgba(255,255,255,.83)!important;opacity:1}
-.ai-chat .ai-actions,.lig-body .lig-compose-actions{gap:8px!important;margin-top:8px!important}
-.ai-chat .ai-round{width:43px!important;height:43px!important;border-radius:8px!important;background:rgba(241,237,248,.92)!important;color:#5d5170!important;border:0!important;transform:rotate(-7deg);font-size:23px!important}
-.ai-chat .ai-round:hover{background:#fff!important}
-.ai-chat .ai-model,.lig-body .loox-prompt-mode{border-radius:11px!important;background:rgba(235,227,242,.87)!important;color:#30253d!important;border:0!important;font-size:12px!important;font-weight:750!important}
-.ai-chat .ai-send,.lig-body .lig-primary{border-radius:12px!important;background:#08080b!important;color:white!important;min-height:39px!important;box-shadow:none!important}
-.ai-chat .ai-send{width:78px!important;height:40px!important;font-size:20px!important}
+.lig-body .lig-compose textarea::placeholder{color:rgba(255,255,255,.83)!important;opacity:1}
+.lig-body .lig-compose-actions{gap:8px!important;margin-top:8px!important}
+.lig-body .loox-prompt-mode{border-radius:11px!important;background:rgba(235,227,242,.87)!important;color:#30253d!important;border:0!important;font-size:12px!important;font-weight:750!important}
+.lig-body .lig-primary{border-radius:12px!important;background:#08080b!important;color:white!important;min-height:39px!important;box-shadow:none!important}
 .lig-body .lig-compose-actions .lig-primary{padding:10px 19px!important}
 .lig-body .loox-prompt-toolbar{margin:0 0 12px!important;align-items:center}
 .lig-body .loox-prompt-mode.is-active{background:#c6f1f8!important;color:#007ea2!important}
@@ -32,9 +28,8 @@
 .lig-body .loox-prompt-setting .lig-select-chevron{color:#514364!important}
 .lig-body .lig-compose label{display:none!important}
 @media(max-width:680px){
- .ai-chat .ai-composer,.lig-body .lig-compose-card{padding:12px!important;border-radius:17px!important}
- .ai-chat .ai-composer textarea,.lig-body .lig-compose textarea{font-size:14px!important;min-height:65px!important}
- .ai-chat .ai-send{width:55px!important}
+ .lig-body .lig-compose-card{padding:12px!important;border-radius:17px!important}
+ .lig-body .lig-compose textarea{font-size:14px!important;min-height:65px!important}
  .lig-body .loox-prompt-toolbar{gap:8px!important}
 }
 
@@ -47,8 +42,4 @@
 .lig-body .loox-prompt-mode{padding:7px 10px!important}
 .lig-body .loox-ratio-button,.lig-body .loox-prompt-setting .lig-select-trigger{height:34px!important;min-height:34px!important}
 .lig-body .lig-compose-actions{margin-top:3px!important}
-.ai-chat .ai-composer-wrap{width:min(925px,calc(100% - 32px))!important;margin-left:auto!important;margin-right:auto!important}
-.ai-chat .ai-composer{padding:12px 16px!important;border-radius:21px!important}
-.ai-chat .ai-composer textarea{min-height:48px!important;height:52px!important;max-height:110px!important;margin-bottom:4px!important}
-.ai-chat .ai-actions{margin-top:4px!important}
-@media(max-width:680px){.lig-body .lig-compose-card,.ai-chat .ai-composer{padding:10px 12px!important}.lig-body .lig-compose textarea,.ai-chat .ai-composer textarea{min-height:46px!important;height:48px!important}.lig-body .lig-compose{max-width:100%!important}.ai-chat .ai-composer-wrap{width:calc(100% - 20px)!important}}
+@media(max-width:680px){.lig-body .lig-compose-card,.ai-chat .ai-composer{padding:10px 12px!important}.lig-body .lig-compose textarea,.ai-chat .ai-composer textarea{min-height:46px!important;height:48px!important}.lig-body .lig-compose{max-width:100%!important}}

@@ -1,4 +1,4 @@
-import {auth,state,initialize,pricing} from './account.js?v=7';
+import {auth,state,initialize,pricing} from './account.js?v=9';
 
 const $=id=>document.getElementById(id);
 const landing=document.body.classList.contains('ai-home');
@@ -14,7 +14,7 @@ let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
 let usage={free:null,premium:null},activeAnimation=0,knownUser=null,loadingRecent=false;
 let openingThread=0;
 let mobile=window.matchMedia('(max-width:760px)');
-let recentClosed=false;
+let recentClosed=mobile.matches;
 
 function note(value){if(status)status.textContent=value;}
 function allowance(kind=model){
@@ -188,7 +188,7 @@ function setRecentOpen(open){
 recentToggle?.addEventListener('click',()=>setRecentOpen(recentClosed));
 recentScrim?.addEventListener('click',()=>setRecentOpen(false));
 mobile.addEventListener('change',()=>{if(recentScrim)recentScrim.hidden=recentClosed||!mobile.matches;});
-setRecentOpen(true);
+setRecentOpen(!mobile.matches);
 
 function chatURLState(id){
  const u=new URL(location.href);
@@ -256,7 +256,7 @@ function createRecentRow(t){
   const title=window.prompt('Session name',t.title)?.trim();if(!title)return;
   try{const result=await state.client.from('loox_chat_threads').update({title:title.slice(0,120)}).eq('id',t.id);if(result.error)throw result.error;await loadRecent(true);}catch(error){note(error.message);}
  });
- del.textContent='Delete';menu.append(summary,rename,del);row.append(open,menu);
+ del.textContent='Delete';menu.append(summary,rename,del);const icon=document.createElement('span');icon.className='ai-session-icon';icon.textContent='✧';icon.setAttribute('aria-hidden','true');row.append(icon,open,menu);
  return row;
 }
 async function loadRecent(reset=true){

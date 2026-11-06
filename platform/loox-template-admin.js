@@ -1,5 +1,5 @@
 
-import {state,initialize,auth} from './account.js?v=7';
+import {state,initialize,auth} from './account.js?v=9';
 const notice=document.getElementById('notice'),queue=document.getElementById('queue');
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 async function request(action,body){
@@ -18,8 +18,8 @@ async function load(){
   notice.textContent=data.items.length+' pending submission(s).';
   for(const item of data.items){
    const card=document.createElement('article');card.className='card';
-   const image=document.createElement('img');image.src=item.url;image.alt='Image awaiting approval';image.loading='lazy';
-   const prompt=document.createElement('p');prompt.textContent=item.prompt;
+   const image=document.createElement(item.media_type==='video'?'video':'img');if(item.media_type==='video'){image.controls=true;image.playsInline=true;}image.src=item.url;image.alt='Image awaiting approval';image.loading='lazy';image.style.cssText='width:100%;max-height:320px;object-fit:contain';
+   const prompt=document.createElement('p');prompt.textContent=(item.caption||'')+(item.prompt?'\n\n'+item.prompt:'');
    const actions=document.createElement('div');actions.className='actions';
    for(const [status,label] of [['approved','Approve'],['rejected','Reject']]){
     const btn=document.createElement('button');btn.textContent=label;

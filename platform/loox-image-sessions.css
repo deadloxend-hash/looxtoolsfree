@@ -31,39 +31,11 @@ body.loox-conversations .lig-compose textarea{height:54px;min-height:48px!import
 body.loox-conversations .lig-compose-actions{margin-top:0!important;padding-top:0!important}
 body.loox-conversations .loox-prompt-toolbar{margin:4px 0!important;gap:8px}
 body.loox-conversations .lig-status-message{font-size:11px;min-height:0!important;max-height:34px;overflow:auto;display:block;margin:3px 8px 0}
-body.loox-conversations .loox-session-rail{position:absolute!important;inset:0 0 0 auto!important;top:0!important;width:240px!important;height:100%!important;display:flex;flex-direction:column;gap:10px;box-sizing:border-box;background:#141218;border-left:1px solid #302936;padding:15px 10px;z-index:20;overflow:visible!important}
-.loox-session-head{display:flex;align-items:center;justify-content:space-between;font-size:12px;gap:6px;white-space:nowrap}
-.loox-session-toggle{background:#28222f;border:1px solid #4a3b55;border-radius:6px;color:#eee;cursor:pointer;padding:5px 8px}
-.loox-session-list{overflow-y:auto;overscroll-behavior:contain;min-height:0;flex:1;scrollbar-width:thin}
-.loox-session-list>p{color:#a99eb5;font-size:12px;padding:8px;line-height:1.6}
-.loox-session-row{display:flex;gap:4px;align-items:center;min-width:0;position:relative;border-radius:7px}
-.loox-session-row:hover,.loox-session-row.active{background:#2c2534}
-.loox-session-entry{flex:1;min-width:0;width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;background:none;color:#e5deee;font-size:12px;text-align:left;padding:10px 7px;cursor:pointer}
-.loox-session-menu{flex:none;font-size:12px}
-.loox-session-menu summary{cursor:pointer;list-style:none;color:#c2b6d0;padding:8px}
-.loox-session-menu[open]{position:absolute;right:0;top:0;background:#282030;border:1px solid #574365;border-radius:8px;z-index:2;box-shadow:0 6px 20px #0006}
-.loox-session-menu[open]>button{display:block;width:100%;border:0!important;text-align:left}
-body.loox-conversations .loox-session-rail.collapsed{width:36px!important;padding:12px 3px;border-color:transparent;background:none}
-.loox-session-rail.collapsed .loox-session-head strong,.loox-session-rail.collapsed>.lig-small-action,.loox-session-rail.collapsed .loox-session-list{display:none}
-.loox-session-scrim{display:none}
 .loox-media-preview,.loox-media-details{border:1px solid #574365;background:#17131e;color:#eee;border-radius:14px;padding:16px;max-width:94vw;max-height:94dvh;overflow:auto}
 .loox-media-preview::backdrop,.loox-media-details::backdrop{background:#000b}
 .loox-media-preview img,.loox-media-preview video{display:block;max-width:85vw;max-height:80dvh;object-fit:contain;margin-top:10px}
 .loox-media-details{max-width:min(600px,90vw);overflow-wrap:anywhere}
-@media(max-width:900px){body.loox-conversations .lig-main.loox-sessions-layout,body.loox-conversations .lig-main.loox-sessions-collapsed{padding-right:0!important}body.loox-conversations .loox-session-rail{width:min(280px,82vw)!important}body.loox-conversations .loox-session-rail.collapsed{height:44px!important;top:8px!important;background:#211b28;border-radius:8px 0 0 8px}.loox-session-scrim:not([hidden]){display:block;position:absolute;inset:0;border:0;background:#0006;z-index:19}body.loox-conversations .lig-content-scroll{padding:22px 12px 10px!important}body.loox-conversations .lig-compose-wrap{padding:8px 10px max(10px,env(safe-area-inset-bottom))!important}.loox-generation-meta{padding-right:25px}body.loox-conversations .lig-output-stage{max-height:420px}body.loox-conversations .lig-output-stage img,body.loox-conversations .lig-output-stage video{max-height:420px}}
-/* Agent sessions use the same compact history rows, with their existing text store. */
-body.ai-chat .ai-recent-panel{width:240px!important;max-width:82vw!important;background:#141218!important;box-shadow:none!important}
-body.ai-chat .ai-recent-inner{padding:15px 10px!important}
-body.ai-chat .ai-recent-head h2{font-size:12px}
-body.ai-chat .ai-recent-item{position:relative;border:0;background:none;margin:2px 0;border-radius:7px}
-body.ai-chat .ai-recent-item.is-active,body.ai-chat .ai-recent-item:hover{background:#2c2534}
-body.ai-chat .ai-recent-open{padding:10px 7px;min-width:0;flex:1}
-body.ai-chat .ai-recent-title{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:12px}
-body.ai-chat .ai-recent-open small{display:none}
-body.ai-chat .loox-session-menu button{background:#282030;color:#eee;border:0;padding:8px 12px;cursor:pointer}
-body.ai-chat .loox-session-menu[open]{top:4px}
-body.ai-chat .loox-session-menu .ai-recent-delete{width:auto;height:auto}
-/* The agent session rail overlays its conversation; never reserve content width. */
+@media(max-width:900px){body.loox-conversations .lig-main.loox-sessions-layout,body.loox-conversations .lig-main.loox-sessions-collapsed{padding-right:0!important}body.loox-conversations .lig-content-scroll{padding:22px 12px 10px!important}body.loox-conversations .lig-compose-wrap{padding:8px 10px max(10px,env(safe-area-inset-bottom))!important}.loox-generation-meta{padding-right:25px}body.loox-conversations .lig-output-stage{max-height:420px}body.loox-conversations .lig-output-stage img,body.loox-conversations .lig-output-stage video{max-height:420px}}
 /* Keep prompt and controls in a compact two-row composer. */
 body.loox-conversations .lig-compose-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
 body.loox-conversations .lig-compose-card>textarea{grid-column:1 / -1}
@@ -112,116 +84,6 @@ body.loox-conversations.lig-body.loox-sitewide-active > main.lig-workspace{heigh
 }
 
 
-/* AI STUDIO / LEFT-SIDE GENERATIVE SESSIONS
-   Overlay the workspace rather than shrinking or reflowing it. */
-body.loox-conversations.loox-focus-generator .lig-main.loox-sessions-layout,
-body.loox-conversations.loox-focus-generator .lig-main.loox-sessions-collapsed {
-  padding: 0 !important;
-  width: 100% !important;
-  min-width: 0 !important;
-}
-body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail {
-  position: absolute !important;
-  inset: 0 auto 0 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: auto !important;
-  width: min(250px, 85vw) !important;
-  height: 100% !important;
-  max-height: 100% !important;
-  padding: 15px 10px !important;
-  border: 0 !important;
-  border-right: 1px solid #3a3047 !important;
-  background: #141218 !important;
-  box-shadow: 8px 0 26px rgba(0,0,0,.18) !important;
-  z-index: 25 !important;
-  overflow: visible !important;
-}
-body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail.collapsed {
-  inset: 10px auto auto 0 !important;
-  top: 10px !important;
-  bottom: auto !important;
-  width: 38px !important;
-  height: 44px !important;
-  padding: 5px 3px !important;
-  border: 1px solid #42354f !important;
-  border-left: none !important;
-  border-radius: 0 9px 9px 0 !important;
-  background: #211b28 !important;
-  box-shadow: none !important;
-}
-body.loox-conversations.loox-focus-generator .loox-session-rail.collapsed .loox-session-head {
-  justify-content: center;
-}
-body.loox-conversations.loox-focus-generator .loox-session-scrim:not([hidden]) {
-  z-index: 24 !important;
-}
-body.loox-conversations.loox-focus-generator .lig-content-scroll,
-body.loox-conversations.loox-focus-generator .lig-compose-wrap {
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-/* AI Agent uses a similarly independent left overlay, not a flex/sidebar column. */
-body.ai-chat .ai-chat-layout {
-  display: block !important;
-  position: relative !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-}
-body.ai-chat .ai-chat-body,
-body.ai-chat .ai-chat-layout:has(.ai-recent-panel.is-collapsed) .ai-chat-body {
-  width: 100% !important;
-  max-width: 100% !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-  box-sizing: border-box !important;
-}
-body.ai-chat .ai-chat-layout > .ai-recent-panel {
-  position: absolute !important;
-  inset: 0 auto 0 0 !important;
-  left: 0 !important;
-  right: auto !important;
-  width: min(250px, 85vw) !important;
-  max-width: 85vw !important;
-  height: 100% !important;
-  border: 0 !important;
-  border-right: 1px solid #3a3047 !important;
-  box-shadow: 8px 0 26px rgba(0,0,0,.18) !important;
-  transform: translate3d(0,0,0) !important;
-  z-index: 25 !important;
-}
-body.ai-chat .ai-chat-layout > .ai-recent-panel.is-collapsed {
-  transform: translate3d(-100%,0,0) !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
-}
-body.ai-chat .ai-chat-layout > .ai-recent-panel .ai-recent-toggle {
-  left: auto !important;
-  right: -31px !important;
-  border-radius: 0 9px 9px 0 !important;
-}
-body.ai-chat .ai-chat-layout > .ai-recent-scrim:not([hidden]) {
-  z-index: 24 !important;
-}
-@media(max-width:900px) {
-  body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail {
-    width: min(280px, 85vw) !important;
-  }
-  body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail.collapsed {
-    width: 38px !important;
-    height: 44px !important;
-    top: 10px !important;
-    left: 0 !important;
-    border-radius: 0 9px 9px 0 !important;
-  }
-  body.ai-chat .ai-chat-layout > .ai-recent-panel {
-    width: min(280px, 85vw) !important;
-    max-width: 85vw !important;
-  }
-}
-
-
 /* LOOX FIRST-PAINT LAYOUT STABILITY
    The generator's native header is the only visible header. Use normal flex sizing
    immediately instead of waiting for async session initialization to set a height
@@ -251,3 +113,27 @@ body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace {
 body.loox-conversations.loox-focus-generator.lig-body:not(.loox-prompt-compact) .lig-compose-wrap {
   visibility: hidden !important;
 }
+/* Shared compact left overlay. It never reserves conversation width. */
+body.loox-conversations .lig-main.loox-sessions-layout,body.loox-conversations .lig-main.loox-sessions-collapsed{padding:0!important;width:100%}
+.loox-session-rail,.ai-recent-panel{position:absolute!important;inset:0 auto 0 0!important;left:0!important;right:auto!important;width:min(242px,84vw)!important;height:100%!important;box-sizing:border-box;background:#141218;border:0;border-right:1px solid #352b3e;display:flex;flex-direction:column;gap:10px;padding:14px 10px;z-index:25;transform:translateX(0);transition:transform .24s ease;overflow:visible}
+.loox-session-rail.collapsed,.ai-recent-panel.is-collapsed{transform:translateX(-100%)}
+.loox-session-head,.ai-recent-head{display:flex;justify-content:space-between;align-items:center;min-height:29px;font-size:12px;font-weight:600;white-space:nowrap}
+.loox-session-head strong,.ai-recent-head h2{font-size:12px;font-weight:600;margin:0}
+.loox-session-toggle,.ai-recent-toggle{font:inherit;font-size:13px;color:#ded3e8;background:#292130;border:1px solid #4b3b57;border-radius:6px;padding:5px 8px;cursor:pointer}
+.ai-recent-toggle{position:absolute;right:10px;top:14px;width:29px;height:29px}
+.loox-session-rail.collapsed .loox-session-toggle,.ai-recent-panel.is-collapsed .ai-recent-toggle{position:absolute;right:-38px;top:10px;width:38px;height:40px;border-left:0;border-radius:0 8px 8px 0}
+.loox-session-rail>.lig-small-action,.ai-new-session,.ai-recent-more{font:inherit;font-size:11px;background:#211b29;color:#ded3e8;border:1px solid #3a3043;border-radius:7px;min-height:30px;cursor:pointer;padding:6px 9px}
+.ai-recent-inner{display:flex;flex-direction:column;gap:10px;height:100%;min-height:0}
+.loox-session-list,.ai-recent-list{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#8e729b45 transparent}
+.loox-session-list>p,.ai-recent-empty{font-size:11px;color:#a497b0;line-height:1.7;padding:7px}
+.loox-session-row,.ai-recent-item{display:flex;align-items:center;gap:7px;position:relative;min-width:0;border-radius:7px;min-height:40px;margin:1px 0}
+.loox-session-row:hover,.loox-session-row.active,.ai-recent-item:hover,.ai-recent-item.is-active{background:#2c2334}
+.loox-session-thumb,.ai-session-icon{width:30px;height:30px;flex:none;display:grid;place-items:center;overflow:hidden;border-radius:6px;background:#2c2236;color:#c6a9dd;font-size:13px}
+.loox-session-thumb img,.loox-session-thumb video{display:block;width:100%;height:100%;object-fit:cover}
+.loox-session-entry,.ai-recent-open{flex:1;min-width:0;width:0;font:inherit;font-size:11px;font-weight:450;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;border:0;background:none;color:#dfd5e9;padding:7px 0;cursor:pointer}
+.ai-recent-title{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ai-recent-open small{display:none}
+.loox-session-menu{flex:none;font-size:11px}.loox-session-menu summary{list-style:none;padding:8px 5px;cursor:pointer;color:#b6a6c4}.loox-session-menu[open]{position:absolute;right:0;top:0;background:#2a1f33;border:1px solid #51405f;border-radius:8px;z-index:4;box-shadow:0 6px 20px #0006}.loox-session-menu[open]>button{display:block;border:0!important;background:transparent!important;color:#ddd0e8!important;font:inherit;font-size:11px;padding:8px 12px;width:100%;text-align:left;cursor:pointer}.loox-session-menu button:hover{background:#453050!important}
+.loox-session-scrim,.ai-recent-scrim{display:none}.loox-community-view>.loox-session-rail,.loox-community-view>.loox-session-scrim{display:none!important}
+body.loox-conversations .lig-content-scroll:has(.loox-community){padding:24px clamp(12px,3vw,40px)!important}
+@media(max-width:900px){.loox-session-scrim:not([hidden]),.ai-recent-scrim:not([hidden]){display:block;position:absolute;inset:0;border:0;background:#0007;z-index:24}}
+@media(prefers-reduced-motion:reduce){.loox-session-rail,.ai-recent-panel{transition:none}}

@@ -13,13 +13,13 @@
   try{sessionStorage.setItem(storageKey,value);}catch{}
   // Open the existing real generator with the prompt prefilled; the user
   // chooses a model and confirms generation there (no hidden credit charge).
-  location.assign('ai-text-to-image.html#generate');
+  location.assign('ai-image-landing.html');
  });
  prompt.addEventListener('input',()=>prompt.setCustomValidity(''));
  document.getElementById('loox-landing-add')?.addEventListener('click',()=>{
   const value=prompt.value.trim();
   try{if(value)sessionStorage.setItem(storageKey,value);}catch{}
-  location.assign('ai-text-to-image.html#generate');
+  location.assign('ai-image-landing.html');
  });
  document.querySelectorAll('.loox-landing-ideas [data-prompt]').forEach(button=>{
   button.addEventListener('click',()=>{

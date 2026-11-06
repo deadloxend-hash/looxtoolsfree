@@ -339,16 +339,10 @@ body.loox-sitewide-home main{
 body.loox-sitewide-home.ai-home .ai-stage{
  height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
 }
-body.loox-sitewide-home.ai-chat .ai-chat-stage{
- height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
-}
 body.loox-sitewide-home .loox-sitewide-drawer,
 body.loox-sitewide-home .loox-sitewide-drawer.is-open{visibility:visible!important}
 @media(max-width:790px){
  body.loox-sitewide-home.ai-home .ai-stage{
-  height:calc(100dvh - var(--loox-sitewide-height,104px))!important;
- }
- body.loox-sitewide-home.ai-chat .ai-chat-stage{
   height:calc(100dvh - var(--loox-sitewide-height,104px))!important;
  }
 }
@@ -1173,11 +1167,6 @@ body.loox-generator-no-topnav.ai-chat.loox-sitewide-active.loox-sitewide-home
  display:inline-flex!important;align-items:center!important;margin-left:auto!important;
  flex:0 0 auto!important;visibility:visible!important;opacity:1!important;
  position:relative!important;z-index:140!important
-}
-body.loox-generator-no-topnav.ai-chat.loox-sitewide-active.loox-sitewide-home
- > .ai-chat-stage{
- height:auto!important;min-height:0!important;flex:1 1 auto!important;overflow:hidden!important;
- width:100%!important;max-width:none!important
 }
 body.loox-generator-no-topnav.ai-chat .lx-header .lx-brand{
  display:inline-flex!important;align-items:center!important;flex:0 0 auto!important;

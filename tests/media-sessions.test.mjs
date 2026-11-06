@@ -1,8 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-const source=await readFile(new URL('../platform/loox-image-sessions.js',import.meta.url),'utf8');
-const {MediaSessions}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const {MediaSessions}=await import('../platform/loox-image-sessions.js');
 function fixture(){
  const tables={loox_media_sessions:[],loox_media_entries:[]};
  const client={from(table){const q={data:null,error:null,insert(row){this.data={id:crypto.randomUUID(),...row};tables[table].push(this.data);return this;},select(){return this;},single(){return Promise.resolve({data:this.data});},update(row){this.patch=row;return this;},eq(key,value){for(const r of tables[table])if(r[key]===value)Object.assign(r,this.patch);return Promise.resolve({data:null});}};return q;}};

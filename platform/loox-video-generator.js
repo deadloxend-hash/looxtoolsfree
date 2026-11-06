@@ -1,5 +1,6 @@
-import {MediaSessions} from './loox-image-sessions.js?v=6';
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=7';
+import {Community} from './community.js?v=1';
+import {MediaSessions} from './loox-image-sessions.js?v=7';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
 // Vercel queue; the browser never connects to ComfyUI or sees worker credentials.
@@ -15,16 +16,18 @@ const validRatios=new Set(['16:9','9:16','1:1','4:3','3:4']);
 const storageKey='loox-active-wan-video-';
 const promptField=$('lvg-prompt'),ratioField=$('lvg-ratio'),form=$('lvg-compose');
 const message=$('lvg-message'),generateButton=$('lvg-generate');
+try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
 const resultList=$('lvg-results'),historyGrid=$('lvg-history-grid');
 const historyLabel=$('lvg-history-message'),historyMore=$('lvg-history-more');
 const credits=$('lvg-credits'),costLabel=$('lvg-credit-cost'),gpuLabel=$('lvg-gpu-state');
 const generationView=$('lvg-generate-view'),templatesView=$('lvg-templates-view');
 const composer=$('lvg-compose-wrap');
 let busy=false,online=false,knownUser=null,historyOffset=0,historyLoading=false,lastGpuCheck=0;
-const sessions=new MediaSessions({state,api,root:document.querySelector('.lig-main'),feed:resultList,prompt:promptField,notice,isBusy:()=>busy,reuse:async entry=>{
+const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.lig-main'),feed:resultList,prompt:promptField,notice,isBusy:()=>busy,reuse:async entry=>{
  if(entry.media_type==='image'){location.assign('ai-text-to-image.html?session='+sessions.id+'&reuse='+entry.id+'#generate');return;}
  if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
 }});
+const community=new Community({state,auth,initialize,root:$('lvg-public-templates')});
 const cost=()=>state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8;
 const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
 costLabel.insertAdjacentElement('afterend',quotaLabel);
@@ -48,6 +51,7 @@ function accountInfo(){
 }
 function chooseView(name){
   const template=name==='templates';
+  sessions.setCommunity(template);if(template)community.show();
   generationView.hidden=template;templatesView.hidden=!template;composer.hidden=template;
   document.querySelectorAll('[data-lvg-view]').forEach(button=>{
     const selected=button.dataset.lvgView===name;
@@ -283,6 +287,7 @@ document.body.classList.add('loox-generator-ready');
 (async()=>{
   try{await initialize();}catch{}
   await config().catch(()=>{});
+  try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
   await sessions.init().catch(e=>notice(e.message,true));
   await changeUser();accountInfo();
 

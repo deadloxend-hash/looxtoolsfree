@@ -13,7 +13,7 @@
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
  const root=new URL('./',document.currentScript?.src||new URL('loox-sitewide-nav.js',location.href).href);
- const url=name=>new URL(name,root).href;
+ const url=name=>new URL(page==='ai-home.html'&&name.split('#')[0]==='ai-text-to-image.html'?'ai-image-landing.html':page==='ai-home.html'&&name.split('#')[0]==='ai-video-generator.html'?'ai-video-landing.html':name,root).href;
  const icons={search:'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.4 16.4 4 4"/></svg>'};
  const el=(tag,cls,text)=>{
   const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;
@@ -544,7 +544,7 @@
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=25');document.head.append(style);
  }
- import(url('platform/account.js?v=7')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
+ import(url('platform/account.js?v=9')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);
  });

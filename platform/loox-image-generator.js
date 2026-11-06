@@ -1,6 +1,7 @@
-import {MediaSessions} from './loox-image-sessions.js?v=6';
+import {Community} from './community.js?v=1';
+import {MediaSessions} from './loox-image-sessions.js?v=7';
 
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=8';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
 const byId=id=>document.getElementById(id);
 const create=(tag,cls,text)=>{
@@ -168,7 +169,7 @@ async function initWorkspace(){
  const mainWorkspace=composeWrap.parentElement,historySection=byId('lig-history-grid')?.closest('.lig-history');
  let isBusy=false,activeUser=null,historyOffset=0,historyLoading=false,autoRequest=false;
  let currentGenerationId=null;
- const sessions=new MediaSessions({state,api,root:document.querySelector('.lig-main'),feed:results,prompt:promptField,notice:setMessage,isBusy:()=>isBusy,reuse:async entry=>{
+ const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.lig-main'),feed:results,prompt:promptField,notice:setMessage,isBusy:()=>isBusy,reuse:async entry=>{
   if(entry.media_type==='video'){location.assign('ai-video-generator.html?session='+sessions.id+'&reuse='+entry.id+'#generate');return;}
   const restoredModel=entry.model_id||(entry.model_name==='FLUX.1 Schnell'?'flux':null);
   if(restoredModel&&modelField.querySelector('option[value="'+restoredModel+'"]'))modelField.value=restoredModel;
@@ -177,11 +178,13 @@ async function initWorkspace(){
   for(const [key,value] of Object.entries(entry.settings||{}))if(settingFields[key])settingFields[key].select.value=value;
   promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
  }});
+ const community=new Community({state,auth,initialize,root:byId('lig-public-templates')});
  const params=new URLSearchParams(location.search);
  let draft='';
  try {draft=sessionStorage.getItem(storageDraft)||'';} catch {}
  autoRequest=params.get('start')==='1'&&Boolean(draft.trim());
  if(draft)promptField.value=draft;
+ let launch=null;try{launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='image'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');autoRequest=false;}}catch{}
  const templateEndpoint='https://looxtoolfree-backend.vercel.app/api/loox';
  async function templateRequest(action,body){
   const session=await state.client?.auth.getSession();
@@ -278,106 +281,6 @@ async function initWorkspace(){
    document.querySelectorAll('[data-template-job-id]').forEach(el=>{if(el.dataset.templateJobId===id)applyTemplateStatus(el,'pending');});setMessage('Submitted! Your template will appear only after admin approval.');
   }catch(error){applyTemplateStatus(button,templateStatuses.get(id));setMessage(error.message,true);}
  }
- const templateGalleryCacheKey='loox-approved-templates-v2';
- let cachedTemplates=null,templatesFetchedAt=0,templatesPromise=null;
- try{
-  const cached=JSON.parse(sessionStorage.getItem(templateGalleryCacheKey)||'null');
-  if(cached&&Date.now()-cached.time<240000&&Array.isArray(cached.items)){
-   cachedTemplates=cached.items;templatesFetchedAt=cached.time;
-  }
- }catch{}
- function templateDate(value){
-  const date=new Date(value);
-  return Number.isNaN(date.getTime())?'Date unavailable':date.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
- }
- function templateAvatar(name){
-  const initials=String(name||'LOOX member').trim().split(/\\s+/).slice(0,2).map(s=>s[0]||'').join('').toUpperCase()||'L';
-  const avatar=create('span','lig-template-avatar',initials);
-  avatar.setAttribute('aria-label',name||'LOOX member');return avatar;
- }
- function openTemplateDetails(item){
-  const overlay=create('div','lig-template-detail-overlay');
-  const panel=create('section','lig-template-detail-panel');
-  panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');
-  panel.setAttribute('aria-label','Community template details');
-  const image=create('img','lig-template-detail-image');image.src=item.url;image.alt='Community template';
-  const body=create('div','lig-template-detail-body');
-  const creator=create('div','lig-template-creator');
-  const who=create('div','lig-template-creator-text');
-  who.append(create('strong',null,item.creator_name||'LOOX member'),create('small',null,'Submitted '+templateDate(item.submitted_at)));
-  creator.append(templateAvatar(item.creator_name),who);
-  const promptTitle=create('strong','lig-template-detail-label','Generation prompt');
-  const prompt=create('p','lig-template-detail-prompt',item.prompt||'No prompt available');
-  const actions=create('div','lig-template-detail-actions');
-  const copy=create('button','lig-small-action','Copy prompt');
-  copy.type='button';copy.addEventListener('click',async()=>{
-   try{await navigator.clipboard.writeText(item.prompt||'');copy.textContent='Copied!';}
-   catch{promptField.value=item.prompt||'';copy.textContent='Added to editor';}
-  });
-  const use=create('button','lig-small-action','Use this prompt');use.type='button';
-  const close=create('button','lig-template-detail-close','×');close.type='button';close.setAttribute('aria-label','Close template');
-  const previous=document.activeElement,overflow=document.body.style.overflow;
-  const dismiss=()=>{overlay.remove();document.body.style.overflow=overflow;previous?.focus?.()};
-  close.addEventListener('click',dismiss);
-  use.addEventListener('click',()=>{promptField.value=item.prompt||'';dismiss();selectView('generate');location.hash='generate';promptField.focus()});
-  overlay.addEventListener('click',e=>{if(e.target===overlay)dismiss()});
-  overlay.addEventListener('keydown',e=>{
-   if(e.key==='Escape'){e.preventDefault();dismiss()}
-   if(e.key==='Tab'){
-    const controls=[close,copy,use],index=controls.indexOf(document.activeElement);
-    if(e.shiftKey&&index<=0){e.preventDefault();use.focus()}
-    else if(!e.shiftKey&&index===2){e.preventDefault();close.focus()}
-   }
-  });
-  actions.append(copy,use);body.append(creator,promptTitle,prompt,actions);
-  panel.append(image,body,close);overlay.append(panel);
-  document.body.append(overlay);document.body.style.overflow='hidden';close.focus();
- }
- function renderPublicTemplates(items){
-  const grid=byId('lig-public-templates');if(!grid)return;
-  grid.replaceChildren();
-  if(!items.length){grid.append(create('p','lig-template-empty','No approved community templates yet.'));return}
-  for(const item of items){
-   const card=create('article','lig-community-card');
-   const open=create('button','lig-template-card-open');open.type='button';
-   open.setAttribute('aria-label','View template by '+(item.creator_name||'LOOX member'));
-   const image=create('img');image.src=item.url;image.alt='Approved community template';image.loading='lazy';
-   const content=create('div','lig-community-content');
-   const creator=create('div','lig-template-card-creator');
-   const info=create('div','lig-template-card-creator-info');
-   info.append(create('strong',null,item.creator_name||'LOOX member'),create('small',null,templateDate(item.submitted_at)));
-   creator.append(templateAvatar(item.creator_name),info);
-   const caption=create('p',null,item.prompt||'');
-   const view=create('span','lig-template-card-view','View image & prompt');
-   content.append(creator,caption,view);open.append(image,content);card.append(open);grid.append(card);
-   open.addEventListener('click',()=>openTemplateDetails(item));
-  }
- }
- async function loadPublicTemplates(){
-  const grid=byId('lig-public-templates');if(!grid)return;
-  if(cachedTemplates)renderPublicTemplates(cachedTemplates);
-  else if(!grid.querySelector('.lig-community-card')){
-   grid.replaceChildren();
-   for(let i=0;i<4;i++){
-    const skeleton=create('div','lig-template-skeleton');
-    skeleton.setAttribute('aria-label','Loading template');grid.append(skeleton);
-   }
-  }
-  if(templatesPromise)return templatesPromise;
-  if(cachedTemplates&&Date.now()-templatesFetchedAt<45000)return;
-  templatesPromise=(async()=>{
-   try{
-    const response=await fetch(templateEndpoint+'?action=template_public',{credentials:'omit',signal:AbortSignal.timeout(20000)});
-    const data=await response.json();if(!response.ok)throw Error(data.error||'Could not load templates.');
-    cachedTemplates=data.items||[];templatesFetchedAt=Date.now();
-    try{sessionStorage.setItem(templateGalleryCacheKey,JSON.stringify({time:templatesFetchedAt,items:cachedTemplates}))}catch{}
-    renderPublicTemplates(cachedTemplates);
-   }catch(error){
-    if(!cachedTemplates)grid.replaceChildren(create('p','lig-template-empty','Could not load templates. Please try again.'));
-   }finally{templatesPromise=null}
-  })();
-  return templatesPromise;
- }
  const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(allModels.get(modelField.value)?.cost||0);
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
@@ -407,6 +310,7 @@ async function initWorkspace(){
    field.select.replaceChildren(...choices[key].map(value=>new Option(value==='1k'?'1K':value==='2k'?'2K':value,value)));
   }
  }
+ if(launch?.kind==='image'&&allModels.has(launch.model))modelField.value=launch.model;
  updateModelSettings();
  function updateAccount(){
   if(state.user&&state.account?.wallet){
@@ -425,7 +329,8 @@ async function initWorkspace(){
  function selectView(view){
   const templates=view==='templates';
   generateView.hidden=templates;templatesView.hidden=!templates;composeWrap.hidden=templates;
-  if(templates)loadPublicTemplates();
+  sessions.setCommunity(templates);
+  if(templates)community.show().catch(e=>setMessage(e.message,true));
   document.querySelectorAll('[data-lig-view]').forEach(el=>{
    el.classList.toggle('is-active',el.dataset.ligView===view);
    if(el.tagName==='BUTTON')el.setAttribute('aria-pressed',String(el.dataset.ligView===view));
@@ -528,7 +433,8 @@ async function initWorkspace(){
    selectView('generate');
   });
   const submitButton=templateSubmitButton(id);
-  view.bottom.append(submitButton);
+  // Publishing is provided by the shared session actions.
+
   sessions.completed(view,id);
   sessions.bottom(sessions.nearBottom());
  }
@@ -803,5 +709,6 @@ async function initWorkspace(){
  await sessions.init().catch(e=>setMessage(e.message,true));
  await refreshUser();
  updateAccount();
+ if(launch?.kind==='image')modelField.dispatchEvent(new Event('change'));
  if(autoRequest)startAuto();
 }
