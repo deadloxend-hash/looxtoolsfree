@@ -234,3 +234,7 @@ body.loox-image-landing #loox-landing-prompt:focus-visible {
   backdrop-filter:blur(14px) saturate(130%)!important;
  }
 }
+
+/* Position the translucent prompt card a little lower without shifting the heading. */
+body.loox-image-landing .loox-landing-form{margin:24px auto 0!important}
+@media(max-width:600px){body.loox-image-landing .loox-landing-form{margin-top:14px!important}}
