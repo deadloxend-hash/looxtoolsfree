@@ -278,6 +278,8 @@ document.addEventListener('visibilitychange',()=>{
   }
 });
 setInterval(()=>{if(!document.hidden&&state.user&&!busy)checkGPU().catch(()=>{});},30000);
+// Video composer is ready to display once the shared prompt toolbar has also mounted.
+document.body.classList.add('loox-generator-ready');
 (async()=>{
   try{await initialize();}catch{}
   await config().catch(()=>{});
