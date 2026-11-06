@@ -5,7 +5,7 @@
  if(!view||!grid||!section||!main||!prompt)return;
  const rail=document.createElement('aside');rail.className='loox-session-rail';rail.setAttribute('aria-label','Generative sessions');
  rail.innerHTML='<div class="loox-session-head"><strong>Generative sessions</strong><button type="button" class="loox-session-toggle" aria-label="Collapse sessions" aria-expanded="true">×</button></div><div class="loox-session-list"></div>';
- main.append(rail);main.classList.add('loox-sessions-layout');
+ document.body.append(rail);main.classList.add('loox-sessions-layout');
  const list=rail.querySelector('.loox-session-list');
  const feed=document.createElement('div');feed.className='loox-session-feed';feed.setAttribute('aria-label','Generation sessions');
  section.querySelector('.lig-history-head').after(feed);

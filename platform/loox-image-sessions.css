@@ -57,3 +57,11 @@
 /* One-line session titles with ellipsis; never wrap or expand the rail. */
 .loox-session-entry{min-width:0;overflow:hidden;white-space:nowrap}
 .loox-session-entry>span:last-child{display:block;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Alignment and text overflow fixes: fixed rail outside transformed workspace. */
+.loox-session-rail{position:fixed!important;top:125px!important;right:0!important;bottom:0!important;left:auto!important;height:auto!important;box-sizing:border-box;z-index:50}
+.loox-session-rail .loox-session-entry{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;min-width:0!important;max-width:100%;height:35px!important;overflow:hidden!important}
+.loox-session-rail .loox-session-entry>img,.loox-session-rail .loox-session-entry>.loox-session-placeholder{flex:0 0 25px!important;width:25px!important;height:25px!important}
+.loox-session-rail .loox-session-entry>span:last-child{display:block!important;flex:1 1 0!important;width:0!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;overflow-wrap:normal!important;word-break:normal!important;line-height:25px!important}
+.loox-session-meta strong{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:900px){.loox-session-rail{top:65px!important}}
