@@ -1497,3 +1497,13 @@ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-lo
 @media(prefers-reduced-motion:reduce){
  body.loox-sitewide-active .lx-profile-menu.loox-account-popover *{transition:none!important}
 }
+
+
+/* Let the Tools homepage hero sit behind the glass navigation, without
+   shifting the actual hero text or editing other tools' layouts. */
+@media(min-width:901px){
+ body.loox-tools-landing.loox-sitewide-active.loox-sitewide-home > main > .hero {
+  margin-top:calc(-1 * var(--loox-sitewide-height,64px))!important;
+  padding-top:calc(68px + var(--loox-sitewide-height,64px))!important;
+ }
+}
