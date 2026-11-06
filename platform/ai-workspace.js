@@ -14,7 +14,7 @@ let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
 let usage={free:null,premium:null},activeAnimation=0,knownUser=null,loadingRecent=false;
 let openingThread=0;
 let mobile=window.matchMedia('(max-width:760px)');
-let recentClosed=mobile.matches;
+let recentClosed=false;
 
 function note(value){if(status)status.textContent=value;}
 function allowance(kind=model){
@@ -186,7 +186,7 @@ function setRecentOpen(open){
 recentToggle?.addEventListener('click',()=>setRecentOpen(recentClosed));
 recentScrim?.addEventListener('click',()=>setRecentOpen(false));
 mobile.addEventListener('change',()=>setRecentOpen(!mobile.matches));
-setRecentOpen(!mobile.matches);
+setRecentOpen(true);
 
 function chatURLState(id){
  const u=new URL(location.href);
