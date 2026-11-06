@@ -1,1 +1,28 @@
 html:has(body.loox-focus-generator){height:100%;overflow:hidden}body.loox-focus-generator{height:100dvh;min-height:0!important;overflow:hidden!important}body.loox-focus-generator .lig-workspace{height:calc(100dvh - 68px);min-height:0!important;display:block!important;overflow:hidden!important}body.loox-focus-generator .lig-settings,body.loox-focus-generator .lig-main-heading,body.loox-focus-generator .lig-history-head{display:none!important}body.loox-focus-generator .lig-main{height:100%!important;min-height:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;min-width:0!important}body.loox-focus-generator .lig-content-scroll{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain;width:100%!important;max-width:none!important;padding:22px clamp(16px,3vw,46px) 10px!important}body.loox-focus-generator .lig-history{margin-top:12px!important}body.loox-focus-generator .lig-compose-wrap{position:relative!important;flex:0 0 auto!important;bottom:auto!important;padding:10px 14px max(12px,env(safe-area-inset-bottom))!important;background:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}body.loox-focus-generator .lig-compose{max-width:925px!important;margin:0 auto!important}body.loox-focus-generator .lig-compose-card{background:var(--loox-composer-glass,linear-gradient(115deg,rgba(65,39,81,.76),rgba(101,58,84,.48)))!important;backdrop-filter:blur(16px)!important}body.loox-focus-generator .lig-main.loox-sessions-layout{padding-right:220px!important}body.loox-focus-generator .loox-session-rail{top:0!important;bottom:0!important;overflow-y:auto!important}body.loox-focus-generator .lig-main.loox-sessions-collapsed{padding-right:42px!important}body.loox-focus-generator .loox-session-meta strong{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;overflow-wrap:normal!important}@media(max-width:900px){body.loox-focus-generator .lig-main.loox-sessions-layout,body.loox-focus-generator .lig-main.loox-sessions-collapsed{padding-right:0!important}body.loox-focus-generator .loox-session-rail{top:68px!important}}@media(max-width:600px){body.loox-focus-generator .lig-content-scroll{padding:12px!important}body.loox-focus-generator .lig-compose-wrap{padding:8px 10px max(10px,env(safe-area-inset-bottom))!important}}
+/* 2026-11-06: align sessions below shared navigation, never overlay the header. */
+body.loox-focus-generator .loox-session-rail{
+ position:fixed!important;
+ top:var(--loox-session-top,125px)!important;
+ bottom:0!important;
+ height:auto!important;
+ z-index:12!important;
+}
+body.loox-focus-generator .lig-header,
+body.loox-focus-generator .loox-sitewide-nav,
+body.loox-focus-generator header{z-index:60!important}
+body.loox-focus-generator .lig-main{isolation:isolate}
+/* Remove opaque dock and any extra dark layer surrounding the glass prompt. */
+body.loox-focus-generator .lig-compose-wrap,
+body.loox-focus-generator #lig-compose-wrap,
+body.loox-focus-generator #lvg-compose-wrap{
+ background:none!important;background-color:transparent!important;
+ background-image:none!important;border:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+body.loox-focus-generator .lig-compose-wrap::before,
+body.loox-focus-generator .lig-compose-wrap::after,
+body.loox-focus-generator .lig-compose::before,
+body.loox-focus-generator .lig-compose::after{display:none!important}
+body.loox-focus-generator .lig-compose{background:transparent!important;box-shadow:none!important;border:0!important}
+body.loox-focus-generator .lig-compose-card{background:linear-gradient(115deg,rgba(65,39,81,.76),rgba(101,58,84,.48))!important}
+@media(max-width:900px){body.loox-focus-generator .loox-session-rail{top:var(--loox-session-top,125px)!important}}
