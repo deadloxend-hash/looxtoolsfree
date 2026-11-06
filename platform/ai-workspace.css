@@ -224,3 +224,11 @@ body.ai-chat.loox-generator-no-topnav > header.lx-header.loox-sitewide-chatbar >
 @media(prefers-reduced-motion:reduce){
  body.ai-chat .ai-recent-panel{transition:none!important}
 }
+
+/* Keep AI Chat header and composer stationary while Recent Chats slides over content. */
+body.ai-chat .ai-chat-stage,body.ai-chat .ai-chat-layout{width:100%!important;max-width:100%!important;min-width:0!important}
+body.ai-chat .ai-chat-layout{display:block!important;position:relative!important;isolation:isolate}
+body.ai-chat .ai-chat-body{width:100%!important;height:100%!important;max-width:100%!important;min-width:0!important}
+body.ai-chat .ai-recent-panel{position:absolute!important;inset:0 0 0 auto!important;width:min(295px,87vw)!important;max-width:87vw!important;margin:0!important;transform:translate3d(0,0,0)!important}
+body.ai-chat .ai-recent-panel.is-collapsed{transform:translate3d(100%,0,0)!important}
+body.ai-chat > header.lx-header{flex-shrink:0!important;width:100%!important;max-width:100%!important}
