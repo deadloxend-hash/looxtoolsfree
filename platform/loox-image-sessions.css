@@ -53,3 +53,7 @@
 @media(max-width:900px){
  .loox-session-rail{top:65px}
 }
+
+/* One-line session titles with ellipsis; never wrap or expand the rail. */
+.loox-session-entry{min-width:0;overflow:hidden;white-space:nowrap}
+.loox-session-entry>span:last-child{display:block;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
