@@ -151,3 +151,36 @@ body.loox-image-landing .loox-landing-subtitle {
   box-sizing:border-box;
  }
 }
+
+
+/* LOOX AI glass navbar and no-resize drawer (scoped to the AI landing page).
+   Preserve the established mobile layout; the desktop sidebar overlays the artwork
+   rather than forcing the hero into a narrow column. */
+body.loox-image-landing.loox-sitewide-active #loox-sitewide-header {
+ background:rgba(16,10,27,.56)!important;
+ -webkit-backdrop-filter:blur(20px) saturate(145%)!important;
+ backdrop-filter:blur(20px) saturate(145%)!important;
+ border-bottom:1px solid rgba(224,188,255,.20)!important;
+ box-shadow:0 8px 26px rgba(0,0,0,.14)!important;
+}
+@media(min-width:901px){
+ /* Place the animated hero behind the glass navbar to make the blur visible. */
+ body.loox-image-landing.loox-sitewide-active #loox-sitewide-header {
+  position:fixed!important;inset:0 0 auto 0!important;
+  width:100%!important;
+ }
+ body.loox-image-landing.loox-sitewide-active.loox-sitewide-home > main.loox-image-landing-main,
+ body.loox-image-landing.loox-sitewide-active.loox-sitewide-home.loox-sitewide-sidebar-open > main.loox-image-landing-main,
+ body.loox-image-landing.loox-sitewide-active.loox-sitewide-home:has(> #loox-sitewide-drawer.is-open) > main.loox-image-landing-main {
+  position:relative!important;
+  display:block!important;
+  width:100%!important;max-width:100%!important;
+  min-width:0!important;
+  margin:0!important;padding:0!important;
+  height:auto!important;min-height:100vh!important;min-height:100dvh!important;
+ }
+ body.loox-image-landing .loox-landing-hero {
+  min-height:100vh!important;min-height:100dvh!important;
+  padding-top:calc(clamp(64px,11vh,135px) + var(--loox-sitewide-height,64px))!important;
+ }
+}
