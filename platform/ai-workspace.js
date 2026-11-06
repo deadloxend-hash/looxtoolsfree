@@ -163,8 +163,10 @@ async function animateReply(reply,targetThread){
  if(seq===activeAnimation&&el.isConnected)setBubbleText(el,reply);
 }
 function resize(){
- prompt.style.height='auto';
- prompt.style.height=Math.min(prompt.scrollHeight,landing?200:160)+'px';
+ // Shared generator styles use !important; update inline height at the same priority
+ // so multiline chat input grows without changing the bottom composer position.
+ prompt.style.setProperty('height','auto','important');
+ prompt.style.setProperty('height',Math.min(prompt.scrollHeight,landing?200:132)+'px','important');
 }
 prompt?.addEventListener('input',resize);
 prompt?.addEventListener('keydown',event=>{
