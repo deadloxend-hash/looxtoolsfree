@@ -186,3 +186,41 @@ body.ai-chat .lx-header .ai-nav-toggle:focus-visible{
  line-clamp:2;max-width:100%;overflow:hidden;overflow-wrap:anywhere;
  white-space:normal;text-overflow:ellipsis;line-height:1.45;
 }
+
+
+/* Chat right drawer is an overlay, never a flex column that compresses the chat. */
+body.ai-chat .ai-chat-layout{position:relative!important;width:100%!important;min-width:0!important;overflow:hidden!important}
+body.ai-chat .ai-chat-body{flex:1 1 100%!important;width:100%!important;min-width:0!important}
+body.ai-chat .ai-recent-panel{
+ position:absolute!important;right:0!important;top:0!important;bottom:0!important;
+ flex:none!important;width:min(295px,87vw)!important;
+ z-index:18!important;box-shadow:-12px 0 32px rgba(0,0,0,.22)!important;
+ transition:transform .32s cubic-bezier(.22,1,.36,1),visibility .32s!important;
+ transform:translateX(0)!important;
+ visibility:visible!important;
+}
+body.ai-chat .ai-recent-panel.is-collapsed{
+ width:min(295px,87vw)!important;
+ transform:translateX(100%)!important;
+ visibility:visible!important;
+ border-color:transparent!important;
+ box-shadow:none!important;
+}
+body.ai-chat .ai-recent-panel .ai-recent-inner{width:100%!important}
+body.ai-chat .ai-recent-panel .ai-recent-toggle{visibility:visible!important;pointer-events:auto!important}
+/* Chat header should use its entire viewport width; the old platform right padding
+   pushed account controls over the centrally positioned workspace switcher. */
+body.ai-chat.loox-generator-no-topnav > header.lx-header.loox-sitewide-chatbar{
+ padding-right:16px!important;
+ width:100%!important;max-width:none!important;
+ box-sizing:border-box!important;
+}
+body.ai-chat.loox-generator-no-topnav > header.lx-header.loox-sitewide-chatbar > [data-loox-account]{
+ margin-left:auto!important;position:relative!important;z-index:5!important;
+}
+@media(max-width:900px){
+ body.ai-chat.loox-generator-no-topnav > header.lx-header.loox-sitewide-chatbar{padding-right:12px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.ai-chat .ai-recent-panel{transition:none!important}
+}
