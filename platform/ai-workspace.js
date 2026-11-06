@@ -179,7 +179,7 @@ function setRecentOpen(open){
  recentPanel.classList.toggle('is-collapsed',recentClosed);
  document.body.classList.toggle('ai-recent-open',open);
  recentToggle.setAttribute('aria-expanded',String(open));
- recentToggle.textContent=open?'›':'‹';
+ recentToggle.textContent=open?'‹':'›';
  recentToggle.title=open?'Hide recent chats':'Show recent chats';
  if(recentScrim)recentScrim.hidden=!open||!mobile.matches;
 }
