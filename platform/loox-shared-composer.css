@@ -37,3 +37,18 @@
  .ai-chat .ai-send{width:55px!important}
  .lig-body .loox-prompt-toolbar{gap:8px!important}
 }
+
+/* Dreamina-inspired compact bottom composer: keep original functional controls. */
+.lig-body .lig-compose{max-width:925px!important;width:100%!important;margin-inline:auto!important}
+.lig-body .lig-compose-wrap{padding-left:clamp(12px,2vw,26px)!important;padding-right:clamp(12px,2vw,26px)!important}
+.lig-body .lig-compose-card{padding:12px 16px!important;border-radius:21px!important}
+.lig-body .lig-compose textarea{min-height:48px!important;height:52px!important;max-height:110px!important;resize:vertical!important;padding:5px 7px!important;margin:0 0 5px!important}
+.lig-body .loox-prompt-toolbar{margin:0 0 6px!important;gap:7px!important}
+.lig-body .loox-prompt-mode{padding:7px 10px!important}
+.lig-body .loox-ratio-button,.lig-body .loox-prompt-setting .lig-select-trigger{height:34px!important;min-height:34px!important}
+.lig-body .lig-compose-actions{margin-top:3px!important}
+.ai-chat .ai-composer-wrap{width:min(925px,calc(100% - 32px))!important;margin-left:auto!important;margin-right:auto!important}
+.ai-chat .ai-composer{padding:12px 16px!important;border-radius:21px!important}
+.ai-chat .ai-composer textarea{min-height:48px!important;height:52px!important;max-height:110px!important;margin-bottom:4px!important}
+.ai-chat .ai-actions{margin-top:4px!important}
+@media(max-width:680px){.lig-body .lig-compose-card,.ai-chat .ai-composer{padding:10px 12px!important}.lig-body .lig-compose textarea,.ai-chat .ai-composer textarea{min-height:46px!important;height:48px!important}.lig-body .lig-compose{max-width:100%!important}.ai-chat .ai-composer-wrap{width:calc(100% - 20px)!important}}
