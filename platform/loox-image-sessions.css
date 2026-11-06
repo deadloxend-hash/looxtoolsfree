@@ -3,8 +3,8 @@ html:has(body.loox-conversations){overflow:hidden;height:100%}
 body.loox-conversations{overflow:hidden!important;height:100dvh;min-height:0!important}
 body.loox-conversations main.lig-workspace{height:var(--loox-workspace-height,calc(100dvh - 68px))!important;min-height:0!important;overflow:hidden!important;display:block!important}
 body.loox-conversations main.lig-workspace>.lig-settings{display:none!important}
-body.loox-conversations .lig-main.loox-sessions-layout{position:relative!important;display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;overflow:hidden!important;box-sizing:border-box;padding:0 240px 0 0!important;background:transparent!important;isolation:isolate}
-body.loox-conversations .lig-main.loox-sessions-collapsed{padding-right:36px!important}
+body.loox-conversations .lig-main.loox-sessions-layout{position:relative!important;display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;overflow:hidden!important;box-sizing:border-box;padding:0!important;background:transparent!important;isolation:isolate}
+body.loox-conversations .lig-main.loox-sessions-collapsed{padding:0!important}
 body.loox-conversations .lig-main-heading,body.loox-conversations .lig-history,body.loox-conversations .lig-empty{display:none!important}
 body.loox-conversations .lig-content-scroll{flex:1 1 auto!important;min-height:0!important;overflow:auto!important;overscroll-behavior:contain;padding:28px 24px 12px!important;width:100%!important;box-sizing:border-box}
 body.loox-conversations .lig-content-scroll[hidden]{display:none!important}
@@ -63,7 +63,7 @@ body.ai-chat .ai-recent-open small{display:none}
 body.ai-chat .loox-session-menu button{background:#282030;color:#eee;border:0;padding:8px 12px;cursor:pointer}
 body.ai-chat .loox-session-menu[open]{top:4px}
 body.ai-chat .loox-session-menu .ai-recent-delete{width:auto;height:auto}
-@media(min-width:901px){body.ai-chat .ai-chat-body{padding-right:240px;box-sizing:border-box}body.ai-chat .ai-chat-layout:has(.ai-recent-panel.is-collapsed) .ai-chat-body{padding-right:0}}
+/* The agent session rail overlays its conversation; never reserve content width. */
 /* Keep prompt and controls in a compact two-row composer. */
 body.loox-conversations .lig-compose-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px}
 body.loox-conversations .lig-compose-card>textarea{grid-column:1 / -1}
@@ -109,4 +109,114 @@ body.loox-conversations.lig-body.loox-sitewide-active > main.lig-workspace{heigh
   display: none;
   width: 0;
   height: 0;
+}
+
+
+/* AI STUDIO / LEFT-SIDE GENERATIVE SESSIONS
+   Overlay the workspace rather than shrinking or reflowing it. */
+body.loox-conversations.loox-focus-generator .lig-main.loox-sessions-layout,
+body.loox-conversations.loox-focus-generator .lig-main.loox-sessions-collapsed {
+  padding: 0 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail {
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  width: min(250px, 85vw) !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  padding: 15px 10px !important;
+  border: 0 !important;
+  border-right: 1px solid #3a3047 !important;
+  background: #141218 !important;
+  box-shadow: 8px 0 26px rgba(0,0,0,.18) !important;
+  z-index: 25 !important;
+  overflow: visible !important;
+}
+body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail.collapsed {
+  inset: 10px auto auto 0 !important;
+  top: 10px !important;
+  bottom: auto !important;
+  width: 38px !important;
+  height: 44px !important;
+  padding: 5px 3px !important;
+  border: 1px solid #42354f !important;
+  border-left: none !important;
+  border-radius: 0 9px 9px 0 !important;
+  background: #211b28 !important;
+  box-shadow: none !important;
+}
+body.loox-conversations.loox-focus-generator .loox-session-rail.collapsed .loox-session-head {
+  justify-content: center;
+}
+body.loox-conversations.loox-focus-generator .loox-session-scrim:not([hidden]) {
+  z-index: 24 !important;
+}
+body.loox-conversations.loox-focus-generator .lig-content-scroll,
+body.loox-conversations.loox-focus-generator .lig-compose-wrap {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+/* AI Agent uses a similarly independent left overlay, not a flex/sidebar column. */
+body.ai-chat .ai-chat-layout {
+  display: block !important;
+  position: relative !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+body.ai-chat .ai-chat-body,
+body.ai-chat .ai-chat-layout:has(.ai-recent-panel.is-collapsed) .ai-chat-body {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+}
+body.ai-chat .ai-chat-layout > .ai-recent-panel {
+  position: absolute !important;
+  inset: 0 auto 0 0 !important;
+  left: 0 !important;
+  right: auto !important;
+  width: min(250px, 85vw) !important;
+  max-width: 85vw !important;
+  height: 100% !important;
+  border: 0 !important;
+  border-right: 1px solid #3a3047 !important;
+  box-shadow: 8px 0 26px rgba(0,0,0,.18) !important;
+  transform: translate3d(0,0,0) !important;
+  z-index: 25 !important;
+}
+body.ai-chat .ai-chat-layout > .ai-recent-panel.is-collapsed {
+  transform: translate3d(-100%,0,0) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+body.ai-chat .ai-chat-layout > .ai-recent-panel .ai-recent-toggle {
+  left: auto !important;
+  right: -31px !important;
+  border-radius: 0 9px 9px 0 !important;
+}
+body.ai-chat .ai-chat-layout > .ai-recent-scrim:not([hidden]) {
+  z-index: 24 !important;
+}
+@media(max-width:900px) {
+  body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail {
+    width: min(280px, 85vw) !important;
+  }
+  body.loox-conversations.loox-focus-generator .lig-main > .loox-session-rail.collapsed {
+    width: 38px !important;
+    height: 44px !important;
+    top: 10px !important;
+    left: 0 !important;
+    border-radius: 0 9px 9px 0 !important;
+  }
+  body.ai-chat .ai-chat-layout > .ai-recent-panel {
+    width: min(280px, 85vw) !important;
+    max-width: 85vw !important;
+  }
 }
