@@ -433,20 +433,7 @@ body.loox-sitewide-active .loox-sitewide-secondary{
   box-shadow:none!important;
  }
  body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
- /* Reserve room only while the sidebar is open. The header remains full width. */
- body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main,
- body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > .experience-content,
- body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > .loox-guide-host{
-  margin-left:240px!important;
-  width:calc(100% - 240px)!important;
-  max-width:calc(100% - 240px)!important;
-  box-sizing:border-box!important;
- }
- /* Center standard narrow AI tool content within the remaining workspace. */
- body.lx-shell.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main{
-  padding-left:max(24px,calc((100% - 1150px)/2))!important;
-  padding-right:24px!important;
- }
+ /* Sidebar floats over the viewport: never reserve page width on open. */
 }
 @media(max-width:900px){
  body.loox-sitewide-active > aside#loox-sitewide-drawer{scrollbar-width:none!important}
@@ -454,15 +441,7 @@ body.loox-sitewide-active .loox-sitewide-secondary{
 }
 
 
-/* Keep narrow AI workspaces centered instead of stretching their form cards. */
-@media(min-width:901px){
- body.lx-shell.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main{
-  margin-left:calc(240px + max(0px,(100% - 240px - 850px)/2))!important;
-  width:min(850px,calc(100% - 264px))!important;
-  max-width:850px!important;
-  padding-left:24px!important;padding-right:24px!important
- }
-}
+
 
 
 /* LOOX 2026 premium navigation and persistent sidebar. Single shared implementation. */
@@ -566,14 +545,7 @@ body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-bars,
 body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-bars{display:none}
 body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-arrow,
 body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-arrow{display:block}
-@media(min-width:901px){
- body.loox-sitewide-active.loox-sitewide-sidebar-open > main,
- body.loox-sitewide-active.loox-sitewide-sidebar-open > .experience-content,
- body.loox-sitewide-active.loox-sitewide-sidebar-open > .loox-guide-host{
-  margin-left:252px!important;width:calc(100% - 252px)!important;
-  max-width:calc(100% - 252px)!important
- }
-}
+
 @media(max-width:1120px){#loox-sitewide-header .loox-sitewide-search{min-width:42px}}
 @media(max-width:900px){
  body.loox-sitewide-active > button.loox-sitewide-dock-toggle{left:0;top:54%;width:24px}
@@ -714,13 +686,7 @@ body.loox-sitewide-active.experience-shell{--lx-rail:0px!important}
 body.loox-sitewide-active.experience-shell:not(.experience-studio) .experience-content{
  margin-left:0!important
 }
-@media(min-width:901px){
- body.loox-sitewide-active.experience-shell:has(> #loox-sitewide-drawer.is-open) > .experience-content,
- body.loox-sitewide-active.experience-shell:has(> #loox-sitewide-drawer.is-open) > main.experience-content{
-  margin-left:240px!important;width:calc(100% - 240px)!important;
-  max-width:calc(100% - 240px)!important
- }
-}
+
 
 /* Explore All Tools is a navigation action, not a separate promo block. */
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-explore-link{margin:12px 0 5px!important;font-weight:750!important}
@@ -1540,3 +1506,6 @@ body.loox-generator-no-topnav.ai-chat .loox-ai-workspace-tabs .loox-ai-template-
 body.loox-generator-no-topnav.ai-chat .loox-ai-workspace-tabs .loox-ai-template-tab:focus-visible{
  background:#292630!important;color:#fff!important;
 }
+
+/* Sidebar overlay mode: keep page sizing and centered AI switcher unchanged. */
+body.loox-sitewide-active > aside#loox-sitewide-drawer{position:fixed!important}
