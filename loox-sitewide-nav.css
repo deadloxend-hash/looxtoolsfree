@@ -1509,3 +1509,27 @@ body.loox-generator-no-topnav.ai-chat .loox-ai-workspace-tabs .loox-ai-template-
 
 /* Sidebar overlay mode: keep page sizing and centered AI switcher unchanged. */
 body.loox-sitewide-active > aside#loox-sitewide-drawer{position:fixed!important}
+
+/* Image generator sidebar overlay sizing lock: opening global navigation must
+   never change the generator grid, settings column, canvas, or prompt composer. */
+body.lig-body.loox-sitewide-active > main.lig-workspace,
+body.lig-body.loox-sitewide-active.loox-sitewide-sidebar-open > main.lig-workspace,
+body.lig-body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main.lig-workspace{
+ display:grid!important;
+ margin-left:0!important;
+ margin-right:0!important;
+ padding-left:0!important;
+ padding-right:0!important;
+ width:100%!important;
+ max-width:100%!important;
+ min-width:0!important;
+ transform:none!important;
+ box-sizing:border-box!important;
+}
+body.lig-body.loox-sitewide-active > main.lig-workspace > .lig-settings,
+body.lig-body.loox-sitewide-active > main.lig-workspace > .lig-main{
+ min-width:0!important;
+}
+body.lig-body.loox-sitewide-active > aside#loox-sitewide-drawer{
+ position:fixed!important;
+}
