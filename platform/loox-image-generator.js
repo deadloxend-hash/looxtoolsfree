@@ -182,7 +182,8 @@ async function initWorkspace(){
  const params=new URLSearchParams(location.search);
  let draft='';
  try {draft=sessionStorage.getItem(storageDraft)||'';} catch {}
- autoRequest=params.get('start')==='1'&&Boolean(draft.trim());
+ // Landing visits and legacy start links only stage a prompt; Generate confirms the paid request.
+ autoRequest=false;
  if(draft)promptField.value=draft;
  let launch=null;try{launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='image'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');autoRequest=false;}}catch{}
  const templateEndpoint='https://looxtoolfree-backend.vercel.app/api/loox';
