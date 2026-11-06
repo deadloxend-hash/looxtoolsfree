@@ -1533,3 +1533,42 @@ body.lig-body.loox-sitewide-active > main.lig-workspace > .lig-main{
 body.lig-body.loox-sitewide-active > aside#loox-sitewide-drawer{
  position:fixed!important;
 }
+
+/* Shared AI mode navigation: chat uses the same centered workspace switcher as
+   the image generator. Keep account controls outside the switcher's hit area. */
+body.loox-generator-no-topnav.ai-chat.loox-sitewide-active.loox-sitewide-home
+ > header.lx-header.loox-sitewide-chatbar{
+ width:100%!important;
+ max-width:none!important;
+ min-width:0!important;
+ margin:0!important;
+ padding:8px 16px!important;
+ box-sizing:border-box!important;
+}
+@media(min-width:1211px){
+ body.loox-generator-no-topnav.ai-chat.loox-sitewide-active.loox-sitewide-home
+  > header.lx-header.loox-sitewide-chatbar > [data-loox-account]{
+  position:absolute!important;
+  right:16px!important;
+  left:auto!important;
+  top:50%!important;
+  transform:translateY(-50%)!important;
+  margin:0!important;
+  z-index:140!important;
+ }
+ body.loox-generator-no-topnav.ai-chat.loox-sitewide-active.loox-sitewide-home
+  > header.lx-header.loox-sitewide-chatbar > .loox-ai-workspace-tabs{
+  width:min(620px,calc(100vw - 540px))!important;
+  max-width:620px!important;
+  left:50%!important;
+  right:auto!important;
+  z-index:2!important;
+ }
+}
+@media(max-width:1210px){
+ body.loox-generator-no-topnav.ai-chat.loox-sitewide-active.loox-sitewide-home
+  > header.lx-header.loox-sitewide-chatbar > [data-loox-account]{
+  position:relative!important;top:auto!important;right:auto!important;
+  left:auto!important;transform:none!important;margin-left:auto!important;
+ }
+}
