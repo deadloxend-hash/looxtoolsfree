@@ -1,0 +1,17 @@
+/* Full-width studio with compact model/ratio controls inside the prompt. */
+body.loox-prompt-compact .lig-workspace{grid-template-columns:minmax(0,1fr)!important;width:100%!important}
+body.loox-prompt-compact .lig-settings{display:none!important}
+body.loox-prompt-compact .lig-main{width:100%!important;min-width:0!important}
+body.loox-prompt-compact .lig-content-scroll{max-width:1530px}
+body.loox-prompt-compact .lig-compose-wrap{width:100%;min-width:0}
+.loox-prompt-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin:4px 0 12px}
+.loox-prompt-modes,.loox-prompt-controls{display:flex;align-items:center;flex-wrap:wrap;gap:7px;min-width:0}
+.loox-prompt-mode{text-decoration:none;color:#bdb6c9;border:1px solid #47414e;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:750;background:#1b1a21}
+.loox-prompt-mode.is-active{color:#fff;background:#433451;border-color:#775b98}
+.loox-prompt-setting{display:block!important;position:relative;min-width:0}
+.loox-prompt-setting>.lig-row-label,.loox-prompt-setting>label,.loox-prompt-setting>.lig-help{display:none!important}
+.loox-prompt-setting .lig-custom-select{width:auto;min-width:150px;max-width:250px}
+.loox-prompt-setting .lig-select-trigger{min-height:36px;padding:7px 11px;font-size:12px;border-radius:10px}
+.loox-prompt-setting .lig-select-menu{min-width:250px;left:auto;right:0;top:auto;bottom:calc(100% + 7px)}
+.loox-prompt-setting select:not(.lig-native-select){min-height:36px;width:auto;max-width:240px;padding:7px 30px 7px 10px;font-size:12px;border-radius:10px}
+@media(max-width:680px){.loox-prompt-toolbar{align-items:flex-start}.loox-prompt-controls{width:100%}.loox-prompt-setting{flex:1 1 130px}.loox-prompt-setting .lig-custom-select,.loox-prompt-setting select:not(.lig-native-select){width:100%;max-width:none}.loox-prompt-setting .lig-select-menu{min-width:min(260px,85vw)}}
