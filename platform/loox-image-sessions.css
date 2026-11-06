@@ -220,3 +220,35 @@ body.ai-chat .ai-chat-layout > .ai-recent-scrim:not([hidden]) {
     max-width: 85vw !important;
   }
 }
+
+
+/* LOOX FIRST-PAINT LAYOUT STABILITY
+   The generator's native header is the only visible header. Use normal flex sizing
+   immediately instead of waiting for async session initialization to set a height
+   variable; the content and bottom composer must never jump vertically. */
+body.loox-conversations.loox-focus-generator.lig-body {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+body.loox-conversations.loox-focus-generator.lig-body > header.lig-header {
+  flex: 0 0 auto !important;
+}
+body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace {
+  display: block !important;
+  flex: 1 1 auto !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+/* Controls are moved into the bottom composer at DOMContentLoaded, and the image
+   model dropdown is initialized after fetching config. Do not flash the
+   incomplete two-control layout while either script is still hydrating. */
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-prompt-compact) .lig-compose-wrap,
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-generator-ready) .lig-compose-wrap {
+  visibility: hidden !important;
+}
