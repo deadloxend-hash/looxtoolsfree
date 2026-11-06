@@ -248,7 +248,6 @@ body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace {
 /* Controls are moved into the bottom composer at DOMContentLoaded, and the image
    model dropdown is initialized after fetching config. Do not flash the
    incomplete two-control layout while either script is still hydrating. */
-body.loox-conversations.loox-focus-generator.lig-body:not(.loox-prompt-compact) .lig-compose-wrap,
-body.loox-conversations.loox-focus-generator.lig-body:not(.loox-generator-ready) .lig-compose-wrap {
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-prompt-compact) .lig-compose-wrap {
   visibility: hidden !important;
 }
