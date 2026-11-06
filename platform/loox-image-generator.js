@@ -1,3 +1,4 @@
+import {MediaSessions} from './loox-image-sessions.js?v=3';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=8';
 
@@ -165,20 +166,16 @@ async function initWorkspace(){
  });
  const composeWrap=byId('lig-compose-wrap');
  const mainWorkspace=composeWrap.parentElement,historySection=byId('lig-history-grid')?.closest('.lig-history');
- // Keep the desktop composer where it is; on phones it belongs between the
- // current generated image and the recent generations.
- function positionMobileComposer(){
-  if(!historySection)return;
-  if(window.matchMedia('(max-width:680px)').matches){
-   if(composeWrap.nextElementSibling!==historySection)historySection.before(composeWrap);
-  }else if(composeWrap.parentElement!==mainWorkspace){
-   mainWorkspace.append(composeWrap);
-  }
- }
- positionMobileComposer();
- window.addEventListener('resize',positionMobileComposer);
  let isBusy=false,activeUser=null,historyOffset=0,historyLoading=false,autoRequest=false;
  let currentGenerationId=null;
+ const sessions=new MediaSessions({state,api,root:document.querySelector('.lig-main'),feed:results,prompt:promptField,notice:setMessage,isBusy:()=>isBusy,reuse:async entry=>{
+  if(entry.media_type==='video'){location.assign('ai-video-generator.html?session='+sessions.id+'&reuse='+entry.id+'#generate');return;}
+  if(entry.model_id&&modelField.querySelector('option[value="'+entry.model_id+'"]'))modelField.value=entry.model_id;
+  if(entry.ratio)ratioField.value=entry.ratio;
+  modelField.dispatchEvent(new Event('change'));ratioField.dispatchEvent(new Event('change'));
+  for(const [key,value] of Object.entries(entry.settings||{}))if(settingFields[key])settingFields[key].select.value=value;
+  promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
+ }});
  const params=new URLSearchParams(location.search);
  let draft='';
  try {draft=sessionStorage.getItem(storageDraft)||'';} catch {}
@@ -417,7 +414,7 @@ async function initWorkspace(){
   const selected=modelStatus(modelField.value);
   creditCost.textContent=selected.label+' · '+price()+' credits on success';
   modelNote.textContent=selected.reason;
-  generateButton.disabled=!isBusy&&(modelField.value==='flux'?!state.config?.local?.available:!availableModels.has(modelField.value));
+  generateButton.disabled=isBusy||(modelField.value==='flux'?!state.config?.local?.available:!availableModels.has(modelField.value));
  }
  modelField.addEventListener('change',()=>{updateModelSettings();updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
  function setMessage(value,isError=false){
@@ -436,21 +433,11 @@ async function initWorkspace(){
  document.querySelectorAll('[data-lig-view]').forEach(el=>el.addEventListener('click',()=>{
   selectView(el.dataset.ligView);
   if(location.hash!==(el.dataset.ligView==='templates'?'#templates':'#generate'))
-   history.replaceState(null,'',location.pathname+(el.dataset.ligView==='templates'?'#templates':'#generate'));
+   history.replaceState(null,'',location.pathname+location.search+(el.dataset.ligView==='templates'?'#templates':'#generate'));
  }));
  selectView(location.hash==='#templates'?'templates':'generate');
  window.addEventListener('hashchange',()=>selectView(location.hash==='#templates'?'templates':'generate'));
 
- function emptyCanvas(){
-  if(results.childElementCount)return;
-  const empty=create('div','lig-empty');
-  empty.id='lig-empty';
-  empty.append(create('div','lig-empty-orb','✧'),
-   create('strong',null,'Your ideas start here'),
-   create('p',null,'Write a prompt below. Your generated image will appear here once it is ready.'));
-  results.append(empty);
- }
- emptyCanvas();
  function outputCard(prompt,ratio,modelLabel='FLUX.1 Schnell'){
   byId('lig-empty')?.remove();
   const card=create('article','lig-output');
@@ -482,7 +469,7 @@ async function initWorkspace(){
   });
   bottom.append(promptWrap);
   card.append(top,stage,bottom);
-  results.replaceChildren(card);
+  results.append(card);
   const setStage=(label,sub)=>{
    indicator.textContent=label;
    loadingTitle.textContent=label;
@@ -540,12 +527,15 @@ async function initWorkspace(){
    selectView('generate');
   });
   const submitButton=templateSubmitButton(id);
-  view.bottom.append(reuse,download,submitButton);
+  view.bottom.append(submitButton);
+  sessions.completed(view,id);
+  sessions.bottom(sessions.nearBottom());
  }
  async function poll(id,view,ratio){
   let consecutiveErrors=0;
   for(let n=0;n<175;n++){
    await pause(n===0?950:3600);
+   if(view.entry?.user_id!==state.user?.id)return;
    let status;
    try{status=await api('status',null,{id});consecutiveErrors=0;}
    catch(error){
@@ -555,6 +545,7 @@ async function initWorkspace(){
     throw Error('The connection was interrupted. You can recover this image from your account history.');
    }
    if(status.state==='succeeded'){
+    if(view.entry?.user_id!==state.user?.id)return;
     showReady(view,status.url,id);
     try{sessionStorage.removeItem('loox-active-image-'+state.user.id);}catch{}
     setMessage('Your image is ready. Saved privately to your LOOX account.');
@@ -600,18 +591,16 @@ async function initWorkspace(){
   isBusy=true;generateButton.disabled=true;ratioField.disabled=true;modelField.disabled=true;
   let view=null;
   try{
+   const settings=modelId==='flux'?{}:Object.fromEntries(Object.entries(settingFields).filter(([,f])=>!f.block.hidden).map(([key,f])=>[key,f.select.value]));
+   const entry=await sessions.begin({prompt,ratio,model_id:modelId,model_name:modelId==='flux'?'FLUX.1 Schnell':allModels.get(modelId)?.name||'AI image',media_type:'image',settings});
+   const follow=sessions.nearBottom();
+   view=outputCard(prompt,ratio,entry.model_name);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
    const id=resumeId||(await api(modelId==='flux'?'job':'cloud_job',{
-    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:crypto.randomUUID(),prompt,ratio,...(modelId==='flux'?{}:{settings:Object.fromEntries(Object.entries(settingFields).filter(([,field])=>!field.block.hidden).map(([key,field])=>[key,field.select.value]))}),...(seed==null?{}:{seed})
+    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(modelId==='flux'?{}:{settings}),...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
-   // A newly accepted request starts a fresh preview. Completed images remain in account history.
-   if(!resumeId){
-    results.replaceChildren();
-    if(promptField.value.trim()===prompt)promptField.value='';
-    await loadHistory(true);
-   }
+   if(promptField.value.trim()===prompt)promptField.value='';
    currentGenerationId=id;
-   view=outputCard(prompt,ratio,modelId==='flux'?'FLUX.1 Schnell':allModels.get(modelId)?.name||'AI image');
    if(resumeId)view.setStage('Restoring generation','Checking your in-progress image.');
    if(!resumeId){
     try{sessionStorage.setItem('loox-active-image-'+state.user.id,JSON.stringify({id,prompt,ratio,modelId}));}catch{}
@@ -771,44 +760,7 @@ async function initWorkspace(){
   historyMore.textContent='Load more';
   historyHeading.textContent=historyOffset?historyOffset+' saved image'+(historyOffset===1?'':'s')+' shown':'Account-only history';
  }
- async function loadHistory(reset=false){
-  if(!state.user){
-   historyHeading.textContent='Sign in to view images saved to your account.';
-   historyMore.hidden=true;return;
-  }
-  if(historyLoading)return;
-  historyLoading=true;
-  if(reset){
-   historyOffset=0;historyBuffer=[];historyHasMore=true;
-   historyGrid.replaceChildren();historyMore.hidden=true;
-  }
-  historyHeading.textContent='Loading your private images…';
-  const count=mobileHistory()?6:12;
-  try{
-   let remaining=count;
-   while(remaining>0){
-    if(!historyBuffer.length){
-     if(!historyHasMore)break;
-     const response=await api('gallery',null,{offset:String(historyOffset+historyBuffer.length)});
-     const items=Array.isArray(response.items)?response.items:[];
-     historyBuffer.push(...items);
-     historyHasMore=Boolean(response.has_more);
-     if(!items.length){historyHasMore=false;break}
-    }
-    const batch=historyBuffer.splice(0,remaining);
-    batch.forEach(item=>historyGrid.append(historyCard(item)));
-    historyOffset+=batch.length;
-    remaining-=batch.length;
-   }
-   if(!historyOffset){
-    historyGrid.replaceChildren(create('p','lig-history-empty','Your completed image generations will appear here. They are private to this signed-in account.'));
-   }
-   updateHistoryMore();
-  }catch(err){
-   historyHeading.textContent='Could not load image history.';
-   if(!historyOffset)historyGrid.replaceChildren(create('p','lig-history-empty','Unable to load your saved images right now. Refresh or try again.'));
-  }finally{historyLoading=false}
- }
+ async function loadHistory(){await sessions.loadList();}
  historyMore.addEventListener('click',()=>loadHistory());
 
  async function refreshUser(){
@@ -819,8 +771,8 @@ async function initWorkspace(){
    activeUser=id;
    historyOffset=0;
    historyGrid.replaceChildren();
-   if(state.user)await loadHistory(true);
-   else{
+   await sessions.init();
+   if(!state.user){
     historyGrid.append(create('p','lig-history-empty','Sign in to view your own previous creations.'));
     historyHeading.textContent='Your private collection';
    }
@@ -828,7 +780,7 @@ async function initWorkspace(){
  }
  document.addEventListener('loox-account',updateAccount);
  document.addEventListener('loox-user',()=>{
-  refreshUser();
+  refreshUser().catch(e=>setMessage(e.message,true));
   if(state.user&&autoRequest)startAuto();
  });
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user){refresh().catch(()=>{});refreshQuota().catch(()=>{});}});
@@ -840,22 +792,13 @@ async function initWorkspace(){
   }
   autoRequest=false;
   try{sessionStorage.removeItem(storageDraft);}catch{}
-  history.replaceState(null,'',location.pathname+'#generate');
+  history.replaceState(null,'',location.pathname+location.search+'#generate');
   await submit(draft,ratioField.value);
  }
  try{await initialize();}catch{}
  await config().catch(()=>{});
+ await sessions.init().catch(e=>setMessage(e.message,true));
  await refreshUser();
  updateAccount();
- if(state.user){
-  const key='loox-active-image-'+state.user.id;
-  try{
-   const saved=JSON.parse(sessionStorage.getItem(key)||'null');
-   if(saved&&saved.id&&saved.prompt&&ratios.has(saved.ratio)){
-    // A reload should resume polling rather than resubmit and double-charge.
-    await submit(saved.prompt,saved.ratio,null,saved.id,saved.modelId||'flux');
-   }
-  }catch{}
- }
  if(autoRequest)startAuto();
 }

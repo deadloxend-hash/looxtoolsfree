@@ -1,3 +1,4 @@
+import {MediaSessions} from './loox-image-sessions.js?v=3';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=7';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
@@ -20,6 +21,10 @@ const credits=$('lvg-credits'),costLabel=$('lvg-credit-cost'),gpuLabel=$('lvg-gp
 const generationView=$('lvg-generate-view'),templatesView=$('lvg-templates-view');
 const composer=$('lvg-compose-wrap');
 let busy=false,online=false,knownUser=null,historyOffset=0,historyLoading=false,lastGpuCheck=0;
+const sessions=new MediaSessions({state,api,root:document.querySelector('.lig-main'),feed:resultList,prompt:promptField,notice,isBusy:()=>busy,reuse:async entry=>{
+ if(entry.media_type==='image'){location.assign('ai-text-to-image.html?session='+sessions.id+'&reuse='+entry.id+'#generate');return;}
+ if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
+}});
 const cost=()=>state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8;
 const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
 costLabel.insertAdjacentElement('afterend',quotaLabel);
@@ -93,16 +98,6 @@ async function checkGPU(){
   gpuLabel.dataset.online=String(online);
   refreshButton();
 }
-function emptyCanvas(){
-  if(resultList.children.length)return;
-  const empty=make('div','lig-empty');
-  empty.id='lvg-empty';
-  empty.append(make('div','lig-empty-orb','▶'),
-    make('strong',null,'Your next scene starts here'),
-    make('p',null,'Write a video prompt below. Your Wan 2.1 clip will appear here when it is ready.'));
-  resultList.append(empty);
-}
-emptyCanvas();
 function createCard(prompt,ratio){
   $('lvg-empty')?.remove();
   const card=make('article','lig-output');
@@ -118,8 +113,8 @@ function createCard(prompt,ratio){
   overlay.append(spinner,label,caption);stage.append(loading,overlay);
   const bottom=make('div','lig-output-bottom');
   bottom.append(make('span','lig-prompt-label',prompt));
-  card.append(top,stage,bottom);resultList.prepend(card);
-  while(resultList.children.length>4)resultList.lastElementChild.remove();
+  card.append(top,stage,bottom);resultList.append(card);
+
   return {card,stage,bottom,indicator,prompt,setStage:(text,detail)=>{
     indicator.textContent=text;label.textContent=text;if(detail)caption.textContent=detail;
   }};
@@ -163,12 +158,13 @@ function showVideo(view,url,id){
   view.indicator.textContent='Completed · Wan 2.1';
   const reuse=make('button','lig-small-action','Reuse prompt');
   reuse.type='button';reuse.addEventListener('click',()=>{promptField.value=view.prompt;promptField.focus();});
-  view.bottom.append(reuse,addDownload(view,id));
+  sessions.completed(view,id);sessions.bottom(sessions.nearBottom());
 }
 async function poll(id,view){
   let errors=0;
   for(let n=0;n<1050;n++){
     await sleep(n===0?1250:5500);
+    if(view.entry?.user_id!==state.user?.id)return;
     let status;
     try{status=await api('status',null,{id});errors=0;}
     catch(error){
@@ -176,6 +172,7 @@ async function poll(id,view){
       throw Error('Connection interrupted. The job can be reopened from your account history.');
     }
     if(status.state==='succeeded'){
+      if(view.entry?.user_id!==state.user?.id)return;
       showVideo(view,status.url,id);
       try{sessionStorage.removeItem(storageKey+state.user.id);}catch{}
       notice('Your video is ready and saved privately in your account.');
@@ -198,6 +195,8 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   const prompt=String(promptText||'').trim();
   if(!prompt||prompt.length>800){notice('Write a video prompt of 1–800 characters.',true);return;}
   if(!state.user){notice('Sign in to generate videos.');auth('login');return;}
+  busy=true;refreshButton();
+  try{
   if(!resumeId){
     await refreshQuota();
     if(remainingVideos===0){notice('You have used all 30 video generations today. Resets at 00:00 UTC.',true);return;}
@@ -212,11 +211,14 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   notice(resumeId?'Restoring your pending video…':'Submitting your video request…');
   let view=null;
   try{
+    const follow=sessions.nearBottom();
+    const entry=await sessions.begin({prompt,ratio,model_id:'wan21',model_name:'Wan 2.1',media_type:'video',settings:{duration:'33 frames / 16 fps (~2 seconds)'}});
+    view=createCard(prompt,ratio);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
     const id=resumeId||(await api('job',{
-      operation:'generate_video',requestId:crypto.randomUUID(),prompt,ratio
+      operation:'generate_video',requestId:entry.request_id,prompt,ratio
     })).id;
     if(!id)throw Error('The backend did not return a video job ID.');
-    view=createCard(prompt,ratio);
+    promptField.value='';
     if(!resumeId){
       try{sessionStorage.setItem(storageKey+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
       await refresh().catch(()=>{});accountInfo();await refreshQuota();
@@ -229,6 +231,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   }finally{
     busy=false;ratioField.disabled=false;refreshButton();
   }
+  }finally{busy=false;refreshButton();}
 }
 form.addEventListener('submit',e=>{e.preventDefault();submit(promptField.value,ratioField.value);});
 function historyCard(item){
@@ -252,25 +255,7 @@ function historyCard(item){
   });
   return button;
 }
-async function loadHistory(reset=false){
-  if(!state.user){historyLabel.textContent='Sign in to see videos saved to your account.';historyMore.hidden=true;return;}
-  if(historyLoading)return;
-  historyLoading=true;
-  if(reset){historyOffset=0;historyGrid.replaceChildren();historyMore.hidden=true;}
-  historyLabel.textContent='Loading private video history…';
-  try{
-    const data=await api('gallery',null,{operation:'generate_video',offset:String(historyOffset)});
-    const items=Array.isArray(data.items)?data.items:[];
-    if(!items.length&&!historyOffset)
-      historyGrid.append(make('p','lig-history-empty','Your completed Wan 2.1 videos will appear here.'));
-    else items.forEach(item=>historyGrid.append(historyCard(item)));
-    historyOffset+=items.length;
-    historyMore.hidden=!data.has_more||historyOffset>240;
-    historyLabel.textContent=historyOffset+' saved video'+(historyOffset===1?'':'s')+' shown';
-  }catch{
-    historyLabel.textContent='Could not load your saved videos.';
-  }finally{historyLoading=false;}
-}
+async function loadHistory(){await sessions.loadList();}
 historyMore.addEventListener('click',()=>loadHistory());
 async function changeUser(){
   accountInfo();
@@ -278,8 +263,8 @@ async function changeUser(){
   const id=state.user?.id||null;
   if(id!==knownUser){
     knownUser=id;historyOffset=0;historyGrid.replaceChildren();
-    if(id)await loadHistory(true);
-    else historyGrid.append(make('p','lig-history-empty','Sign in to view your private video collection.'));
+    await sessions.init();
+
   }
   await checkGPU();
 }
@@ -296,12 +281,7 @@ setInterval(()=>{if(!document.hidden&&state.user&&!busy)checkGPU().catch(()=>{})
 (async()=>{
   try{await initialize();}catch{}
   await config().catch(()=>{});
+  await sessions.init().catch(e=>notice(e.message,true));
   await changeUser();accountInfo();
-  if(state.user){
-    try{
-      const saved=JSON.parse(sessionStorage.getItem(storageKey+state.user.id)||'null');
-      if(saved?.id&&saved.prompt&&validRatios.has(saved.ratio))
-        await submit(saved.prompt,saved.ratio,saved.id);
-    }catch{}
-  }
+
 })().catch(error=>notice(error.message||'Could not initialize video workspace.',true));

@@ -12,6 +12,7 @@ const draftsKey='loox-ai-start-v1', historyURL='https://looxtoolfree-backend.ver
 const chatURL='https://looxtoolfree-backend.vercel.app/api/loox-chat';
 let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
 let usage={free:null,premium:null},activeAnimation=0,knownUser=null,loadingRecent=false;
+let openingThread=0;
 let mobile=window.matchMedia('(max-width:760px)');
 let recentClosed=mobile.matches;
 
@@ -93,13 +94,16 @@ modelMenu?.addEventListener('click',event=>{
  if(target)selectModel(target.dataset.model);
 });
 
+function nearBottom(){return !thread||thread.scrollHeight-thread.scrollTop-thread.clientHeight<150;}
+function followBottom(near){if(near&&thread)thread.scrollTop=thread.scrollHeight;}
 function addBubble(text,role,error=false){
+ const near=nearBottom();
  if(!thread)return null;
  const el=document.createElement('div');
  el.className='ai-msg '+role+(error?' error':'');
  setBubbleText(el,text);
  thread.append(el);
- thread.scrollTop=thread.scrollHeight;
+ followBottom(near);
  return el;
 }
 function setBubbleText(el,text){
@@ -129,7 +133,7 @@ function showThinking(){
  el.className='ai-msg assistant ai-typing';
  el.setAttribute('aria-label','LOOX AI is preparing a reply');
  el.innerHTML='<span class="ai-typing-dot"></span><span class="ai-typing-dot"></span><span class="ai-typing-dot"></span>';
- thread.append(el);thread.scrollTop=thread.scrollHeight;
+ const near=nearBottom();thread.append(el);followBottom(near);
  return el;
 }
 async function animateReply(reply,targetThread){
@@ -149,8 +153,8 @@ async function animateReply(reply,targetThread){
   function tick(){
    if(seq!==activeAnimation||!el.isConnected){resolve();return;}
    i=Math.min(pieces.length,i+chunk);
-   el.textContent=pieces.slice(0,i).join('');
-   thread.scrollTop=thread.scrollHeight;
+   const near=nearBottom();el.textContent=pieces.slice(0,i).join('');
+   followBottom(near);
    if(i>=pieces.length){resolve();return;}
    setTimeout(tick,interval);
   }
@@ -191,6 +195,7 @@ function chatURLState(id){
  history.replaceState(null,'',u.pathname+u.search);
 }
 function newChat(focus=true){
+ openingThread++;
  if(busy){note('Finish the current reply before starting a new chat.');return;}
  currentThreadId=null;messages=[];activeAnimation++;
  chatURLState(null);drawThread();
@@ -220,6 +225,7 @@ function createRecentRow(t){
  excerpt.className='ai-recent-title';
  excerpt.textContent=t.title||'Conversation';
  open.append(excerpt);
+ open.title=(t.title||'Conversation')+'\nCreated '+new Date(t.created_at).toLocaleString()+'\nLast activity '+new Date(t.updated_at).toLocaleString();
  const minor=document.createElement('small');
  minor.textContent=(t.model==='premium'?'Pro · ':'Free · ')+
   new Date(t.updated_at).toLocaleDateString();
@@ -240,7 +246,15 @@ function createRecentRow(t){
    note('Conversation deleted.');
   }catch(error){del.disabled=false;note(error.message);}
  });
- row.append(open,del);
+ const menu=document.createElement('details');menu.className='loox-session-menu';
+ const summary=document.createElement('summary');summary.textContent='⋯';summary.setAttribute('aria-label','Session actions');
+ const rename=document.createElement('button');rename.type='button';rename.textContent='Rename';
+ rename.addEventListener('click',async()=>{
+  if(busy){note('Wait for the current reply.');return;}
+  const title=window.prompt('Session name',t.title)?.trim();if(!title)return;
+  try{const result=await state.client.from('loox_chat_threads').update({title:title.slice(0,120)}).eq('id',t.id);if(result.error)throw result.error;await loadRecent(true);}catch(error){note(error.message);}
+ });
+ del.textContent='Delete';menu.append(summary,rename,del);row.append(open,menu);
  return row;
 }
 async function loadRecent(reset=true){
@@ -264,7 +278,9 @@ async function openThread(id){
  if(busy){note('Finish the current reply before switching chats.');return;}
  if(!state.user)return auth('login');
  try{
+  const seq=++openingThread,user=state.user.id;
   const result=await historyRequest('read',{id});
+  if(seq!==openingThread||user!==state.user?.id)return;
   currentThreadId=result.thread.id;
   model=result.thread.model;
   modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
@@ -278,7 +294,7 @@ async function sendMessage(message){
  if(busy)return;
  if(!state.user){prompt.value=message;auth('login');note('Sign in to send your message.');return;}
  if(model==='premium'&&!premium()){prompt.value=message;pricing();note('Upgrade to LOOX Pro to use this model.');return;}
- const chosen=model;
+ const chosen=model,generationUser=state.user.id;
  busy=true;send.disabled=true;
  prompt.value='';resize();
  messages.push({role:'user',text:message});
@@ -294,6 +310,7 @@ async function sendMessage(message){
    signal:AbortSignal.timeout(65000)
   });
   const data=await response.json().catch(()=>({}));
+  if(generationUser!==state.user?.id)return;
   if(data.usage)usage[chosen]=data.usage;
   if(!response.ok)throw Error(data.error||'LOOX AI could not answer.');
   const reply=String(data.reply||'').trim();
@@ -337,7 +354,7 @@ async function syncUser(){
  if(landing)return;
  const userId=state.user?.id||null;
  if(userId===knownUser)return;
- knownUser=userId;
+ knownUser=userId;openingThread++;
  currentThreadId=null;messages=[];drawThread();
  if(!userId){
   emptyRecent('Sign in to save and reopen your conversations.');
