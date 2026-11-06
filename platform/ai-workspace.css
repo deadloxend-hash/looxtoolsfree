@@ -323,7 +323,7 @@ body.ai-chat #aiForm.ai-composer {
 body.ai-chat #aiForm.ai-composer textarea {
   display:block!important;
   width:100%!important;
-  height:52px!important;
+  height:52px;
   min-height:48px!important;
   max-height:132px!important;
   margin:0 0 4px!important;
@@ -524,7 +524,7 @@ body.ai-chat .ai-chat-layout > .ai-recent-scrim:not([hidden]) {
   body.ai-chat .ai-composer-wrap {padding:8px 10px max(10px,env(safe-area-inset-bottom))!important;}
   body.ai-chat #aiForm.ai-composer {padding:10px 12px!important;}
   body.ai-chat #aiForm.ai-composer textarea {
-    height:48px!important;
+    height:48px;
     min-height:46px!important;
     font-size:13px!important;
   }
