@@ -26,3 +26,13 @@
 .loox-session-rail.collapsed .loox-session-list,.loox-session-rail.collapsed .loox-session-head strong{display:none}
 @media(max-width:900px){.lig-main.loox-sessions-layout{padding-right:0!important}.loox-session-rail{position:fixed;top:65px;bottom:0;right:0;max-width:80vw;box-shadow:-12px 0 30px #0009}.loox-session-rail.collapsed{width:36px}.lig-main.loox-sessions-collapsed{padding-right:0!important}}
 @media(max-width:600px){.loox-session-images{grid-template-columns:repeat(2,minmax(0,1fr))}.loox-session-feed{gap:26px}}
+
+/* Compact session list matching the narrow reference sidebar. */
+@media(min-width:901px){
+ .lig-main.loox-sessions-layout{padding-right:220px!important}
+ .loox-session-rail{width:220px;padding:15px 10px}
+ .loox-session-head{font-size:12px;margin-bottom:9px}
+ .loox-session-list{gap:2px}
+ .loox-session-entry{min-height:34px;padding:4px 6px;gap:8px;font-size:12px;line-height:1.25}
+ .loox-session-entry img,.loox-session-placeholder{width:25px;height:25px;flex-basis:25px;border-radius:5px}
+}
