@@ -65,3 +65,23 @@
 .loox-session-rail .loox-session-entry>span:last-child{display:block!important;flex:1 1 0!important;width:0!important;min-width:0!important;max-width:100%!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;overflow-wrap:normal!important;word-break:normal!important;line-height:25px!important}
 .loox-session-meta strong{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:900px){.loox-session-rail{top:65px!important}}
+
+/* Remove the full-width composer dock, not the purple glass composer itself. */
+.lig-body #lig-generate-view #lig-compose-wrap{
+ background:transparent!important;
+ background-image:none!important;
+ border:0!important;
+ border-top:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+}
+.lig-body #lig-generate-view #lig-compose-wrap::before,
+.lig-body #lig-generate-view #lig-compose-wrap::after{display:none!important}
+.lig-body #lig-generate-view #lig-compose-wrap .lig-compose-card{
+ background:var(--loox-composer-glass)!important;
+ backdrop-filter:blur(16px)!important;
+ -webkit-backdrop-filter:blur(16px)!important;
+}
+.loox-session-meta{min-width:0}
+.loox-session-meta strong{flex:1 1 100%;min-width:0;max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
