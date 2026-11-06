@@ -15,3 +15,21 @@ body.loox-prompt-compact .lig-compose-wrap{width:100%;min-width:0}
 .loox-prompt-setting .lig-select-menu{min-width:250px;left:auto;right:0;top:auto;bottom:calc(100% + 7px)}
 .loox-prompt-setting select:not(.lig-native-select){min-height:36px;width:auto;max-width:240px;padding:7px 30px 7px 10px;font-size:12px;border-radius:10px}
 @media(max-width:680px){.loox-prompt-toolbar{align-items:flex-start}.loox-prompt-controls{width:100%}.loox-prompt-setting{flex:1 1 130px}.loox-prompt-setting .lig-custom-select,.loox-prompt-setting select:not(.lig-native-select){width:100%;max-width:none}.loox-prompt-setting .lig-select-menu{min-width:min(260px,85vw)}}
+
+/* Grok-inspired aspect ratio picker with visual preview and real native values. */
+.loox-ratio-host{position:relative}
+.loox-ratio-host>.lig-native-select,.loox-ratio-host>select,.loox-ratio-host>.lig-custom-select{display:none!important}
+.loox-ratio-button{height:37px;padding:7px 13px;background:#27242d;color:#f4edf9;border:1px solid #504956;border-radius:12px;font:inherit;font-size:12px;font-weight:750;white-space:nowrap;cursor:pointer}
+.loox-ratio-pop{position:absolute;bottom:calc(100% + 10px);right:0;z-index:400;display:flex;gap:8px;width:min(420px,calc(100vw - 28px));padding:0;background:transparent;filter:drop-shadow(0 16px 25px #0009)}
+.loox-ratio-pop[hidden]{display:none!important}
+.loox-ratio-preview,.loox-ratio-choices{background:#232123;border:1px solid #39363b;border-radius:16px}
+.loox-ratio-preview{flex:1;min-width:135px;display:grid;place-items:center;padding:18px;min-height:205px;background-image:linear-gradient(#ffffff0b 1px,transparent 1px),linear-gradient(90deg,#ffffff0b 1px,transparent 1px);background-size:33.333% 33.333%;background-color:#232123}
+.loox-ratio-shape{width:auto;height:auto;max-width:100%;max-height:145px;min-width:45px;min-height:45px;border:2px solid #c9c7c9;border-radius:2px;aspect-ratio:1/1;box-sizing:border-box}
+.loox-ratio-choices{flex:1.1;min-width:165px;padding:8px;display:flex;flex-direction:column}
+.loox-ratio-choices button{display:flex;align-items:center;gap:10px;text-align:left;border:0;background:transparent;color:#e7e5e9;border-radius:9px;padding:10px 9px;cursor:pointer;font:inherit;font-size:12px}
+.loox-ratio-choices button:hover,.loox-ratio-choices button.selected{background:#3c383e}
+.loox-ratio-value{min-width:38px;font-weight:800}.loox-ratio-name{color:#aaa5ac}.loox-ratio-tick{margin-left:auto;visibility:hidden}.loox-ratio-choices button.selected .loox-ratio-tick{visibility:visible}
+.loox-quality-controls{display:flex;align-items:center;gap:7px}
+.loox-quality-setting[hidden]{display:none!important}
+.loox-quality-setting select{display:block!important;width:auto!important;min-width:76px;max-width:115px;padding:9px 7px!important;border:1px solid #504956!important;border-radius:11px!important;background:#27242d!important;color:#f4edf9!important;font-size:12px!important}
+@media(max-width:680px){.loox-ratio-pop{right:-60px;max-width:calc(100vw - 20px)}.loox-ratio-preview{min-width:100px}.loox-ratio-choices{min-width:145px}.loox-ratio-choices button{padding:9px 5px;gap:5px}}
