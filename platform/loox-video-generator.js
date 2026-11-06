@@ -1,4 +1,4 @@
-import {MediaSessions} from './loox-image-sessions.js?v=3';
+import {MediaSessions} from './loox-image-sessions.js?v=4';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=7';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
