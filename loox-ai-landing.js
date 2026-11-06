@@ -28,3 +28,57 @@
   });
  });
 })();
+
+/* Hero background: crossfade between six locally hosted images every three seconds. */
+(() => {
+ 'use strict';
+ const layers=[...document.querySelectorAll('.loox-landing-art .loox-landing-slide')];
+ if(layers.length!==2)return;
+ const sources=[
+  'assets/ai-hero/creative-collage.jpg',
+  'assets/ai-hero/street-art.jpg',
+  'assets/ai-hero/fantasy-creator.jpg',
+  'assets/ai-hero/retro-media.jpg',
+  'assets/ai-hero/surreal-collage.jpg',
+  'assets/ai-hero/enchanted-portrait.jpg'
+ ];
+ if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
+ let currentIndex=0,activeLayer=0,busy=false;
+ const preloads=new Map();
+ function preload(src){
+  if(!preloads.has(src)){
+   preloads.set(src,new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+     if(typeof img.decode==='function')img.decode().then(()=>resolve(true),()=>resolve(true));
+     else resolve(true);
+    };
+    img.onerror=()=>resolve(false);
+    img.src=src;
+   }));
+  }
+  return preloads.get(src);
+ }
+ void preload(sources[1]);
+ async function changeSlide(){
+  if(busy||document.hidden)return;
+  busy=true;
+  try{
+   const nextIndex=(currentIndex+1)%sources.length;
+   const src=sources[nextIndex];
+   if(!(await preload(src))){currentIndex=nextIndex;return;}
+   const incoming=layers[1-activeLayer],outgoing=layers[activeLayer];
+   incoming.src=src;
+   if(typeof incoming.decode==='function'){
+    try{await incoming.decode();}catch{currentIndex=nextIndex;return;}
+   }
+   incoming.classList.add('is-current');
+   outgoing.classList.remove('is-current');
+   activeLayer=1-activeLayer;
+   currentIndex=nextIndex;
+   void preload(sources[(currentIndex+1)%sources.length]);
+  }finally{busy=false;}
+ }
+ const timer=setInterval(changeSlide,3000);
+ window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
+})();

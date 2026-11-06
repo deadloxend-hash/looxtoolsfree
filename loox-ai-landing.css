@@ -100,3 +100,43 @@ body.loox-image-landing .loox-visually-hidden{
  body.loox-image-landing .loox-landing-generate,
  body.loox-image-landing .loox-landing-ideas button{transition:none;transform:none}
 }
+
+/* Decorative rotating artwork on the AI home hero; keep all interactions above it. */
+body.loox-image-landing .loox-landing-hero {
+ background:#110b19!important;
+ overflow:hidden;
+}
+body.loox-image-landing .loox-landing-art {
+ position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+ background:#110b19;
+}
+body.loox-image-landing .loox-landing-slide {
+ position:absolute;inset:0;width:100%;height:100%;display:block;
+ object-fit:cover;object-position:center center;
+ opacity:0;transition:opacity 1000ms ease-in-out;
+ will-change:opacity;
+}
+body.loox-image-landing .loox-landing-slide.is-current {opacity:1}
+body.loox-image-landing .loox-landing-hero::before {
+ z-index:1;
+ background:
+  linear-gradient(90deg,rgba(9,6,16,.86) 0%,rgba(9,6,16,.69) 38%,rgba(9,6,16,.20) 88%),
+  linear-gradient(180deg,rgba(11,7,17,.25),rgba(11,7,17,.22) 60%,rgba(11,7,17,.65));
+}
+body.loox-image-landing .loox-landing-inner {
+ position:relative;z-index:2;
+}
+body.loox-image-landing .loox-landing-kicker,
+body.loox-image-landing h1#loox-landing-heading,
+body.loox-image-landing .loox-landing-subtitle {
+ text-shadow:0 2px 14px rgba(0,0,0,.55);
+}
+@media(max-width:600px) {
+ body.loox-image-landing .loox-landing-slide {object-position:74% center}
+ body.loox-image-landing .loox-landing-hero::before {
+  background:linear-gradient(180deg,rgba(9,6,16,.86),rgba(9,6,16,.66) 48%,rgba(9,6,16,.79));
+ }
+}
+@media(prefers-reduced-motion:reduce) {
+ body.loox-image-landing .loox-landing-slide {transition:none;will-change:auto}
+}
