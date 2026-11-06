@@ -14,7 +14,8 @@ export class MediaSessions {
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
   this.rail.append(head,this.button('＋ New session',()=>this.fresh()),this.list,this.more);this.root.append(this.rail);
   this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim);
-  this.collapse(matchMedia('(max-width:900px)').matches);
+  // New generator workspaces begin with Generative sessions expanded on every screen size.
+  this.collapse(false);
   const main=this.root.closest('main');
   const layout=()=>{const v=window.visualViewport,h=document.querySelector('body > header');const top=Math.max(main.getBoundingClientRect().top,h?.getBoundingClientRect().bottom||0);document.documentElement.style.setProperty('--loox-workspace-height',Math.max(180,(v?.height||innerHeight)+(v?.offsetTop||0)-top)+'px');};
   if(window.ResizeObserver)new ResizeObserver(layout).observe(document.querySelector('body > header')||this.root);
