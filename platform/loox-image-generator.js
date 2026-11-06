@@ -170,7 +170,8 @@ async function initWorkspace(){
  let currentGenerationId=null;
  const sessions=new MediaSessions({state,api,root:document.querySelector('.lig-main'),feed:results,prompt:promptField,notice:setMessage,isBusy:()=>isBusy,reuse:async entry=>{
   if(entry.media_type==='video'){location.assign('ai-video-generator.html?session='+sessions.id+'&reuse='+entry.id+'#generate');return;}
-  if(entry.model_id&&modelField.querySelector('option[value="'+entry.model_id+'"]'))modelField.value=entry.model_id;
+  const restoredModel=entry.model_id||(entry.model_name==='FLUX.1 Schnell'?'flux':null);
+  if(restoredModel&&modelField.querySelector('option[value="'+restoredModel+'"]'))modelField.value=restoredModel;
   if(entry.ratio)ratioField.value=entry.ratio;
   modelField.dispatchEvent(new Event('change'));ratioField.dispatchEvent(new Event('change'));
   for(const [key,value] of Object.entries(entry.settings||{}))if(settingFields[key])settingFields[key].select.value=value;
