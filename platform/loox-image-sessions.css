@@ -73,3 +73,40 @@ body.loox-conversations .loox-prompt-toolbar .loox-prompt-controls{margin-left:a
 body.loox-conversations .lig-compose-card .lig-spacer{display:none}
 @media(max-width:600px){body.loox-conversations .lig-compose-card{padding:10px!important;gap:4px 6px}body.loox-conversations .lig-compose-card>.loox-prompt-toolbar{grid-column:1 / -1}body.loox-conversations .lig-compose-card>.lig-compose-actions{grid-column:2}body.loox-conversations .loox-prompt-toolbar .loox-prompt-controls{max-width:100%}}
 body.loox-conversations.lig-body.loox-sitewide-active > main.lig-workspace{height:var(--loox-workspace-height,calc(100dvh - 102px))!important;max-height:var(--loox-workspace-height,calc(100dvh - 102px))!important;min-height:0!important;display:block!important}
+
+/* LOOX AI: unobtrusive scrollbars for the conversation and session history.
+   Scope to the workspaces: keep the sitewide navigation/sidebar untouched. */
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(177, 146, 198, .24) transparent;
+}
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: transparent;
+}
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *)::-webkit-scrollbar-track,
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *)::-webkit-scrollbar-corner {
+  background: transparent;
+  box-shadow: none;
+}
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *)::-webkit-scrollbar-thumb {
+  background: rgba(177, 146, 198, .24);
+  border-radius: 999px;
+  border: 0;
+}
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *)::-webkit-scrollbar-thumb:hover {
+  background: rgba(177, 146, 198, .42);
+}
+:where(body.loox-conversations .lig-main, body.loox-conversations .lig-main *,
+       body.ai-chat .ai-chat-layout, body.ai-chat .ai-chat-layout *)::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
