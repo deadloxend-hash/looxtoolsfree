@@ -29,18 +29,17 @@
  });
 })();
 
-/* Hero background: crossfade between six locally hosted images every six seconds. */
+/* Hero background: crossfade between five locally hosted images every six seconds. */
 (() => {
  'use strict';
  const layers=[...document.querySelectorAll('.loox-landing-art .loox-landing-slide')];
  if(layers.length!==2)return;
  const sources=[
-  'assets/ai-hero/creative-collage.jpg',
-  'assets/ai-hero/street-art.jpg',
-  'assets/ai-hero/fantasy-creator.jpg',
-  'assets/ai-hero/retro-media.jpg',
-  'assets/ai-hero/surreal-collage.jpg',
-  'assets/ai-hero/enchanted-portrait.jpg'
+  'assets/ai-hero/purple-cosmic-dreamscape.jpg',
+  'assets/ai-hero/neon-cosmic-creators-island.jpg',
+  'assets/ai-hero/retro-neon-mustang-sunset.jpg',
+  'assets/ai-hero/neon-graffiti-lion-and-street-artist.jpg',
+  'assets/ai-hero/celestial-ruins-and-golden-cracks.jpg'
  ];
  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
  let currentIndex=0,activeLayer=0,busy=false;
