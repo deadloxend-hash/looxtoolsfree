@@ -36,3 +36,20 @@
  .loox-session-entry{min-height:34px;padding:4px 6px;gap:8px;font-size:12px;line-height:1.25}
  .loox-session-entry img,.loox-session-placeholder{width:25px;height:25px;flex-basis:25px;border-radius:5px}
 }
+
+/* Keep sessions in a stationary side panel, independent of the feed.
+   Allow manual overflow without a visible scrollbar or scroll chaining. */
+.loox-session-rail{
+ position:fixed;
+ top:var(--loox-session-top, 125px);
+ bottom:0;
+ height:auto;
+ overflow-x:hidden;
+ overflow-y:auto;
+ scrollbar-width:none;
+ overscroll-behavior:contain;
+}
+.loox-session-rail::-webkit-scrollbar{display:none}
+@media(max-width:900px){
+ .loox-session-rail{top:65px}
+}
