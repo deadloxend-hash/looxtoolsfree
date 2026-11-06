@@ -80,7 +80,13 @@
    if(workspaces[page]===kind){link.classList.add('is-active');link.setAttribute('aria-current','page');}
    tabs.append(link);
   });
-  const templateTabs=native.querySelector('.lig-head-tabs');
+  // AI Agent has no in-page template controller: link to Image templates.
+   if(page==='ai-chat.html'){
+    const templatesLink=el('a','loox-ai-workspace-tab loox-ai-template-tab','Templates');
+    templatesLink.href=url('ai-text-to-image.html#templates');
+    tabs.append(templatesLink);
+   }
+   const templateTabs=native.querySelector('.lig-head-tabs');
   const accountHost=native.querySelector('[data-loox-account]');
   if(templateTabs)native.insertBefore(tabs,templateTabs);
   else if(accountHost)native.insertBefore(tabs,accountHost);
@@ -211,8 +217,9 @@
  const closeDrawer=()=>setDrawer(false);
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
- desktop.addEventListener('change',()=>setDrawer(desktop.matches&&isHome));
- setDrawer(desktop.matches&&isHome);
+ // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
+  desktop.addEventListener('change',()=>setDrawer(desktop.matches&&isHome&&page!=='ai-chat.html'));
+ setDrawer(desktop.matches&&isHome&&page!=='ai-chat.html');
  scrim.addEventListener('click',closeDrawer);
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only
