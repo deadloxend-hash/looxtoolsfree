@@ -69,6 +69,7 @@ body.loox-creative-landing[data-creative-mode="video"] .creative-landing{
  body.loox-creative-landing[data-creative-mode="video"] .creative-landing{min-height:calc(100svh - var(--loox-sitewide-height,104px));height:auto}
 }
 
+body.loox-creative-landing[data-creative-mode="video"]{height:auto!important;min-height:100dvh;overflow-y:auto!important;overflow-x:clip!important}
 /* Full-viewport AI VIDEO hero. The global experience layout applies a left
    rail gutter to main.experience-content; unlike the image page, the video
    page previously did not cancel it. Both landing heroes now share an origin. */
