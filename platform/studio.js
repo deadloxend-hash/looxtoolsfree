@@ -79,8 +79,12 @@ form.append(button('Reset workspace',()=>{if(busy)return;form.reset();source=nul
 const run=el('button',tool==='generate_video'?'Generate video':isText?'Generate image':'Process image','lx-button lx-primary');run.type='submit';
 const cost=el('small','Checking service availability…');form.append(cost,run);
 const operation=()=>scale?scale.value:tool;
-function showCost(){const n=state.config?.operations.find(o=>o.id===operation())?.cost;cost.textContent=available&&n?n+' AI credits on success. Failed jobs release reserved credits.':'AI processing is awaiting service configuration. No credits will be used.';}
-config().then(c=>{available=c.ai;showCost();}).catch(()=>{showCost();});
+function showCost(){const n=state.config?.operations.find(o=>o.id===operation())?.cost;cost.textContent=available&&n?n+' AI credits on success. Failed jobs release reserved credits.':isSwap?'ReActor needs a running licensed local worker. No credits will be charged until enabled.':'AI processing is awaiting service configuration. No credits will be used.';}
+config().then(c=>{
+ available=isSwap?Boolean(c.faceSwap?.available):c.ai;
+ showCost();
+ if(isSwap&&!available)msg(notice,'ReActor face swap is not active yet. Your local PC worker and a commercial InSwapper model license are required. No credits will be charged.');
+}).catch(()=>{showCost();});
 form.addEventListener('input',()=>{requestId=null;showCost();});
 function display(url){
  const img=el(tool==='generate_video'?'video':'img');if(tool==='generate_video'){img.controls=true;img.playsInline=true;img.style.maxWidth='100%';}else img.alt='AI result';img.src=url;const frame=el('div',null,'lx-compare');frame.append(img);result.replaceChildren(el('h2','Your result'),frame);
@@ -112,7 +116,7 @@ showRecentResult();
 form.onsubmit=async e=>{
  e.preventDefault();if(busy)return;
  if(!state.user){auth();return;}
- if(!available)return msg(notice,'AI processing setup is pending.');
+ if(!available)return msg(notice,isSwap?'Face Swap requires a running ReActor worker and a licensed InSwapper model. No credits used.':'AI processing setup is pending.');
  const op=operation(),price=state.config.operations.find(o=>o.id===op)?.cost;
  if(!requestId && state.account && state.account.wallet.balance<price){pricing();return;}
  busy=true;progress.hidden=false;run.disabled=true;
