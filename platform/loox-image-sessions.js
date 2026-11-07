@@ -15,7 +15,8 @@ export class MediaSessions {
   this.toggle=this.button('‹',()=>this.collapse(!this.rail.classList.contains('collapsed')));this.toggle.className='loox-session-toggle';this.toggle.setAttribute('aria-label','Toggle generative sessions');head.append(this.toggle);
   this.list=el('div','loox-session-list');this.list.id='loox-media-sessions';this.toggle.setAttribute('aria-controls',this.list.id);
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
-  this.rail.replaceChildren(head,this.button('＋ New session',()=>this.fresh()),this.list,this.more);
+  const recent=el('div','loox-session-recent-label','Recent');
+  this.rail.replaceChildren(head,this.button('＋ New chat',()=>this.fresh()),recent,this.list,this.more);
   if(!this.rail.isConnected)this.root.append(this.rail);
   this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim);
   // New generator workspaces begin with Generative sessions expanded on every screen size.
@@ -36,14 +37,20 @@ export class MediaSessions {
  bottom(near){if(near)requestAnimationFrame(()=>this.scroll.scrollTo({top:this.scroll.scrollHeight,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'}));}
  async init(){const uid=this.state.user?.id||null;if(uid===this.user)return;if(this.user&&uid!==this.user){this.id=null;this.url();}this.user=uid;this.epoch++;this.id=null;this.feed.replaceChildren();if(!uid){this.list.replaceChildren(el('p','','Sign in to save your sessions.'));this.more.hidden=true;return;}await this.loadList();const params=new URLSearchParams(location.search),id=params.get('session');if(id)await this.open(id);const reuse=params.get('reuse');if(reuse&&id){const entry=checked(await this.state.client.from('loox_media_entries').select('*').eq('id',reuse).eq('session_id',id).single());const u=new URL(location.href);u.searchParams.delete('reuse');history.replaceState(null,'',u.pathname+u.search+u.hash);await this.reuse(entry);}}
  async fresh(){if(this.isBusy())throw Error('Wait for the current generation.');this.epoch++;this.id=null;this.feed.replaceChildren();this.url();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);this.prompt.focus();}
+ pinKey(){return 'loox-pinned-media-sessions:'+this.state.user?.id;}
+ pinnedSessions(){try{const v=JSON.parse(localStorage.getItem(this.pinKey())||'[]');return Array.isArray(v)?v:[]}catch{return []}}
+ togglePinnedSession(id){const pinned=this.pinnedSessions();const next=pinned.includes(id)?pinned.filter(x=>x!==id):[id,...pinned];try{localStorage.setItem(this.pinKey(),JSON.stringify(next))}catch{}this.refreshPinnedRows();}
+ refreshPinnedRows(){const pinned=this.pinnedSessions(),rows=[...this.list.querySelectorAll('.loox-session-row')];rows.forEach(row=>{const active=pinned.includes(row.dataset.session);row.classList.toggle('is-pinned',active);const btn=row.querySelector('.loox-session-pin');if(btn){btn.textContent=active?'◆':'♧';btn.title=active?'Unpin chat':'Pin chat';btn.setAttribute('aria-label',btn.title);btn.setAttribute('aria-pressed',String(active));}});rows.sort((a,b)=>Number(pinned.includes(b.dataset.session))-Number(pinned.includes(a.dataset.session)));rows.forEach(row=>this.list.append(row));}
  async loadList(reset=true){
   if(!this.state.user)return;const uid=this.state.user.id;if(reset)this.offset=0;
   const rows=checked(await this.state.client.from('loox_media_sessions').select('*').order('updated_at',{ascending:false}).order('id').range(this.offset,this.offset+39));
   if(uid!==this.state.user?.id)return;if(reset)this.list.replaceChildren();this.offset+=rows.length;this.more.hidden=rows.length<40;
   for(const s of rows){const row=el('div','loox-session-row');row.classList.toggle('active',s.id===this.id);const open=this.button(s.title,()=>this.open(s.id));open.className='loox-session-entry';open.title=s.title+'\nCreated '+date(s.created_at)+'\nLast activity '+date(s.updated_at);
    const menu=el('details','loox-session-menu'),summary=el('summary','','⋯');summary.setAttribute('aria-label','Session actions');
-   menu.append(summary,this.button('Rename',async()=>{const title=window.prompt('Session name',s.title)?.trim();if(!title)return;checked(await this.state.client.from('loox_media_sessions').update({title:title.slice(0,120)}).eq('id',s.id));await this.loadList();}),this.button('Delete session',async()=>{if(this.isBusy())throw Error('Wait for the current generation.');if(!confirm('Delete this session? Original media files and credit records stay in your account.'))return;checked(await this.state.client.from('loox_media_sessions').delete().eq('id',s.id));if(this.id===s.id)await this.fresh();else await this.loadList();}));const thumb=el('span','loox-session-thumb','✧');row.append(thumb,open,menu);this.list.append(row);row.dataset.session=s.id;
+   const pin=this.button('♧',()=>this.togglePinnedSession(s.id));pin.className='loox-session-pin';pin.title='Pin chat';pin.setAttribute('aria-label','Pin chat');pin.setAttribute('aria-pressed','false');
+   menu.append(summary,this.button('Rename',async()=>{const title=window.prompt('Session name',s.title)?.trim();if(!title)return;checked(await this.state.client.from('loox_media_sessions').update({title:title.slice(0,120)}).eq('id',s.id));await this.loadList();}),this.button('Delete session',async()=>{if(this.isBusy())throw Error('Wait for the current generation.');if(!confirm('Delete this session? Original media files and credit records stay in your account.'))return;checked(await this.state.client.from('loox_media_sessions').delete().eq('id',s.id));if(this.id===s.id)await this.fresh();else await this.loadList();}));const thumb=el('span','loox-session-thumb','✧');row.append(thumb,open,pin,menu);this.list.append(row);row.dataset.session=s.id;
   }
+  this.refreshPinnedRows();
   this.loadThumbnails(rows,uid).catch(()=>{});
   if(!this.offset)this.list.append(el('p','','Your saved sessions will appear here.'));
  }
