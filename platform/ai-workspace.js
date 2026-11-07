@@ -1,4 +1,4 @@
-import {mountWorkspaceNavigation} from './workspace-navigation.js?v=1';
+import {mountWorkspaceNavigation} from './workspace-navigation.js?v=2';
 import {auth,state,initialize,pricing} from './account.js?v=9';
 
 const $=id=>document.getElementById(id);

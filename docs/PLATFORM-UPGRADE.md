@@ -49,6 +49,32 @@ Live PostgreSQL synthetic social tests passed and rolled back all writes. Before
 
 ## Remaining work — do not mark the entire brief complete
 
-R2 delivery/migration and quotas need server credentials or another explicitly configured storage binding. No existing media was migrated or deleted. True reels/watch-view accounting, server-validated five-minute video uploads, avatar-object garbage collection, cover images, follower-list browsing, private-generation collection items, collection covers/reordering, comment replies/pinning, full notification pagination, granular account suspensions, model enable/disable management, invoice-level spend, pricing conversion/margin policy, and the large original template library/workflow catalog remain outstanding.
+R2 delivery/migration and quotas need server credentials or another explicitly configured storage binding. No existing media was migrated or deleted. A dedicated vertical reels feed, server-validated five-minute video uploads, avatar-object garbage collection, cover images, follower-list browsing, private-generation collection items, collection covers/reordering, comment replies/pinning, full notification pagination, granular account suspensions, model enable/disable management, invoice-level spend, pricing conversion/margin policy, and expansion beyond the initial 40 original presets remain outstanding.
 
 Paid providers, real email delivery/reset, authenticated browser flows and all requested mobile widths still require acceptance testing. No 2K/4K or longer-duration capabilities were invented. An existing disabled leaked-password-protection advisor remains; no billing plan was changed to enable it.
+
+## Phase 7: original preset catalog
+
+Added 40 original prompt starters (25 image, 15 video), categorized searchable Templates and Workflow Starters pages, persistent private template saves, deduplicated launches per account/day, and admin catalog enable/disable with audit records. All previews are clearly marked prompt presets and use original CSS graphics; no third-party media is copied. Selecting a preset only stages a prompt. Actual generation requires clicking Generate in the real workspace.
+
+Added server avatar decoding/cropping and conservative limits (20 uploads / 5 MiB per account, 100 MiB avatar bucket gate); no old objects deleted. This gate does not claim to cap overall provider spending or R2 usage.
+
+Live browser checks: public approved-post feed loads, media viewer shows the correct model and shared prompt, and Recreate opens the image generator with that prompt filled without submitting generation. Found and fixed a legacy empty-composer margin rule that could place its left edge beneath the expanded rail.
+
+## Video view accounting
+
+Added authenticated playback sessions with an elapsed-time threshold and per-account/post/UTC-day deduplication. Full-viewer user playback counts; gallery previews do not. Local two-second videos use a one-second threshold; other current video adapters use five seconds. Self-views are excluded. Counts appear on video cards, viewers and public creator summaries. Anonymous views are deliberately not counted in this first version. Local tests verify token binding/expiry and PostgreSQL deduplication. No paid video was generated to test playback end to end.
+
+The expanded live synthetic-write test for views did not run because its connector confirmation expired. The earlier live community isolation test and all local PostgreSQL tests passed; do not conflate those with an end-to-end live video-view test.
+
+## Release references
+
+- Frontend community release: c1f525e5ad3548f80c1e58185dd71de144f42bec (GitHub Pages workflow 42370369549, success).
+- Backend social/admin release: 44fb37fba402b69236f8f469f19e673a9f8cbcc1, production READY.
+- Backend pricing release: fc1e0c861cdb8ff71071624570b73238800fe961, production READY.
+- Backend catalog/quota/view release: de84afd1a47f7e6e0a208ea9792d366a1d1bacb5.
+- Applied additional migrations: original_loox_template_catalog, server_validated_avatar_upload_quotas, deduplicated_community_video_views.
+- Final local validation: 12 backend test groups, 9 frontend tests pass; 16 provider adapter mocks pass without provider calls.
+- Current data preservation: 25 jobs, 52 ledger rows, 437 wallet credits, 4 posts, 20 existing storage objects remain.
+
+Changes are scoped to the two LOOX Tools repositories. No MediaGrab code, deployments, DNS, files or account resources were modified.

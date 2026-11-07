@@ -189,6 +189,8 @@
   ['AI Studio','ai-image-landing.html','ai'],
   ['Community','community.html','grid'],
   ['Trending','trending.html','ai'],
+  ['Templates','templates.html','grid'],
+  ['Workflow starters','workflows.html','folder'],
   ['Collections','collections.html','folder'],
   ['My creator profile','creator.html','user']
  ]);

@@ -4,3 +4,6 @@
 @media(max-height:650px){.loox-workspace-navigation{max-height:36dvh}.loox-workspace-navigation a{min-height:30px}}
 @media(prefers-reduced-motion:reduce){.loox-session-rail,.ai-recent-panel{transition:none!important}}
 @media(min-width:901px){body.ai-recent-open .ai-chat-body{margin-left:var(--loox-ai-sidebar-width);min-width:0;width:calc(100% - var(--loox-ai-sidebar-width));box-sizing:border-box}}
+/* Legacy empty-state rules set a margin shorthand. Position the whole composer
+   inside the available desktop workspace so its input cannot sit under the rail. */
+@media(min-width:901px){body.loox-uc.loox-conversations.lig-body .lig-main:not(.loox-sessions-collapsed):not(.loox-community-view)>.lig-compose-wrap{left:var(--loox-ai-sidebar-width)!important;margin-left:0!important;width:calc(100% - var(--loox-ai-sidebar-width))!important}body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-collapsed>.lig-compose-wrap{left:0!important;margin-left:0!important;width:100%!important}}
