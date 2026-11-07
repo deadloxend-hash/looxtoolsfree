@@ -106,6 +106,10 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   main.append(node('strong','loox-model-name',describe(id)));
   const description=node('span','loox-model-description',model.description||((mode==='video'&&id==='wan21')?'Local GPU · text to video':mode==='video'?'Cloud video generation':'AI image generation'));
   main.append(description);
+  if(model.status==='coming_soon'||model.status==='temporarily_unavailable'){
+   const statusLabel=model.status==='coming_soon'?'Coming soon':'Temporarily unavailable';
+   main.append(node('span','loox-model-status',statusLabel));
+  }
   const price=node('span','loox-model-cost',(model.cost??'—')+' credits');
   const state=model.status||'';
   if(state==='coming_soon'||state==='temporarily_unavailable')price.classList.add('is-muted');
