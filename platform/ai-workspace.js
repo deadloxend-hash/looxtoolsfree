@@ -217,6 +217,10 @@ function emptyRecent(message){
  text.className='ai-recent-empty';text.textContent=message;
  recentList.append(text);
 }
+function chatPinKey(){return 'loox-pinned-chat-threads:'+state.user?.id;}
+function pinnedChats(){try{const v=JSON.parse(localStorage.getItem(chatPinKey())||'[]');return Array.isArray(v)?v:[]}catch{return []}}
+function reorderChatPins(){const pinned=pinnedChats(),rows=[...recentList.querySelectorAll('.ai-recent-item')];rows.forEach(row=>{const on=pinned.includes(row.dataset.id);row.classList.toggle('is-pinned',on);const pin=row.querySelector('.loox-session-pin');if(pin){pin.textContent=on?'📌':'📌';pin.title=on?'Unpin chat':'Pin chat';pin.setAttribute('aria-label',pin.title);pin.setAttribute('aria-pressed',String(on));}});rows.sort((a,b)=>Number(pinned.includes(b.dataset.id))-Number(pinned.includes(a.dataset.id)));rows.forEach(row=>recentList.append(row));}
+function toggleChatPin(id){const current=pinnedChats(),next=current.includes(id)?current.filter(x=>x!==id):[id,...current];try{localStorage.setItem(chatPinKey(),JSON.stringify(next))}catch{}reorderChatPins();}
 function createRecentRow(t){
  const row=document.createElement('div');
  row.className='ai-recent-item';row.dataset.id=t.id;
@@ -248,6 +252,7 @@ function createRecentRow(t){
    note('Conversation deleted.');
   }catch(error){del.disabled=false;note(error.message);}
  });
+ const pin=document.createElement('button');pin.type='button';pin.className='loox-session-pin';pin.textContent='📌';pin.title='Pin chat';pin.setAttribute('aria-label','Pin chat');pin.setAttribute('aria-pressed','false');pin.addEventListener('click',()=>toggleChatPin(t.id));
  const menu=document.createElement('details');menu.className='loox-session-menu';
  const summary=document.createElement('summary');summary.textContent='⋯';summary.setAttribute('aria-label','Session actions');
  const rename=document.createElement('button');rename.type='button';rename.textContent='Rename';
@@ -256,7 +261,7 @@ function createRecentRow(t){
   const title=window.prompt('Session name',t.title)?.trim();if(!title)return;
   try{const result=await state.client.from('loox_chat_threads').update({title:title.slice(0,120)}).eq('id',t.id);if(result.error)throw result.error;await loadRecent(true);}catch(error){note(error.message);}
  });
- del.textContent='Delete';menu.append(summary,rename,del);const icon=document.createElement('span');icon.className='ai-session-icon';icon.textContent='✧';icon.setAttribute('aria-hidden','true');row.append(icon,open,menu);
+ del.textContent='Delete';menu.append(summary,rename,del);const icon=document.createElement('span');icon.className='ai-session-icon';icon.textContent='✧';icon.setAttribute('aria-hidden','true');row.append(icon,open,pin,menu);
  return row;
 }
 async function loadRecent(reset=true){
@@ -268,6 +273,7 @@ async function loadRecent(reset=true){
   if(reset)recentList.replaceChildren();
   if(!data.threads?.length&&!recentOffset)emptyRecent('Your conversations will appear here after you send a message.');
   for(const t of data.threads||[])recentList.append(createRecentRow(t));
+  reorderChatPins();
   recentOffset+=(data.threads||[]).length;
   recentMore.hidden=!data.has_more;
   renderSelectedThread();
