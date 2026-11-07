@@ -5,15 +5,15 @@
 <meta name="theme-color" content="#0b0b10">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.supabase.co; media-src 'self' blob: https://*.supabase.co; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="no-referrer">
-<title>AI Video Generator | Wan 2.1 Text to Video | LOOX Tools</title>
-<meta name="description" content="Generate AI video from a text prompt with Wan 2.1 in LOOX Studio. Private account history, MP4 previews, aspect ratios and generation credits.">
+<title>AI Video Generator | Wan Video Models | LOOX Tools</title>
+<meta name="description" content="Generate AI video with Wan 2.1 local and cloud Wan 2.2, 2.5 and 2.6 models. Text-to-video, image-to-video, and private video history.">
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/ai-video-generator.html">
 <link rel="stylesheet" href="platform/platform.css?v=15">
 <link rel="stylesheet" href="loox-experience.css?v=130">
 <link rel="stylesheet" href="platform/loox-image-generator.css?v=3">
 <link rel="stylesheet" href="platform/loox-video-generator.css?v=1">
 <script defer src="loox-experience.js?v=131"></script>
-<script type="module" src="platform/loox-video-generator.js?v=9"></script>
+<script type="module" src="platform/loox-video-generator.js?v=10"></script>
 <link rel="stylesheet" href="loox-page-back.css?v=2">
 <link rel="stylesheet" href="loox-sitewide-nav.css?v=47"><link rel="stylesheet" href="platform/loox-prompt-controls.css?v=2"><link rel="stylesheet" href="platform/loox-shared-composer.css?v=2"><link rel="stylesheet" href="platform/loox-focus-generator.css?v=2"><link rel="stylesheet" href="platform/loox-image-sessions.css?v=15"><link rel="stylesheet" href="platform/community.css?v=1"></head>
 <body class="loox-ai-sessions-only loox-conversations loox-focus-generator lx-shell loox-generator-no-topnav lig-body lig-shared-ai-nav lvg-body">
@@ -33,8 +33,24 @@
   <div class="lig-settings-head"><h2>General settings</h2><span class="lig-setting-tag">LOOX Studio</span></div>
   <div class="lig-setting-block">
    <div class="lig-row-label"><label for="lvg-model">Model</label></div>
-   <select id="lvg-model" aria-label="Video model" disabled><option selected value="wan21">Wan 2.1 · T2V 1.3B</option></select>
-   <p class="lig-help">Text to video · 33 frames at 16 fps (about 2 seconds). Your PC's GPU processes each request.</p>
+   <select id="lvg-model" aria-label="Video model">
+    <option selected value="wan21">Wan 2.1 · Local PC</option>
+    <option value="wan22_5b_fast">Wan 2.2 5B Fast · Text/Image</option>
+    <option value="wan22_t2v_fast">Wan 2.2 T2V Fast · Text</option>
+    <option value="wan22_i2v_fast">Wan 2.2 I2V Fast · Image</option>
+    <option value="wan25_i2v">Wan 2.5 I2V · Image</option>
+    <option value="wan26_i2v_flash">Wan 2.6 I2V Flash · Image</option>
+   </select>
+   <p class="lig-help" id="lvg-model-note">Choose a model. Image-to-video models need a reference photo.</p>
+  </div>
+  <div class="lig-setting-block" id="lvg-duration-block">
+   <label for="lvg-duration">Video length</label>
+   <select id="lvg-duration"><option value="5">5 seconds</option><option value="10">10 seconds</option></select>
+  </div>
+  <div class="lig-setting-block" id="lvg-image-block">
+   <label for="lvg-image">Reference image <span id="lvg-image-required">(optional)</span></label>
+   <input type="file" id="lvg-image" accept="image/png,image/jpeg,image/webp">
+   <p class="lig-help">Upload JPG, PNG or WebP, up to 2.4 MB. Your image is sent securely to the video model.</p>
   </div>
   <div class="lig-setting-block">
    <label for="lvg-ratio">Aspect ratio</label>
@@ -55,7 +71,7 @@
  </aside>
  <section class="lig-main loox-sessions-layout" aria-label="LOOX video creative workspace">
   <div class="lig-content-scroll" id="lvg-generate-view">
-   <div class="lig-main-heading"><div><h1>Generate videos</h1><p>Turn your ideas into short clips with Wan 2.1 and keep finished MP4 videos in your private account.</p></div><span class="lig-icon-badge">✧ &nbsp;LOOX AI</span></div>
+   <div class="lig-main-heading"><div><h1>Generate videos</h1><p>Create AI videos with local and cloud Wan models. Animate uploaded images or generate from text.</p></div><span class="lig-icon-badge">✧ &nbsp;LOOX AI</span></div>
    <div id="lvg-results" class="lig-results" aria-live="polite"></div>
    <section class="lig-history" aria-label="Account video generation history">
     <div class="lig-history-head"><h2>Your recent generations</h2><small id="lvg-history-message">Loading account history…</small></div>
@@ -70,7 +86,7 @@
      <label for="lvg-prompt">Prompt</label>
      <textarea name="prompt" id="lvg-prompt" rows="2" maxlength="800" required placeholder="A cinematic tracking shot of a fox running through a snowy forest…"></textarea>
      <div class="lig-compose-actions">
-      <span class="lig-image-pill">✧ &nbsp;Wan 2.1 Video</span><span class="lig-spacer"></span>
+      <span class="lig-image-pill">✧ &nbsp;LOOX Video</span><span class="lig-spacer"></span>
       <button id="lvg-generate" class="lig-primary" type="submit">✧ Generate video</button>
      </div>
     </div>
