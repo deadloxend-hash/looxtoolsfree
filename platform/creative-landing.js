@@ -18,5 +18,19 @@ function enter(event){event.preventDefault();try{sessionStorage.setItem(key,JSON
 document.getElementById('creative-landing-form').addEventListener('submit',enter);document.getElementById('creative-cta').addEventListener('click',enter);
 for(const b of document.querySelectorAll('[data-example]'))b.addEventListener('click',()=>{prompt.value=b.dataset.example;prompt.focus();});
 const motion=document.querySelector('video'),toggle=document.getElementById('creative-motion');
-if(motion){if(matchMedia('(prefers-reduced-motion:reduce)').matches||navigator.connection?.saveData){motion.pause();toggle.textContent='Play motion';toggle.setAttribute('aria-label','Play background video');}toggle.addEventListener('click',()=>{if(motion.paused){motion.play().catch(()=>{});toggle.textContent='Pause motion';toggle.setAttribute('aria-label','Pause background video');}else{motion.pause();toggle.textContent='Play motion';toggle.setAttribute('aria-label','Play background video');}});}
+if(motion&&toggle){
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ const managed=Boolean(motion.dataset.videoSrc);
+ let wanted=!reduced.matches&&!navigator.connection?.saveData,visible=true;
+ const update=()=>{const playing=!motion.paused&&!motion.ended;toggle.textContent=playing?'Pause motion':'Play motion';toggle.setAttribute('aria-label',playing?'Pause background video':'Play background video');if(playing)motion.classList.add('is-playing');};
+ async function play(){if(managed&&!motion.getAttribute('src')){motion.src=motion.dataset.videoSrc;motion.load();}try{await motion.play();}catch{}update();}
+ motion.addEventListener('playing',update);motion.addEventListener('pause',update);motion.addEventListener('error',()=>{motion.classList.remove('is-playing');toggle.textContent='Video unavailable';toggle.disabled=true;});
+ if(managed){if(wanted)play();}else if(!wanted)motion.pause();
+ update();
+ toggle.addEventListener('click',()=>{wanted=motion.paused;if(wanted)play();else motion.pause();});
+ reduced.addEventListener('change',()=>{if(reduced.matches){wanted=false;motion.pause();}});
+ if(managed&&'IntersectionObserver' in window)new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(!visible)motion.pause();else if(wanted&&!document.hidden)play();},{threshold:0}).observe(motion.parentElement);
+ if(managed)document.addEventListener('visibilitychange',()=>{if(document.hidden)motion.pause();else if(wanted&&visible)play();});
+}
+
 try{await initialize();await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available)model.value=available.id;else{model.value='flux';status.textContent='Models are temporarily unavailable. You can still prepare your prompt.';}}}catch(error){status.textContent=error.message;}
