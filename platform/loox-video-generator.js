@@ -37,6 +37,10 @@ function updateModelUI(){
  if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
  modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
   m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
+ for(const option of modelField.options){
+  const detail=state.config?.videoModels?.find(x=>x.id===option.value);
+  if(detail)option.textContent=detail.name+' · '+detail.cost+' credits';
+ }
  const info=modelInfo();
  if(info&&!info.available)modelNote.textContent+=' Cloud model is not available yet.';
  accountInfo();checkGPU().catch(()=>{});
