@@ -24,3 +24,9 @@ body.loox-creative-landing{background:#0b0b10;color:#fff;overflow-x:hidden}
 @media(max-width:650px){.loox-creative-landing .creative-landing{height:auto;min-height:calc(100dvh - var(--loox-sitewide-height,104px))}.creative-hero-content{padding:40px 0 60px;width:calc(100% - 28px)}.creative-hero-content h1{font-size:40px}.creative-prompt{padding:14px;margin-top:24px}.creative-prompt-actions{gap:9px}.creative-prompt select{max-width:170px}.creative-examples{gap:5px}.creative-examples button{font-size:10px}.creative-hero-art{object-position:65% center}.creative-art-credit{left:14px;font-size:7px}}
 
 @media(min-width:651px){body.loox-creative-landing{height:100dvh;overflow:hidden!important}.loox-creative-landing .creative-landing{height:calc(100dvh - var(--loox-sitewide-height,64px))!important;min-height:0}}
+
+/* LOOX CLEAN TEXT BRAND: replace ornamental image branding on creator landings. */
+body.loox-creative-landing .lx-brand .loox-plain-logo,
+body.loox-creative-landing .loox-plain-footer-logo{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:clamp(25px,2.5vw,33px);font-weight:850;letter-spacing:-.075em;line-height:1;color:#fff;text-decoration:none;white-space:nowrap}
+body.loox-creative-landing .lx-brand:has(.loox-plain-logo){display:inline-flex;align-items:center;text-decoration:none}
+body.loox-creative-landing .loox-plain-footer-logo{font-size:30px}
