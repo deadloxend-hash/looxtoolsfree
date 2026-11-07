@@ -21,6 +21,16 @@
    controls.append(block);
   }
   toolbar.append(tabs,controls);
+  // The focused generator hides the old settings sidebar. Mount cloud video
+  // duration and reference image controls inside the visible composer instead.
+  if(video){
+   const extras=document.createElement('div');extras.className='loox-video-extra-controls';
+   for(const id of ['lvg-duration-block','lvg-image-block']){
+    const block=document.getElementById(id);
+    if(block){block.classList.add('loox-prompt-setting','loox-video-extra-setting');extras.append(block);}
+   }
+   toolbar.append(extras);
+  }
   // Ratio popover uses the actual generator ratio select as its source of truth.
   const ratioBlock=ratio.closest('.lig-setting-block');
   if(ratioBlock){
