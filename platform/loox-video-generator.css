@@ -33,3 +33,44 @@
 .lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting:not([hidden]){display:flex!important;align-items:center!important;flex:0 1 auto!important}
 .lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{display:inline!important;color:#e9e0ef!important;font-size:11px!important}
 .lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting[hidden]{display:none!important}
+
+/* V4 — aligned model / aspect / duration / reference composer on every screen. */
+.lvg-body #lvg-model.loox-hidden-native-model{display:none!important}
+.lvg-body .loox-prompt-toolbar{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) minmax(270px,auto);
+ gap:10px 14px!important;align-items:center!important;width:100%;
+}
+.lvg-body .loox-prompt-modes{grid-column:1;grid-row:1;min-width:0}
+.lvg-body .loox-prompt-controls{grid-column:2;grid-row:1;display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:9px;min-width:0;width:auto}
+.lvg-body .loox-prompt-controls>.loox-prompt-setting{flex:0 1 auto;min-width:0}
+.lvg-body .loox-prompt-controls>.loox-prompt-setting:has(#lvg-model){width:245px;max-width:min(245px,40vw)}
+.lvg-body .loox-prompt-controls .loox-model-picker{width:100%;display:block!important;min-width:0}
+.lvg-body .loox-prompt-controls .loox-model-trigger{height:35px!important;min-height:35px!important}
+.lvg-body .loox-prompt-controls .loox-ratio-button{white-space:nowrap;min-width:78px}
+.lvg-body .loox-video-extra-controls{grid-column:1/-1;grid-row:2;margin-top:0!important;padding:9px 2px 0!important;display:flex!important;align-items:center!important;justify-content:flex-start;flex-wrap:wrap;gap:10px 17px!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting{height:34px;gap:8px;flex:0 0 auto!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{font-size:11px!important;font-weight:650;color:#d8cce0!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting select{height:33px!important;min-height:33px!important;width:112px!important;max-width:112px!important;padding:4px 8px!important;border:1px solid #655470!important;background:#302737!important;color:#f1ebfa!important;border-radius:9px!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]{font-size:11px!important;color:#c4b7d4!important;max-width:300px}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]::file-selector-button{background:#352b40!important;border:1px solid #6b5877!important;color:#f6eaff!important;font-size:11px}
+.lvg-body .lig-compose-actions{align-items:center!important}
+.lvg-body .lig-compose-actions .lig-primary{min-width:150px!important}
+@media(max-width:750px){
+ .lvg-body .loox-prompt-toolbar{grid-template-columns:minmax(0,1fr)!important;gap:9px!important}
+ .lvg-body .loox-prompt-modes{grid-column:1;grid-row:1}
+ .lvg-body .loox-prompt-controls{grid-column:1;grid-row:2;width:100%;justify-content:stretch}
+ .lvg-body .loox-prompt-controls>.loox-prompt-setting:has(#lvg-model){flex:1 1 auto!important;width:auto;max-width:none}
+ .lvg-body .loox-prompt-controls>.loox-prompt-setting:has(#lvg-ratio){flex:0 0 auto!important}
+ .lvg-body .loox-video-extra-controls{grid-column:1;grid-row:3;padding-top:8px!important;gap:8px!important}
+ .lvg-body .loox-video-extra-controls .loox-video-extra-setting{height:auto;min-height:32px}
+ .lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]{max-width:min(245px,61vw)}
+ .lvg-body .loox-model-picker .loox-model-panel{left:0;right:auto;width:min(450px,calc(100vw - 24px))}
+}
+@media(max-width:420px){
+ .lvg-body .loox-video-extra-controls{align-items:flex-start!important;flex-direction:column;gap:5px!important}
+ .lvg-body .loox-video-extra-controls .loox-video-extra-setting{width:100%}
+ .lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]{flex:1;min-width:0;max-width:70vw}
+ .lvg-body .loox-prompt-controls .loox-model-trigger{font-size:11px}
+ .lvg-body .lig-compose-actions .lig-primary{min-width:135px!important}
+}
