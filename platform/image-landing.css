@@ -19,7 +19,8 @@ body.loox-creative-landing[data-image-showcase]{height:auto!important;min-height
 .image-features{padding-bottom:60px}.image-feature{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:clamp(45px,7vw,105px);padding:48px 0}
 .image-feature figure{margin:0;position:relative;overflow:hidden;border-radius:20px;aspect-ratio:1;background:#191920;box-shadow:0 22px 60px #0002}
 .image-feature img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
-.image-feature figure:hover img{transform:scale(1.025)}.image-feature figcaption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#0009);padding:40px 18px 16px;color:#fff9;font-size:9px;letter-spacing:.025em}
+.image-feature figure:hover img{transform:scale(1.025)}/* Hide stale attribution overlays from any cached feature markup. */
+[data-image-showcase] .image-feature figcaption{display:none!important}
 .image-feature:nth-child(even) figure{order:2}.image-feature h2{font-size:clamp(30px,3.3vw,46px);margin:20px 0}.image-feature-copy p{margin:0 0 23px;font-size:15px;line-height:1.85}
 .feature-model{font-size:10px;color:#c9bfdf;border:1px solid #8e79ab40;border-radius:30px;display:table;padding:7px 11px;margin:20px 0;transition:border-color .2s}.feature-model:hover{border-color:#c9b1ed}
 .image-button{display:inline-flex;align-items:center;justify-content:center;gap:30px;padding:13px 20px;border:1px solid #c4bddc44;border-radius:10px;color:#efecf8;background:#22212d;font:inherit;font-size:12px;font-weight:650;text-decoration:none;cursor:pointer;transition:background .2s,transform .2s,border-color .2s}
