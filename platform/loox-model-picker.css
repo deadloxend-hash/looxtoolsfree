@@ -52,3 +52,30 @@
  .loox-model-picker .loox-model-cost{font-size:9px;padding:5px}
  .loox-model-picker .loox-model-favorite{flex-basis:29px;width:29px}
 }
+
+/* Small model-specific marks make individual models identifiable within a family. */
+.loox-model-picker .loox-model-icon{position:relative}
+.loox-model-picker .loox-model-icon::after{position:absolute;right:-4px;bottom:-3px;min-width:12px;padding:1px 3px;background:#16121c;border:1px solid #554960;border-radius:5px;font-size:8px;line-height:11px;font-weight:850;letter-spacing:-.02em;color:#efe2ff;text-align:center}
+.loox-model-picker .loox-model-icon[data-variant="flux"]::after{content:"1"}
+.loox-model-picker .loox-model-icon[data-variant="bfl_flux2_pro"]::after{content:"2"}
+.loox-model-picker .loox-model-icon[data-variant="bfl_klein_4b"]::after{content:"4B"}
+.loox-model-picker .loox-model-icon[data-variant="replicate_flux_ultra"]::after{content:"U"}
+.loox-model-picker .loox-model-icon[data-variant="google_nano_2"]::after{content:"2"}
+.loox-model-picker .loox-model-icon[data-variant="google_nano_pro"]::after{content:"P"}
+.loox-model-picker .loox-model-icon[data-variant="ideogram_p_image"]::after{content:"P"}
+.loox-model-picker .loox-model-icon[data-variant="ideogram_45"]::after{content:"4.5"}
+.loox-model-picker .loox-model-icon[data-variant="stability_sd35"]::after{content:"3.5"}
+.loox-model-picker .loox-model-icon[data-variant="stability_ultra"]::after{content:"U"}
+.loox-model-picker .loox-model-icon[data-variant="byteplus_45"]::after{content:"4.5"}
+.loox-model-picker .loox-model-icon[data-variant="byteplus_50_flash"]::after{content:"5"}
+.loox-model-picker .loox-model-icon[data-variant="replicate_qwen2"]::after{content:"2"}
+.loox-model-picker .loox-model-icon[data-variant="replicate_hidream"]::after{content:"H"}
+.loox-model-picker .loox-model-icon[data-variant="replicate_imagen4"]::after{content:"4"}
+.loox-model-picker .loox-model-icon[data-variant="replicate_photon"]::after{content:"L"}
+.loox-model-picker .loox-model-icon[data-variant="wan21"]::after{content:"2.1"}
+.loox-model-picker .loox-model-icon[data-variant="wan22_5b_fast"]::after{content:"5B"}
+.loox-model-picker .loox-model-icon[data-variant="wan22_t2v_fast"]::after{content:"T"}
+.loox-model-picker .loox-model-icon[data-variant="wan22_i2v_fast"]::after{content:"I"}
+.loox-model-picker .loox-model-icon[data-variant="wan25_i2v"]::after{content:"2.5"}
+.loox-model-picker .loox-model-icon[data-variant="wan26_i2v_flash"]::after{content:"2.6"}
+.loox-model-picker .loox-model-trigger-face .loox-model-icon::after{font-size:7px;padding:0 2px;min-width:9px;bottom:-3px;right:-4px;line-height:9px}
