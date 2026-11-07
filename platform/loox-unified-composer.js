@@ -47,7 +47,9 @@
    const duration=videoExtras.querySelector('#lvg-duration-block');
    if(duration)controls.append(duration);
   }
-  card.insertBefore(toolbar,textarea);
+  // The reference has a separate, right-aligned settings row ABOVE the prompt box.
+  // Move the existing toolbar without replacing any controls or event listeners.
+  wrap.insertBefore(toolbar,form);
   card.classList.add('loox-uc-card');
   toolbar.classList.add('loox-uc-toolbar');
   controls.classList.add('loox-uc-controls');
@@ -98,7 +100,8 @@
   const toolbar=el('div','loox-uc-toolbar loox-uc-agent-toolbar');
   const controls=el('div','loox-uc-controls');
   controls.append(model);toolbar.append(controls);
-  form.insertBefore(toolbar,textarea);
+  // Agent uses the same external toolbar position as Image and Video.
+  wrap.insertBefore(toolbar,form);
   form.classList.add('loox-uc-card');
   const send=document.getElementById('aiSend');
   if(send){
