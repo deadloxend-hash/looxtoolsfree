@@ -81,7 +81,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
  const list=node('div','loox-model-scroll');panel.append(searchBox,list);
  root.replaceChildren(trigger,panel);
  const grouped=mode==='video'?groupsVideo:groupsImage;
- const describe=id=>modelOptions.find(o=>o.value===id)?.textContent.trim()||id;
+ const describe=id=>info(id).name||modelOptions.find(o=>o.value===id)?.textContent.trim()||id;
  const badgeType=id=>glyphs[id]||'wan';
  function icon(id){
   const type=badgeType(id),badge=node('span','loox-model-icon');
