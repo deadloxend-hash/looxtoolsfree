@@ -147,3 +147,12 @@ body.loox-uc:not(.loox-uc-empty) .loox-uc-title{display:none!important}
 body.loox-uc.lig-body .loox-uc-card .loox-prompt-toolbar .loox-prompt-modes{display:none!important}
 body.loox-uc .loox-uc-card .loox-uc-controls .loox-quality-setting:not([hidden]){display:flex!important}
 body.loox-uc .loox-uc-card .loox-uc-controls .loox-quality-setting[hidden]{display:none!important}
+
+/* Genuinely centered welcome composer only when no generated result/history is displayed. */
+@media(min-height:620px){
+ body.loox-uc.ai-chat.loox-uc-empty .ai-chat-body{justify-content:center!important}
+ body.loox-uc.ai-chat.loox-uc-empty .ai-thread{flex:0 0 0!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important;overflow:hidden!important}
+ body.loox-uc.ai-chat.loox-uc-empty .ai-composer-wrap{margin:auto 0!important}
+ body.loox-uc.lig-body.loox-uc-empty .lig-main:has(.lig-history-grid:empty) .lig-content-scroll{flex:0 0 0!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important;overflow:hidden!important}
+ body.loox-uc.lig-body.loox-uc-empty .lig-main:has(.lig-history-grid:empty) .lig-compose-wrap{margin:auto 0!important}
+}
