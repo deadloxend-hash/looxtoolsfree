@@ -12,6 +12,10 @@
  if(aiSessionsOnly)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
+ const inMediaGenerator=page==='ai-text-to-image.html'||page==='ai-video-generator.html';
+ // Within a generator, switch modes directly without returning to the marketing landing pages.
+ const imageTabHref=inMediaGenerator?'ai-text-to-image.html#generate':'ai-image-landing.html';
+ const videoTabHref=inMediaGenerator?'ai-video-generator.html#generate':'ai-video-landing.html';
  const root=new URL('./',document.currentScript?.src||new URL('loox-sitewide-nav.js',location.href).href);
  const url=name=>new URL(page==='ai-home.html'&&name.split('#')[0]==='ai-text-to-image.html'?'ai-image-landing.html':page==='ai-home.html'&&name.split('#')[0]==='ai-video-generator.html'?'ai-video-landing.html':name,root).href;
  const icons={search:'<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m16.4 16.4 4 4"/></svg>'};
@@ -30,8 +34,8 @@
  const wordmark=el('span','loox-sitewide-wordmark','LOOX');logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
- [['AI Image','ai-image-landing.html'],['AI Videos','ai-video-landing.html'],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
-  const link=el('a','',name);link.href=url(href);if(href===page)link.setAttribute('aria-current','page');
+ [['AI Image',imageTabHref],['AI Videos',videoTabHref],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
+  const link=el('a','',name);link.href=url(href);if(href.split('#')[0]===page)link.setAttribute('aria-current','page');
   if(name==='Blog'){const outbound=el('span','loox-blog-arrow','↗');outbound.setAttribute('aria-hidden','true');link.append(outbound);}
   links.append(link);
  });
@@ -71,8 +75,8 @@
   tabs.setAttribute('aria-label','LOOX AI workspaces');
   const rows=[
    ['AI Agent','ai-chat.html','agent','✧'],
-   ['AI Image','ai-image-landing.html','image','▧'],
-   ['AI Video','ai-video-landing.html','video','▷'],
+   ['AI Image',imageTabHref,'image','▧'],
+   ['AI Video',videoTabHref,'video','▷'],
    ['AI Audio','index.html?category=Audio#tools','audio','♫']
   ];
   rows.forEach(([label,href,kind,symbol])=>{
