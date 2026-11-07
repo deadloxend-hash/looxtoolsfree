@@ -24,7 +24,12 @@ const cloudModels=new Map([
  ['wan22_5b_fast',{name:'Wan 2.2 5B Fast',image:false,durations:[5]}],
  ['wan22_t2v_fast',{name:'Wan 2.2 T2V Fast',image:false,durations:[5]}],
  ['wan25_i2v',{name:'Wan 2.5 I2V',image:true,durations:[5,10]}],
- ['wan26_i2v_flash',{name:'Wan 2.6 I2V Flash',image:true,durations:[5,10]}]
+ ['wan26_i2v_flash',{name:'Wan 2.6 I2V Flash',image:true,durations:[5,10]}],
+ ['kling_30',{name:'Kling 3.0 Standard',image:false,durations:[5,10]}],
+ ['seedance_20',{name:'Seedance 2.0',image:false,durations:[5,10]}],
+ ['veo_31_fast',{name:'Veo 3.1 Fast',image:false,durations:[4,6,8]}],
+ ['runway_45',{name:'Runway Gen-4.5',image:false,durations:[5,10]}],
+ ['flux3_video',{name:'FLUX 3 Video Draft HD',image:false,durations:[5,10]}]
 ]);
 const isCloud=()=>modelField.value!=='wan21';
 const chosen=()=>cloudModels.get(modelField.value);
@@ -34,7 +39,7 @@ function updateModelUI(){
  imageBlock.hidden=!cloud||modelField.value==='wan22_t2v_fast';durationBlock.hidden=!cloud;
  imageRequired.textContent=m?.image?'(required)':'(optional)';
  imageField.required=Boolean(m?.image);
- for(const option of durationField.options)option.hidden=Boolean(m&&!m.durations.includes(Number(option.value)));
+ for(const option of durationField.options){const supported=Boolean(m?.durations.includes(Number(option.value)));option.hidden=cloud&&!supported;option.disabled=cloud&&!supported;}
  if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
  modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
   m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
@@ -43,7 +48,7 @@ function updateModelUI(){
  accountInfo();checkGPU().catch(()=>{});
 }
 modelField.addEventListener('change',updateModelUI);
-durationField.addEventListener('change',accountInfo);
+durationField.addEventListener('change',()=>{accountInfo();document.querySelector('.loox-video-model-picker .loox-model-panel')?.dispatchEvent(new Event('loox-model-cost-change'));});
 
 const message=$('lvg-message'),generateButton=$('lvg-generate');
 try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
@@ -58,7 +63,7 @@ const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.l
  if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
 }});
 const community=new Community({state,auth,initialize,root:$('lvg-public-templates')});
-const cost=()=>isCloud()?(modelInfo()?.cost??99):(state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8);
+const cost=()=>isCloud()?(modelInfo()?.creditCosts?.[durationField.value]??modelInfo()?.cost??99):(state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8);
 const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
 costLabel.insertAdjacentElement('afterend',quotaLabel);
 let remainingVideos=null;
@@ -347,7 +352,7 @@ document.body.classList.add('loox-generator-ready');
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
     if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:'available'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
-    return {name:m?.name||id,cost:m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
+    return {name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
    }
   });
   // Keep responsive model status and its displayed price in sync.
