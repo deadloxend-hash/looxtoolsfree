@@ -12,7 +12,7 @@
  if(aiSessionsOnly)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
- const inMediaGenerator=page==='ai-text-to-image.html'||page==='ai-video-generator.html';
+ const inMediaGenerator=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page);
  // Within a generator, switch modes directly without returning to the marketing landing pages.
  const imageTabHref=inMediaGenerator?'ai-text-to-image.html#generate':'ai-image-landing.html';
  const videoTabHref=inMediaGenerator?'ai-video-generator.html#generate':'ai-video-landing.html';
