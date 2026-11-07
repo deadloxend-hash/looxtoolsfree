@@ -1,4 +1,5 @@
 import {Community} from './community.js?v=1';
+import {mountModelPicker} from './loox-model-picker.js?v=1';
 import {MediaSessions} from './loox-image-sessions.js?v=9';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
@@ -72,7 +73,7 @@ async function initWorkspace(){
  }
  for(const root of document.querySelectorAll('[data-custom-select]')){
   const native=byId(root.dataset.customSelect);
-  if(!native)continue;
+  if(!native||native.id==='lig-model')continue;
   const trigger=document.createElement('button');
   trigger.type='button';trigger.className='lig-select-trigger';
   trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
@@ -164,6 +165,15 @@ async function initWorkspace(){
  }
  document.addEventListener('pointerdown',e=>{
   if(!e.target.closest('[data-custom-select]'))closeCustomDropdowns();
+ });
+ const imageModelPicker=mountModelPicker({
+  native:modelField,root:document.querySelector('[data-custom-select="lig-model"]'),
+  mode:'image',getInfo:id=>{
+   const m=allModels.get(id),status=modelStatus(id);
+   return {description:m?.description||'Private generation on your GPU',
+    cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??3),
+    status:m?.status||status.label.toLowerCase().replaceAll(' ','_')};
+  }
  });
  const composeWrap=byId('lig-compose-wrap');
  const mainWorkspace=composeWrap.parentElement,historySection=byId('lig-history-grid')?.closest('.lig-history');
