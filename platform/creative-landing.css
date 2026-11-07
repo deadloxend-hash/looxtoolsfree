@@ -68,3 +68,28 @@ body.loox-creative-landing[data-creative-mode="video"] .creative-landing{
  body.loox-creative-landing .creative-prompt{margin:20px auto 14px}
  body.loox-creative-landing[data-creative-mode="video"] .creative-landing{min-height:calc(100svh - var(--loox-sitewide-height,104px));height:auto}
 }
+
+/* Full-viewport AI VIDEO hero. The global experience layout applies a left
+   rail gutter to main.experience-content; unlike the image page, the video
+   page previously did not cancel it. Both landing heroes now share an origin. */
+body.loox-creative-landing[data-creative-mode="video"] > main,
+body.loox-creative-landing[data-creative-mode="video"].experience-shell:not(.experience-studio) > main.experience-content{
+ box-sizing:border-box!important;
+ display:block;
+ margin:0!important;
+ padding:0!important;
+ width:100%!important;
+ max-width:none!important;
+ min-width:0!important;
+}
+body.loox-creative-landing[data-creative-mode="video"] .creative-landing{
+ box-sizing:border-box;
+ width:100%;
+ height:auto!important;
+ min-height:max(760px,calc(100svh - var(--loox-sitewide-height,64px)))!important;
+}
+@media(max-width:720px){
+ body.loox-creative-landing[data-creative-mode="video"] .creative-landing{
+  min-height:calc(100svh - var(--loox-sitewide-height,104px))!important;
+ }
+}
