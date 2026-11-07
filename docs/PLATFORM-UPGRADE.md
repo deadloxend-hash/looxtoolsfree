@@ -78,3 +78,7 @@ The expanded live synthetic-write test for views did not run because its connect
 - Current data preservation: 25 jobs, 52 ledger rows, 437 wallet credits, 4 posts, 20 existing storage objects remain.
 
 Changes are scoped to the two LOOX Tools repositories. No MediaGrab code, deployments, DNS, files or account resources were modified.
+
+## Publication privacy correction
+
+Removed the automatic prompt-to-caption copy in the publish dialog. A caption is entered separately. The database mirror now falls back to "Untitled creation" when no caption is supplied and prompt sharing is disabled. A PostgreSQL regression test checks that an unshared prompt is not copied into a public caption. Existing user-authored captions and posts are preserved.

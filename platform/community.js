@@ -15,7 +15,7 @@ function field(root,label,value='',tag='input'){const l=element('label','communi
 export async function publishCreation({state,auth,id,prompt='',notice=()=>{}}){
  if(!state.user){auth('login');return;}
  const d=modal('Share with LOOX Community'),form=element('form'),status=element('p','community-note');
- const caption=field(form,'Caption',prompt.slice(0,120));caption.maxLength=300;
+ const caption=field(form,'Caption');caption.required=true;caption.placeholder='Give your creation a public caption';caption.maxLength=300;
  const label=element('label','community-check'),share=element('input');share.type='checkbox';label.append(share,'Share my generation prompt');form.append(label,element('p','community-note','Your creation stays private until an administrator approves it. Public posts show your creator profile, never your email.'));
  const submit=element('button','community-primary','Submit for review');submit.type='submit';form.append(submit,status);d.append(form);
  form.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;status.textContent='Submitting…';try{await rpc(state,'loox_publish_creation',{p_job:id,p_caption:caption.value.trim(),p_share_prompt:share.checked});status.textContent='Submitted for approval. Manage your post from your creator profile.';notice('Submitted to Community for review.');submit.remove();}catch(error){status.textContent=error.message;submit.disabled=false;}});

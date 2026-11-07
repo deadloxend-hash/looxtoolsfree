@@ -1,5 +1,5 @@
 import {state,auth,initialize} from './account.js?v=9';
-import {element as e,action as a,result,rpc} from './community.js?v=3';
+import {element as e,action as a,result,rpc} from './community.js?v=4';
 const root=document.getElementById('template-library'),workflow=location.pathname.endsWith('workflows.html');let offset=0,epoch=0,kind='all';
 root.append(e('span','community-eyebrow','CREATE WITH LOOX'),e('h1','',workflow?'Workflow starters':'Original templates'),e('p','community-note',workflow?'Choose a prompt preset, personalize it, then generate in the matching tool. These starters open one tool; they do not execute an automated workflow.':'Original image and video prompt starters. Replace bracketed subjects with your idea. Browsing and selecting a template use no AI credits.'));
 const controls=e('div','community-filters'),search=e('input','community-search'),category=e('select'),status=e('p','community-note'),grid=e('div','loox-preset-grid'),more=a('Load more',()=>load(false),'community-more',error=>status.textContent=error.message);search.type='search';search.placeholder='Search templates by title';search.setAttribute('aria-label','Search original templates');category.setAttribute('aria-label','Template category');

@@ -7,3 +7,5 @@
 /* Legacy empty-state rules set a margin shorthand. Position the whole composer
    inside the available desktop workspace so its input cannot sit under the rail. */
 @media(min-width:901px){body.loox-uc.loox-conversations.lig-body .lig-main:not(.loox-sessions-collapsed):not(.loox-community-view)>.lig-compose-wrap{left:var(--loox-ai-sidebar-width)!important;margin-left:0!important;width:calc(100% - var(--loox-ai-sidebar-width))!important}body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-collapsed>.lig-compose-wrap{left:0!important;margin-left:0!important;width:100%!important}}
+/* The shared sidebar and workspace header already provide these destinations. */
+body.loox-uc .loox-uc-links{display:none!important}
