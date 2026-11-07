@@ -82,3 +82,11 @@ Changes are scoped to the two LOOX Tools repositories. No MediaGrab code, deploy
 ## Publication privacy correction
 
 Removed the automatic prompt-to-caption copy in the publish dialog. A caption is entered separately. The database mirror now falls back to "Untitled creation" when no caption is supplied and prompt sharing is disabled. A PostgreSQL regression test checks that an unshared prompt is not copied into a public caption. Existing user-authored captions and posts are preserved.
+
+## Final public browser acceptance
+
+Verified public community cards/media, a post viewer with the correct model and prompt, Recreate staging without generation, searchable original presets, and a video preset routing to the video generator. Preserved job count and wallet balance after those checks. Cleared initial loading placeholders from Templates/Workflows/Admin when their controllers mount.
+
+Latest security release references: frontend 988569e09a05f05b524e033221c163cb5398d9e3 (Pages success); backend b6b322a89711924237afa91d79f946839f00b07b (Vercel READY). Additional applied migration: prevent_private_prompt_caption_disclosure.
+
+Mobile CSS is present, but this browser did not expose viewport emulation, so the requested exact 320/375/430/768/1024/1440-width matrix is not claimed as tested. Signed-in UI acceptance, SMTP, paid providers and private R2 delivery remain unverified. The full commercial-ready brief is not complete; the outstanding list above is the handoff boundary.

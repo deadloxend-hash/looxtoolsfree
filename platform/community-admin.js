@@ -1,6 +1,7 @@
 import {state,api,auth,initialize} from './account.js?v=9';
 import {element as e,action as a} from './community.js?v=4';
 const root=document.getElementById('admin-root');let page=1;
+root.replaceChildren();
 const note=e('p','community-note'),content=e('div','community-admin-content'),tabs=e('nav','community-filters');
 root.append(e('span','community-eyebrow','LOOX ADMINISTRATION'),e('h1','','Platform overview'),e('p','community-note','Manage accounts, community reports and AI usage. Private generations are excluded from browsing.'),tabs,note,content);
 const fail=error=>note.textContent=error.message;
