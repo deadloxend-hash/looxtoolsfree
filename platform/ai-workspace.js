@@ -217,9 +217,10 @@ function emptyRecent(message){
  text.className='ai-recent-empty';text.textContent=message;
  recentList.append(text);
 }
+const pinSvg='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-3 1-3 5-5-5 5-3 1-3Z"/><path d="m10 14-7 7"/></svg>';
 function chatPinKey(){return 'loox-pinned-chat-threads:'+state.user?.id;}
 function pinnedChats(){try{const v=JSON.parse(localStorage.getItem(chatPinKey())||'[]');return Array.isArray(v)?v:[]}catch{return []}}
-function reorderChatPins(){const pinned=pinnedChats(),rows=[...recentList.querySelectorAll('.ai-recent-item')];rows.forEach(row=>{const on=pinned.includes(row.dataset.id);row.classList.toggle('is-pinned',on);const pin=row.querySelector('.loox-session-pin');if(pin){pin.textContent=on?'📌':'📌';pin.title=on?'Unpin chat':'Pin chat';pin.setAttribute('aria-label',pin.title);pin.setAttribute('aria-pressed',String(on));}});rows.sort((a,b)=>Number(pinned.includes(b.dataset.id))-Number(pinned.includes(a.dataset.id)));rows.forEach(row=>recentList.append(row));}
+function reorderChatPins(){const pinned=pinnedChats(),rows=[...recentList.querySelectorAll('.ai-recent-item')];rows.forEach(row=>{const on=pinned.includes(row.dataset.id);row.classList.toggle('is-pinned',on);const pin=row.querySelector('.loox-session-pin');if(pin){pin.title=on?'Unpin chat':'Pin chat';pin.setAttribute('aria-label',pin.title);pin.setAttribute('aria-pressed',String(on));}});rows.sort((a,b)=>Number(pinned.includes(b.dataset.id))-Number(pinned.includes(a.dataset.id)));rows.forEach(row=>recentList.append(row));}
 function toggleChatPin(id){const current=pinnedChats(),next=current.includes(id)?current.filter(x=>x!==id):[id,...current];try{localStorage.setItem(chatPinKey(),JSON.stringify(next))}catch{}reorderChatPins();}
 function createRecentRow(t){
  const row=document.createElement('div');
@@ -252,7 +253,7 @@ function createRecentRow(t){
    note('Conversation deleted.');
   }catch(error){del.disabled=false;note(error.message);}
  });
- const pin=document.createElement('button');pin.type='button';pin.className='loox-session-pin';pin.textContent='📌';pin.title='Pin chat';pin.setAttribute('aria-label','Pin chat');pin.setAttribute('aria-pressed','false');pin.addEventListener('click',()=>toggleChatPin(t.id));
+ const pin=document.createElement('button');pin.type='button';pin.className='loox-session-pin';pin.innerHTML=pinSvg;pin.title='Pin chat';pin.setAttribute('aria-label','Pin chat');pin.setAttribute('aria-pressed','false');pin.addEventListener('click',()=>toggleChatPin(t.id));
  const menu=document.createElement('details');menu.className='loox-session-menu';
  const summary=document.createElement('summary');summary.textContent='⋯';summary.setAttribute('aria-label','Session actions');
  const rename=document.createElement('button');rename.type='button';rename.textContent='Rename';
