@@ -30,7 +30,7 @@
  const wordmark=el('span','loox-sitewide-wordmark','LOOX');logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
- [['AI Image','ai-image-landing.html'],['AI Videos','ai-video-generator.html'],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
+ [['AI Image','ai-image-landing.html'],['AI Videos','ai-video-landing.html'],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);if(href===page)link.setAttribute('aria-current','page');
   if(name==='Blog'){const outbound=el('span','loox-blog-arrow','↗');outbound.setAttribute('aria-hidden','true');link.append(outbound);}
   links.append(link);
@@ -72,7 +72,7 @@
   const rows=[
    ['AI Agent','ai-chat.html','agent','✧'],
    ['AI Image','ai-image-landing.html','image','▧'],
-   ['AI Video','ai-video-generator.html#generate','video','▷'],
+   ['AI Video','ai-video-landing.html','video','▷'],
    ['AI Audio','index.html?category=Audio#tools','audio','♫']
   ];
   rows.forEach(([label,href,kind,symbol])=>{
@@ -191,7 +191,7 @@
  ]);
  group('AI Generators',[
   ['AI Photo Generator','ai-image-landing.html','photo'],
-  ['AI Video Generator','ai-video-generator.html','video'],
+  ['AI Video Generator','ai-video-landing.html','video'],
   // Dedicated AI audio generation is not available yet; link to working audio utilities.
   ['AI Audio Generator','index.html?category=Audio#tools','audio'],
   ['AI Face Swap','faceswap.html','face']
