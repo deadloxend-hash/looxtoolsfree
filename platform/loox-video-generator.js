@@ -38,10 +38,6 @@ function updateModelUI(){
  if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
  modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
   m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
- for(const option of modelField.options){
-  const detail=state.config?.videoModels?.find(x=>x.id===option.value);
-  if(detail)option.textContent=detail.name+' · '+detail.cost+' credits';
- }
  const info=modelInfo();
  if(info&&!info.available)modelNote.textContent+=' Cloud model is not available yet.';
  accountInfo();checkGPU().catch(()=>{});
@@ -349,9 +345,9 @@ document.body.classList.add('loox-generator-ready');
   modelField.classList.add('loox-hidden-native-model');
   const picker=mountModelPicker({
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
-    if(id==='wan21')return {description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:'available'};
+    if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:'available'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
-    return {cost:m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
+    return {name:m?.name||id,cost:m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
    }
   });
   // Keep responsive model status and its displayed price in sync.
