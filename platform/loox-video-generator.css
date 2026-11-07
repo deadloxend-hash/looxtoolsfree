@@ -28,3 +28,8 @@
  .lvg-body .loox-video-extra-setting>label{font-size:10px!important}
  .lvg-body .loox-video-extra-setting input[type=file]{max-width:195px}
 }
+
+/* Override legacy composer rules that hide every label and force blocks to display:block. */
+.lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting:not([hidden]){display:flex!important;align-items:center!important;flex:0 1 auto!important}
+.lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{display:inline!important;color:#e9e0ef!important;font-size:11px!important}
+.lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting[hidden]{display:none!important}
