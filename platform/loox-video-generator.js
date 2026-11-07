@@ -1,4 +1,5 @@
 import {Community} from './community.js?v=1';
+import {mountModelPicker} from './loox-model-picker.js?v=1';
 import {MediaSessions} from './loox-image-sessions.js?v=9';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
@@ -341,6 +342,20 @@ document.body.classList.add('loox-generator-ready');
   try{await initialize();}catch{}
   await config().catch(()=>{});
   updateModelUI();
+  // Mount after the account catalog is available. The native select stays bound
+  // to all generation and history code; the custom picker mirrors its value.
+  const pickerRoot=make('div','loox-video-model-picker');
+  modelField.insertAdjacentElement('afterend',pickerRoot);
+  modelField.classList.add('loox-hidden-native-model');
+  const picker=mountModelPicker({
+   native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
+    if(id==='wan21')return {description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:'available'};
+    const m=state.config?.videoModels?.find(x=>x.id===id);
+    return {cost:m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
+   }
+  });
+  // Keep responsive model status and its displayed price in sync.
+  modelField.addEventListener('change',()=>picker?.sync());
   try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
   await sessions.init().catch(e=>notice(e.message,true));
   await changeUser();accountInfo();
