@@ -139,3 +139,11 @@ body.loox-uc.lig-body.loox-uc-empty .lig-compose-wrap{padding-top:17px!important
  body.loox-uc .lig-compose-actions .lig-primary,body.loox-uc .ai-send{padding:8px 13px!important}
 }
 @media(prefers-reduced-motion:reduce){body.loox-uc .loox-uc-title,body.loox-uc .loox-uc-links{animation:none!important}body.loox-uc .loox-uc-add{transition:none!important}}
+
+/* Respect native hidden states even on heavily styled action controls. */
+body.loox-uc .loox-uc-add[hidden],body.loox-uc .loox-uc-filename[hidden]{display:none!important}
+body.loox-uc .loox-uc-file-host[hidden]{display:none!important}
+body.loox-uc:not(.loox-uc-empty) .loox-uc-title{display:none!important}
+body.loox-uc.lig-body .loox-uc-card .loox-prompt-toolbar .loox-prompt-modes{display:none!important}
+body.loox-uc .loox-uc-card .loox-uc-controls .loox-quality-setting:not([hidden]){display:flex!important}
+body.loox-uc .loox-uc-card .loox-uc-controls .loox-quality-setting[hidden]{display:none!important}
