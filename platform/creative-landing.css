@@ -94,3 +94,123 @@ body.loox-creative-landing[data-creative-mode="video"] .creative-landing{
   min-height:calc(100svh - var(--loox-sitewide-height,104px))!important;
  }
 }
+
+/* LOOX SHARED HERO GEOMETRY V5
+ * Both landing pages share the exact same viewport origin and layout slots.
+ * Different headline and description lengths never move the composer.
+ * This intentional final override supersedes legacy image-only hero spacing.
+ */
+body.loox-creative-landing[data-creative-mode="image"],
+body.loox-creative-landing[data-creative-mode="video"]{
+ font-family:Inter,Arial,system-ui,sans-serif;
+}
+body.loox-creative-landing[data-creative-mode] .creative-landing{
+ box-sizing:border-box;
+ display:flex!important;
+ flex-direction:column;
+ align-items:center;
+ justify-content:flex-start;
+ width:100%;
+ height:auto!important;
+ min-height:max(760px,calc(100svh - var(--loox-sitewide-height,64px)))!important;
+ position:relative;
+ overflow:hidden;
+}
+body.loox-creative-landing[data-creative-mode] .creative-hero-content{
+ box-sizing:border-box;
+ flex:0 0 auto;
+ width:min(900px,calc(100% - 48px))!important;
+ margin:0 auto!important;
+ padding:clamp(82px,11vh,116px) 0 110px!important;
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr);
+ grid-template-rows:auto auto auto auto auto auto;
+ justify-items:center;
+ align-content:start;
+ text-align:center;
+}
+body.loox-creative-landing[data-creative-mode] .creative-eyebrow{
+ font-family:inherit;
+ font-size:10px;
+ font-weight:700;
+ line-height:1.4;
+ letter-spacing:.23em;
+}
+body.loox-creative-landing[data-creative-mode] .creative-hero-content h1{
+ box-sizing:border-box;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ width:100%;
+ max-width:880px;
+ min-height:3.21em;
+ margin:15px auto 12px;
+ font-family:inherit;
+ font-size:clamp(38px,4.7vw,68px)!important;
+ font-weight:700;
+ line-height:1.07!important;
+ letter-spacing:-.045em!important;
+ text-wrap:balance;
+}
+body.loox-creative-landing[data-creative-mode] .creative-hero-content > p{
+ box-sizing:border-box;
+ display:block;
+ width:100%;
+ max-width:760px;
+ min-height:5.1em;
+ margin:0 auto;
+ font-family:inherit;
+ font-size:15px!important;
+ line-height:1.7!important;
+ text-align:center;
+}
+body.loox-creative-landing[data-creative-mode] .creative-prompt{
+ box-sizing:border-box;
+ justify-self:center;
+ width:min(730px,100%)!important;
+ max-width:100%!important;
+ margin:20px auto 16px!important;
+ padding:18px 20px;
+ text-align:left;
+}
+body.loox-creative-landing[data-creative-mode] .creative-prompt textarea{
+ font-family:inherit;
+ min-height:64px;
+}
+body.loox-creative-landing[data-creative-mode] .creative-examples{
+ justify-content:center;
+ margin:0 auto 18px;
+}
+body.loox-creative-landing[data-creative-mode] #creative-landing-status{
+ display:block;
+ text-align:center;
+}
+@media(max-width:720px){
+ body.loox-creative-landing[data-creative-mode] .creative-landing{
+  min-height:calc(100svh - var(--loox-sitewide-height,104px))!important;
+ }
+ body.loox-creative-landing[data-creative-mode] .creative-hero-content{
+  width:calc(100% - 32px)!important;
+  padding:clamp(38px,7vh,66px) 0 100px!important;
+ }
+ body.loox-creative-landing[data-creative-mode] .creative-hero-content h1{
+  font-size:clamp(34px,8.4vw,49px)!important;
+  min-height:4.5em;
+  margin:13px auto 10px;
+ }
+ body.loox-creative-landing[data-creative-mode] .creative-hero-content > p{
+  font-size:13px!important;
+  min-height:7em;
+ }
+ body.loox-creative-landing[data-creative-mode] .creative-prompt{
+  margin:18px auto 14px!important;
+  padding:14px;
+ }
+}
+@media(max-width:390px){
+ body.loox-creative-landing[data-creative-mode] .creative-hero-content h1{
+  font-size:clamp(30px,8vw,34px)!important;
+  min-height:5.5em;
+ }
+ body.loox-creative-landing[data-creative-mode] .creative-hero-content > p{min-height:9em}
+}
