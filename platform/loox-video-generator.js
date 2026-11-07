@@ -1,6 +1,6 @@
-import {Community} from './community.js?v=1';
+import {Community} from './community.js?v=2';
 import {mountModelPicker} from './loox-model-picker.js?v=4';
-import {MediaSessions} from './loox-image-sessions.js?v=9';
+import {MediaSessions} from './loox-image-sessions.js?v=10';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
@@ -51,7 +51,7 @@ modelField.addEventListener('change',updateModelUI);
 durationField.addEventListener('change',()=>{accountInfo();document.querySelector('.loox-video-model-picker .loox-model-panel')?.dispatchEvent(new Event('loox-model-cost-change'));});
 
 const message=$('lvg-message'),generateButton=$('lvg-generate');
-try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
+
 const resultList=$('lvg-results'),historyGrid=$('lvg-history-grid');
 const historyLabel=$('lvg-history-message'),historyMore=$('lvg-history-more');
 const credits=$('lvg-credits'),costLabel=$('lvg-credit-cost'),gpuLabel=$('lvg-gpu-state');
@@ -63,7 +63,10 @@ const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.l
  if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
 }});
 const community=new Community({state,auth,initialize,root:$('lvg-public-templates')});
-const cost=()=>isCloud()?(modelInfo()?.creditCosts?.[durationField.value]??modelInfo()?.cost??99):(state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8);
+let serverQuote=null,quoteEpoch=0;
+const quoteInputs=()=>({model:modelField.value,duration:isCloud()?Number(durationField.value):2,ratio:ratioField.value});
+async function updateQuote(){const epoch=++quoteEpoch;if(!state.user){serverQuote=null;accountInfo();return null;}const input=quoteInputs();try{const q=await api('video_quote',input);if(epoch!==quoteEpoch||JSON.stringify(input)!==JSON.stringify(quoteInputs()))return null;serverQuote=q;accountInfo();refreshButton();return q;}catch(error){if(epoch===quoteEpoch){serverQuote=null;notice(error.message,true);accountInfo();}return null;}}
+const cost=()=>serverQuote&&serverQuote.model===modelField.value&&serverQuote.duration===(isCloud()?Number(durationField.value):2)&&serverQuote.ratio===ratioField.value?serverQuote.credits:isCloud()?(modelInfo()?.creditCosts?.[durationField.value]??modelInfo()?.cost??99):(state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8);
 const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
 costLabel.insertAdjacentElement('afterend',quotaLabel);
 let remainingVideos=null;
@@ -82,7 +85,7 @@ function notice(text,error=false){
 }
 function accountInfo(){
   credits.textContent=state.user?(state.account?.wallet?state.account.wallet.balance+' credits':'Loading credits…'):'Sign in to view';
-  costLabel.textContent=(chosen()?.name||'Wan 2.1 Local')+' · '+cost()+' credits on success';
+  costLabel.textContent=(chosen()?.name||'Wan 2.1 Local')+' · '+cost()+' credits on success'+(state.user&&!serverQuote?' · refreshes before generation':'');
 }
 function chooseView(name){
   const template=name==='templates';
@@ -119,7 +122,7 @@ if(window.ResizeObserver){
 syncHeader();
 function refreshButton(){
   generateButton.disabled=busy || Boolean(state.user&&!online);
-  generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Cloud model unavailable':'GPU offline · Generate unavailable'):'✧ Generate video';
+  generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Cloud model unavailable':'GPU offline · Generate unavailable'):'✧ Generate video · '+cost()+' credits';
 }
 async function checkGPU(){
   if(isCloud()){
@@ -246,7 +249,8 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     if(remainingVideos===0){notice('You have used all 30 video generations today. Resets at 00:00 UTC.',true);return;}
     await checkGPU();
     if(!online){notice(isCloud()?'Cloud video model is unavailable. Check server configuration and provider billing.':'Your PC GPU is offline. Run ComfyUI and the LOOX worker, then try again.',true);return;}
-    if(state.account?.wallet && state.account.wallet.balance<cost()){
+    const displayed=cost(),quote=await updateQuote();if(!quote)return;if(quote.credits!==displayed){notice('Price updated to '+quote.credits+' credits. Click Generate to accept the new quote.');return;}
+    if(state.account?.wallet && state.account.wallet.balance<quote.credits){
       pricing();notice('Your account needs more AI credits for this video.',true);return;
     }
   }
@@ -274,7 +278,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     view=createCard(prompt,ratio);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
     const id=resumeId||(await api(isCloud()?'cloud_video_job':'job',isCloud()?
       {model:modelField.value,duration:Number(durationField.value),image:upload,
-       requestId:entry.request_id,prompt,ratio}:
+       requestId:entry.request_id,prompt,ratio,quoteToken:serverQuote?.token}:
       {operation:'generate_video',requestId:entry.request_id,prompt,ratio})).id;
     if(!id)throw Error('The backend did not return a video job ID.');
     promptField.value='';
@@ -357,8 +361,11 @@ document.body.classList.add('loox-generator-ready');
   });
   // Keep responsive model status and its displayed price in sync.
   modelField.addEventListener('change',()=>picker?.sync());
-  try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
+  try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';if(launch.model&&[...modelField.options].some(o=>o.value===launch.model)){modelField.value=launch.model;modelField.dispatchEvent(new Event('change'));}else if(launch.model)notice('The original model is unavailable. Choose a compatible model before generating.');sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
   await sessions.init().catch(e=>notice(e.message,true));
-  await changeUser();accountInfo();
+  await changeUser();accountInfo();await updateQuote();
 
 })().catch(error=>notice(error.message||'Could not initialize video workspace.',true));
+
+for(const control of [modelField,durationField,ratioField])control.addEventListener('change',()=>{serverQuote=null;accountInfo();updateQuote();});
+document.addEventListener('loox-user',()=>{serverQuote=null;updateQuote();});

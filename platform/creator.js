@@ -1,4 +1,4 @@
 import {state,auth,initialize} from './account.js?v=9';
-import {Community} from './community.js?v=1';
+import {Community,result} from './community.js?v=2';
 const root=document.getElementById('creator-community');
-try{await initialize({publicAccess:true});const id=new URLSearchParams(location.search).get('id')||state.user?.id;if(!id||!/^[0-9a-f-]{36}$/i.test(id))throw Error('Choose a creator from Community to open their profile.');const community=new Community({state,auth,initialize,root,creator:id});await community.show();}catch(error){root.textContent=error.message;}
+try{await initialize({publicAccess:true});const params=new URLSearchParams(location.search);let id=params.get('id')||state.user?.id;const username=params.get('username');if(username){const profile=result(await state.client.from('loox_creator_profiles').select('user_id').eq('username',username.toLowerCase()).maybeSingle());if(!profile)throw Error('This creator profile is private or unavailable.');id=profile.user_id;}if(!id||!/^[0-9a-f-]{36}$/i.test(id))throw Error('Choose a creator from Community to open their profile.');const community=new Community({state,auth,initialize,root,creator:id});await community.show();}catch(error){root.textContent=error.message;}

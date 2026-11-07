@@ -186,7 +186,11 @@
  };
  group('Navigation',[
   ['Home','index.html','home'],
-  ['AI Studio','ai-image-landing.html','ai']
+  ['AI Studio','ai-image-landing.html','ai'],
+  ['Community','community.html','grid'],
+  ['Trending','trending.html','ai'],
+  ['Collections','collections.html','folder'],
+  ['My creator profile','creator.html','user']
  ]);
  group('Editors',[
   ['Photo Editor','photo-editor.html','photo'],

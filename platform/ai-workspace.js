@@ -1,3 +1,4 @@
+import {mountWorkspaceNavigation} from './workspace-navigation.js?v=1';
 import {auth,state,initialize,pricing} from './account.js?v=9';
 
 const $=id=>document.getElementById(id);
@@ -6,7 +7,7 @@ const prompt=$('aiPrompt'),form=$('aiForm'),send=$('aiSend');
 const modelButton=$('aiModelButton'),modelMenu=$('aiModelMenu');
 const toolsButton=$('aiToolsButton'),toolsMenu=$('aiToolsMenu');
 const modelName=$('aiModelName'),status=$('aiStatus'),thread=$('aiThread');
-const recentPanel=$('aiRecentPanel'),recentToggle=$('aiRecentToggle');
+const recentPanel=$('aiRecentPanel'),recentToggle=$('aiRecentToggle');mountWorkspaceNavigation(recentPanel?.querySelector('.ai-recent-inner')||recentPanel);
 const recentList=$('aiRecentList'),recentMore=$('aiRecentMore'),recentScrim=$('aiRecentScrim');
 const draftsKey='loox-ai-start-v1', historyURL='https://looxtoolfree-backend.vercel.app/api/loox-chat-history';
 const chatURL='https://looxtoolfree-backend.vercel.app/api/loox-chat';
