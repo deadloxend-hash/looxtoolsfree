@@ -190,3 +190,9 @@ body.loox-community-route .loox-session-rail,body.loox-community-route .loox-ses
 @media(hover:none){
  .loox-session-row .loox-session-pin,.ai-recent-item .loox-session-pin{opacity:.8}
 }
+
+/* Neutral, non-emoji pin treatment. */
+.loox-session-pin{color:#93909c!important;line-height:0!important}
+.loox-session-pin svg{display:block;width:15px;height:15px;pointer-events:none}
+.loox-session-row.is-pinned .loox-session-pin,.ai-recent-item.is-pinned .loox-session-pin{color:#c5bdcd!important;filter:none!important}
+.loox-session-pin:hover,.loox-session-pin:focus-visible{color:#e3ddeb!important}
