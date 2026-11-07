@@ -1,0 +1,141 @@
+/* LOOX unified creative composer — visual layout only; keeps original forms and IDs. */
+:root{--loox-uc-width:940px;--loox-uc-radius:20px;--loox-uc-border:rgba(164,143,190,.52);--loox-uc-ink:#f6f2fb}
+body.loox-uc{--loox-uc-backdrop:linear-gradient(135deg,rgba(33,28,43,.96),rgba(42,32,54,.96))}
+body.loox-uc .loox-uc-title{
+ font-family:Inter,ui-sans-serif,system-ui,sans-serif!important;
+ font-size:clamp(25px,3.15vw,42px)!important;
+ font-weight:570!important;letter-spacing:-.035em!important;line-height:1.17!important;
+ color:var(--loox-uc-ink)!important;text-align:center!important;
+ margin:0 auto 17px!important;max-width:var(--loox-uc-width);
+ text-wrap:balance;
+}
+body.loox-uc .loox-uc-card{
+ background:var(--loox-uc-backdrop)!important;
+ border:1px solid var(--loox-uc-border)!important;
+ border-radius:var(--loox-uc-radius)!important;
+ box-shadow:0 18px 48px rgba(0,0,0,.16)!important;
+ padding:15px 18px 14px!important;
+ width:100%;max-width:var(--loox-uc-width)!important;
+ margin:0 auto!important;overflow:visible!important;transition:border-color .18s,box-shadow .18s;
+}
+body.loox-uc .loox-uc-card:focus-within{border-color:rgba(200,174,228,.85)!important;box-shadow:0 18px 48px rgba(0,0,0,.18),0 0 0 1px #bb9edc22!important}
+body.loox-uc .loox-uc-toolbar{display:flex!important;justify-content:flex-end!important;align-items:center!important;gap:10px!important;width:100%!important;margin:0 0 9px!important;min-height:35px}
+body.loox-uc .loox-uc-controls{display:flex!important;justify-content:flex-end!important;align-items:center!important;flex-wrap:wrap!important;gap:7px!important;max-width:100%;width:auto!important;min-width:0!important}
+body.loox-uc .loox-uc-controls>.loox-prompt-setting{flex:0 1 auto!important;min-width:0!important}
+body.loox-uc .loox-uc-controls>.loox-prompt-setting:has([id$="-model"]){max-width:225px!important;width:205px!important}
+body.loox-uc .loox-model-picker .loox-model-trigger{height:34px!important;min-height:34px!important;border-radius:18px!important;font-size:11px!important}
+body.loox-uc .loox-ratio-button,
+body.loox-uc .loox-uc-controls .loox-quality-setting select,
+body.loox-uc .loox-uc-controls select:not(.lig-native-select){
+ border-radius:18px!important;min-height:34px!important;height:34px!important;
+ padding:6px 11px!important;font-size:11px!important;
+ border:1px solid #5e506d!important;background:#2b2435!important;color:#f0e5fa!important;
+}
+body.loox-uc .loox-uc-controls .loox-quality-controls{display:flex!important;align-items:center;flex-wrap:wrap;gap:6px}
+body.loox-uc .loox-uc-controls .loox-quality-setting{flex:0 1 auto!important}
+body.loox-uc .loox-uc-controls .loox-quality-explanation{max-width:220px!important}
+body.loox-uc .loox-uc-card textarea{
+ display:block!important;position:relative!important;
+ width:100%!important;min-height:104px!important;height:112px!important;
+ max-height:260px!important;overflow-y:auto;resize:vertical;
+ font-size:14px!important;line-height:1.65!important;padding:10px 2px 12px!important;
+ margin:0!important;background:transparent!important;box-shadow:none!important;
+ color:#faf8ff!important;border:0!important;outline:0!important;
+}
+body.loox-uc .loox-uc-card textarea::placeholder{color:#b4aabe!important;opacity:1!important}
+body.loox-uc .lig-compose-actions,body.loox-uc .ai-actions{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;margin-top:6px!important;min-height:39px;
+}
+body.loox-uc .loox-uc-left{display:flex;align-items:center;gap:9px;flex:0 1 auto;min-width:0}
+body.loox-uc .loox-uc-add,
+body.loox-uc .ai-round{
+ height:36px!important;width:36px!important;min-width:36px!important;
+ display:grid!important;place-items:center!important;border-radius:50%!important;
+ background:#403356!important;border:1px solid #5d4b75!important;color:#f1e8ff!important;
+ font-size:22px!important;font-weight:400!important;line-height:1!important;
+ padding:0!important;cursor:pointer;transition:background .18s,transform .18s;
+}
+body.loox-uc .loox-uc-add:hover:not(:disabled),body.loox-uc .ai-round:hover{background:#55436e!important;transform:translateY(-1px)}
+body.loox-uc .loox-uc-add:disabled{opacity:.5;cursor:not-allowed}
+body.loox-uc .loox-uc-filename{font-size:11px;color:#cebfdb;max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.loox-uc .loox-uc-file-host:not([hidden]){display:block!important}
+body.loox-uc .loox-uc-file-host{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip-path:inset(50%)!important;white-space:nowrap!important;padding:0!important;border:0!important}
+body.loox-uc .loox-uc-file-host input[type=file]{width:1px;height:1px;opacity:0}
+body.loox-uc .lig-compose-actions .lig-primary,
+body.loox-uc .ai-send{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ height:38px!important;min-height:38px!important;
+ border-radius:12px!important;border:1px solid #807099!important;
+ background:#493c64!important;color:#fff!important;
+ padding:8px 19px!important;font-size:12px!important;font-weight:730!important;
+ white-space:nowrap;box-shadow:none!important;
+}
+body.loox-uc .lig-compose-actions .lig-primary:hover:not(:disabled),
+body.loox-uc .ai-send:hover:not(:disabled){background:#66517f!important}
+body.loox-uc .loox-uc-links{display:flex;justify-content:center;align-items:center;gap:8px 9px;flex-wrap:wrap;max-width:var(--loox-uc-width);margin:13px auto 0;padding:0 3px}
+body.loox-uc .loox-uc-link{
+ display:inline-flex;align-items:center;justify-content:center;
+ min-height:29px;padding:6px 12px;border-radius:100px;border:1px solid transparent;
+ color:#b9afc8;text-decoration:none;font-size:11px;font-weight:650;
+ background:transparent;transition:background .17s,color .17s,border-color .17s
+}
+body.loox-uc .loox-uc-link:hover{background:#312b3c;color:white}
+body.loox-uc .loox-uc-link.is-current{background:#403450;color:#f0e7ff;border-color:#635477}
+body.loox-uc .loox-uc-title,body.loox-uc .loox-uc-links{animation:loox-uc-rise .25s ease both}
+@keyframes loox-uc-rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* Image and Video: make the original dock into one self-contained centered workspace. */
+body.loox-uc.lig-body .lig-compose{max-width:var(--loox-uc-width)!important}
+body.loox-uc.lig-body .lig-compose-wrap{max-width:none!important;padding:12px clamp(12px,3vw,30px) max(12px,env(safe-area-inset-bottom))!important}
+body.loox-uc.lig-body .lig-compose-card{backdrop-filter:blur(16px)!important;-webkit-backdrop-filter:blur(16px)!important}
+body.loox-uc.lig-body .lig-compose label{display:none!important}
+body.loox-uc.lvg-body .loox-prompt-toolbar{display:flex!important;grid-template-columns:none!important}
+body.loox-uc.lvg-body .loox-prompt-controls{display:flex!important;grid-column:auto!important;grid-row:auto!important;width:auto!important;flex-wrap:wrap!important;justify-content:flex-end!important}
+body.loox-uc.lvg-body .loox-video-extra-controls{display:none!important}
+body.loox-uc.lvg-body .loox-uc-controls>.loox-prompt-setting:has(#lvg-model){width:205px!important;max-width:205px!important}
+body.loox-uc.lvg-body .loox-uc-controls>.loox-prompt-setting:has(#lvg-duration){width:auto!important;max-width:160px!important}
+body.loox-uc.lvg-body .loox-uc-controls #lvg-duration{width:auto!important;min-width:96px!important;max-width:140px!important}
+body.loox-uc.lvg-body .loox-uc-file-host label,body.loox-uc.lvg-body .loox-uc-file-host p{display:none!important}
+body.loox-uc.lvg-body .loox-uc-file-host[hidden]+*{display:none}
+body.loox-uc.lig-body .loox-quality-setting[hidden]{display:none!important}
+body.loox-uc.lig-body .loox-uc-card .loox-prompt-toolbar{margin-bottom:0!important}
+
+/* Agent: model selector moves to the top-right, existing + tools menu stays bottom-left. */
+body.loox-uc.ai-chat .ai-composer-wrap{padding:12px clamp(12px,3vw,30px) max(12px,env(safe-area-inset-bottom))!important}
+body.loox-uc.ai-chat .ai-composer{max-width:var(--loox-uc-width)!important}
+body.loox-uc.ai-chat .ai-model{display:flex;align-items:center;gap:8px;min-height:34px;
+ border:1px solid #5e506d;border-radius:20px;background:#2d2638;color:#eee5fa;padding:7px 12px;font-size:11px}
+body.loox-uc.ai-chat .ai-arrow{font-size:13px}
+body.loox-uc.ai-chat .ai-actions .ai-spacer{flex:1}
+body.loox-uc.ai-chat .ai-menu{z-index:60}
+body.loox-uc.ai-chat .ai-foot{max-width:var(--loox-uc-width);text-align:center;font-size:10px;margin:5px auto 0;max-height:28px}
+
+/* Idle sessions: hero and composer have generous whitespace without obscuring chat history. */
+body.loox-uc.ai-chat.loox-uc-empty .ai-thread{flex:1}
+body.loox-uc.ai-chat.loox-uc-empty .ai-composer-wrap{margin-bottom:clamp(20px,9dvh,120px)}
+body.loox-uc.lig-body.loox-uc-empty .lig-compose-wrap{padding-top:17px!important}
+@media(max-width:760px){
+ body.loox-uc .loox-uc-title{font-size:clamp(23px,6vw,32px)!important;margin-bottom:14px!important}
+ body.loox-uc .loox-uc-card{padding:12px!important;border-radius:18px!important}
+ body.loox-uc .loox-uc-toolbar{justify-content:stretch!important}
+ body.loox-uc .loox-uc-controls{width:100%!important;justify-content:flex-start!important;flex-wrap:wrap!important}
+ body.loox-uc .loox-uc-controls>.loox-prompt-setting:has([id$="-model"]){width:auto!important;flex:1 1 155px!important;max-width:none!important}
+ body.loox-uc.lvg-body .loox-uc-controls>.loox-prompt-setting:has(#lvg-model){width:auto!important;flex:1 1 155px!important;max-width:none!important}
+ body.loox-uc .loox-uc-card textarea{height:90px!important;min-height:90px!important}
+ body.loox-uc .loox-uc-links{gap:3px 6px;margin-top:10px}
+ body.loox-uc .loox-uc-link{font-size:10px;min-height:28px;padding:6px 9px}
+ body.loox-uc.lig-body .lig-compose-wrap{padding:10px 10px max(10px,env(safe-area-inset-bottom))!important}
+ body.loox-uc.ai-chat .ai-composer-wrap{padding:10px 10px max(10px,env(safe-area-inset-bottom))!important}
+}
+@media(max-width:430px){
+ body.loox-uc .loox-uc-title{font-size:23px!important}
+ body.loox-uc .loox-uc-card{padding:10px!important}
+ body.loox-uc .loox-uc-controls{gap:6px!important}
+ body.loox-uc .loox-uc-controls .loox-model-trigger{font-size:10px!important}
+ body.loox-uc .loox-uc-controls #lvg-duration{min-width:82px!important}
+ body.loox-uc .loox-uc-link{padding:5px 8px}
+ body.loox-uc .loox-uc-card textarea{height:78px!important;min-height:78px!important}
+ body.loox-uc .lig-compose-actions .lig-primary,body.loox-uc .ai-send{padding:8px 13px!important}
+}
+@media(prefers-reduced-motion:reduce){body.loox-uc .loox-uc-title,body.loox-uc .loox-uc-links{animation:none!important}body.loox-uc .loox-uc-add{transition:none!important}}
