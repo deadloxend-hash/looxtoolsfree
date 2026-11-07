@@ -140,3 +140,53 @@ body.loox-conversations .lig-content-scroll:has(.loox-community){padding:24px cl
 
 /* Community never flashes session controls while model configuration loads. */
 body.loox-community-route .loox-session-rail,body.loox-community-route .loox-session-scrim,body.loox-community-route .lig-compose-wrap{display:none!important}
+
+/* COMPACT RECENT CHAT ROWS V14: shared by AI Agent, Image, and Video. */
+.loox-session-rail,.ai-recent-panel{gap:7px!important;padding:11px 9px!important}
+.loox-session-head,.ai-recent-head{min-height:27px!important}
+.loox-session-recent-label{
+ flex:none;margin:7px 3px 0;padding:0 2px 4px;
+ color:#a99caf;font:600 10px/1.4 Inter,system-ui,sans-serif;
+ letter-spacing:.085em;text-transform:uppercase;
+ border-bottom:1px solid #3a3141;
+}
+.loox-session-rail>.lig-small-action,.ai-new-session{
+ min-height:30px!important;padding:5px 8px!important;
+ font-size:11px!important;font-weight:600!important;
+ border-radius:7px!important;
+}
+.loox-session-row,.ai-recent-item{
+ gap:6px!important;min-height:33px!important;margin:1px 0!important;
+ padding:2px 4px!important;border-radius:7px!important;
+}
+.loox-session-thumb,.ai-session-icon{
+ width:25px!important;height:25px!important;min-width:25px!important;
+ border-radius:6px!important;font-size:12px!important;
+}
+.loox-session-entry,.ai-recent-open{
+ padding:5px 0!important;font-size:11px!important;line-height:1.3!important;
+ font-weight:450!important;
+}
+.loox-session-menu{margin-left:auto!important}
+.loox-session-menu summary{padding:6px 3px!important}
+.loox-session-pin{
+ flex:none!important;width:22px;height:25px;min-width:22px;
+ padding:0!important;display:grid!important;place-items:center;
+ border:0!important;border-radius:5px;background:transparent!important;
+ color:#c1b0d4!important;font:14px/1 system-ui!important;
+ cursor:pointer;opacity:0;transition:opacity .16s,background .16s;
+}
+.loox-session-row:hover .loox-session-pin,
+.ai-recent-item:hover .loox-session-pin,
+.loox-session-pin:focus-visible,
+.loox-session-row.is-pinned .loox-session-pin,
+.ai-recent-item.is-pinned .loox-session-pin{opacity:1}
+.loox-session-row.is-pinned .loox-session-pin,
+.ai-recent-item.is-pinned .loox-session-pin{filter:saturate(1.2)}
+.loox-session-pin:hover,.loox-session-pin:focus-visible{
+ background:#46334f!important;color:#fff!important;
+}
+.loox-session-row.is-pinned,.ai-recent-item.is-pinned{background:#231b2c}
+@media(hover:none){
+ .loox-session-row .loox-session-pin,.ai-recent-item .loox-session-pin{opacity:.8}
+}
