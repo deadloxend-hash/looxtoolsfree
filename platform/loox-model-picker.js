@@ -12,14 +12,20 @@ const iconPaths={
  hidream:'<path d="M5 5v14m14-14v14M5 12h14"/><path d="M9 8h6v8H9z"/>',
  imagen:'<rect x="3.5" y="5" width="17" height="14" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m5 17 5-5 3 3 3-4 3 6"/>',
  photon:'<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',
- wan:'<path d="m3 8 4 9 5-9 5 9 4-9"/><path d="M5 5h14"/><path d="M5 20h14"/>'
+ wan:'<path d="m3 8 4 9 5-9 5 9 4-9"/><path d="M5 5h14"/><path d="M5 20h14"/>',
+ kling:'<circle cx="12" cy="12" r="8"/><path d="m7 6 5 6-5 6M16 6l-5 6 5 6"/>',
+ seedance:'<path d="M4 6v12M9 3v18M14 6v12M19 3v18"/><path d="M4 12h15"/>',
+ veo:'<path d="M3 5 12 20 21 5"/><path d="m7 5 5 9 5-9"/>',
+ runway:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m9 8 7 4-7 4z"/>',
+ fluxvideo:'<path d="M5 4h14v16H5z"/><path d="m10 8 6 4-6 4z"/><path d="M3 8v8M21 8v8"/>'
+
 };
 const glyphs={flux:'flux',bfl_flux2_pro:'flux',bfl_klein_4b:'flux',replicate_flux_ultra:'flux',
  google_nano_2:'banana',google_nano_pro:'banana',ideogram_p_image:'ideogram',ideogram_45:'ideogram',
  stability_sd35:'stability',stability_ultra:'stability',byteplus_45:'seedream',byteplus_50_flash:'seedream',
- openai_gpt_image:'openai',replicate_qwen2:'qwen',replicate_hidream:'hidream',replicate_imagen4:'imagen',replicate_photon:'photon'};
+ openai_gpt_image:'openai',replicate_qwen2:'qwen',replicate_hidream:'hidream',replicate_imagen4:'imagen',replicate_photon:'photon',kling_30:'kling',seedance_20:'seedance',veo_31_fast:'veo',runway_45:'runway',flux3_video:'fluxvideo'};
 const palettes={flux:'#aa8bff',banana:'#f4ca5c',ideogram:'#f78aa1',stability:'#90c4ff',
- seedream:'#9dd4fa',openai:'#a4e4bf',qwen:'#c0a3ff',hidream:'#f7a9c6',imagen:'#97dcf0',photon:'#efc3a7',wan:'#a7bfff'};
+ seedream:'#9dd4fa',openai:'#a4e4bf',qwen:'#c0a3ff',hidream:'#f7a9c6',imagen:'#97dcf0',photon:'#efc3a7',wan:'#a7bfff',kling:'#80cbd7',seedance:'#8fa9ff',veo:'#f1be84',runway:'#dba3d2',fluxvideo:'#baa2fa'};
 const groupsImage=[
  {name:'FLUX',provider:'Black Forest Labs',ids:['flux','bfl_flux2_pro','bfl_klein_4b','replicate_flux_ultra']},
  {name:'Nano Banana',provider:'Google AI',ids:['google_nano_2','google_nano_pro']},
@@ -33,7 +39,12 @@ const groupsVideo=[
  {name:'Wan 2.1',provider:'LOOX Studio · Local GPU',ids:['wan21']},
  {name:'Wan 2.2',provider:'Text & image generation',ids:['wan22_5b_fast','wan22_t2v_fast','wan22_i2v_fast']},
  {name:'Wan 2.5',provider:'Image to video',ids:['wan25_i2v']},
- {name:'Wan 2.6',provider:'Image to video',ids:['wan26_i2v_flash']}
+ {name:'Wan 2.6',provider:'Image to video',ids:['wan26_i2v_flash']},
+ {name:'Kling',provider:'Kuaishou · Cinematic video',ids:['kling_30']},
+ {name:'Seedance',provider:'ByteDance · Creative video',ids:['seedance_20']},
+ {name:'Veo',provider:'Google · Video generation',ids:['veo_31_fast']},
+ {name:'Runway',provider:'Runway · Video production',ids:['runway_45']},
+ {name:'FLUX Video',provider:'Black Forest Labs · Video generation',ids:['flux3_video']}
 ];
 function node(tag,cls,text){
  const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;
@@ -160,6 +171,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   if(opening){search.value='';render();search.focus()}
  });
  search.addEventListener('input',render);
+ panel.addEventListener('loox-model-cost-change',render);
  native.addEventListener('change',()=>{sync();list.querySelectorAll('[data-model-value] .loox-model-choice').forEach(b=>b.setAttribute('aria-selected',String(b.closest('[data-model-value]').dataset.modelValue===native.value)))});
  new MutationObserver(sync).observe(native,{attributes:true,attributeFilter:['disabled']});
  document.addEventListener('pointerdown',e=>{if(!root.contains(e.target))close()});
