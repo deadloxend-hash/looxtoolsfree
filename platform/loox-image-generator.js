@@ -1,5 +1,5 @@
 import {Community} from './community.js?v=1';
-import {MediaSessions} from './loox-image-sessions.js?v=7';
+import {MediaSessions} from './loox-image-sessions.js?v=8';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
