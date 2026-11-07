@@ -15,6 +15,35 @@ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const validRatios=new Set(['16:9','9:16','1:1','4:3','3:4']);
 const storageKey='loox-active-wan-video-';
 const promptField=$('lvg-prompt'),ratioField=$('lvg-ratio'),form=$('lvg-compose');
+const modelField=$('lvg-model'),imageField=$('lvg-image'),durationField=$('lvg-duration');
+const imageBlock=$('lvg-image-block'),durationBlock=$('lvg-duration-block'),modelNote=$('lvg-model-note');
+const imageRequired=$('lvg-image-required');
+const cloudModels=new Map([
+ ['wan22_i2v_fast',{name:'Wan 2.2 I2V Fast',image:true,durations:[5]}],
+ ['wan22_5b_fast',{name:'Wan 2.2 5B Fast',image:false,durations:[5]}],
+ ['wan22_t2v_fast',{name:'Wan 2.2 T2V Fast',image:false,durations:[5]}],
+ ['wan25_i2v',{name:'Wan 2.5 I2V',image:true,durations:[5,10]}],
+ ['wan26_i2v_flash',{name:'Wan 2.6 I2V Flash',image:true,durations:[5,10]}]
+]);
+const isCloud=()=>modelField.value!=='wan21';
+const chosen=()=>cloudModels.get(modelField.value);
+const modelInfo=()=>state.config?.videoModels?.find(m=>m.id===modelField.value);
+function updateModelUI(){
+ const m=chosen(),cloud=Boolean(m);
+ imageBlock.hidden=!cloud;durationBlock.hidden=!cloud;
+ imageRequired.textContent=m?.image?'(required)':'(optional)';
+ imageField.required=Boolean(m?.image);
+ for(const option of durationField.options)option.hidden=Boolean(m&&!m.durations.includes(Number(option.value)));
+ if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
+ modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
+  m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
+ const info=modelInfo();
+ if(info&&!info.available)modelNote.textContent+=' Cloud model is not available yet.';
+ accountInfo();checkGPU().catch(()=>{});
+}
+modelField.addEventListener('change',updateModelUI);
+durationField.addEventListener('change',accountInfo);
+
 const message=$('lvg-message'),generateButton=$('lvg-generate');
 try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
 const resultList=$('lvg-results'),historyGrid=$('lvg-history-grid');
@@ -28,7 +57,7 @@ const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.l
  if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
 }});
 const community=new Community({state,auth,initialize,root:$('lvg-public-templates')});
-const cost=()=>state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8;
+const cost=()=>isCloud()?(modelInfo()?.cost??99):(state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8);
 const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
 costLabel.insertAdjacentElement('afterend',quotaLabel);
 let remainingVideos=null;
@@ -47,7 +76,7 @@ function notice(text,error=false){
 }
 function accountInfo(){
   credits.textContent=state.user?(state.account?.wallet?state.account.wallet.balance+' credits':'Loading credits…'):'Sign in to view';
-  costLabel.textContent='Video generation · '+cost()+' credits on success';
+  costLabel.textContent=(chosen()?.name||'Wan 2.1 Local')+' · '+cost()+' credits on success';
 }
 function chooseView(name){
   const template=name==='templates';
@@ -84,9 +113,14 @@ if(window.ResizeObserver){
 syncHeader();
 function refreshButton(){
   generateButton.disabled=busy || Boolean(state.user&&!online);
-  generateButton.textContent=busy?'Generating…':state.user&&!online?'GPU offline · Generate unavailable':'✧ Generate video';
+  generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Cloud model unavailable':'GPU offline · Generate unavailable'):'✧ Generate video';
 }
 async function checkGPU(){
+  if(isCloud()){
+    online=Boolean(modelInfo()?.available);
+    gpuLabel.textContent=online?'● Cloud video model ready':'● Cloud model unavailable · check provider billing and configuration';
+    gpuLabel.dataset.online=String(online);refreshButton();return;
+  }
   if(!state.user){
     online=false;gpuLabel.textContent='Sign in to check your PC GPU availability.';
     gpuLabel.dataset.online='false';refreshButton();return;
@@ -113,7 +147,7 @@ function createCard(prompt,ratio){
   const loading=make('div','lig-skeleton'),overlay=make('div','lig-loading-overlay');
   overlay.setAttribute('role','status');
   const spinner=make('span','lig-spinner'),label=make('strong',null,'Preparing your video');
-  const caption=make('small',null,'Your PC GPU will process this request.');
+  const caption=make('small',null,isCloud()?'Your cloud video request is processing.':'Your PC GPU will process this request.');
   overlay.append(spinner,label,caption);stage.append(loading,overlay);
   const bottom=make('div','lig-output-bottom');
   bottom.append(make('span','lig-prompt-label',prompt));
@@ -145,7 +179,7 @@ function addDownload(view,id){
       const response=await fetch(status.url,{credentials:'omit'});
       if(!response.ok)throw Error('Could not retrieve the private video. Please retry.');
       const blob=URL.createObjectURL(await response.blob());
-      const link=make('a');link.href=blob;link.download='loox-wan21-'+id.slice(0,8)+'.mp4';
+      const link=make('a');link.href=blob;link.download='loox-video-'+id.slice(0,8)+'.mp4';
       document.body.append(link);link.click();link.remove();
       setTimeout(()=>URL.revokeObjectURL(blob),30000);
     }catch(error){notice(error.message,true);}finally{button.disabled=false;}
@@ -156,10 +190,10 @@ function showVideo(view,url,id){
   if(!url){showError(view,'Video completed, but its private preview URL is temporarily unavailable. Try your account history.');return;}
   view.stage.replaceChildren();
   const video=make('video');video.controls=true;video.playsInline=true;video.preload='metadata';
-  video.src=url;video.setAttribute('aria-label','Wan 2.1 generated video');
+  video.src=url;video.setAttribute('aria-label','LOOX generated video');
   video.addEventListener('error',()=>{view.indicator.textContent='Preview unavailable · use Download MP4';});
   view.stage.append(video);
-  view.indicator.textContent='Completed · Wan 2.1';
+  view.indicator.textContent='Completed · LOOX Video';
   const reuse=make('button','lig-small-action','Reuse prompt');
   reuse.type='button';reuse.addEventListener('click',()=>{promptField.value=view.prompt;promptField.focus();});
   sessions.completed(view,id);sessions.bottom(sessions.nearBottom());
@@ -189,8 +223,8 @@ async function poll(id,view){
       throw Error('Video generation failed. Any reserved credits were released.');
     }
     if(status.state==='processing')
-      view.setStage('Generating with Wan 2.1','Your PC is creating the video. You can keep this tab open.');
-    else view.setStage('In the queue','Waiting for the GPU to pick up your request.');
+      view.setStage('Generating video',isCloud()?'Your cloud model is processing this video.':'Your PC is creating the video. You can keep this tab open.');
+    else view.setStage('In the queue',isCloud()?'Waiting for the video provider to start.':'Waiting for the GPU to pick up your request.');
   }
   throw Error('Your video is still processing. Check recent AI jobs in your LOOX account.');
 }
@@ -205,7 +239,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     await refreshQuota();
     if(remainingVideos===0){notice('You have used all 30 video generations today. Resets at 00:00 UTC.',true);return;}
     await checkGPU();
-    if(!online){notice('Your PC GPU is offline. Run ComfyUI and the LOOX worker, then try again.',true);return;}
+    if(!online){notice(isCloud()?'Cloud video model is unavailable. Check server configuration and provider billing.':'Your PC GPU is offline. Run ComfyUI and the LOOX worker, then try again.',true);return;}
     if(state.account?.wallet && state.account.wallet.balance<cost()){
       pricing();notice('Your account needs more AI credits for this video.',true);return;
     }
@@ -216,15 +250,30 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   let view=null;
   try{
     const follow=sessions.nearBottom();
-    const entry=await sessions.begin({prompt,ratio,model_id:'wan21',model_name:'Wan 2.1',media_type:'video',settings:{duration:'33 frames / 16 fps (~2 seconds)'}});
+    const m=chosen(),duration=isCloud()?Number(durationField.value):2;
+    if(m?.image&&!imageField.files?.[0])throw Error('This model requires a reference image.');
+    let upload=null;
+    if(isCloud()&&imageField.files?.[0]){
+      const file=imageField.files[0];
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>2400000)throw Error('Upload a JPG, PNG or WebP under 2.4 MB.');
+      upload=await new Promise((resolve,reject)=>{
+        const reader=new FileReader();
+        reader.onload=()=>resolve(reader.result);
+        reader.onerror=()=>reject(Error('Unable to read your image.'));
+        reader.readAsDataURL(file);
+      });
+    }
+    const entry=await sessions.begin({prompt,ratio,model_id:m?modelField.value:'wan21',model_name:m?.name||'Wan 2.1 Local',
+      media_type:'video',settings:{duration:m?duration+' seconds':'33 frames (~2 seconds)'}});
     view=createCard(prompt,ratio);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
-    const id=resumeId||(await api('job',{
-      operation:'generate_video',requestId:entry.request_id,prompt,ratio
-    })).id;
+    const id=resumeId||(await api(isCloud()?'cloud_video_job':'job',isCloud()?
+      {model:modelField.value,duration:Number(durationField.value),image:upload,
+       requestId:entry.request_id,prompt,ratio}:
+      {operation:'generate_video',requestId:entry.request_id,prompt,ratio})).id;
     if(!id)throw Error('The backend did not return a video job ID.');
     promptField.value='';
     if(!resumeId){
-      try{sessionStorage.setItem(storageKey+state.user.id,JSON.stringify({id,prompt,ratio}));}catch{}
+      try{sessionStorage.setItem(storageKey+state.user.id,JSON.stringify({id,prompt,ratio,model:modelField.value}));}catch{}
       await refresh().catch(()=>{});accountInfo();await refreshQuota();
     }
     await poll(id,view);
@@ -287,6 +336,7 @@ document.body.classList.add('loox-generator-ready');
 (async()=>{
   try{await initialize();}catch{}
   await config().catch(()=>{});
+  updateModelUI();
   try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
   await sessions.init().catch(e=>notice(e.message,true));
   await changeUser();accountInfo();
