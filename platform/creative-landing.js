@@ -15,7 +15,7 @@ window.addEventListener('pageshow',()=>{
   if(document.activeElement===prompt)prompt.blur();
 });
 function enter(event){event.preventDefault();try{sessionStorage.setItem(key,JSON.stringify({kind,prompt:prompt.value.trim(),model:model.value}));}catch{}location.assign(destination+'#generate');}
-document.getElementById('creative-landing-form').addEventListener('submit',enter);document.getElementById('creative-cta').addEventListener('click',enter);
+document.getElementById('creative-landing-form').addEventListener('submit',enter);
 for(const b of document.querySelectorAll('[data-example]'))b.addEventListener('click',()=>{prompt.value=b.dataset.example;prompt.focus();});
 const motion=document.querySelector('video'),toggle=document.getElementById('creative-motion');
 if(motion&&toggle){
