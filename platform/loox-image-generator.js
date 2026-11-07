@@ -310,6 +310,33 @@ async function initWorkspace(){
   resolution:{block:byId('lig-resolution-block'),select:byId('lig-resolution')},
   quality:{block:byId('lig-quality-block'),select:byId('lig-quality')}
  };
+ const qualityNames={
+  low:'Quick Draft · Lower cost',
+  medium:'Balanced Quality · Recommended',
+  high:'Maximum Detail · Higher cost'
+ };
+ const qualityDescriptions={
+  low:'Quick Draft: best for testing ideas. Less detail and typically lower API cost.',
+  medium:'Balanced Quality: good detail for everyday images. Recommended default.',
+  high:'Maximum Detail: more rendering detail for finished images. Typically costs more to generate.'
+ };
+ const qualityHelp=create('small','loox-quality-explanation');
+ qualityHelp.id='lig-quality-explanation';
+ qualityHelp.setAttribute('role','status');
+ qualityHelp.setAttribute('aria-live','polite');
+ settingFields.quality.block.append(qualityHelp);
+ settingFields.quality.select.setAttribute('aria-describedby',qualityHelp.id);
+ function updateQualityHelp(){
+  const isGPT=modelField.value==='openai_gpt_image';
+  qualityHelp.hidden=settingFields.quality.block.hidden;
+  if(qualityHelp.hidden)return;
+  if(isGPT){
+   qualityHelp.textContent=qualityDescriptions[settingFields.quality.select.value]||qualityDescriptions.medium;
+  }else{
+   qualityHelp.textContent='Balanced Quality is suitable for most images; higher quality can take more processing.';
+  }
+ }
+ settingFields.quality.select.addEventListener('change',updateQualityHelp);
  function updateModelSettings(){
   const id=modelField.value;
   const choices={
@@ -318,8 +345,12 @@ async function initWorkspace(){
   };
   for(const [key,field] of Object.entries(settingFields)){
    field.block.hidden=!choices[key].length;
-   field.select.replaceChildren(...choices[key].map(value=>new Option(value==='1k'?'1K':value==='2k'?'2K':value,value)));
+   field.select.replaceChildren(...choices[key].map(value=>new Option(
+    key==='quality'?(id==='openai_gpt_image'?qualityNames[value]:value==='medium'?'Balanced Quality':value==='high'?'Maximum Detail':value):
+    value==='1k'?'1K':value==='2k'?'2K':value,value)));
+   if(key==='quality'&&choices[key].includes('medium'))field.select.value='medium';
   }
+  updateQualityHelp();
  }
  if(launch?.kind==='image'&&allModels.has(launch.model))modelField.value=launch.model;
  updateModelSettings();
