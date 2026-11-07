@@ -72,7 +72,7 @@
   tabs.setAttribute('aria-label','LOOX AI workspaces');
   const rows=[
    ['AI Agent','ai-chat.html','agent','✧'],
-   ['AI Image','ai-text-to-image.html#generate','image','▧'],
+   ['AI Image','ai-image-landing.html','image','▧'],
    ['AI Video','ai-video-generator.html#generate','video','▷'],
    ['AI Audio','index.html?category=Audio#tools','audio','♫']
   ];
