@@ -22,13 +22,12 @@
  const inner=el('div','loox-sitewide-inner');
  const burger=el('button','loox-sitewide-burger','☰');burger.type='button';burger.setAttribute('aria-label','Open LOOX tool navigation');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-controls','loox-sitewide-drawer');
  const logoWrap=el('div','loox-sitewide-logo-wrap');
- const logo=el('a','loox-sitewide-logo');logo.href=url('ai-home.html');logo.setAttribute('aria-label','LOOX AI Home');
+ const logo=el('a','loox-sitewide-logo');logo.href=url('ai-image-landing.html');logo.setAttribute('aria-label','LOOX home');
 
  const creditDock=el('div','loox-sitewide-credit-dock');
  const creditBundle=el('div','loox-sitewide-credit-bundle');
  creditDock.append(creditBundle);
- const image=el('img');image.src=url('assets/loox-infinity-white.svg?v=1');image.alt='LOOX';image.width=139;image.height=42;
- logo.append(image);
+ const wordmark=el('span','loox-sitewide-wordmark','LOOX');logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
  [['AI Image','ai-image-landing.html'],['AI Videos','ai-video-generator.html'],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
@@ -183,7 +182,7 @@
  };
  group('Navigation',[
   ['Home','index.html','home'],
-  ['AI Studio','ai-home.html','ai']
+  ['AI Studio','ai-image-landing.html','ai']
  ]);
  group('Editors',[
   ['Photo Editor','photo-editor.html','photo'],
