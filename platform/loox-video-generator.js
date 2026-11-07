@@ -30,7 +30,7 @@ const chosen=()=>cloudModels.get(modelField.value);
 const modelInfo=()=>state.config?.videoModels?.find(m=>m.id===modelField.value);
 function updateModelUI(){
  const m=chosen(),cloud=Boolean(m);
- imageBlock.hidden=!cloud;durationBlock.hidden=!cloud;
+ imageBlock.hidden=!cloud||modelField.value==='wan22_t2v_fast';durationBlock.hidden=!cloud;
  imageRequired.textContent=m?.image?'(required)':'(optional)';
  imageField.required=Boolean(m?.image);
  for(const option of durationField.options)option.hidden=Boolean(m&&!m.durations.includes(Number(option.value)));
@@ -257,7 +257,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     const m=chosen(),duration=isCloud()?Number(durationField.value):2;
     if(m?.image&&!imageField.files?.[0])throw Error('This model requires a reference image.');
     let upload=null;
-    if(isCloud()&&imageField.files?.[0]){
+    if(isCloud()&&!imageBlock.hidden&&imageField.files?.[0]){
       const file=imageField.files[0];
       if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>2400000)throw Error('Upload a JPG, PNG or WebP under 2.4 MB.');
       upload=await new Promise((resolve,reject)=>{
