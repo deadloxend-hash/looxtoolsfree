@@ -153,7 +153,7 @@ body.loox-uc .loox-uc-card .loox-uc-controls .loox-quality-setting[hidden]{displ
  body.loox-uc.ai-chat.loox-uc-empty .ai-chat-body{justify-content:center!important}
  body.loox-uc.ai-chat.loox-uc-empty .ai-thread{flex:0 0 0!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important;overflow:hidden!important}
  body.loox-uc.ai-chat.loox-uc-empty .ai-composer-wrap{margin:auto 0!important}
- body.loox-uc.lig-body.loox-uc-empty .lig-main:has(.lig-history-grid:empty) .lig-content-scroll{flex:0 0 0!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important;overflow:hidden!important}
+ body.loox-uc.lig-body.loox-uc-empty .lig-main:not(.loox-community-view):has(.lig-history-grid:empty) #lig-generate-view{flex:0 0 0!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important;overflow:hidden!important}
  body.loox-uc.lig-body.loox-uc-empty .lig-main:has(.lig-history-grid:empty) .lig-compose-wrap{margin:auto 0!important}
 }
 
@@ -233,3 +233,11 @@ body.loox-uc.ai-chat .loox-uc-toolbar .ai-model{height:34px!important;border-rad
  body.loox-uc .loox-uc-card{min-height:137px!important}
  body.loox-uc .loox-uc-card textarea{height:73px!important;min-height:73px!important}
 }
+
+/* Community always retains a scrollable viewport, including empty-history accounts. */
+body.loox-uc.lig-body .lig-main.loox-community-view #lig-templates-view:not([hidden]){
+ display:block!important;flex:1 1 auto!important;height:auto!important;min-height:0!important;
+ overflow-y:auto!important;padding:24px clamp(12px,3vw,40px)!important;
+}
+body.loox-uc.lig-body .lig-main.loox-community-view #lig-generate-view{display:none!important}
+body.loox-uc.lig-body .lig-main.loox-community-view>.lig-compose-wrap{display:none!important}
