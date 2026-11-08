@@ -292,6 +292,31 @@ async function initWorkspace(){
    document.querySelectorAll('[data-template-job-id]').forEach(el=>{if(el.dataset.templateJobId===id)applyTemplateStatus(el,'pending');});setMessage('Submitted! Your template will appear only after admin approval.');
   }catch(error){applyTemplateStatus(button,templateStatuses.get(id));setMessage(error.message,true);}
  }
+ // Reference inputs remain browser-local until the user clicks Generate.
+ async function prepareFluxReference(){
+  const file=byId('lig-reference-image')?.files?.[0];
+  if(!file)return null;
+  if(modelField.value!=='flux')throw Error('Reference images currently work with FLUX.1 Schnell only.');
+  if(!state.config?.local?.referenceAvailable)throw Error('Update and restart your LOOX PC worker for reference image generation. No credits used.');
+  if(!byId('lig-reference-permission')?.checked)throw Error('Confirm that you have permission to use the reference image.');
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000)throw Error('Choose a JPG, PNG or WebP under 2.4 MB.');
+  const bitmap=await createImageBitmap(file);
+  try{
+   if(bitmap.width*bitmap.height>4000000)throw Error('Reference image exceeds the 4-megapixel limit.');
+   const scale=Math.min(1,1200/Math.max(bitmap.width,bitmap.height));
+   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+   canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);
+   const data=canvas.toDataURL('image/jpeg',0.85);
+   if(data.length>3200040)throw Error('Compressed image exceeds the upload limit.');
+   return {reference_image:data,reference_strength:Number(byId('lig-reference-strength')?.value||65)/100,permission:true};
+  }finally{bitmap.close();}
+ }
+ function syncReferenceUI(){
+  const flux=modelField.value==='flux',button=byId('lig-reference-add'),input=byId('lig-reference-image');
+  if(button){button.hidden=!flux;button.title=state.config?.local?.referenceAvailable?'Choose reference image':'Needs the updated LOOX PC worker';}
+  if(input)input.disabled=!flux;
+  for(const id of ['lig-reference-name','lig-reference-remove','lig-reference-settings']){const node=byId(id);if(node)node.style.display=flux?'':'none';}
+ }
  const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(allModels.get(modelField.value)?.cost||0);
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
@@ -361,6 +386,7 @@ async function initWorkspace(){
   const selected=modelStatus(modelField.value);
   creditCost.textContent=selected.label+' · '+price()+' credits on success';
   modelNote.textContent=selected.reason;
+  syncReferenceUI();
   generateButton.disabled=isBusy||(modelField.value==='flux'?!state.config?.local?.available:!availableModels.has(modelField.value));
  }
  modelField.addEventListener('change',()=>{updateModelSettings();updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
@@ -540,12 +566,13 @@ async function initWorkspace(){
   isBusy=true;generateButton.disabled=true;ratioField.disabled=true;modelField.disabled=true;
   let view=null;
   try{
-   const settings=modelId==='flux'?{}:Object.fromEntries(Object.entries(settingFields).filter(([,f])=>!f.block.hidden).map(([key,f])=>[key,f.select.value]));
+   const reference=!resumeId&&modelId==='flux'?await prepareFluxReference():null;
+   const settings=modelId==='flux'?(reference?{reference:'Image-to-image',reference_similarity:Math.round(reference.reference_strength*100)+'%'}:{}):Object.fromEntries(Object.entries(settingFields).filter(([,f])=>!f.block.hidden).map(([key,f])=>[key,f.select.value]));
    const entry=await sessions.begin({prompt,ratio,model_id:modelId,model_name:modelId==='flux'?'FLUX.1 Schnell':allModels.get(modelId)?.name||'AI image',media_type:'image',settings});
    const follow=sessions.nearBottom();
    view=outputCard(prompt,ratio,entry.model_name);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
    const id=resumeId||(await api(modelId==='flux'?'job':'cloud_job',{
-    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(modelId==='flux'?{}:{settings}),...(seed==null?{}:{seed})
+    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(modelId==='flux'?(reference||{}):{settings}),...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
    if(promptField.value.trim()===prompt)promptField.value='';
