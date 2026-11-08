@@ -77,12 +77,36 @@
     update();
    }
   }else{
-   // Image generation's existing backend is text-only; do not falsely claim that
-   // attached images will influence a generation.
+   // Reference-image mode is available only for the local FLUX worker when the
+   // backend confirms it is running the updated img2img graph.
    const add=el('button','loox-uc-add','+');
-   add.type='button';add.disabled=true;add.title='Reference-image generation is not supported by the current image models';
-   add.setAttribute('aria-label','Reference image input unavailable for this image model');
-   left.append(add);
+   add.id='lig-reference-add';add.type='button';
+   add.title='Choose a reference image';add.setAttribute('aria-label','Choose reference image');
+   const input=el('input');input.type='file';input.id='lig-reference-image';
+   input.accept='image/png,image/jpeg,image/webp';
+   input.hidden=true;input.setAttribute('aria-label','Reference image');
+   const preview=el('span','loox-uc-filename');preview.id='lig-reference-name';preview.hidden=true;
+   const remove=el('button','loox-uc-remove','×');remove.type='button';remove.id='lig-reference-remove';
+   remove.hidden=true;remove.title='Remove reference image';
+   const settings=el('div','loox-uc-reference-settings');settings.id='lig-reference-settings';settings.hidden=true;
+   const strength=el('input');strength.type='range';strength.id='lig-reference-strength';strength.min='20';strength.max='80';strength.step='5';strength.value='65';
+   const label=el('label',null,'Reference similarity · 65%');label.htmlFor=strength.id;
+   const consent=el('label','loox-uc-reference-consent');
+   const checkbox=el('input');checkbox.type='checkbox';checkbox.id='lig-reference-permission';
+   consent.append(checkbox,document.createTextNode('I have permission to use this image'));
+   strength.addEventListener('input',()=>label.textContent='Reference similarity · '+strength.value+'%');
+   settings.append(label,strength,consent);
+   add.addEventListener('click',()=>input.click());
+   const clear=()=>{input.value='';preview.textContent='';preview.hidden=true;remove.hidden=true;settings.hidden=true;checkbox.checked=false;};
+   remove.addEventListener('click',clear);
+   input.addEventListener('change',()=>{
+    const file=input.files?.[0];if(!file){clear();return;}
+    if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000){
+     clear();window.alert('Choose a PNG, JPG or WebP reference image under 2.4 MB.');return;
+    }
+    preview.textContent=file.name;preview.hidden=false;remove.hidden=false;settings.hidden=false;
+   });
+   left.append(add,input,preview,remove,settings);
   }
   actions.prepend(left);
   // Keep all existing form submit buttons exactly where they were.
