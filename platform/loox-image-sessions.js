@@ -8,6 +8,7 @@ const date=t=>new Date(t).toLocaleString();
 export class MediaSessions {
  constructor(options){
   Object.assign(this,options);this.id=null;this.epoch=0;this.user=undefined;this.offset=0;
+  this.statusCache=new Map();this.statusQueue=Promise.resolve();this.nextStatusAt=0;
   this.root.classList.add('loox-sessions-layout');document.body.classList.add('loox-conversations','loox-focus-generator');
   this.scroll=this.feed.closest('.lig-content-scroll');
   // Reuse the rail rendered in HTML so the layout exists before the async model config finishes.
@@ -32,12 +33,42 @@ export class MediaSessions {
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&matchMedia('(max-width:900px)').matches)this.collapse(true);});
  }
  button(label,fn){const b=el('button','lig-small-action',label);b.type='button';b.addEventListener('click',()=>Promise.resolve().then(fn).catch(e=>this.notice(e.message,true)));return b;}
+ // Status calls are billed as API requests even for old, completed generations.
+ // Throttle across thumbnails, session cards and previews to avoid exhausting
+ // the shared per-account rate limit when a long session is reopened.
+ async mediaStatus(id,{fresh=false}={}){
+  const owner=this.state.user?.id;
+  const cacheKey=owner+':'+id,stored=this.statusCache.get(cacheKey);
+  if(!fresh&&stored?.url&&stored.expires>Date.now())return stored.value;
+  const task=async()=>{
+   const cached=this.statusCache.get(cacheKey);
+   if(!fresh&&cached?.url&&cached.expires>Date.now())return cached.value;
+   for(let attempt=0;attempt<3;attempt++){
+    const wait=Math.max(0,this.nextStatusAt-Date.now());
+    if(wait)await new Promise(resolve=>setTimeout(resolve,wait));
+    this.nextStatusAt=Date.now()+1500;
+    try{
+     const result=await this.api('status',null,{id});
+     if(owner!==this.state.user?.id)throw Error('Your account changed. Please reopen your session.');
+     if(result.url)this.statusCache.set(cacheKey,{url:result.url,value:result,expires:Date.now()+240000});
+     return result;
+    }catch(error){
+     if(error.status!==429||attempt===2)throw error;
+     // Back off rather than showing a rate limit as a permanent failed generation.
+     this.nextStatusAt=Math.max(this.nextStatusAt,Date.now()+12000*(attempt+1));
+    }
+   }
+  };
+  const pending=this.statusQueue.then(task,task);
+  this.statusQueue=pending.catch(()=>{});
+  return pending;
+ }
  setCommunity(on){this.root.classList.toggle('loox-community-view',on);this.rail.hidden=on;this.scrim.hidden=on||this.rail.classList.contains('collapsed')||!matchMedia('(max-width:900px)').matches;}
  collapse(closed){this.rail.classList.toggle('collapsed',closed);this.root.classList.toggle('loox-sessions-collapsed',closed);this.toggle.textContent=closed?'›':'‹';this.toggle.setAttribute('aria-expanded',String(!closed));this.scrim.hidden=closed||!matchMedia('(max-width:900px)').matches;}
  url(){const u=new URL(location.href);if(this.id)u.searchParams.set('session',this.id);else u.searchParams.delete('session');history.replaceState(null,'',u.pathname+u.search+u.hash);}
  nearBottom(){return this.scroll.scrollHeight-this.scroll.scrollTop-this.scroll.clientHeight<160;}
  bottom(near){if(near)requestAnimationFrame(()=>this.scroll.scrollTo({top:this.scroll.scrollHeight,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'}));}
- async init(){const uid=this.state.user?.id||null;if(uid===this.user)return;if(this.user&&uid!==this.user){this.id=null;this.url();}this.user=uid;this.epoch++;this.id=null;this.feed.replaceChildren();if(!uid){this.list.replaceChildren(el('p','','Sign in to save your sessions.'));this.more.hidden=true;return;}await this.loadList();const params=new URLSearchParams(location.search),id=params.get('session');if(id)await this.open(id);const reuse=params.get('reuse');if(reuse&&id){const entry=checked(await this.state.client.from('loox_media_entries').select('*').eq('id',reuse).eq('session_id',id).single());const u=new URL(location.href);u.searchParams.delete('reuse');history.replaceState(null,'',u.pathname+u.search+u.hash);await this.reuse(entry);}}
+ async init(){const uid=this.state.user?.id||null;if(uid===this.user)return;if(this.user&&uid!==this.user){this.id=null;this.url();}this.user=uid;this.epoch++;this.id=null;this.statusCache.clear();this.feed.replaceChildren();if(!uid){this.list.replaceChildren(el('p','','Sign in to save your sessions.'));this.more.hidden=true;return;}await this.loadList();const params=new URLSearchParams(location.search),id=params.get('session');if(id)await this.open(id);const reuse=params.get('reuse');if(reuse&&id){const entry=checked(await this.state.client.from('loox_media_entries').select('*').eq('id',reuse).eq('session_id',id).single());const u=new URL(location.href);u.searchParams.delete('reuse');history.replaceState(null,'',u.pathname+u.search+u.hash);await this.reuse(entry);}}
  async fresh(){if(this.isBusy())throw Error('Wait for the current generation.');this.epoch++;this.id=null;this.feed.replaceChildren();this.url();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);this.prompt.focus();}
  pinKey(){return 'loox-pinned-media-sessions:'+this.state.user?.id;}
  pinnedSessions(){try{const v=JSON.parse(localStorage.getItem(this.pinKey())||'[]');return Array.isArray(v)?v:[]}catch{return []}}
@@ -60,7 +91,7 @@ export class MediaSessions {
   if(!rows.length)return;const data=checked(await this.state.client.rpc('loox_session_thumbnails',{p_sessions:rows.map(s=>s.id)}));
   if(uid!==this.state.user?.id)return;
   for(const item of data||[]){const holder=this.list.querySelector('[data-session="'+item.session_id+'"] .loox-session-thumb');if(!holder)continue;
-   const observer=new IntersectionObserver(items=>{if(!items.some(i=>i.isIntersecting))return;observer.disconnect();this.api('status',null,{id:item.job_id}).then(status=>{if(uid!==this.state.user?.id||!holder.isConnected||!status.url)return;const media=el(item.media_type==='video'?'video':'img');media.src=status.url;if(item.media_type==='video'){media.muted=true;media.playsInline=true;media.preload='metadata';media.addEventListener('loadedmetadata',()=>{media.currentTime=Math.min(.1,media.duration/2);},{once:true});}else{media.alt='';media.loading='lazy';}holder.replaceChildren(media);}).catch(()=>{});},{root:this.list,rootMargin:'80px'});observer.observe(holder);
+   const observer=new IntersectionObserver(items=>{if(!items.some(i=>i.isIntersecting))return;observer.disconnect();this.mediaStatus(item.job_id).then(status=>{if(uid!==this.state.user?.id||!holder.isConnected||!status.url)return;const media=el(item.media_type==='video'?'video':'img');media.src=status.url;if(item.media_type==='video'){media.muted=true;media.playsInline=true;media.preload='metadata';media.addEventListener('loadedmetadata',()=>{media.currentTime=Math.min(.1,media.duration/2);},{once:true});}else{media.alt='';media.loading='lazy';}holder.replaceChildren(media);}).catch(()=>{});},{root:this.list,rootMargin:'80px'});observer.observe(holder);
   }
  }
  async begin(data){
@@ -78,7 +109,7 @@ export class MediaSessions {
   const s=checked(await this.state.client.from('loox_media_sessions').select('id').eq('id',id).single());
   const entries=[];for(let offset=0;;offset+=200){const batch=checked(await this.state.client.from('loox_media_entries').select('*').eq('session_id',s.id).order('created_at').order('id').range(offset,offset+199));if(seq!==this.epoch||uid!==this.state.user?.id)return;entries.push(...batch);if(batch.length<200)break;}
   if(seq!==this.epoch||uid!==this.state.user?.id)return;this.id=id;this.url();this.feed.replaceChildren();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);
-  this.observer?.disconnect();this.observer=new IntersectionObserver(items=>{for(const item of items)if(item.isIntersecting){this.observer.unobserve(item.target);const e=entries.find(e=>e.id===item.target.dataset.entry);if(e)this.restore(e,item.target,seq).catch(error=>{if(seq===this.epoch)item.target.querySelector('.lig-output-stage').textContent=error.message;});}},{root:this.scroll,rootMargin:'500px'});
+  this.observer?.disconnect();this.observer=new IntersectionObserver(items=>{for(const item of items)if(item.isIntersecting){this.observer.unobserve(item.target);const e=entries.find(e=>e.id===item.target.dataset.entry);if(e)this.restore(e,item.target,seq).catch(error=>{if(seq===this.epoch){const stage=item.target.querySelector('.lig-output-stage');if(stage)stage.textContent=error.status===429?'Preview temporarily busy. Reopen this chat in a minute. Your saved image is safe.':error.message;}});}},{root:this.scroll,rootMargin:'500px'});
   for(const e of entries){const card=el('article','lig-output'),top=el('div','lig-output-top');top.append(el('span','lig-output-name',e.prompt));const stage=el('div','lig-output-stage','Loading generation…');stage.style.setProperty('--lig-ratio',(e.ratio||'1:1').replace(':',' / '));card.append(top,stage);this.feed.append(card);this.attach({card,stage},e);this.observer.observe(card);}
  }
  async restore(entry,card,seq){
@@ -86,11 +117,11 @@ export class MediaSessions {
   while(seq===this.epoch&&card.isConnected){const job=checked(await this.state.client.from('loox_jobs').select('id,state,failure_code').eq('request_id',entry.request_id).eq('user_id',this.state.user.id).maybeSingle());if(seq!==this.epoch||!card.isConnected)return;
    if(!job){if(Date.now()-new Date(entry.created_at).getTime()<180000&&count++<36){stage.textContent='Waiting for the generation request to be accepted…';await new Promise(resolve=>setTimeout(resolve,5000));continue;}stage.textContent='No accepted job found. Check your account before trying again.';return;}
    if(job.state==='failed'){stage.textContent='Generation failed. Reserved credits were released.';return;}
-   if(job.state==='succeeded'){const status=await this.api('status',null,{id:job.id});if(seq!==this.epoch||!card.isConnected)return;if(!status.url){stage.textContent='Preview unavailable. Try reopening this session.';return;}
+   if(job.state==='succeeded'){const status=await this.mediaStatus(job.id);if(seq!==this.epoch||!card.isConnected)return;if(!status.url){stage.textContent='Preview unavailable. Try reopening this session.';return;}
     const media=el(entry.media_type==='video'?'video':'img');media.src=status.url;if(entry.media_type==='video'){media.controls=true;media.playsInline=true;media.preload='metadata';}else{media.alt=entry.prompt;media.loading='lazy';media.decoding='async';}stage.replaceChildren(media);this.completed({card,stage,entry},job.id);return;}
    stage.textContent=job.state==='processing'?'Generating…':'Waiting in the queue…';if(++count>1100){stage.textContent='Still processing. Reopen this session for an update.';return;}await new Promise(resolve=>setTimeout(resolve,5000));
   }
  }
- async preview(entry,id){const status=await this.api('status',null,{id});if(!status.url)throw Error('Preview unavailable.');const d=el('dialog','loox-media-preview'),media=el(entry.media_type==='video'?'video':'img');media.src=status.url;if(entry.media_type==='video'){media.controls=true;media.playsInline=true;}else media.alt=entry.prompt;d.append(this.button('Close',()=>d.close()),media);d.addEventListener('close',()=>d.remove());document.body.append(d);d.showModal();}
+ async preview(entry,id){const status=await this.mediaStatus(id);if(!status.url)throw Error('Preview unavailable.');const d=el('dialog','loox-media-preview'),media=el(entry.media_type==='video'?'video':'img');media.src=status.url;if(entry.media_type==='video'){media.controls=true;media.playsInline=true;}else media.alt=entry.prompt;d.append(this.button('Close',()=>d.close()),media);d.addEventListener('close',()=>d.remove());document.body.append(d);d.showModal();}
  async download(entry,id){const status=await this.api('status',null,{id});if(!status.url)throw Error('Download unavailable.');const r=await fetch(status.url,{credentials:'omit'});if(!r.ok)throw Error('Download failed. Please retry.');const blob=await r.blob(),url=URL.createObjectURL(blob),a=el('a'),ext=entry.media_type==='video'?'mp4':blob.type.includes('jpeg')?'jpg':blob.type.includes('webp')?'webp':'png';a.href=url;a.download='loox-'+id+'.'+ext;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 }
