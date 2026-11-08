@@ -294,29 +294,48 @@ async function initWorkspace(){
  }
  // Reference inputs remain browser-local until the user clicks Generate.
  async function prepareFluxReference(){
-  const file=byId('lig-reference-image')?.files?.[0];
-  if(!file)return null;
+  const files=window.__looxFluxReferences?.()||[];
+  if(!files.length)return null;
   if(modelField.value!=='flux')throw Error('Reference images currently work with FLUX.1 Schnell only.');
-  if(!state.config?.local?.referenceAvailable)throw Error('Update and restart your LOOX PC worker for reference image generation. No credits used.');
-  if(!byId('lig-reference-permission')?.checked)throw Error('Confirm that you have permission to use the reference image.');
-  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000)throw Error('Choose a JPG, PNG or WebP under 2.4 MB.');
-  const bitmap=await createImageBitmap(file);
-  try{
-   if(bitmap.width*bitmap.height>4000000)throw Error('Reference image exceeds the 4-megapixel limit.');
-   const scale=Math.min(1,1200/Math.max(bitmap.width,bitmap.height));
-   const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
-   canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);
-   const data=canvas.toDataURL('image/jpeg',0.85);
-   if(data.length>3200040)throw Error('Compressed image exceeds the upload limit.');
-   return {reference_image:data,reference_strength:Number(byId('lig-reference-strength')?.value||65)/100,permission:true};
-  }finally{bitmap.close();}
+  if(!state.config?.local?.referenceAvailable)throw Error('Your Windows ComfyUI worker is running an older version or is offline. Update loox-worker.py from GitHub and restart your PC worker, then refresh this page. No credits used.');
+  if(!byId('lig-reference-permission')?.checked)throw Error('Confirm that you have permission to use all selected reference images.');
+  if(files.length>12)throw Error('A maximum of 12 reference images can be processed in one generation.');
+  // Native FLUX Schnell img2img has a single VAE image input, not independent
+  // reference encoders. Assemble a readable contact sheet rather than
+  // pretending all files are supplied to distinct model conditioning slots.
+  const columns=Math.ceil(Math.sqrt(files.length)),rows=Math.ceil(files.length/columns);
+  const canvas=document.createElement('canvas');
+  const size=files.length===1?1024:1024;
+  canvas.width=size;canvas.height=size;
+  const context=canvas.getContext('2d');
+  if(!context)throw Error('Your browser could not prepare the reference images.');
+  context.fillStyle='#f0f0f0';context.fillRect(0,0,size,size);
+  for(let i=0;i<files.length;i++){
+   const file=files[i];
+   if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000)
+    throw Error('Each reference image must be a JPG, PNG or WebP under 2.4 MB.');
+   const bitmap=await createImageBitmap(file);
+   try{
+    if(bitmap.width*bitmap.height>4000000)throw Error('Reference image '+(i+1)+' exceeds 4 megapixels.');
+    const col=i%columns,row=Math.floor(i/columns);
+    const x=Math.round(col*size/columns),y=Math.round(row*size/rows);
+    const width=Math.round((col+1)*size/columns)-x,height=Math.round((row+1)*size/rows)-y;
+    const fit=Math.min(width/bitmap.width,height/bitmap.height);
+    const dw=Math.round(bitmap.width*fit),dh=Math.round(bitmap.height*fit);
+    context.drawImage(bitmap,x+(width-dw)/2,y+(height-dh)/2,dw,dh);
+   }finally{bitmap.close();}
+  }
+  const uri=canvas.toDataURL('image/jpeg',0.84);
+  if(uri.length>3200040)throw Error('Reference collage is too large to upload.');
+  return {reference_image:uri,reference_strength:Number(byId('lig-reference-strength')?.value||65)/100,permission:true};
  }
  function syncReferenceUI(){
-  const flux=modelField.value==='flux',button=byId('lig-reference-add'),input=byId('lig-reference-image');
-  if(button){button.hidden=!flux;button.title=state.config?.local?.referenceAvailable?'Choose reference image':'Needs the updated LOOX PC worker';}
-  if(input)input.disabled=!flux;
-  for(const id of ['lig-reference-name','lig-reference-remove','lig-reference-settings']){const node=byId(id);if(node)node.style.display=flux?'':'none';}
+  const isFlux=modelField.value==='flux',button=byId('lig-reference-quick-add'),tray=byId('lig-reference-tray');
+  if(button){button.hidden=!isFlux;button.title=state.config?.local?.referenceAvailable?'Add reference images':'Update PC worker for FLUX image-to-image';}
+  const input=byId('lig-reference-image');if(input)input.disabled=!isFlux;
+  if(tray)tray.style.display=isFlux?'':'none';
  }
+
  const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(allModels.get(modelField.value)?.cost||0);
  const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
