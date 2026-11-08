@@ -322,3 +322,22 @@ body.loox-uc .loox-uc-left #lig-reference-quick-add[hidden]{display:none!importa
  body.loox-uc .loox-ref-add{flex-basis:54px;width:54px;height:54px}
  body.loox-uc .loox-ref-grid{gap:6px}
 }
+
+/* V7 — minimal, professional reference tray. Similarity is chosen automatically. */
+body.loox-uc .lig-compose-card .loox-ref-footer{
+ display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+ gap:5px 16px;min-width:0;padding:1px 0 0;
+}
+body.loox-uc .lig-compose-card .loox-ref-footer .loox-uc-reference-consent{
+ display:inline-flex!important;align-items:center;gap:7px;min-width:0;
+ color:#cfc3db;font:500 11px/1.35 system-ui,sans-serif;cursor:pointer;
+}
+body.loox-uc .lig-compose-card .loox-ref-footer #lig-reference-permission{
+ width:15px;height:15px;flex:none;accent-color:#b58de6;
+}
+body.loox-uc .lig-compose-card .loox-ref-footer .loox-ref-hint{
+ max-width:440px;font-size:10px;line-height:1.35;color:#9e91ad;
+}
+@media(max-width:600px){
+ body.loox-uc .lig-compose-card .loox-ref-footer{align-items:flex-start;flex-direction:column;gap:4px}
+}
