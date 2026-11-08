@@ -90,18 +90,13 @@
    add.addEventListener('click',()=>input.click());
    const header=el('div','loox-ref-header');
    const count=el('span','loox-ref-count');count.id='lig-reference-count';
-   const configure=el('button','loox-ref-options','Adjust reference');
-   configure.type='button';configure.setAttribute('aria-expanded','false');
-   const settings=el('div','loox-uc-reference-settings');settings.id='lig-reference-settings';settings.hidden=true;
-   const strength=el('input');strength.type='range';strength.id='lig-reference-strength';
-   strength.min='20';strength.max='80';strength.step='5';strength.value='65';
-   const label=el('label',null,'Reference similarity · 65%');label.htmlFor=strength.id;
+   // FLUX Schnell uses one image latent. Choose an editing-friendly strength
+   // automatically instead of making visitors learn technical denoise settings.
    const consent=el('label','loox-uc-reference-consent');
    const checkbox=el('input');checkbox.type='checkbox';checkbox.id='lig-reference-permission';
    consent.append(checkbox,document.createTextNode('I have permission to use these images'));
-   const hint=el('small','loox-ref-hint','For visible changes, start at 35–50% similarity. Higher similarity preserves more of your original; precise background-only edits need inpainting. Multiple photos are combined into one grid (max 12).');
-   strength.addEventListener('input',()=>label.textContent='Reference similarity · '+strength.value+'%');
-   settings.append(label,strength,consent,hint);
+   const hint=el('small','loox-ref-hint','For FLUX Schnell, multiple photos are combined into one reference image. Results may change details of the originals.');
+   const footer=el('div','loox-ref-footer');footer.append(consent,hint);
    const render=()=>{
     grid.replaceChildren();
     for(const [i,entry] of selected.entries()){
@@ -118,7 +113,7 @@
     const has=selected.length>0;
     tray.hidden=!has;
     count.textContent=selected.length+' reference image'+(selected.length===1?'':'s');
-    if(!has){settings.hidden=true;configure.setAttribute('aria-expanded','false');checkbox.checked=false;}
+    if(!has)checkbox.checked=false;
    };
    input.addEventListener('change',()=>{
     const incoming=Array.from(input.files||[]);input.value='';
@@ -133,12 +128,8 @@
     }
     render();
    });
-   configure.addEventListener('click',()=>{
-    settings.hidden=!settings.hidden;
-    configure.setAttribute('aria-expanded',String(!settings.hidden));
-   });
-   header.append(count,configure);
-   tray.append(header,grid,settings,input);
+   header.append(count);
+   tray.append(header,grid,footer,input);
    // Keep selected photos above the text input, as in the supplied example.
    card.insertBefore(tray,textarea);
    // Expose the chosen Files to the existing submit code without duplicating data.
