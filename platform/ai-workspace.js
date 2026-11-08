@@ -13,7 +13,48 @@ const draftsKey='loox-ai-start-v1', historyURL='https://looxtoolfree-backend.ver
 const chatURL='https://looxtoolfree-backend.vercel.app/api/loox-chat';
 let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
 let usage={free:null,premium:null},activeAnimation=0,knownUser=null,loadingRecent=false;
-let openingThread=0;
+let openingThread=0,openingAttachments=0,attachments=[];
+const attachmentURL='https://looxtoolfree-backend.vercel.app/api/loox';
+async function attachmentRequest(action,options={}){
+ const token=await sessionToken(),method=options.method||'GET',url=new URL(attachmentURL);
+ url.searchParams.set('action','chat_attachment_'+action);
+ if(options.thread_id)url.searchParams.set('thread_id',options.thread_id);
+ const response=await fetch(url,{method,cache:'no-store',credentials:'omit',
+  headers:{Authorization:'Bearer '+token,...(method==='POST'?{'Content-Type':'application/json'}:{})},
+  body:method==='POST'?JSON.stringify(options.body||{}):undefined,signal:AbortSignal.timeout(65000)});
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok)throw Error(data.error||'Chat attachment could not be saved.');
+ return data;
+}
+function attachmentBubble(item){
+ if(!thread)return;
+ const box=document.createElement('div');box.className='ai-msg user ai-attachment';
+ box.style.cssText='display:flex;align-items:center;gap:10px;max-width:min(100%,310px);margin-left:auto';
+ const img=document.createElement('img');img.src=item.thumbnail_url||item.url;
+ img.alt='Chat image';img.loading='lazy';img.decoding='async';
+ img.style.cssText='display:block;max-width:190px;max-height:180px;width:auto;height:auto;object-fit:contain;border-radius:12px';
+ const controls=document.createElement('div');controls.style.cssText='display:flex;flex-direction:column;gap:8px';
+ const view=document.createElement('a');view.href=item.url;view.target='_blank';view.rel='noopener noreferrer';
+ view.textContent='Open';view.style.cssText='color:#c9a6ff;font-size:12px';
+ const remove=document.createElement('button');remove.type='button';remove.textContent='Delete';
+ remove.setAttribute('aria-label','Delete chat image');remove.style.cssText='font:inherit;font-size:12px;color:#f2d9ff;background:#45275a;border:1px solid #76548d;border-radius:6px;cursor:pointer';
+ remove.addEventListener('click',async()=>{
+  if(busy)return note('Finish the current reply first.');
+  const id=currentThreadId;if(!id||!confirm('Delete this chat image?'))return;
+  remove.disabled=true;
+  try{await attachmentRequest('delete',{method:'POST',body:{id:item.id}});
+   if(currentThreadId===id)await loadAttachments(id);
+   note('Chat image deleted.');
+  }catch(error){note(error.message);remove.disabled=false;}
+ });
+ controls.append(view,remove);box.append(img,controls);thread.append(box);
+}
+async function loadAttachments(id){
+ const seq=++openingAttachments,owner=state.user?.id;
+ const data=await attachmentRequest('list',{thread_id:id});
+ if(seq!==openingAttachments||id!==currentThreadId||owner!==state.user?.id)return;
+ attachments=data.items||[];drawThread();
+}
 let mobile=window.matchMedia('(max-width:760px)');
 let recentClosed=mobile.matches;
 
@@ -128,6 +169,7 @@ function drawThread(){
  // A fresh AI Agent session uses the same uncluttered empty workspace as Image/Video.
  // Messages appear only after the user starts the conversation.
  for(const msg of messages)addBubble(msg.text,msg.role,Boolean(msg.error));
+ for(const item of attachments)attachmentBubble(item);
 }
 function showThinking(){
  const el=document.createElement('div');
@@ -200,7 +242,7 @@ function chatURLState(id){
 function newChat(focus=true){
  openingThread++;
  if(busy){note('Finish the current reply before starting a new chat.');return;}
- currentThreadId=null;messages=[];activeAnimation++;
+ currentThreadId=null;messages=[];attachments=[];openingAttachments++;activeAnimation++;
  chatURLState(null);drawThread();
  if(mobile.matches)setRecentOpen(false);
  note('New chat ready.');if(focus)prompt.focus();
@@ -295,7 +337,8 @@ async function openThread(id){
   model=result.thread.model;
   modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
   messages=result.messages.map(m=>({role:m.role,text:m.content}));
-  drawThread();chatURLState(id);renderSelectedThread();quotaNote();
+  attachments=[];drawThread();chatURLState(id);renderSelectedThread();quotaNote();
+  await loadAttachments(id).catch(error=>{if(id===currentThreadId)note('Images: '+error.message);});
   if(mobile.matches)setRecentOpen(false);
  }catch(error){note(error.message);}
 }
@@ -365,7 +408,7 @@ async function syncUser(){
  const userId=state.user?.id||null;
  if(userId===knownUser)return;
  knownUser=userId;openingThread++;
- currentThreadId=null;messages=[];drawThread();
+ currentThreadId=null;messages=[];attachments=[];openingAttachments++;drawThread();
  if(!userId){
   emptyRecent('Sign in to save and reopen your conversations.');
   recentMore.hidden=true;
@@ -402,6 +445,38 @@ async function start(){
   else quotaNote();
  }
 }
+
+if(!landing&&toolsButton?.parentElement){
+ const upload=document.createElement('input');upload.type='file';upload.accept='image/png,image/jpeg,image/webp';
+ upload.hidden=true;upload.setAttribute('aria-label','Choose a private chat image');
+ const attach=document.createElement('button');attach.type='button';attach.className='ai-round';
+ attach.textContent='📎';attach.title='Attach an image to this saved chat';
+ attach.setAttribute('aria-label','Attach image');toolsButton.parentElement.insertBefore(attach,toolsButton.nextSibling);
+ toolsButton.parentElement.append(upload);
+ attach.addEventListener('click',()=>{
+  if(busy)return note('Finish the current reply before attaching an image.');
+  if(!state.user)return auth('login');
+  if(!currentThreadId)return note('Send a message first to create a saved chat, then attach an image.');
+  upload.click();
+ });
+ upload.addEventListener('change',async()=>{
+  const file=upload.files?.[0],id=currentThreadId;upload.value='';
+  if(!file||!id)return;
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2_097_152)
+   return note('Choose a PNG, JPG or WebP image under 2 MB.');
+  attach.disabled=true;note('Saving image privately to this chat…');
+  try{
+   const image=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(Error('Could not read the image.'));reader.readAsDataURL(file);
+   });
+   await attachmentRequest('upload',{method:'POST',body:{thread_id:id,image}});
+   if(currentThreadId===id){await loadAttachments(id);note('Image saved in this chat. AI text replies do not analyze image contents.');}
+  }catch(error){note(error.message);}
+  finally{attach.disabled=false;}
+ });
+}
+
 start();
 
 // The shared LOOX navigation hamburger is managed by loox-experience.js.

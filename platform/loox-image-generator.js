@@ -197,9 +197,20 @@ async function initWorkspace(){
  if(draft)promptField.value=draft;
  let launch=null;try{launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='image'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');autoRequest=false;
   if(launch.settings?.aspect_ratio&&ratioField.querySelector('option[value="'+launch.settings.aspect_ratio+'"]')){ratioField.value=launch.settings.aspect_ratio;ratioField.dispatchEvent(new Event('change'));}
-  if(launch.reference_path){(async()=>{const message=byId('lig-message');try{
-   if(!/^[a-zA-Z0-9._/-]{1,250}$/.test(launch.reference_path)||launch.reference_path.includes('..'))throw Error('Invalid template image path.');
-   const url=state.client.storage.from('loox-templates').getPublicUrl(launch.reference_path).data.publicUrl;
+  if(launch.reference_id||launch.reference_path){(async()=>{const message=byId('lig-message');try{
+   let url;
+   if(launch.reference_id){
+    if(!/^[a-z0-9-]{3,80}$/i.test(launch.reference_id))throw Error('Invalid template identifier.');
+    const lookup=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({
+     action:'public_media',type:'template',id:launch.reference_id,variant:'original'
+    }),{credentials:'omit'});
+    const resource=await lookup.json().catch(()=>({}));
+    if(!lookup.ok||!resource.url)throw Error('Template reference is unavailable.');
+    url=resource.url;
+   }else{
+    if(!/^[a-zA-Z0-9._/-]{1,250}$/.test(launch.reference_path)||launch.reference_path.includes('..'))throw Error('Invalid template image path.');
+    url=state.client.storage.from('loox-templates').getPublicUrl(launch.reference_path).data.publicUrl;
+   }
    const response=await fetch(url,{credentials:'omit'});if(!response.ok)throw Error('Template reference image is unavailable.');
    const blob=await response.blob();if(!blob.type.startsWith('image/'))throw Error('This template does not contain an image.');
    const bitmap=await createImageBitmap(blob);const canvas=document.createElement('canvas');
