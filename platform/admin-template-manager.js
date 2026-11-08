@@ -10,7 +10,7 @@ function field(label,tag='input',type='text'){const wrap=E('label','community-fi
 fields.title=field('Template title');fields.title.required=true;fields.title.maxLength=120;
 fields.kind=field('Template type','select');for(const x of ['image','video'])fields.kind.add(new Option(x==='image'?'Image template':'Video template',x));
 fields.category=field('Category (e.g. Anime, Cinematic, Retro)');fields.category.required=true;fields.category.maxLength=70;
-fields.prompt=field('Generation prompt','textarea');fields.prompt.required=true;fields.prompt.maxLength=12000;fields.prompt.rows=4;
+fields.prompt=field('Generation prompt','textarea');fields.prompt.required=true;fields.prompt.maxLength=1200;fields.prompt.rows=4;
 fields.description=field('Short description','textarea');fields.description.rows=2;
 fields.model=field('Model ID (optional)');
 fields.ratio=field('Aspect ratio (optional, e.g. 16:9)');
