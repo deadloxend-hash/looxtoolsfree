@@ -77,36 +77,78 @@
     update();
    }
   }else{
-   // Reference-image mode is available only for the local FLUX worker when the
-   // backend confirms it is running the updated img2img graph.
-   const add=el('button','loox-uc-add','+');
-   add.id='lig-reference-add';add.type='button';
-   add.title='Choose a reference image';add.setAttribute('aria-label','Choose reference image');
+   // FLUX Schnell uses a native img2img latent. Multiple selected images are
+   // combined visibly into one tiled reference (no unsupported multi-IP-adapter claims).
+   const MAX_REFERENCES=12, selected=[];
+   const tray=el('div','loox-ref-tray');tray.id='lig-reference-tray';
+   tray.hidden=true;tray.setAttribute('aria-label','Selected reference images');
+   const grid=el('div','loox-ref-grid');grid.id='lig-reference-grid';
    const input=el('input');input.type='file';input.id='lig-reference-image';
-   input.accept='image/png,image/jpeg,image/webp';
-   input.hidden=true;input.setAttribute('aria-label','Reference image');
-   const preview=el('span','loox-uc-filename');preview.id='lig-reference-name';preview.hidden=true;
-   const remove=el('button','loox-uc-remove','×');remove.type='button';remove.id='lig-reference-remove';
-   remove.hidden=true;remove.title='Remove reference image';
+   input.accept='image/png,image/jpeg,image/webp';input.multiple=true;input.hidden=true;
+   const add=el('button','loox-ref-add','+');add.type='button';add.id='lig-reference-add';
+   add.title='Add reference images';add.setAttribute('aria-label','Add reference images');
+   add.addEventListener('click',()=>input.click());
+   const header=el('div','loox-ref-header');
+   const count=el('span','loox-ref-count');count.id='lig-reference-count';
+   const configure=el('button','loox-ref-options','Adjust reference');
+   configure.type='button';configure.setAttribute('aria-expanded','false');
    const settings=el('div','loox-uc-reference-settings');settings.id='lig-reference-settings';settings.hidden=true;
-   const strength=el('input');strength.type='range';strength.id='lig-reference-strength';strength.min='20';strength.max='80';strength.step='5';strength.value='65';
+   const strength=el('input');strength.type='range';strength.id='lig-reference-strength';
+   strength.min='20';strength.max='80';strength.step='5';strength.value='65';
    const label=el('label',null,'Reference similarity · 65%');label.htmlFor=strength.id;
    const consent=el('label','loox-uc-reference-consent');
    const checkbox=el('input');checkbox.type='checkbox';checkbox.id='lig-reference-permission';
-   consent.append(checkbox,document.createTextNode('I have permission to use this image'));
+   consent.append(checkbox,document.createTextNode('I have permission to use these images'));
+   const hint=el('small','loox-ref-hint','Images are combined into one reference grid for FLUX img2img. Maximum 12 images.');
    strength.addEventListener('input',()=>label.textContent='Reference similarity · '+strength.value+'%');
-   settings.append(label,strength,consent);
-   add.addEventListener('click',()=>input.click());
-   const clear=()=>{input.value='';preview.textContent='';preview.hidden=true;remove.hidden=true;settings.hidden=true;checkbox.checked=false;};
-   remove.addEventListener('click',clear);
-   input.addEventListener('change',()=>{
-    const file=input.files?.[0];if(!file){clear();return;}
-    if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000){
-     clear();window.alert('Choose a PNG, JPG or WebP reference image under 2.4 MB.');return;
+   settings.append(label,strength,consent,hint);
+   const render=()=>{
+    grid.replaceChildren();
+    for(const [i,entry] of selected.entries()){
+     const thumb=el('div','loox-ref-thumb');
+     const pic=el('img');pic.src=entry.url;pic.alt='Reference '+(i+1)+': '+entry.file.name;
+     const remove=el('button','loox-ref-remove','×');remove.type='button';
+     remove.title='Remove '+entry.file.name;remove.setAttribute('aria-label',remove.title);
+     remove.addEventListener('click',()=>{
+      URL.revokeObjectURL(entry.url);selected.splice(i,1);render();
+     });
+     thumb.append(pic,remove);grid.append(thumb);
     }
-    preview.textContent=file.name;preview.hidden=false;remove.hidden=false;settings.hidden=false;
+    grid.append(add);
+    const has=selected.length>0;
+    tray.hidden=!has;
+    count.textContent=selected.length+' reference image'+(selected.length===1?'':'s');
+    if(!has){settings.hidden=true;configure.setAttribute('aria-expanded','false');checkbox.checked=false;}
+   };
+   input.addEventListener('change',()=>{
+    const incoming=Array.from(input.files||[]);input.value='';
+    if(selected.length+incoming.length>MAX_REFERENCES){
+     window.alert('You can add up to '+MAX_REFERENCES+' reference images per generation.');return;
+    }
+    for(const file of incoming){
+     if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000){
+      window.alert('Each reference must be a JPG, PNG or WebP under 2.4 MB.');continue;
+     }
+     selected.push({file,url:URL.createObjectURL(file)});
+    }
+    render();
    });
-   left.append(add,input,preview,remove,settings);
+   configure.addEventListener('click',()=>{
+    settings.hidden=!settings.hidden;
+    configure.setAttribute('aria-expanded',String(!settings.hidden));
+   });
+   header.append(count,configure);
+   tray.append(header,grid,settings,input);
+   // Keep selected photos above the text input, as in the supplied example.
+   card.insertBefore(tray,textarea);
+   // Expose the chosen Files to the existing submit code without duplicating data.
+   window.__looxFluxReferences=()=>selected.map(x=>x.file);
+   // When no images are chosen, show a compact add button at bottom-left.
+   const quickAdd=el('button','loox-uc-add','+');quickAdd.type='button';quickAdd.id='lig-reference-quick-add';
+   quickAdd.setAttribute('aria-label','Add reference images');
+   quickAdd.addEventListener('click',()=>input.click());
+   left.append(quickAdd);
+   render();
   }
   actions.prepend(left);
   // Keep all existing form submit buttons exactly where they were.
