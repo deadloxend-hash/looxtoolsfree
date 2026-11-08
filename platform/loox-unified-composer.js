@@ -99,7 +99,7 @@
    const consent=el('label','loox-uc-reference-consent');
    const checkbox=el('input');checkbox.type='checkbox';checkbox.id='lig-reference-permission';
    consent.append(checkbox,document.createTextNode('I have permission to use these images'));
-   const hint=el('small','loox-ref-hint','Images are combined into one reference grid for FLUX img2img. Maximum 12 images.');
+   const hint=el('small','loox-ref-hint','For visible changes, start at 35–50% similarity. Higher similarity preserves more of your original; precise background-only edits need inpainting. Multiple photos are combined into one grid (max 12).');
    strength.addEventListener('input',()=>label.textContent='Reference similarity · '+strength.value+'%');
    settings.append(label,strength,consent,hint);
    const render=()=>{
