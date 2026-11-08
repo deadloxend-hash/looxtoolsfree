@@ -511,7 +511,12 @@ async function initWorkspace(){
   image.alt='Generated with '+view.modelLabel+': '+view.prompt;
   image.loading='eager';
   image.decoding='async';
-  image.onerror=()=>{view.indicator.textContent='Preview unavailable';};
+  let imageRetry=0;
+   image.onerror=async()=>{if(imageRetry++>=2){view.indicator.textContent='Preview unavailable · Use Preview to retry';return;}
+    view.indicator.textContent='Refreshing image preview…';
+    try{const fresh=await api('status',null,{id});if(fresh.url&&fresh.state==='succeeded'){image.src=fresh.url+(fresh.url.includes('?')?'&':'?')+'loox_refresh='+Date.now();return;}}catch{}
+    view.indicator.textContent='Preview unavailable · Use Preview to retry';
+   };
   view.stage.append(image);
   view.indicator.textContent='Completed · '+view.modelLabel;
   const download=create('button','lig-small-action','Download PNG');
