@@ -327,7 +327,9 @@ async function initWorkspace(){
   }
   const uri=canvas.toDataURL('image/jpeg',0.84);
   if(uri.length>3200040)throw Error('Reference collage is too large to upload.');
-  return {reference_image:uri,reference_strength:Number(byId('lig-reference-strength')?.value||65)/100,permission:true};
+  // Balanced automatic editing: 45% similarity gives prompt edits more influence
+  // than the previous 65% default, without requiring a technical slider.
+  return {reference_image:uri,reference_strength:0.45,permission:true};
  }
  function syncReferenceUI(){
   const isFlux=modelField.value==='flux',button=byId('lig-reference-quick-add'),tray=byId('lig-reference-tray');
