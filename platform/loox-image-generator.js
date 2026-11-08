@@ -355,16 +355,16 @@ async function initWorkspace(){
  }
 
  const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(allModels.get(modelField.value)?.cost||0);
- const quotaLabel=create('small','lig-daily-quota','Daily images: 30/day · sign in to view');
+ const quotaLabel=create('small','lig-daily-quota','Daily generation limit disabled during testing');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
  let remainingImages=null;
  async function refreshQuota(){
-  if(!state.user){remainingImages=null;quotaLabel.textContent='Daily images: 30/day · sign in to view';return;}
+  if(!state.user){remainingImages=null;quotaLabel.textContent='Daily generation limit disabled during testing';return;}
   try{
    const data=await api('quota');
    remainingImages=data.remaining.generate;
-   quotaLabel.textContent='Images left today: '+remainingImages+' / '+data.limit+' · resets 00:00 UTC';
-  }catch{quotaLabel.textContent='Daily images: 30/day · allowance temporarily unavailable';}
+   quotaLabel.textContent='Daily generation limit disabled during testing';
+  }catch{quotaLabel.textContent='Daily generation limit disabled during testing';}
  }
 
 
@@ -596,7 +596,7 @@ async function initWorkspace(){
    return;
   }
   if(!resumeId&&modelId==='flux'&&!state.config?.local?.available){setMessage(modelStatus('flux').reason,true);return;}
-  if(!resumeId&&remainingImages===0){setMessage('You have used all 30 image generations today. Resets at 00:00 UTC.',true);return;}
+
   const modelCost=modelId==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelId)?.cost||Infinity);
   if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage(modelStatus(modelId).reason,true);return;}
   if(modelId!=='flux'&&modelId!=='z_image_turbo'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
