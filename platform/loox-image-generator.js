@@ -195,7 +195,23 @@ async function initWorkspace(){
  // Landing visits and legacy start links only stage a prompt; Generate confirms the paid request.
  autoRequest=false;
  if(draft)promptField.value=draft;
- let launch=null;try{launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='image'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');autoRequest=false;}}catch{}
+ let launch=null;try{launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='image'){promptField.value=launch.prompt||'';sessionStorage.removeItem('loox-creative-launch-v1');autoRequest=false;
+  if(launch.settings?.aspect_ratio&&ratioField.querySelector('option[value="'+launch.settings.aspect_ratio+'"]')){ratioField.value=launch.settings.aspect_ratio;ratioField.dispatchEvent(new Event('change'));}
+  if(launch.reference_path){(async()=>{const message=byId('lig-message');try{
+   if(!/^[a-zA-Z0-9._/-]{1,250}$/.test(launch.reference_path)||launch.reference_path.includes('..'))throw Error('Invalid template image path.');
+   const url=state.client.storage.from('loox-templates').getPublicUrl(launch.reference_path).data.publicUrl;
+   const response=await fetch(url,{credentials:'omit'});if(!response.ok)throw Error('Template reference image is unavailable.');
+   const blob=await response.blob();if(!blob.type.startsWith('image/'))throw Error('This template does not contain an image.');
+   const bitmap=await createImageBitmap(blob);const canvas=document.createElement('canvas');
+   const scale=Math.min(1,1600/Math.max(bitmap.width,bitmap.height));canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+   canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+   const jpeg=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.84));if(!jpeg)throw Error('Could not prepare template image.');
+   const file=new File([jpeg],'loox-template-reference.jpg',{type:'image/jpeg'});if(file.size>2400000)throw Error('Template image is too large to attach.');
+   const input=byId('lig-reference-image');if(!input)throw Error('Reference image panel is unavailable.');
+   const transfer=new DataTransfer();transfer.items.add(file);input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));
+   if(message)message.textContent='Template reference attached. Confirm image-use permission before generating.';
+  }catch(error){if(message)message.textContent='Prompt loaded, but reference could not be attached: '+error.message;}})();}
+ }}catch{}
  const templateEndpoint='https://looxtoolfree-backend.vercel.app/api/loox';
  async function templateRequest(action,body){
   const session=await state.client?.auth.getSession();
