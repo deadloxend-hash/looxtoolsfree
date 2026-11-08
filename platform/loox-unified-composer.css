@@ -271,3 +271,54 @@ body.loox-uc #lig-reference-settings .loox-uc-reference-consent{
 }
 body.loox-uc #lig-reference-permission{width:17px;height:17px;flex:none;accent-color:#b387eb}
 @media(max-width:430px){body.loox-uc .loox-uc-left #lig-reference-name{max-width:95px}}
+
+/* V6 — inline, responsive reference-image thumbnails (no floating settings card). */
+body.loox-uc .lig-compose-card .loox-ref-tray{
+ display:flex!important;flex-direction:column;gap:8px;width:100%;min-width:0;
+ padding:1px 0 10px;box-sizing:border-box;
+}
+body.loox-uc .lig-compose-card .loox-ref-tray[hidden]{display:none!important}
+body.loox-uc .loox-ref-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+body.loox-uc .loox-ref-count{color:#c9bcd7;font-size:11px}
+body.loox-uc .loox-ref-options{
+ cursor:pointer;border:1px solid #635474;color:#d8c9e8;background:#2a2333;
+ padding:5px 10px;border-radius:8px;font-size:11px;
+}
+body.loox-uc .loox-ref-grid{
+ display:flex;gap:8px;align-items:flex-start;overflow-x:auto;overflow-y:hidden;
+ scrollbar-width:thin;scrollbar-color:#60506d transparent;
+ padding:2px 0 4px;max-width:100%;
+}
+body.loox-uc .loox-ref-thumb{
+ position:relative;flex:0 0 62px;width:62px;height:62px;overflow:hidden;
+ border-radius:10px;border:1px solid #695b77;background:#27222f;
+}
+body.loox-uc .loox-ref-thumb img{display:block;width:100%;height:100%;object-fit:cover}
+body.loox-uc .loox-ref-remove{
+ position:absolute;right:2px;top:2px;display:grid;place-items:center;
+ border:0;border-radius:50%;width:20px;height:20px;padding:0;
+ color:#fff;background:#17131bbf;cursor:pointer;font:18px/1 system-ui;
+}
+body.loox-uc .loox-ref-add{
+ flex:0 0 62px;width:62px;height:62px;border:1px dashed #776d80;
+ border-radius:10px;background:#322b3c;color:#d1bfeb;font-size:27px;
+ font-weight:400;cursor:pointer;
+}
+body.loox-uc .loox-ref-add:hover{background:#453652}
+body.loox-uc .lig-compose-card #lig-reference-image{display:none!important}
+body.loox-uc .lig-compose-card #lig-reference-settings{
+ display:grid!important;position:static!important;inset:auto!important;
+ width:100%!important;max-width:none!important;box-shadow:none!important;
+ border:1px solid #564461!important;border-radius:9px!important;
+ padding:10px 12px!important;background:#201b28!important;gap:7px!important;
+}
+body.loox-uc .lig-compose-card #lig-reference-settings[hidden]{display:none!important}
+body.loox-uc .lig-compose-card #lig-reference-settings>label:first-child{display:block!important}
+body.loox-uc .loox-ref-hint{color:#a99cb5;font-size:10px;line-height:1.45}
+body.loox-uc .loox-ref-tray~textarea{flex:1 1 auto}
+body.loox-uc .loox-uc-left #lig-reference-quick-add[hidden]{display:none!important}
+@media(max-width:600px){
+ body.loox-uc .loox-ref-thumb{flex-basis:54px;width:54px;height:54px}
+ body.loox-uc .loox-ref-add{flex-basis:54px;width:54px;height:54px}
+ body.loox-uc .loox-ref-grid{gap:6px}
+}
