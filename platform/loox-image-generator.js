@@ -599,7 +599,7 @@ async function initWorkspace(){
   if(!resumeId&&remainingImages===0){setMessage('You have used all 30 image generations today. Resets at 00:00 UTC.',true);return;}
   const modelCost=modelId==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelId)?.cost||Infinity);
   if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage(modelStatus(modelId).reason,true);return;}
-  if(modelId!=='flux'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
+  if(modelId!=='flux'&&modelId!=='z_image_turbo'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
   if(!resumeId&&state.account?.wallet?.balance<modelCost){
    pricing();setMessage('You need more AI credits to generate this image.',true);return;
   }
