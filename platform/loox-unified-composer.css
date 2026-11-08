@@ -241,3 +241,33 @@ body.loox-uc.lig-body .lig-main.loox-community-view #lig-templates-view:not([hid
 }
 body.loox-uc.lig-body .lig-main.loox-community-view #lig-generate-view{display:none!important}
 body.loox-uc.lig-body .lig-main.loox-community-view>.lig-compose-wrap{display:none!important}
+
+/* FLUX Schnell reference-image controls: native file input and safe permission UI. */
+body.loox-uc .loox-uc-left{position:relative;min-height:34px;max-width:min(58%,420px)}
+body.loox-uc #lig-reference-image{display:none!important}
+body.loox-uc .loox-uc-left #lig-reference-name{
+ display:inline-block;flex:0 1 auto;max-width:150px;white-space:nowrap;
+ overflow:hidden;text-overflow:ellipsis;font-size:11px;color:#c9bcdb;
+}
+body.loox-uc .loox-uc-left #lig-reference-name[hidden],
+body.loox-uc .loox-uc-left #lig-reference-remove[hidden],
+body.loox-uc .loox-uc-left #lig-reference-settings[hidden],
+body.loox-uc .loox-uc-left #lig-reference-add[hidden]{display:none!important}
+body.loox-uc .loox-uc-left #lig-reference-remove{
+ flex:none;width:25px;height:25px;min-width:25px;border:1px solid #6c587d;
+ background:#32283d;color:#e8dafa;border-radius:50%;cursor:pointer;font-size:18px;
+}
+body.loox-uc .loox-uc-left #lig-reference-settings{
+ position:absolute;left:0;bottom:calc(100% + 16px);z-index:28;
+ display:grid;gap:9px;width:min(310px,calc(100vw - 40px));padding:14px 16px;
+ background:#211a2a;border:1px solid #78658b;box-shadow:0 14px 36px #0009;
+ border-radius:12px;color:#eee5f9;font:500 12px/1.4 system-ui,sans-serif;
+}
+body.loox-uc #lig-reference-settings>label:first-child{display:block!important;font-size:12px;color:#e4d4ee}
+body.loox-uc #lig-reference-settings #lig-reference-strength{width:100%;accent-color:#a67ad4;cursor:pointer}
+body.loox-uc #lig-reference-settings .loox-uc-reference-consent{
+ display:flex!important;align-items:center;gap:8px;font-size:11px;line-height:1.4;
+ color:#d4c6df;cursor:pointer;
+}
+body.loox-uc #lig-reference-permission{width:17px;height:17px;flex:none;accent-color:#b387eb}
+@media(max-width:430px){body.loox-uc .loox-uc-left #lig-reference-name{max-width:95px}}
