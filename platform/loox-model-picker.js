@@ -2,6 +2,7 @@
    Native <select> stays the source of truth for generation, keyboard and form handling. */
 const NS='http://www.w3.org/2000/svg';
 const iconPaths={
+ zimage:'<path d="M4 5h16v3L8 18h12v2H4v-3L16 7H4z"/>',
  flux:'<path d="M6 17.6 12 3l6 14.6M8 12.2h8M3 20h18" />',
  banana:'<path d="M18.3 4.3c1 8.6-4.5 15-12.3 15.2-2.2 0-3.3-1.3-3.5-2.6 5.4 1.1 12.2-3.8 13.4-11.7l2.4-.9Z"/><path d="m16.2 4.7 1-2.1 2.2.6"/>',
  ideogram:'<path d="M7 5h10v14H7z"/><path d="M11 9h2v6h-2"/>',
@@ -20,13 +21,14 @@ const iconPaths={
  fluxvideo:'<path d="M5 4h14v16H5z"/><path d="m10 8 6 4-6 4z"/><path d="M3 8v8M21 8v8"/>'
 
 };
-const glyphs={flux:'flux',bfl_flux2_pro:'flux',bfl_klein_4b:'flux',replicate_flux_ultra:'flux',
+const glyphs={z_image_turbo:'zimage',flux:'flux',bfl_flux2_pro:'flux',bfl_klein_4b:'flux',replicate_flux_ultra:'flux',
  google_nano_2:'banana',google_nano_pro:'banana',ideogram_p_image:'ideogram',ideogram_45:'ideogram',
  stability_sd35:'stability',stability_ultra:'stability',byteplus_45:'seedream',byteplus_50_flash:'seedream',
  openai_gpt_image:'openai',replicate_qwen2:'qwen',replicate_hidream:'hidream',replicate_imagen4:'imagen',replicate_photon:'photon',kling_30:'kling',seedance_20:'seedance',veo_31_fast:'veo',runway_45:'runway',flux3_video:'fluxvideo'};
-const palettes={flux:'#aa8bff',banana:'#f4ca5c',ideogram:'#f78aa1',stability:'#90c4ff',
+const palettes={zimage:'#b29aff',flux:'#aa8bff',banana:'#f4ca5c',ideogram:'#f78aa1',stability:'#90c4ff',
  seedream:'#9dd4fa',openai:'#a4e4bf',qwen:'#c0a3ff',hidream:'#f7a9c6',imagen:'#97dcf0',photon:'#efc3a7',wan:'#a7bfff',kling:'#80cbd7',seedance:'#8fa9ff',veo:'#f1be84',runway:'#dba3d2',fluxvideo:'#baa2fa'};
 const groupsImage=[
+ {name:'Z-Image Turbo',provider:'LOOX Studio · Local GPU / Cloud',ids:['z_image_turbo']},
  {name:'FLUX',provider:'Black Forest Labs',ids:['flux','bfl_flux2_pro','bfl_klein_4b','replicate_flux_ultra']},
  {name:'Nano Banana',provider:'Google AI',ids:['google_nano_2','google_nano_pro']},
  {name:'Seedream',provider:'BytePlus',ids:['byteplus_45','byteplus_50_flash']},
