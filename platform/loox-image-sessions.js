@@ -8,7 +8,7 @@ const date=t=>new Date(t).toLocaleString();
 export class MediaSessions {
  constructor(options){
   Object.assign(this,options);this.id=null;this.epoch=0;this.user=undefined;this.offset=0;
-  this.statusCache=new Map();this.statusQueue=Promise.resolve();this.nextStatusAt=0;
+  this.statusCache=new Map();this.statusBatch=new Map();this.statusBatchTimer=null;
   this.root.classList.add('loox-sessions-layout');document.body.classList.add('loox-conversations','loox-focus-generator');
   this.scroll=this.feed.closest('.lig-content-scroll');
   // Reuse the rail rendered in HTML so the layout exists before the async model config finishes.
@@ -33,35 +33,26 @@ export class MediaSessions {
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&matchMedia('(max-width:900px)').matches)this.collapse(true);});
  }
  button(label,fn){const b=el('button','lig-small-action',label);b.type='button';b.addEventListener('click',()=>Promise.resolve().then(fn).catch(e=>this.notice(e.message,true)));return b;}
- // Status calls are billed as API requests even for old, completed generations.
- // Throttle across thumbnails, session cards and previews to avoid exhausting
- // the shared per-account rate limit when a long session is reopened.
+ // Completed media lookups are coalesced into one authenticated request. This
+ // avoids the old 1.5 second serial delay while keeping request fan-out bounded.
  async mediaStatus(id,{fresh=false}={}){
   const owner=this.state.user?.id;
   const cacheKey=owner+':'+id,stored=this.statusCache.get(cacheKey);
   if(!fresh&&stored?.url&&stored.expires>Date.now())return stored.value;
-  const task=async()=>{
-   const cached=this.statusCache.get(cacheKey);
-   if(!fresh&&cached?.url&&cached.expires>Date.now())return cached.value;
-   for(let attempt=0;attempt<3;attempt++){
-    const wait=Math.max(0,this.nextStatusAt-Date.now());
-    if(wait)await new Promise(resolve=>setTimeout(resolve,wait));
-    this.nextStatusAt=Date.now()+1500;
-    try{
-     const result=await this.api('status',null,{id});
-     if(owner!==this.state.user?.id)throw Error('Your account changed. Please reopen your session.');
-     if(result.url)this.statusCache.set(cacheKey,{url:result.url,value:result,expires:Date.now()+240000});
-     return result;
-    }catch(error){
-     if(error.status!==429||attempt===2)throw error;
-     // Back off rather than showing a rate limit as a permanent failed generation.
-     this.nextStatusAt=Math.max(this.nextStatusAt,Date.now()+12000*(attempt+1));
-    }
-   }
-  };
-  const pending=this.statusQueue.then(task,task);
-  this.statusQueue=pending.catch(()=>{});
-  return pending;
+  if(fresh)return this.api('status',null,{id});
+  return new Promise((resolve,reject)=>{
+   const waiting=this.statusBatch.get(id)||[];waiting.push({resolve,reject,owner,cacheKey});this.statusBatch.set(id,waiting);
+   clearTimeout(this.statusBatchTimer);this.statusBatchTimer=setTimeout(()=>this.flushStatusBatch(),18);
+  });
+ }
+ async flushStatusBatch(){
+  const queued=[...this.statusBatch.entries()].slice(0,40);for(const [id] of queued)this.statusBatch.delete(id);
+  if(this.statusBatch.size)this.statusBatchTimer=setTimeout(()=>this.flushStatusBatch(),18);
+  const ids=queued.map(([id])=>id);
+  try{
+   const response=await this.api('status_batch',null,{ids:ids.join(',')}),byId=new Map((response.items||[]).map(item=>[item.id,item]));
+   for(const [id,waiters] of queued){const value=byId.get(id)||{id,state:'missing',url:null};for(const waiter of waiters){if(waiter.owner!==this.state.user?.id){waiter.reject(Error('Your account changed. Please reopen your session.'));continue;}if(value.url)this.statusCache.set(waiter.cacheKey,{url:value.url,value,expires:Date.now()+240000});waiter.resolve(value);}}
+  }catch(error){for(const [,waiters] of queued)for(const waiter of waiters)waiter.reject(error);}
  }
  setCommunity(on){this.root.classList.toggle('loox-community-view',on);this.rail.hidden=on;this.scrim.hidden=on||this.rail.classList.contains('collapsed')||!matchMedia('(max-width:900px)').matches;}
  collapse(closed){this.rail.classList.toggle('collapsed',closed);this.root.classList.toggle('loox-sessions-collapsed',closed);this.toggle.textContent=closed?'›':'‹';this.toggle.setAttribute('aria-expanded',String(!closed));this.scrim.hidden=closed||!matchMedia('(max-width:900px)').matches;}
