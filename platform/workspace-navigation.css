@@ -9,3 +9,103 @@
 @media(min-width:901px){body.loox-uc.loox-conversations.lig-body .lig-main:not(.loox-sessions-collapsed):not(.loox-community-view)>.lig-compose-wrap{left:var(--loox-ai-sidebar-width)!important;margin-left:0!important;width:calc(100% - var(--loox-ai-sidebar-width))!important}body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-collapsed>.lig-compose-wrap{left:0!important;margin-left:0!important;width:100%!important}}
 /* The shared sidebar and workspace header already provide these destinations. */
 body.loox-uc .loox-uc-links{display:none!important}
+
+
+/* V4 — shared Image + Video composer geometry.
+   Both generators stay bottom-docked regardless of selected model, session
+   history, empty-state hero, or whether the media sidebar is collapsed. */
+body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-layout:not(.loox-community-view){
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:stretch!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-layout:not(.loox-community-view)>#lig-generate-view,
+body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-layout:not(.loox-community-view)>#lvg-generate-view{
+ flex:1 1 auto!important;
+ height:auto!important;
+ min-height:0!important;
+ overflow-y:auto!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-layout:not(.loox-community-view)>.lig-compose-wrap{
+ position:relative!important;
+ inset:auto!important;
+ bottom:auto!important;
+ top:auto!important;
+ flex:0 0 auto!important;
+ align-self:stretch!important;
+ margin-top:0!important;
+ margin-bottom:0!important;
+ max-width:none!important;
+ box-sizing:border-box!important;
+ padding:10px 16px max(13px,env(safe-area-inset-bottom))!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .lig-compose,
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-toolbar,
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-title{
+ width:100%!important;
+ max-width:940px!important;
+ margin-left:auto!important;
+ margin-right:auto!important;
+ box-sizing:border-box!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-card{
+ min-height:156px!important;
+ display:flex!important;
+ flex-direction:column!important;
+ justify-content:space-between!important;
+ padding:12px 14px!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-card textarea{
+ flex:1 1 auto!important;
+ min-height:91px!important;
+ height:91px!important;
+ max-height:240px!important;
+ box-sizing:border-box!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-toolbar{
+ min-height:34px!important;
+ margin-top:0!important;
+ margin-bottom:10px!important;
+ align-items:center!important;
+ justify-content:flex-end!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .lig-status-message{
+ box-sizing:border-box!important;
+ min-height:17px!important;
+ max-height:34px!important;
+ margin:5px auto 0!important;
+ width:100%!important;
+}
+body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-title:not([hidden]){
+ margin-top:0!important;
+ margin-bottom:13px!important;
+}
+@media(min-width:901px){
+ body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-layout:not(.loox-sessions-collapsed):not(.loox-community-view)>.lig-compose-wrap{
+  left:var(--loox-ai-sidebar-width)!important;
+  width:calc(100% - var(--loox-ai-sidebar-width))!important;
+  margin-left:0!important;
+  margin-right:0!important;
+ }
+ body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-collapsed:not(.loox-community-view)>.lig-compose-wrap{
+  left:0!important;width:100%!important;margin-left:0!important;margin-right:0!important;
+ }
+}
+@media(max-width:900px){
+ body.loox-uc.loox-conversations.lig-body .lig-main.loox-sessions-layout:not(.loox-community-view)>.lig-compose-wrap{
+  left:0!important;width:100%!important;
+  margin-left:0!important;margin-right:0!important;
+  padding:9px 10px max(11px,env(safe-area-inset-bottom))!important;
+ }
+}
+@media(max-width:600px){
+ body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-card{
+  min-height:137px!important;padding:10px 12px!important;
+ }
+ body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-card textarea{
+  min-height:73px!important;height:73px!important;
+ }
+ body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-toolbar{
+  margin-bottom:8px!important;
+ }
+}
