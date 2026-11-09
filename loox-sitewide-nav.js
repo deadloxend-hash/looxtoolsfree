@@ -258,6 +258,7 @@
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
   // Workspace sidebars default to open, but the edge tab always lets users hide or restore them.
+  if(open){sidebar.scrollTop=0;sideContent.scrollTop=0;}
   sidebar.classList.toggle('is-open',open);
   scrim.classList.toggle('is-open',open&&(!desktop.matches||hasSessionHistory));
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
