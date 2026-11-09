@@ -249,3 +249,16 @@
  display:block!important;width:auto!important;height:auto!important;
  max-width:100%!important;max-height:75dvh!important;object-fit:contain!important;
 }
+
+/* Full-resolution overlay is appended to document.body, not #template-library. */
+body .loox-template-detail>.loox-gallery-media{
+ width:fit-content!important;max-width:100%!important;
+ height:auto!important;max-height:none!important;aspect-ratio:auto!important;
+ margin:18px auto!important;background:transparent!important;
+}
+body .loox-template-detail>.loox-gallery-media>img,
+body .loox-template-detail>.loox-gallery-media>video{
+ display:block!important;width:auto!important;height:auto!important;
+ max-width:100%!important;max-height:75dvh!important;
+ aspect-ratio:auto!important;object-fit:contain!important;
+}
