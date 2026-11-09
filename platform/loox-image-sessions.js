@@ -11,8 +11,8 @@ export class MediaSessions {
   this.statusCache=new Map();this.statusBatch=new Map();this.statusBatchTimer=null;
   this.root.classList.add('loox-sessions-layout');document.body.classList.add('loox-conversations','loox-focus-generator');
   this.scroll=this.feed.closest('.lig-content-scroll');
-  // Reuse the rail rendered in HTML so the layout exists before the async model config finishes.
-  this.rail=this.root.querySelector(':scope > .loox-session-rail')||el('aside','loox-session-rail');
+  // Create one live sessions list; the standalone HTML history rail is gone.
+  this.rail=el('aside','loox-session-rail');
   this.rail.className='loox-session-rail';this.rail.setAttribute('aria-label','Generative sessions');
   const head=el('div','loox-session-head');head.append(el('strong','','Generative sessions'));
   this.toggle=this.button('',()=>this.collapse(!this.rail.classList.contains('collapsed')));
@@ -29,7 +29,9 @@ export class MediaSessions {
   addChat.className='loox-session-new-compact';addChat.title='New chat';addChat.setAttribute('aria-label','New chat');
   recent.append(addChat);
   this.rail.replaceChildren(recent,this.list,this.more);
-  if(!this.rail.isConnected)this.root.append(this.rail);
+  const sharedDrawer=document.querySelector('#loox-sitewide-drawer .loox-sitewide-drawer-list');
+  (sharedDrawer||this.root).append(this.rail);
+  if(sharedDrawer)document.body.classList.add('loox-media-sessions-in-drawer');
   this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim,this.toggle);
   // New generator workspaces begin with Generative sessions expanded on every screen size.
   this.collapse(matchMedia('(max-width:900px)').matches);
