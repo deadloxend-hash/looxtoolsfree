@@ -209,6 +209,26 @@ if(page==='community.html'){
  community.discoveryColumns=()=>matchMedia('(max-width:700px)').matches?1:originalColumns();
 }
 window.__looxOpenCommunityNotifications=()=>community.notifications().catch(error=>community.note(error.message));
+if(page==='community.html'){
+ // Reuse the real notifications action rather than adding a duplicate handler.
+ const header=document.querySelector('header.loox-gallery-workspace-header');
+ const tools=root.querySelector('.community-tools');
+ const buttons=[...tools?.querySelectorAll('button')||[]];
+ const notify=buttons.find(button=>button.textContent.trim()==='Notifications');
+ const collections=buttons.find(button=>button.textContent.trim()==='Collections');
+ if(header&&notify){
+  notify.classList.add('loox-community-notification');
+  notify.setAttribute('aria-label','Open notifications');
+  notify.title='Notifications';
+  notify.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg>';
+  header.insertBefore(notify,header.querySelector('.loox-community-mobile-menu'));
+ }
+ // Keep collection management available through the existing post/save menus,
+ // but remove its standalone Community toolbar button on mobile.
+ if(collections)collections.classList.add('loox-community-collections-button');
+ const search=root.querySelector('.community-search');
+ if(search){search.placeholder='Search creators';search.setAttribute('aria-label','Search creators and creations');}
+}
 if(discoveryPage){
  // Keep the existing sort, filter, search, collection and notification handlers.
  // Only move their live DOM controls into a compact Templates-style toolbar.
@@ -294,6 +314,24 @@ if(discoveryPage){
   if(active&&ev.target!==menu&&!menu.contains(ev.target))close();
  },true);
  window.addEventListener('resize',close);
+}
+if(page==='community.html'){
+ // Place the existing date filter inside one compact disclosure; preserve
+ // the native select's own change listener and the accessible custom trigger.
+ const dates=root.querySelector('select[aria-label="Trending period"]');
+ const wrap=dates?.closest('.loox-discovery-select-wrap');
+ if(wrap){
+  const details=element('details','loox-community-date-filter');
+  const summary=element('summary','loox-community-filter-trigger','Filter');
+  summary.setAttribute('aria-label','Filter by date');
+  const panel=element('div','loox-community-filter-panel');
+  wrap.parentNode.insertBefore(details,wrap);
+  panel.append(wrap);details.append(summary,panel);
+  dates.addEventListener('change',()=>{details.open=false;});
+  document.addEventListener('pointerdown',event=>{
+   if(details.open&&!details.contains(event.target))details.open=false;
+  });
+ }
 }
 await community.show();
 if(new URLSearchParams(location.search).get('notifications')==='1'){
