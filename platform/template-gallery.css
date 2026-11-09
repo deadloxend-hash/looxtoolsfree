@@ -6,3 +6,10 @@
 .loox-custom-option:hover,.loox-custom-option:focus-visible{background:#44304e;outline:0}
 .loox-custom-option[aria-selected=true]{background:#523065;color:#fff}
 .loox-option-check{color:#d9a1ff;font-weight:800}
+
+/* Shared style selector and admin template tagging */
+.loox-admin-style-options{display:flex;flex-wrap:wrap;gap:9px;max-height:210px;overflow-y:auto;padding:11px 0}
+.loox-admin-style-choice{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid #554064;border-radius:18px;background:#251b2e;color:#f5ecff;cursor:pointer;font:500 13px/1.3 system-ui,sans-serif}
+.loox-admin-style-choice:has(input:checked){border-color:#bd86e4;background:#4b2b62}
+.loox-admin-style-choice input{accent-color:#b777e6;width:15px;height:15px;margin:0}
+.loox-dropdown-trigger[aria-pressed=true]{background:#62337d;border-color:#a96ad5}
