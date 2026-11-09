@@ -12,16 +12,16 @@ for(const [label,value] of [['Image','image'],['Video','video'],['Saved','saved'
 function updateTypes(){types.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.type===kind)));}
 updateTypes();
 const cat={value:''};
-const catButton=e('button','loox-gallery-chip loox-dropdown-trigger','All categories⌄'),styleButton=e('button','loox-gallery-chip loox-dropdown-trigger','All styles⌄');catButton.type='button';styleButton.type='button';
+const catButton=e('button','loox-gallery-chip loox-dropdown-trigger','Categories'),styleButton=e('button','loox-gallery-chip loox-dropdown-trigger','Styles');catButton.type='button';styleButton.type='button';
 let categoryOptions=[],styleOptions=[];
-const menu=e('div','loox-custom-menu');menu.hidden=true;menu.setAttribute('role','listbox');document.body.append(menu);
+const menu=e('div','loox-custom-menu loox-custom-menu-compact');menu.hidden=true;menu.setAttribute('role','listbox');document.body.append(menu);
 let openButton=null;
 function closeMenu(){menu.hidden=true;openButton?.setAttribute('aria-expanded','false');openButton=null;}
 function showMenu(button,values,selected,onPick,allLabel){if(openButton===button){closeMenu();return;}closeMenu();openButton=button;button.setAttribute('aria-expanded','true');menu.replaceChildren();
-for(const value of ['',...values]){const label=value||allLabel;const item=e('button','loox-custom-option',label);item.type='button';item.setAttribute('role','option');item.setAttribute('aria-selected',String(value===selected));item.append(e('span','loox-option-check',value===selected?'✓':''));item.onclick=()=>{onPick(value);button.textContent=(value||allLabel)+'⌄';closeMenu();load(true);};menu.append(item);}
-const rect=button.getBoundingClientRect();menu.style.left=Math.max(12,Math.min(rect.left,innerWidth-280))+'px';menu.style.top=Math.min(rect.bottom+8,innerHeight-120)+'px';menu.style.width=Math.min(320,innerWidth-24)+'px';menu.hidden=false;}
-catButton.onclick=()=>showMenu(catButton,categoryOptions,cat.value,v=>{cat.value=v;category=v;},'All categories');
-function updateStyleButton(){const names=[...selectedStyles];styleButton.textContent=names.length?('Styles ('+names.length+') ⌄'):'All styles⌄';styleButton.setAttribute('aria-pressed',String(names.length>0));}
+for(const value of ['',...values]){const label=value||allLabel;const item=e('button','loox-custom-option',label);item.type='button';item.setAttribute('role','option');item.setAttribute('aria-selected',String(value===selected));item.append(e('span','loox-option-check',value===selected?'✓':''));item.onclick=()=>{onPick(value);button.textContent=(value||allLabel);closeMenu();load(true);};menu.append(item);}
+const rect=button.getBoundingClientRect();menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-250))+'px';menu.style.top=Math.min(rect.bottom+6,innerHeight-140)+'px';menu.style.maxWidth=Math.min(244,innerWidth-20)+'px';menu.style.width='max-content';menu.hidden=false;}
+catButton.onclick=()=>showMenu(catButton,categoryOptions,cat.value,v=>{cat.value=v;category=v;},'Categories');
+function updateStyleButton(){const names=[...selectedStyles];styleButton.textContent=names.length?('Styles ('+names.length+')'):'Styles';styleButton.setAttribute('aria-pressed',String(names.length>0));}
 function showStyleMenu(){
  if(openButton===styleButton){closeMenu();return;}
  closeMenu();openButton=styleButton;styleButton.setAttribute('aria-expanded','true');menu.replaceChildren();
@@ -33,19 +33,19 @@ function showStyleMenu(){
   item.onclick=()=>{if(selectedStyles.has(value))selectedStyles.delete(value);else selectedStyles.add(value);updateStyleButton();showStyleMenuRefresh();load(true);};
   menu.append(item);
  }
- const rect=styleButton.getBoundingClientRect();menu.style.left=Math.max(12,Math.min(rect.left,innerWidth-280))+'px';menu.style.top=Math.min(rect.bottom+8,innerHeight-120)+'px';menu.style.width=Math.min(320,innerWidth-24)+'px';menu.hidden=false;
+ const rect=styleButton.getBoundingClientRect();menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-250))+'px';menu.style.top=Math.min(rect.bottom+6,innerHeight-140)+'px';menu.style.maxWidth=Math.min(244,innerWidth-20)+'px';menu.style.width='max-content';menu.hidden=false;
 }
 function showStyleMenuRefresh(){openButton=null;showStyleMenu();}
 styleButton.onclick=showStyleMenu;
 document.addEventListener('pointerdown',ev=>{if(!menu.hidden&&!menu.contains(ev.target)&&ev.target!==openButton)closeMenu();});
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeMenu();});
 window.addEventListener('scroll',closeMenu,true);window.addEventListener('resize',closeMenu);
-const reset=a('Clear filters',()=>{cat.value='';selectedStyles.clear();search.value='';category='';query='';catButton.textContent='All categories⌄';updateStyleButton();closeMenu();load(true)},'loox-gallery-chip');
+const reset=a('Clear filters',()=>{cat.value='';selectedStyles.clear();search.value='';category='';query='';catButton.textContent='Categories';updateStyleButton();closeMenu();load(true)},'loox-gallery-chip');
 filters.append(types,catButton,styleButton,reset);
 const section=e('div','loox-gallery-section'),grid=e('div','loox-gallery-grid'),notice=e('p','community-note'),more=a('Load more',()=>load(false),'community-more',err=>notice.textContent=err.message);section.append(grid,notice,more);
 const toolbar=e('div','loox-gallery-toolbar');toolbar.append(searchWrap,filters);
 root.replaceChildren(toolbar,section);
-async function categories(){const rows=result(await state.client.from('loox_template_categories').select('name').order('name'));categoryOptions=rows.map(t=>t.name);if(cat.value&&!categoryOptions.includes(cat.value)){cat.value='';category='';catButton.textContent='All categories⌄';}}
+async function categories(){const rows=result(await state.client.from('loox_template_categories').select('name').order('name'));categoryOptions=rows.map(t=>t.name);if(cat.value&&!categoryOptions.includes(cat.value)){cat.value='';category='';catButton.textContent='Categories';}}
 async function loadStyles(){const rows=result(await state.client.from('loox_template_styles').select('name').order('name'));styleOptions=rows.map(t=>t.name);for(const name of [...selectedStyles])if(!styleOptions.includes(name))selectedStyles.delete(name);updateStyleButton();}
 let debounce;search.oninput=()=>{clearTimeout(debounce);debounce=setTimeout(()=>{query=search.value.trim();load(true)},220);};
 function media(t,full=false){
