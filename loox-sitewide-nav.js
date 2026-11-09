@@ -264,9 +264,8 @@
  document.addEventListener('keydown',event=>{
   if(event.key==='Escape'&&!sideOptions.hidden)closeSideOptions();
  });
- // Keep account access here; quick utilities remain available in the profile menu.
- sideFooter.append(sideAccount);
- sidebar.append(sideFooter);
+ // Do not mount a profile card or utility footer inside the shared sidebar.
+ // Account controls remain in the existing header/profile menu.
 
  function enableProfileShortcuts(menu){
   if(menu.querySelector('.loox-profile-actions'))return;
