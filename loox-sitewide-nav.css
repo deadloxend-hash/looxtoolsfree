@@ -2179,3 +2179,47 @@ body.loox-apps-open{overflow:hidden!important}
   order:8!important;margin-left:0!important;
  }
 }
+
+/* V92: compact launcher card and video generator header alignment. */
+@media(max-width:790px){
+ .loox-mobile-app-sheet{
+  width:min(355px,calc(100vw - 30px))!important;
+  max-height:min(480px,70dvh)!important;
+  margin-bottom:calc(13px + env(safe-area-inset-bottom,0px))!important;
+  border:1px solid #70568a!important;
+  border-radius:20px!important;
+  padding:10px 15px 18px!important;
+ }
+ .loox-mobile-app-handle{margin-bottom:11px!important;width:36px!important;height:4px!important}
+ .loox-mobile-app-heading{margin-bottom:13px!important}
+ .loox-mobile-app-heading h2{font-size:17px!important}
+ .loox-mobile-app-heading small{font-size:9px!important}
+ .loox-mobile-app-grid{gap:14px 9px!important}
+ .loox-mobile-app-tile{gap:6px!important;font-size:11px!important}
+ .loox-mobile-app-icon{
+  width:60px!important;height:60px!important;
+  border-radius:15px!important;
+ }
+ .loox-mobile-app-icon svg{width:24px!important;height:24px!important}
+ .loox-mobile-app-close{width:31px!important;height:31px!important;flex-basis:31px!important;font-size:20px!important}
+ body.loox-generator-no-topnav.lvg-body>header.lig-header{
+  display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+  gap:8px!important;padding-left:12px!important;padding-right:12px!important;
+ }
+ body.loox-generator-no-topnav.lvg-body>header.lig-header .lig-head-start{
+  order:0!important;margin-right:auto!important;flex:0 1 auto!important;min-width:0!important;
+ }
+ body.loox-generator-no-topnav.lvg-body>header.lig-header .lig-header-user{
+  order:3!important;flex:0 0 auto!important;margin:0!important;
+ }
+ body.loox-generator-no-topnav.lvg-body>header.lig-header .loox-mobile-app-native-trigger{
+  order:2!important;margin:0!important;flex:0 0 36px!important;
+  width:36px!important;min-width:36px!important;height:36px!important;
+ }
+ body.loox-generator-no-topnav.lvg-body>header.lig-header .loox-workspace-brand{
+  overflow:visible!important;padding-right:7px!important;
+ }
+ body.loox-generator-no-topnav.lvg-body>header.lig-header .loox-workspace-wordmark{
+  overflow:visible!important;padding-right:5px!important;letter-spacing:-.055em!important;
+ }
+}
