@@ -113,6 +113,21 @@ export class MediaSessions {
   if(seq!==this.epoch||uid!==this.state.user?.id)return;this.id=id;this.url();this.feed.replaceChildren();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);
   this.observer?.disconnect();this.observer=new IntersectionObserver(items=>{for(const item of items)if(item.isIntersecting){this.observer.unobserve(item.target);const e=entries.find(e=>e.id===item.target.dataset.entry);if(e)this.restore(e,item.target,seq).catch(error=>{if(seq===this.epoch){const stage=item.target.querySelector('.lig-output-stage');if(stage)stage.textContent=error.status===429?'Preview temporarily busy. Reopen this chat in a minute. Your saved image is safe.':error.message;}});}},{root:this.scroll,rootMargin:'500px'});
   for(const e of entries){const card=el('article','lig-output'),top=el('div','lig-output-top');top.append(el('span','lig-output-name',e.prompt));const stage=el('div','lig-output-stage','Loading generation…');stage.style.setProperty('--lig-ratio',(e.ratio||'1:1').replace(':',' / '));card.append(top,stage);this.feed.append(card);this.attach({card,stage},e);this.observer.observe(card);}
+  // Open saved conversations at their newest generation, not the oldest one.
+  // Keep chronological order and allow normal scrolling upward through history.
+  // Delay until layout has measured the cards so the last item triggers its
+  // existing lazy-restoration observer even when far down a long conversation.
+  if(entries.length){
+   const latest=this.feed.lastElementChild;
+   requestAnimationFrame(()=>{
+    if(seq!==this.epoch||this.id!==id||!latest?.isConnected)return;
+    this.scroll.scrollTop=this.scroll.scrollHeight;
+    requestAnimationFrame(()=>{
+     if(seq===this.epoch&&this.id===id&&latest.isConnected)
+      this.scroll.scrollTop=this.scroll.scrollHeight;
+    });
+   });
+  }else this.scroll.scrollTop=0;
  }
  async restore(entry,card,seq){
   const stage=card.querySelector('.lig-output-stage');let count=0;
