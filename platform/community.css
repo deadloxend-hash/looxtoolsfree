@@ -1929,3 +1929,21 @@ body.loox-community-photo-wall .loox-community-date-filter{display:none}
   display:inline-flex!important;
  }
 }
+
+/* Avoid clipped date-filter menus: pills may wrap naturally on narrow phones. */
+@media(max-width:700px){
+ body.loox-community-photo-wall #community-root .community-filters{
+  flex-wrap:wrap!important;
+  overflow:visible!important;
+  gap:6px!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-filter-panel{
+  position:absolute!important;
+  top:100%!important;
+  right:0!important;
+  left:auto!important;
+  width:max-content!important;
+  min-width:120px!important;
+  max-width:calc(100vw - 25px)!important;
+ }
+}
