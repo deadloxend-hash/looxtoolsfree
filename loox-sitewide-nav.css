@@ -2243,3 +2243,39 @@ body.loox-apps-open{overflow:hidden!important}
   z-index:10007!important;
  }
 }
+
+/* V94: small mobile app sheet with swipe-to-dismiss animation. */
+@media(max-width:790px){
+ .loox-mobile-app-layer .loox-mobile-app-sheet{
+  box-sizing:border-box!important;
+  width:min(325px,calc(100vw - 38px))!important;
+  max-height:min(410px,66dvh)!important;
+  margin-bottom:calc(15px + env(safe-area-inset-bottom,0px))!important;
+  padding:9px 13px 15px!important;
+  border-radius:19px!important;
+  overflow-y:auto!important;
+  transform:translate3d(0,var(--loox-sheet-drag,0px),0)!important;
+  will-change:transform;
+  transition:transform .2s cubic-bezier(.22,1,.36,1),opacity .2s ease!important;
+  touch-action:pan-y;
+ }
+ .loox-mobile-app-layer .loox-mobile-app-heading{margin-bottom:10px!important}
+ .loox-mobile-app-layer .loox-mobile-app-heading h2{font-size:16px!important}
+ .loox-mobile-app-layer .loox-mobile-app-heading small{font-size:8px!important}
+ .loox-mobile-app-layer .loox-mobile-app-handle{width:34px!important;height:4px!important;margin-bottom:9px!important;touch-action:none}
+ .loox-mobile-app-layer .loox-mobile-app-grid{gap:11px 7px!important}
+ .loox-mobile-app-layer .loox-mobile-app-icon{height:52px!important;width:52px!important;border-radius:14px!important}
+ .loox-mobile-app-layer .loox-mobile-app-icon svg{height:22px!important;width:22px!important}
+ .loox-mobile-app-layer .loox-mobile-app-label{font-size:10px!important}
+ .loox-mobile-app-layer .loox-mobile-app-tile{gap:5px!important}
+ .loox-mobile-app-layer .loox-mobile-app-close{width:28px!important;height:28px!important;flex-basis:28px!important;font-size:19px!important}
+ .loox-mobile-app-layer .loox-mobile-app-scrim{transition:opacity .2s ease!important}
+ .loox-mobile-app-layer.is-dragging .loox-mobile-app-sheet,
+ .loox-mobile-app-layer.is-dragging .loox-mobile-app-scrim{transition:none!important}
+ .loox-mobile-app-layer.is-closing .loox-mobile-app-sheet{transform:translate3d(0,110%,0)!important;opacity:.5!important}
+ .loox-mobile-app-layer.is-closing .loox-mobile-app-scrim{opacity:0!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .loox-mobile-app-layer .loox-mobile-app-sheet,
+ .loox-mobile-app-layer .loox-mobile-app-scrim{transition:none!important}
+}
