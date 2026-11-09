@@ -5,7 +5,16 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
  Object.assign(Community.prototype,{
   async save(post,button){
    if(!this.state.user)return this.auth('login');if(button.disabled)return;button.disabled=true;
-   try{const q=this.state.client.from('loox_saved_posts');result(post.saved?await q.delete().eq('user_id',this.state.user.id).eq('post_id',post.id):await q.insert({user_id:this.state.user.id,post_id:post.id}));post.saved=!post.saved;button.textContent=post.saved?'Saved':'Save';button.setAttribute('aria-pressed',String(post.saved));}finally{button.disabled=false;}
+   try{const q=this.state.client.from('loox_saved_posts');result(post.saved?await q.delete().eq('user_id',this.state.user.id).eq('post_id',post.id):await q.insert({user_id:this.state.user.id,post_id:post.id}));post.saved=!post.saved;
+    const controls=[...this.root.querySelectorAll('[data-post-id]')].filter(node=>node.dataset.postId===post.id);
+    if(!controls.includes(button))controls.push(button);
+    for(const control of controls){
+     control.setAttribute('aria-pressed',String(post.saved));
+     if(control.classList.contains('community-save-shortcut')){
+      control.title=post.saved?'Remove saved creation':'Save creation';
+      control.setAttribute('aria-label',post.saved?'Remove saved post':'Save post');
+     }else control.textContent=post.saved?'Saved':'Save';
+    }}finally{button.disabled=false;}
   },
   async collections(post=null){
    if(!this.state.user)return this.auth('login');
