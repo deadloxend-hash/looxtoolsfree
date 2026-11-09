@@ -320,3 +320,22 @@ body.loox-conversations button.loox-ai-dock-toggle[hidden]{display:none!importan
  body.loox-conversations .loox-session-rail,
  body.ai-chat .ai-recent-panel{transition:none!important}
 }
+
+/* Compact session heading: Recent + accessible new-chat plus control. */
+.loox-session-rail .loox-session-recent-label{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:8px!important;min-height:32px!important;margin:0 3px 4px!important;
+ padding:0 3px 5px!important;
+}
+.loox-session-rail .loox-session-new-compact{
+ flex:0 0 27px!important;display:inline-grid!important;place-items:center!important;
+ width:27px!important;height:27px!important;min-height:27px!important;
+ margin:0!important;padding:0!important;
+ border:1px solid #51415d!important;border-radius:7px!important;
+ background:#30243d!important;color:#fff!important;
+ font:700 19px/1 system-ui,sans-serif!important;cursor:pointer!important;
+}
+.loox-session-rail .loox-session-new-compact:hover,
+.loox-session-rail .loox-session-new-compact:focus-visible{
+ background:#51336c!important;outline:2px solid #b889d8!important;outline-offset:1px!important;
+}
