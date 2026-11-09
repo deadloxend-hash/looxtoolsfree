@@ -1,8 +1,9 @@
 import {state,auth,initialize} from './account.js?v=9';
-import {Community,element,action,result} from './community.js?v=19';
+import {Community,element,action,result} from './community.js?v=20';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
 if(discoveryPage)document.body.classList.add('loox-discovery-gallery');
+if(page==='community.html')document.body.classList.add('loox-community-photo-wall');
 const community=new Community({state,auth,initialize,root});
 window.__looxOpenCommunityNotifications=()=>community.notifications().catch(error=>community.note(error.message));
 if(discoveryPage){
