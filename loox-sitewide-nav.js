@@ -110,7 +110,7 @@
   const dockSessions=()=>{
    const rail=document.getElementById('loox-media-session-rail');
    if(!rail||!rail.querySelector('#loox-media-sessions'))return false;
-   if(rail.parentElement!==sideContent)sideContent.prepend(rail);
+   if(rail.parentElement!==sideContent)sideContent.append(rail);
    document.body.classList.add('loox-media-sessions-in-drawer');
    return true;
   };
@@ -132,7 +132,7 @@
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
-  if(existingRail)sideContent.prepend(existingRail);
+  if(existingRail)sideContent.append(existingRail);
  }).catch(error=>console.warn('LOOX main navigation failed:',error));
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
