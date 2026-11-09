@@ -218,6 +218,24 @@ prompt?.addEventListener('keydown',event=>{
  }
 });
 
+// The shared LOOX sidebar owns AI Agent history, just like Image and Video.
+ // The sitewide navigation bundle can initialize after this module, so rehome
+ // the SAME live panel when its drawer becomes available (never clone sessions).
+function dockAgentHistory(){
+ const host=document.querySelector('#loox-sitewide-drawer .loox-sitewide-drawer-list');
+ if(!host||!recentPanel)return false;
+ if(recentPanel.parentElement!==host)host.append(recentPanel);
+ document.body.classList.add('loox-chat-sessions-in-drawer');
+ return true;
+}
+if(!dockAgentHistory()){
+ const dockObserver=new MutationObserver(()=>{
+  if(dockAgentHistory())dockObserver.disconnect();
+ });
+ dockObserver.observe(document.body,{childList:true,subtree:true});
+ window.addEventListener('pagehide',()=>dockObserver.disconnect(),{once:true});
+}
+
 // AI Agent sessions are permanent and never close on mobile or desktop.
 function setRecentOpen(){
  if(!recentPanel)return;
