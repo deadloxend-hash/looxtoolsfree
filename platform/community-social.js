@@ -393,7 +393,14 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     const promptActions=e('div','loox-social-prompt-actions');panel.append(promptActions);promptActions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',fail));
     if(post.allow_remix!==false)promptActions.append(a('Recreate',()=>{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:post.media_type==='video'?'video':'image',prompt:post.shared_prompt,operation:post.model_id,model:(this.state.config?.models?.find(m=>m.operation===post.model_id)||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)}));location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');},'community-primary',fail));
    }else panel.append(e('p','community-note','The creator kept this prompt private.'));
-   panel.append(status);d.append(stage,panel);await this.comments(post,panel);
+   panel.append(status);d.append(stage,panel);
+   // A newly opened post must always begin with its image, not at the comments.
+   // Reset again after asynchronous comments finish changing the dialog height.
+   d.scrollTop=0;
+   await this.comments(post,panel);
+   d.scrollTop=0;
+   requestAnimationFrame(()=>{if(d.open){d.scrollTop=0;stage.scrollTop=0;}});
+   
   },
   modelName(operation){const model=this.state.config?.models?.find(m=>m.operation===operation)||this.state.config?.videoModels?.find(m=>operation===m.operation||operation?.startsWith(m.operation+'_'));return model?.name||(operation==='generate'?'FLUX.1 Schnell':operation==='generate_video'?'Wan 2.1 Local':operation?.replace(/^(generate_|video_)/,'').replaceAll('_',' ')||'Model metadata unavailable');}
  });
