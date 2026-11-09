@@ -156,7 +156,12 @@
   wrap.insertBefore(heading('Ask anything to start'),wrap.firstChild);
   const toolbar=el('div','loox-uc-toolbar loox-uc-agent-toolbar');
   const controls=el('div','loox-uc-controls');
-  controls.append(model);toolbar.append(controls);
+  const modelMenu=document.getElementById('aiModelMenu');
+  // Keep the dropdown in the same positioning context as its model trigger.
+  // The old menu remained in .ai-composer-wrap after the trigger moved out.
+  if(modelMenu)controls.append(model,modelMenu);
+  else controls.append(model);
+  toolbar.append(controls);
   // Agent uses the same external toolbar position as Image and Video.
   wrap.insertBefore(toolbar,form);
   form.classList.add('loox-uc-card');
