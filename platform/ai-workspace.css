@@ -35,3 +35,25 @@ body.ai-chat.ai-agent-permanent-sessions .ai-recent-scrim{display:none!important
  body.ai-chat.ai-agent-permanent-sessions .ai-composer-wrap{padding:8px 7px max(8px,env(safe-area-inset-bottom))!important}
  body.ai-chat.ai-agent-permanent-sessions .ai-composer{padding:9px 8px!important}
 }
+
+/* V19: guard against Android full-screen touch highlight and stale dimming layers. */
+@media(hover:none) and (pointer:coarse){
+ body.ai-chat,body.ai-chat main,body.ai-chat .ai-chat-layout,
+ body.ai-chat .ai-chat-body,body.ai-chat .ai-thread,
+ body.ai-chat .ai-composer-wrap,body.ai-chat .ai-composer{
+  -webkit-tap-highlight-color:transparent!important;
+ }
+ body.ai-chat a,body.ai-chat button,body.ai-chat summary,
+ body.ai-chat [role="button"]{
+  -webkit-tap-highlight-color:rgba(0,0,0,0)!important;
+ }
+ body.ai-chat .loox-mobile-app-layer[hidden],
+ body.ai-chat .ai-recent-scrim[hidden],
+ body.ai-chat .loox-sitewide-scrim:not(.is-open){
+  display:none!important;visibility:hidden!important;pointer-events:none!important;
+ }
+ body.ai-chat .ai-chat-stage,body.ai-chat .ai-chat-layout{
+  background:#0b0b10!important;
+ }
+ body.ai-chat .ai-chat-layout{isolation:isolate!important}
+}
