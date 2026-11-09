@@ -81,11 +81,24 @@ export class Community {
  const copyLink=action('',async()=>{const permalink=new URL('community.html?post='+encodeURIComponent(post.id),location.href).href;await navigator.clipboard.writeText(permalink);this.note('Post link copied.');},'community-copy-shortcut',e=>this.note(e.message));
  copyLink.title='Copy post link';copyLink.setAttribute('aria-label','Copy post link');
  copyLink.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.6.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.6-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/></svg>';
- hoverTools.append(copyLink,saveQuick);hover.append(hoverTools,hoverCreator);art.append(hover);
+ const likeQuick=action('',()=>this.like(post,likeQuick),'community-like-shortcut',e=>this.note(e.message));
+ likeQuick.dataset.postId=post.id;
+ likeQuick.title=post.liked?'Unlike post':'Like post';
+ this.renderLike(post,likeQuick);
+ hoverTools.append(likeQuick,copyLink,saveQuick);hover.append(hoverTools,hoverCreator);art.append(hover);
  const line=element('div','community-card-line'),like=action('',()=>this.like(post,like),'community-like',e=>this.note(e.message));this.renderLike(post,like);line.append(creator,like);const actions=element('div','community-post-actions'),save=action(post.saved?'Saved':'Save',()=>this.save(post,save),'community-button',e=>this.note(e.message));save.dataset.postId=post.id;save.setAttribute('aria-pressed',String(!!post.saved));actions.append(save,element('span','community-note',(post.comments||0)+' comments'+(post.media_type==='video'?' · '+(post.view_count||0)+' views':'')));body.append(element('p','community-caption',post.caption),element('small','community-note',this.modelName(post.model_id)),line,actions);card.append(body);return card;}
- renderLike(post,b){b.textContent=(post.liked?'♥ ':'♡ ')+post.likes;b.setAttribute('aria-pressed',String(post.liked));b.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+post.likes+' likes');}
+ renderLike(post,b){
+  b.setAttribute('aria-pressed',String(!!post.liked));
+  b.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+(Number(post.likes)||0)+' likes');
+  if(b.classList.contains('community-like-shortcut')){
+   b.innerHTML='<svg viewBox="0 0 24 24" fill="'+(post.liked?'currentColor':'none')+'" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/></svg>';
+   b.title=post.liked?'Unlike post':'Like post';
+  }else b.textContent=(post.liked?'♥ ':'♡ ')+(Number(post.likes)||0);
+ }
  async like(post,button){if(!this.state.user){this.auth('login');return;}if(post.creator_id===this.state.user.id){this.note('You cannot like your own creation.');return;}if(this.pendingLikes.has(post.id))return;this.pendingLikes.add(post.id);const uid=this.state.user.id,before={liked:post.liked,likes:post.likes};post.liked=!post.liked;post.likes=Number(post.likes)+(post.liked?1:-1);this.renderLike(post,button);
- try{const q=this.state.client.from('loox_post_likes');result(post.liked?await q.insert({post_id:post.id,user_id:uid}):await q.delete().eq('post_id',post.id).eq('user_id',uid));}catch(error){Object.assign(post,before);this.renderLike(post,button);throw error;}finally{this.pendingLikes.delete(post.id);}}
+  const syncCard=()=>{document.querySelectorAll('.community-like-shortcut[data-post-id="'+post.id+'"]').forEach(other=>this.renderLike(post,other));};
+  syncCard();
+ try{const q=this.state.client.from('loox_post_likes');result(post.liked?await q.insert({post_id:post.id,user_id:uid}):await q.delete().eq('post_id',post.id).eq('user_id',uid));}catch(error){Object.assign(post,before);this.renderLike(post,button);syncCard();throw error;}finally{this.pendingLikes.delete(post.id);}}
  async details(post){
   const d=modal(post.caption),status=element('p','community-note');
   d.classList.add('loox-post-viewer');
