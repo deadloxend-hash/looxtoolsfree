@@ -250,6 +250,12 @@
   node.title=label;node.setAttribute('aria-label',label);node.innerHTML=pict(kind);
   sideActions.append(node);sidebarIcons[kind]=node;return node;
  }
+ function openCommunityNotifications(){
+  if(typeof window.__looxOpenCommunityNotifications==='function'){
+   window.__looxOpenCommunityNotifications();return;
+  }
+  location.assign(url('community.html?notifications=1'));
+ }
  const bell=makeSideAction('notifications','Notifications');
  makeSideAction('settings','Account settings','settings.html#workspace-preferences');
  const globe=makeSideAction('language','Change language');
@@ -280,14 +286,14 @@
    sideOptions.append(languages);
    const more=el('a','','More language settings');more.href=url('settings.html#workspace-preferences');sideOptions.append(more);
   }else{
-   sideOptions.append(el('p','','Site notifications are not available yet.'));
+   const view=el('a','','Open Community notifications');view.href=url('community.html?notifications=1');sideOptions.append(view);
    const activity=el('a','','View account activity');activity.href=url('account.html#usage');sideOptions.append(activity);
   }
   sideOptions.hidden=false;
   bell.setAttribute('aria-expanded',String(kind==='notifications'));
   globe.setAttribute('aria-expanded',String(kind==='language'));
  }
- bell.addEventListener('click',()=>showSideOptions('notifications'));
+ bell.addEventListener('click',openCommunityNotifications);
  globe.addEventListener('click',()=>showSideOptions('language'));
  moon.addEventListener('click',()=>{closeSideOptions();toggleSiteTheme(moon)});
  document.addEventListener('pointerdown',event=>{
@@ -328,7 +334,8 @@
   const moreLanguages=el('a','','More language settings');moreLanguages.href=url('settings.html#workspace-preferences');options.append(moreLanguages);
   const notificationsPanel=el('div','loox-profile-panel');
   notificationsPanel.hidden=true;notificationsPanel.setAttribute('aria-label','Notifications');
-  notificationsPanel.append(el('strong','','Notifications'),el('p','','Site notifications are not available yet.'));
+  notificationsPanel.append(el('strong','','Notifications'),el('p','','Open your Community activity to see likes, comments, replies and follows.'));
+  const openNotifications=el('a','','Open notifications');openNotifications.href=url('community.html?notifications=1');notificationsPanel.append(openNotifications);
   const activity=el('a','','View account activity');activity.href=url('account.html#usage');notificationsPanel.append(activity);
   const identity=menu.querySelector('.lx-profile-identity');
   const logout=menu.querySelector('.lx-profile-signout');
@@ -341,10 +348,7 @@
    options.hidden=!options.hidden;notificationsPanel.hidden=true;
    languages.setAttribute('aria-expanded',String(!options.hidden));notifications.setAttribute('aria-expanded','false');
   });
-  notifications.addEventListener('click',()=>{
-   notificationsPanel.hidden=!notificationsPanel.hidden;options.hidden=true;
-   notifications.setAttribute('aria-expanded',String(!notificationsPanel.hidden));languages.setAttribute('aria-expanded','false');
-  });
+  notifications.addEventListener('click',openCommunityNotifications);
   theme.addEventListener('click',()=>toggleSiteTheme(theme));
  }
 
