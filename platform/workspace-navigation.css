@@ -131,3 +131,55 @@ body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-title:not([h
 .loox-workspace-navigation .loox-creative-links>a{padding-left:19px}
 body.loox-sitewide-active .loox-sitewide-drawer-list>.loox-workspace-navigation{max-height:calc(100dvh - 150px);padding:6px 10px 14px}
 @media(max-height:650px){.loox-workspace-navigation{max-height:43dvh}.loox-workspace-navigation a.loox-workspace-link{min-height:34px;padding-top:5px;padding-bottom:5px}}
+
+/* V8: show the existing image/video session history inside the ONE shared
+   sidebar, only on generator workspaces. The rail is moved, not cloned. */
+body.loox-media-sessions-in-drawer #loox-sitewide-drawer .loox-sitewide-drawer-list{
+ display:flex!important;flex-direction:column!important;min-height:0!important;
+}
+body.loox-media-sessions-in-drawer #loox-sitewide-drawer #loox-media-session-rail{
+ position:relative!important;inset:auto!important;left:auto!important;right:auto!important;
+ top:auto!important;bottom:auto!important;transform:none!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;height:auto!important;
+ flex:0 0 auto!important;min-height:0!important;max-height:min(51dvh,510px)!important;
+ padding:12px 10px 10px!important;margin:0!important;gap:7px!important;
+ z-index:auto!important;box-sizing:border-box!important;overflow:hidden!important;
+ border:0!important;border-bottom:1px solid #352b3e!important;
+ box-shadow:none!important;background:transparent!important;
+}
+body.loox-media-sessions-in-drawer #loox-sitewide-drawer #loox-media-session-rail[hidden]{display:none!important}
+body.loox-media-sessions-in-drawer #loox-sitewide-drawer #loox-media-session-rail .loox-session-list{
+ flex:1 1 auto!important;min-height:52px!important;max-height:min(35dvh,350px)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin!important;
+}
+body.loox-media-sessions-in-drawer #loox-sitewide-drawer .loox-workspace-navigation{
+ flex:1 1 auto!important;min-height:90px!important;max-height:none!important;
+ overflow-y:auto!important;
+}
+body.loox-media-sessions-in-drawer .lig-main > button.loox-ai-dock-toggle,
+body.loox-media-sessions-in-drawer .lig-main > .loox-session-scrim{
+ display:none!important;
+}
+/* The generator feed and composer now occupy their full page area; the shared
+   sidebar controls whether the page is pushed aside. */
+@media(min-width:901px){
+ body.loox-media-sessions-in-drawer .lig-main:not(.loox-community-view) > .lig-content-scroll{
+  padding-left:24px!important;
+ }
+ body.loox-uc.loox-media-sessions-in-drawer .lig-main:not(.loox-community-view) > .lig-compose-wrap,
+ body.loox-uc.loox-media-sessions-in-drawer .lig-main.loox-sessions-layout:not(.loox-community-view) > .lig-compose-wrap{
+  left:0!important;margin-left:0!important;width:100%!important;
+ }
+ body.loox-media-sessions-in-drawer.loox-sitewide-active > main{
+  box-sizing:border-box!important;
+  transition:padding-left .3s cubic-bezier(.2,.83,.23,1)!important;
+ }
+ body.loox-media-sessions-in-drawer.loox-sitewide-active.loox-sitewide-sidebar-open > main{
+  padding-left:252px!important;
+ }
+}
+@media(max-width:900px){
+ body.loox-media-sessions-in-drawer #loox-sitewide-drawer #loox-media-session-rail{
+  max-height:45dvh!important;
+ }
+}
