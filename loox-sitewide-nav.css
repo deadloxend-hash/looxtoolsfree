@@ -1976,3 +1976,57 @@ body.loox-generator-no-topnav > header.lig-header .lig-page-name{
   transition:none!important;
  }
 }
+
+/* V74 — one refined LOOX signature across all sitewide headers.
+   Native AI workspaces already use this same white + violet X treatment. */
+#loox-sitewide-header .loox-sitewide-logo{
+ display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+ position:relative!important;flex:0 0 auto!important;height:43px!important;
+ min-width:0!important;padding:3px 2px!important;border:0!important;
+ border-radius:8px!important;background:transparent!important;
+ text-decoration:none!important;color:#fff!important;
+}
+#loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark{
+ display:inline-block!important;position:relative!important;
+ font-family:Inter,"Arial Black",system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ font-size:clamp(24px,2.5vw,32px)!important;font-weight:900!important;
+ letter-spacing:-.09em!important;line-height:1!important;white-space:nowrap!important;
+ color:#fff!important;
+ background:linear-gradient(115deg,#fff 5%,#f9f5ff 55%,#e8d3ff 100%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+ filter:drop-shadow(0 1px 0 #8b69ac33)!important;
+ transition:filter .22s ease,transform .22s ease!important;
+}
+#loox-sitewide-header .loox-sitewide-logo .loox-workspace-x{
+ color:#c59aff!important;
+ background:linear-gradient(145deg,#fdfbff 10%,#c59aff 80%)!important;
+ -webkit-background-clip:text!important;background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+}
+#loox-sitewide-header .loox-sitewide-logo:hover,
+#loox-sitewide-header .loox-sitewide-logo:focus-visible{
+ background:transparent!important;border-color:transparent!important;
+}
+#loox-sitewide-header .loox-sitewide-logo:hover .loox-sitewide-wordmark,
+#loox-sitewide-header .loox-sitewide-logo:focus-visible .loox-sitewide-wordmark{
+ transform:translateY(-1px)!important;filter:drop-shadow(0 0 9px #ad68ed80)!important;
+}
+#loox-sitewide-header .loox-sitewide-logo::after{
+ content:"";position:absolute;left:2px;right:2px;bottom:1px;height:2px;
+ border-radius:2px;background:linear-gradient(90deg,#9d68e4,#d1b0ff 65%,transparent);
+ opacity:.42;transform:scaleX(.72);transform-origin:left center;
+ transition:opacity .22s ease,transform .22s ease;
+}
+#loox-sitewide-header .loox-sitewide-logo:hover::after,
+#loox-sitewide-header .loox-sitewide-logo:focus-visible::after{opacity:.9;transform:scaleX(1)}
+@media(max-width:790px){
+ #loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark{font-size:25px!important}
+}
+@media(max-width:480px){
+ #loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark{font-size:22px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark,
+ #loox-sitewide-header .loox-sitewide-logo::after{transition:none!important}
+}
