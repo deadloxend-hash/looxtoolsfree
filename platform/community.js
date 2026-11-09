@@ -153,7 +153,14 @@ export class Community {
    info.append(prompt);
   }
   const similar=element('section','loox-post-related');
-  const options=this.posts.filter(p=>p.id!==post.id&&p.media_type===post.media_type).slice(0,8);
+  // Rank already-public, already-loaded posts by shared model and caption keywords.
+  const keywords=text=>new Set(String(text||'').toLowerCase().match(/[a-z]{4,}/g)||[]);
+  const terms=keywords(post.caption);
+  const options=this.posts.filter(p=>p.id!==post.id&&p.media_type===post.media_type)
+   .map(p=>({post:p,score:(p.model_id&&p.model_id===post.model_id?4:0)+
+     [...keywords(p.caption)].filter(word=>terms.has(word)).length}))
+   .sort((a,b)=>b.score-a.score)
+   .slice(0,8).map(item=>item.post);
   if(options.length){
    similar.append(element('h3','','More like this'));
    const strip=element('div','loox-post-related-grid');
