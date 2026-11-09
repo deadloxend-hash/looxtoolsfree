@@ -339,3 +339,18 @@ body.loox-conversations button.loox-ai-dock-toggle[hidden]{display:none!importan
 .loox-session-rail .loox-session-new-compact:focus-visible{
  background:#51336c!important;outline:2px solid #b889d8!important;outline-offset:1px!important;
 }
+
+/* V20: prevent flash of the old standalone media history rail before the
+   sitewide sidebar takes ownership. HTML includes the rail for session JS,
+   but only the shared drawer may display it. */
+body.loox-conversations .lig-main > .loox-session-rail{
+ display:none!important;
+}
+body.loox-conversations #loox-sitewide-drawer #loox-media-session-rail{
+ display:flex!important;
+}
+/* The obsolete toggle and scrim must never flash beside the generator. */
+body.loox-conversations .lig-main > .loox-ai-dock-toggle,
+body.loox-conversations .lig-main > .loox-session-scrim{
+ display:none!important;
+}
