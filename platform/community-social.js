@@ -40,25 +40,249 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    if(!this.state.user)return this.auth('login');const d=modal(comment?'Report comment':'Report post'),form=e('form'),reason=field(form,'Tell us what is wrong','','textarea'),status=e('p','community-note');reason.required=true;reason.minLength=5;reason.maxLength=1000;
    const submit=e('button','community-primary','Send report');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{result(await this.state.client.from('loox_content_reports').insert({user_id:this.state.user.id,post_id:post.id,comment_id:comment,reason:reason.value.trim()}));status.textContent='Report received. An administrator can review it.';submit.remove();}catch(error){status.textContent=error.message;submit.disabled=false;}});
   },
+
   async comments(post,container){
-   const list=e('div','community-comments'),status=e('p','community-note'),more=a('More comments',()=>load(),'community-button',err=>status.textContent=err.message);let offset=0;container.append(e('h3','','Conversation'),list,more,status);
-   const load=async()=>{more.disabled=true;try{const rows=result(await this.state.client.from('loox_post_comments').select('id,user_id,body,created_at').eq('post_id',post.id).order('created_at').order('id').range(offset,offset+19));offset+=rows.length;more.hidden=rows.length<20;
-    const ids=[...new Set(rows.map(c=>c.user_id))];const people=ids.length?result(await this.state.client.from('loox_creator_profiles').select('user_id,username').in('user_id',ids)):[];const names=new Map(people.map(p=>[p.user_id,p.username]));
-    for(const c of rows){const row=e('article','community-comment'),by=e('a','community-creator','@'+(names.get(c.user_id)||'LOOX creator'));by.href='creator.html?id='+c.user_id;row.append(by,e('p','',c.body),e('small','community-note',new Date(c.created_at).toLocaleString()));
-     if(this.state.user?.id===c.user_id||this.state.user?.id===post.creator_id)row.append(a('Delete',async()=>{result(await this.state.client.from('loox_post_comments').delete().eq('id',c.id));row.remove();},'community-button',err=>status.textContent=err.message));
-     row.append(a('Report',()=>this.report(post,c.id),'community-button',err=>status.textContent=err.message));list.append(row);}
-    if(!offset)status.textContent='Start the conversation.';
-   }finally{more.disabled=false;}};
-   if(post.comments_enabled!==false){const form=e('form','community-comment-form'),input=field(form,'Your comment','','textarea');input.maxLength=1200;input.required=true;const submit=e('button','community-primary','Post comment');submit.type='submit';form.append(submit);container.append(form);
-    form.addEventListener('submit',async event=>{event.preventDefault();if(!this.state.user)return this.auth('login');submit.disabled=true;try{result(await this.state.client.from('loox_post_comments').insert({post_id:post.id,user_id:this.state.user.id,body:input.value.trim()}));input.value='';offset=0;list.replaceChildren();status.textContent='';await load();}catch(error){status.textContent=error.message;}finally{submit.disabled=false;}});
-   }else container.append(e('p','community-note','The creator disabled comments.'));
-   await load();
+   const self=this, pageSize=15;
+   const section=e('section','loox-conversation'),heading=e('h3','','Conversation');
+   const list=e('div','community-comments loox-thread-list');
+   const status=e('p','community-note loox-comment-status');
+   status.setAttribute('role','status');
+   const more=a('Load more comments',()=>loadPage(),'community-button loox-comments-more',err=>{status.textContent=err.message;});
+   more.hidden=true;
+   section.append(heading,list,more,status);
+   container.append(section);
+   let offset=0,loading=false,replyTo=null;
+   const profiles=new Map();
+   async function fetchPeople(ids){
+    const missing=[...new Set(ids)].filter(id=>id&&!profiles.has(id));
+    if(!missing.length)return;
+    const rows=result(await self.state.client.from('loox_creator_profiles')
+     .select('user_id,username,display_name,avatar_path').in('user_id',missing));
+    const found=new Map(rows.map(p=>[p.user_id,p]));
+    for(const id of missing)profiles.set(id,found.get(id)||{user_id:id,username:'loox_user',display_name:'LOOX creator',avatar_path:null});
+   }
+   function avatar(profile){
+    const holder=e('span','loox-comment-avatar',(profile.display_name||'L').slice(0,1).toUpperCase());
+    if(profile.avatar_path)mediaURL(self.state,profile.avatar_path,'loox-avatars',{type:'avatar',id:profile.user_id})
+      .then(url=>{
+       if(!holder.isConnected)return;
+       const img=e('img');img.alt='';img.loading='lazy';img.src=url;
+       img.addEventListener('error',()=>img.remove(),{once:true});
+       holder.replaceChildren(img);
+      }).catch(()=>{});
+    return holder;
+   }
+   function authorLink(profile){
+    const link=e('a','loox-comment-author');
+    link.href='creator.html?id='+encodeURIComponent(profile.user_id);
+    const labels=e('span','loox-comment-author-labels');
+    labels.append(e('strong','',profile.display_name||profile.username||'LOOX creator'),
+      e('small','','@'+(profile.username||'loox_user')));
+    link.append(avatar(profile),labels);
+    return link;
+   }
+   let form,input,replyLabel;
+   const cancelReply=()=>{
+    replyTo=null;
+    if(replyLabel)replyLabel.hidden=true;
+    if(input)input.placeholder='Write a comment…';
+   };
+   const setReply=(c)=>{
+    if(!self.state.user){self.auth('login');return;}
+    replyTo=c;
+    const name=profiles.get(c.user_id)?.username||'creator';
+    replyLabel.hidden=false;
+    replyLabel.replaceChildren(e('span','','Replying to @'+name),
+      a('Cancel',cancelReply,'loox-reply-cancel',err=>status.textContent=err.message));
+    input.placeholder='Reply to @'+name+'…';
+    input.focus();
+   };
+   function render(c,nested=false){
+    const person=profiles.get(c.user_id)||{user_id:c.user_id,display_name:'LOOX creator',username:'loox_user'};
+    const row=e('article','community-comment'+(nested?' is-reply':''));
+    row.dataset.commentId=c.id;
+    const top=e('div','loox-comment-top'),info=authorLink(person);
+    top.append(info,e('time','loox-comment-date',new Date(c.created_at).toLocaleString()));
+    const body=e('p','loox-comment-text',c.body);
+    const controls=e('div','loox-comment-actions');
+    if(!nested&&post.comments_enabled!==false)
+      controls.append(a('Reply',()=>setReply(c),'loox-comment-action',err=>status.textContent=err.message));
+    if(self.state.user?.id===c.user_id||self.state.user?.id===post.creator_id)
+      controls.append(a('Delete',async()=>{
+       if(!confirm('Delete this comment?'))return;
+       result(await self.state.client.from('loox_post_comments').delete().eq('id',c.id));
+       await reload();
+      },'loox-comment-action',err=>status.textContent=err.message));
+    controls.append(a('Report',()=>self.report(post,c.id),'loox-comment-action',err=>status.textContent=err.message));
+    row.append(top,body,controls);
+    return row;
+   }
+   async function appendReplies(parents){
+    if(!parents.length)return;
+    const ids=parents.map(c=>c.id);
+    let replyOffset=0;
+    const holders=new Map(parents.map(c=>[c.id,list.querySelector('[data-replies-for="'+c.id+'"]')]));
+    const loadBatch=async()=>{
+     const rows=result(await self.state.client.from('loox_post_comments')
+      .select('id,post_id,parent_id,user_id,body,created_at')
+      .eq('post_id',post.id).in('parent_id',ids)
+      .order('created_at',{ascending:true}).order('id',{ascending:true})
+      .range(replyOffset,replyOffset+199));
+     replyOffset+=rows.length;
+     await fetchPeople(rows.map(c=>c.user_id));
+     for(const c of rows)holders.get(c.parent_id)?.append(render(c,true));
+     return rows.length===200;
+    };
+    const extra=e('div','loox-reply-more-wrap');
+    const moreReplies=a('Load more replies',async()=>{
+     moreReplies.disabled=true;
+     try{moreReplies.hidden=!(await loadBatch());}
+     catch(err){status.textContent=err.message;}
+     finally{moreReplies.disabled=false;}
+    },'loox-comment-action',err=>status.textContent=err.message);
+    extra.append(moreReplies);
+    list.append(extra);
+    moreReplies.hidden=!(await loadBatch());
+   }
+   async function loadPage(){
+    if(loading)return;
+    loading=true;more.disabled=true;
+    try{
+     const rows=result(await self.state.client.from('loox_post_comments')
+      .select('id,post_id,parent_id,user_id,body,created_at')
+      .eq('post_id',post.id).is('parent_id',null)
+      .order('created_at',{ascending:true}).order('id',{ascending:true})
+      .range(offset,offset+pageSize-1));
+     offset+=rows.length;
+     more.hidden=rows.length<pageSize;
+     await fetchPeople(rows.map(c=>c.user_id));
+     for(const c of rows){
+      const thread=e('div','loox-comment-thread'),replies=e('div','loox-thread-replies');
+      replies.dataset.repliesFor=c.id;
+      thread.append(render(c),replies);
+      list.append(thread);
+     }
+     if(rows.length)await appendReplies(rows);
+     if(!list.querySelector('.loox-comment-thread')){
+      status.textContent='No comments yet.';
+     }else status.textContent='';
+    }catch(err){status.textContent=err.message;more.hidden=false;}
+    finally{loading=false;more.disabled=false;}
+   }
+   async function reload(){
+    offset=0;list.replaceChildren();status.textContent='';
+    await loadPage();
+   }
+   if(post.comments_enabled!==false){
+    form=e('form','community-comment-form loox-compact-comment-form');
+    replyLabel=e('div','loox-reply-banner');replyLabel.hidden=true;
+    input=e('textarea','loox-comment-input');
+    input.rows=2;input.maxLength=1200;input.required=true;
+    input.placeholder='Write a comment…';input.setAttribute('aria-label','Your comment');
+    const submit=e('button','community-primary loox-comment-send','Post');
+    submit.type='submit';
+    form.append(replyLabel,input,submit);
+    section.append(form);
+    form.addEventListener('submit',async ev=>{
+     ev.preventDefault();
+     if(!self.state.user){self.auth('login');return;}
+     const body=input.value.trim();
+     if(!body||body.length>1200){status.textContent='Enter a comment up to 1,200 characters.';return;}
+     submit.disabled=true;
+     try{
+      const data={post_id:post.id,user_id:self.state.user.id,body};
+      if(replyTo)data.parent_id=replyTo.id;
+      result(await self.state.client.from('loox_post_comments').insert(data));
+      input.value='';cancelReply();
+      await reload();
+     }catch(err){status.textContent=err.message;}
+     finally{submit.disabled=false;}
+    });
+   }else section.append(e('p','community-note','Comments are turned off for this post.'));
+   await loadPage();
   },
   async notifications(){
-   if(!this.state.user)return this.auth('login');const d=modal('Notifications'),list=e('div'),status=e('p','community-note');d.append(a('Mark all read',async()=>{result(await this.state.client.from('loox_notifications').update({is_read:true}).eq('user_id',this.state.user.id).eq('is_read',false));list.querySelectorAll('.is-unread').forEach(n=>n.classList.remove('is-unread'));},'community-button',err=>status.textContent=err.message),list,status);
-   const rows=result(await this.state.client.from('loox_notifications').select('id,kind,post_id,is_read,created_at').eq('user_id',this.state.user.id).order('created_at',{ascending:false}).limit(50));
-   const labels={like:'Someone liked your creation',follow:'You have a new follower',comment:'A new comment on your creation',approved:'Your creation was approved',rejected:'Your submission was rejected'};
-   for(const n of rows){const row=e('div','community-notification'+(!n.is_read?' is-unread':''));row.append(e('p','',labels[n.kind]||'Community update'),e('small','community-note',new Date(n.created_at).toLocaleString()));if(n.post_id){const link=e('a','community-creator','Open post');link.href='community.html?post='+n.post_id;row.append(link);}list.append(row);}if(!rows.length)status.textContent='You are all caught up. New community activity will appear here.';
+   if(!this.state.user)return this.auth('login');
+   const d=modal('Notifications'),list=e('div','loox-notification-list'),
+    status=e('p','community-note');
+   status.setAttribute('role','status');
+   const markAll=a('Mark all read',async()=>{
+    result(await this.state.client.from('loox_notifications').update({is_read:true})
+      .eq('user_id',this.state.user.id).eq('is_read',false));
+    list.querySelectorAll('.is-unread').forEach(n=>n.classList.remove('is-unread'));
+   },'community-button loox-notification-markall',err=>status.textContent=err.message);
+   d.append(markAll,list,status);
+   try{
+    const rows=result(await this.state.client.from('loox_notifications')
+     .select('id,kind,actor_id,post_id,comment_id,is_read,created_at')
+     .eq('user_id',this.state.user.id)
+     .order('created_at',{ascending:false}).limit(60));
+    const unique=values=>[...new Set(values.filter(Boolean))];
+    const actorIds=unique(rows.map(n=>n.actor_id));
+    const postIds=unique(rows.map(n=>n.post_id));
+    const commentIds=unique(rows.map(n=>n.comment_id));
+    const [people,posts,comments]=await Promise.all([
+     actorIds.length?this.state.client.from('loox_creator_profiles')
+       .select('user_id,username,display_name,avatar_path').in('user_id',actorIds):Promise.resolve({data:[]}),
+     postIds.length?this.state.client.from('loox_community_posts')
+       .select('id,caption,media_path,media_type').in('id',postIds):Promise.resolve({data:[]}),
+     commentIds.length?this.state.client.from('loox_post_comments')
+       .select('id,body').in('id',commentIds):Promise.resolve({data:[]})
+    ]);
+    // A deleted, private or unavailable actor/post must not prevent other notifications from loading.
+    const actors=new Map((people.data||[]).map(p=>[p.user_id,p]));
+    const postMap=new Map((posts.data||[]).map(p=>[p.id,p]));
+    const commentMap=new Map((comments.data||[]).map(p=>[p.id,p]));
+    const mark=n=>{
+     if(n.is_read)return;
+     void this.state.client.from('loox_notifications').update({is_read:true})
+       .eq('id',n.id).eq('user_id',this.state.user.id);
+    };
+    for(const n of rows){
+     const actor=actors.get(n.actor_id),post=postMap.get(n.post_id);
+     const name=actor?.display_name||actor?.username||'Someone';
+     const row=e('article','community-notification loox-notification'+(!n.is_read?' is-unread':''));
+     const avatarLink=e('a','loox-notification-avatar',(name||'L').slice(0,1).toUpperCase());
+     avatarLink.href=n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
+     if(actor?.avatar_path)mediaURL(this.state,actor.avatar_path,'loox-avatars',{type:'avatar',id:actor.user_id})
+      .then(url=>{
+       if(!avatarLink.isConnected)return;
+       const img=e('img');img.src=url;img.alt='';img.loading='lazy';
+       img.addEventListener('error',()=>img.remove(),{once:true});
+       avatarLink.replaceChildren(img);
+      }).catch(()=>{});
+     avatarLink.addEventListener('click',()=>mark(n));
+     const content=e('a','loox-notification-content');
+     content.href=n.post_id?'community.html?post='+encodeURIComponent(n.post_id):
+       n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
+     let heading='';
+     if(n.kind==='comment')heading=name+' commented on your post';
+     else if(n.kind==='reply')heading=name+' replied to your comment';
+     else if(n.kind==='like')heading=name+' liked your post';
+     else if(n.kind==='follow')heading=name+' started following you';
+     else if(n.kind==='approved')heading='Your creation was approved';
+     else if(n.kind==='rejected')heading='Your submission was rejected';
+     else heading='Community notification';
+     content.append(e('strong','loox-notification-heading',heading));
+     const commentText=commentMap.get(n.comment_id)?.body;
+     if(commentText)content.append(e('span','loox-notification-message','“'+commentText+'”'));
+     if(post?.caption)content.append(e('small','loox-notification-post','On: '+post.caption));
+     content.append(e('time','loox-notification-time',new Date(n.created_at).toLocaleString()));
+     content.addEventListener('click',()=>mark(n));
+     row.append(avatarLink,content);
+     if(post?.media_path&&post.media_type!=='video'){
+      const thumb=e('a','loox-notification-thumb');
+      thumb.href=content.href;thumb.setAttribute('aria-label','Open post');
+      const img=e('img');img.alt='Post preview';img.loading='lazy';thumb.append(img);
+      mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id})
+       .then(url=>{if(img.isConnected)img.src=url;}).catch(()=>thumb.remove());
+      thumb.addEventListener('click',()=>mark(n));
+      row.append(thumb);
+     }
+     list.append(row);
+    }
+    if(!rows.length)status.textContent='No notifications yet. Likes, comments, replies and follows will appear here.';
+   }catch(err){status.textContent=err.message;}
   },
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
