@@ -28,6 +28,23 @@
 <script type="module" src="platform/image-landing.js?v=1">
 </script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Free AI Image Generator Online | LOOX AI","url":"https://deadloxend-hash.github.io/looxtoolsfree/ai-image-landing.html","description":"Explore text to image AI, image generation models, and creative styles in the LOOX AI studio.","inLanguage":"en"}</script>
+<!-- AI Image landing: right-aligned search, credits hidden in header only. -->
+<style>
+body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-sitewide-credit-dock{
+ display:none!important;
+}
+body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-sitewide-search{
+ order:6!important;margin-left:auto!important;
+}
+body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-sitewide-account{
+ order:7!important;margin-left:0!important;
+}
+@media(max-width:790px){
+ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-sitewide-links{
+  order:9!important;
+ }
+}
+</style>
 </head>
 <body class="lx-shell loox-creative-landing" data-creative-mode="image" data-image-showcase>
 <header class="lx-header">
