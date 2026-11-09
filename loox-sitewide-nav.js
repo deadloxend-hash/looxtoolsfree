@@ -111,6 +111,77 @@
   else native.append(tabs);
   if(nativeTabs)nativeTabs.classList.add('loox-internal-templates-tabs');
  }
+
+ // Shared LOOX mobile app launcher for every home, landing and creator workspace.
+ // Native generator headers get their own trigger because the sitewide bar is hidden there.
+ const appDestinations=[
+  ['AI Agent','ai-chat.html','agent'],
+  ['AI Image','ai-image-landing.html','image'],
+  ['AI Video','ai-video-landing.html','video'],
+  ['Community','community.html','community'],
+  ['Trending','trending.html','trending'],
+  ['Templates','templates.html','templates']
+ ];
+ const appIcons={
+  agent:'<path d="M7 8h10M7 12h7"/><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 3v-3a2 2 0 0 1-2-2V7a3 3 0 0 1 3-3z"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="1.5"/><path d="m5 18 5-5 3 3 3-4 3 4"/>',
+  video:'<rect x="3" y="5" width="13" height="14" rx="3"/><path d="m16 10 5-3v10l-5-3z"/>',
+  community:'<circle cx="9" cy="9" r="3"/><circle cx="17.5" cy="10" r="2.3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 15a4 4 0 0 1 5 4"/>',
+  trending:'<path d="m3 17 6-6 4 4 8-9M15 6h6v6"/>',
+  templates:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 5v14M5 12h14M7 7h2m6 10h2"/>'
+ };
+ const appLayer=el('div','loox-mobile-app-layer');appLayer.hidden=true;
+ appLayer.innerHTML='<div class="loox-mobile-app-scrim" data-close-apps></div><section class="loox-mobile-app-sheet" role="dialog" aria-modal="true" aria-label="LOOX apps"><div class="loox-mobile-app-handle"></div><div class="loox-mobile-app-heading"><div><small>LOOX CREATIVE STUDIO</small><h2>Explore LOOX</h2></div><button type="button" class="loox-mobile-app-close" aria-label="Close apps">×</button></div><div class="loox-mobile-app-grid"></div></section>';
+ const appGrid=appLayer.querySelector('.loox-mobile-app-grid');
+ appDestinations.forEach(([label,href,kind])=>{
+  const a=el('a','loox-mobile-app-tile');a.href=url(href);
+  if(page===href.split('#')[0])a.setAttribute('aria-current','page');
+  const visual=el('span','loox-mobile-app-icon loox-mobile-app-icon-'+kind);
+  visual.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+appIcons[kind]+'</svg>';
+  a.append(visual,el('span','loox-mobile-app-label',label));appGrid.append(a);
+ });
+ document.body.append(appLayer);
+ const appTriggers=[];
+ const buildAppTrigger=()=>{
+  const button=el('button','loox-mobile-app-trigger');button.type='button';
+  button.setAttribute('aria-label','Open LOOX apps');button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-expanded','false');
+  button.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>';
+  appTriggers.push(button);
+  return button;
+ };
+ const navAppTrigger=buildAppTrigger();inner.insertBefore(navAppTrigger,account);
+ if(native&&['ai-chat.html','ai-text-to-image.html','ai-video-generator.html','community.html','trending.html','templates.html'].includes(page)){
+  const nativeAppTrigger=buildAppTrigger();
+  nativeAppTrigger.classList.add('loox-mobile-app-native-trigger');
+  const accountSlot=native.querySelector('.lig-header-user,[data-loox-account]');
+  if(accountSlot)native.insertBefore(nativeAppTrigger,accountSlot);
+  else native.append(nativeAppTrigger);
+ }
+ let appLastFocus=null;
+ const closeApps=()=>{
+  if(appLayer.hidden)return;
+  appLayer.hidden=true;document.body.classList.remove('loox-apps-open');
+  appTriggers.forEach(b=>b.setAttribute('aria-expanded','false'));
+  if(appLastFocus?.isConnected)appLastFocus.focus();
+ };
+ const openApps=trigger=>{
+  appLastFocus=trigger;appLayer.hidden=false;document.body.classList.add('loox-apps-open');
+  appTriggers.forEach(b=>b.setAttribute('aria-expanded','true'));
+  appLayer.querySelector('.loox-mobile-app-close').focus();
+ };
+ appTriggers.forEach(button=>button.addEventListener('click',()=>appLayer.hidden?openApps(button):closeApps()));
+ appLayer.querySelector('.loox-mobile-app-close').addEventListener('click',closeApps);
+ appLayer.querySelector('[data-close-apps]').addEventListener('click',closeApps);
+ document.addEventListener('keydown',event=>{
+  if(appLayer.hidden)return;
+  if(event.key==='Escape'){event.preventDefault();closeApps();}
+  if(event.key==='Tab'){
+   const links=[appLayer.querySelector('.loox-mobile-app-close'),...appLayer.querySelectorAll('.loox-mobile-app-tile')];
+   const current=links.indexOf(document.activeElement);
+   if(event.shiftKey&&current<=0){event.preventDefault();links[links.length-1].focus();}
+   else if(!event.shiftKey&&current===links.length-1){event.preventDefault();links[0].focus();}
+  }
+ });
  // One canonical landing-page navigation drawer on every LOOX page.
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';
  sidebar.setAttribute('aria-label','LOOX main navigation');
