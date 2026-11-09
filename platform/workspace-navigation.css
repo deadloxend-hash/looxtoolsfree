@@ -250,3 +250,19 @@ body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-layout{
 @media(prefers-reduced-motion:reduce){
  body.ai-chat.loox-chat-sessions-in-drawer > main.ai-chat-stage{transition:none!important}
 }
+
+/* V10: do not render a second floating AI Agent history rail.
+   Only the one rehomed inside the shared LOOX sidebar is allowed onscreen. */
+body.ai-chat .ai-chat-layout > #aiRecentPanel{
+ display:none!important;
+}
+body.ai-chat #loox-sitewide-drawer #aiRecentPanel{
+ display:flex!important;
+}
+body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-body{
+ width:100%!important;margin-left:0!important;min-width:0!important;
+}
+body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-layout>.ai-recent-toggle,
+body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-layout>.ai-recent-scrim{
+ display:none!important;
+}
