@@ -29,6 +29,44 @@ if(page==='community.html'){
   }));
   location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');
  };
+ Community.prototype.mobileComments=async function(post){
+  const d=element('dialog','loox-community-comments-sheet');
+  d.setAttribute('aria-label','Post comments');
+  const top=element('div','loox-community-sheet-head');
+  const title=element('h2','','Comments');
+  const close=action('×',()=>d.close(),'loox-community-sheet-close');
+  close.setAttribute('aria-label','Close comments');
+  top.append(title,close);d.append(top);
+  d.addEventListener('close',()=>d.remove(),{once:true});
+  document.body.append(d);d.showModal();
+  d.addEventListener('click',event=>{if(event.target===d)d.close();});
+  try{
+   await this.comments(post,d);
+   if(d.open)d.scrollTop=0;
+  }catch(error){d.append(element('p','community-note',error.message||'Comments unavailable.'));}
+ };
+ Community.prototype.mobileDetails=function(post){
+  const d=element('dialog','loox-community-details-sheet');
+  d.setAttribute('aria-label','Post details');
+  const top=element('div','loox-community-sheet-head');
+  const heading=element('h2','','Post details');
+  const close=action('×',()=>d.close(),'loox-community-sheet-close');
+  close.setAttribute('aria-label','Close details');
+  top.append(heading,close);d.append(top);
+  const info=element('dl','loox-community-details-list');
+  const detail=(label,value)=>{
+   const row=element('div','loox-community-details-row');
+   row.append(element('dt','',label),element('dd','',value));
+   info.append(row);
+  };
+  detail('Uploaded',new Date(post.created_at).toLocaleString());
+  detail('AI model',this.modelName(post.model_id));
+  detail('Created by',post.display_name||post.username||'LOOX creator');
+  d.append(info);
+  d.addEventListener('close',()=>d.remove(),{once:true});
+  document.body.append(d);d.showModal();
+  d.addEventListener('click',event=>{if(event.target===d)d.close();});
+ };
  Community.prototype.card=function(post){
   const card=originalCard.call(this,post);
   const self=this;
@@ -80,52 +118,8 @@ if(page==='community.html'){
    await navigator.clipboard.writeText(post.shared_prompt);
    feedback.textContent='Prompt copied.';
   };
-  const openComments=async()=>{
-   // Comments have their own focused sheet; do not open the full image viewer.
-   const d=element('dialog','loox-community-comments-sheet');
-   d.setAttribute('aria-label','Post comments');
-   const top=element('div','loox-community-sheet-head');
-   const title=element('h2','','Comments');
-   const close=action('×',()=>d.close(),'loox-community-sheet-close',fail);
-   close.setAttribute('aria-label','Close comments');
-   top.append(title,close);
-   d.append(top);
-   d.addEventListener('close',()=>d.remove(),{once:true});
-   document.body.append(d);
-   d.showModal();
-   d.addEventListener('click',event=>{if(event.target===d)d.close();});
-   try{
-    await self.comments(post,d);
-    if(d.open)d.scrollTop=0;
-   }catch(error){
-    const message=element('p','community-note',error.message||'Comments unavailable.');
-    d.append(message);
-   }
-  };
-  const openDetails=()=>{
-   const d=element('dialog','loox-community-details-sheet');
-   d.setAttribute('aria-label','Post details');
-   const top=element('div','loox-community-sheet-head');
-   const heading=element('h2','','Post details');
-   const close=action('×',()=>d.close(),'loox-community-sheet-close',fail);
-   close.setAttribute('aria-label','Close details');
-   top.append(heading,close);
-   d.append(top);
-   const info=element('dl','loox-community-details-list');
-   const detail=(label,value)=>{
-    const row=element('div','loox-community-details-row');
-    row.append(element('dt','',label),element('dd','',value));
-    info.append(row);
-   };
-   detail('Uploaded',new Date(post.created_at).toLocaleString());
-   detail('AI model',self.modelName(post.model_id));
-   detail('Created by',post.display_name||post.username||'LOOX creator');
-   d.append(info);
-   d.addEventListener('close',()=>d.remove(),{once:true});
-   document.body.append(d);
-   d.showModal();
-   d.addEventListener('click',event=>{if(event.target===d)d.close();});
-  };
+  const openComments=()=>self.mobileComments(post);
+  const openDetails=()=>self.mobileDetails(post);
   const download=async()=>{
    if(post.allow_download===false)return;
    const url=await mediaURL(self.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});
