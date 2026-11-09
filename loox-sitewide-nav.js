@@ -116,8 +116,8 @@
  // Native generator headers get their own trigger because the sitewide bar is hidden there.
  const appDestinations=[
   ['AI Agent','ai-chat.html','agent'],
-  ['AI Image','ai-image-landing.html','image'],
-  ['AI Video','ai-video-landing.html','video'],
+  ['AI Image',imageTabHref,'image'],
+  ['AI Video',videoTabHref,'video'],
   ['Community','community.html','community'],
   ['Trending','trending.html','trending'],
   ['Templates','templates.html','templates']
@@ -135,7 +135,7 @@
  const appGrid=appLayer.querySelector('.loox-mobile-app-grid');
  appDestinations.forEach(([label,href,kind])=>{
   const a=el('a','loox-mobile-app-tile');a.href=url(href);
-  if(page===href.split('#')[0])a.setAttribute('aria-current','page');
+  if(page===href.split('#')[0]||(kind==='image'&&page==='ai-image-landing.html')||(kind==='video'&&page==='ai-video-landing.html'))a.setAttribute('aria-current','page');
   const visual=el('span','loox-mobile-app-icon loox-mobile-app-icon-'+kind);
   visual.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+appIcons[kind]+'</svg>';
   a.append(visual,el('span','loox-mobile-app-label',label));appGrid.append(a);
