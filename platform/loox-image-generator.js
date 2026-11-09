@@ -323,10 +323,28 @@ async function initWorkspace(){
  async function prepareFluxReference(){
   const files=window.__looxFluxReferences?.()||[];
   if(!files.length)return null;
-  if(modelField.value!=='flux')throw Error('Reference images currently work with FLUX.1 Schnell only.');
-  if(!state.config?.local?.referenceAvailable)throw Error('Your Windows ComfyUI worker is running an older version or is offline. Update loox-worker.py from GitHub and restart your PC worker, then refresh this page. No credits used.');
+  if(!['flux','flux2_klein_local_edit'].includes(modelField.value))throw Error('Choose FLUX.1 Schnell or FLUX.2 Klein Image Edit to use a reference image.');
+  if(modelField.value==='flux'&&!state.config?.local?.referenceAvailable)throw Error('Your Windows ComfyUI worker needs the FLUX.1 reference workflow. No credits used.');
+  if(modelField.value==='flux2_klein_local_edit'&&!availableModels.has('flux2_klein_local_edit'))throw Error('FLUX.2 Klein is offline. Start the updated LOOX GPU worker. No credits used.');
   if(!byId('lig-reference-permission')?.checked)throw Error('Confirm that you have permission to use all selected reference images.');
   if(files.length>12)throw Error('A maximum of 12 reference images can be processed in one generation.');
+  if(modelField.value==='flux2_klein_local_edit'&&files.length!==1)throw Error('This FLUX.2 Klein Image Edit workflow accepts exactly one reference image for now.');
+  if(modelField.value==='flux2_klein_local_edit'){
+   const file=files[0];
+   if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000)throw Error('Choose a PNG, JPG or WebP reference under 2.4 MB.');
+   const bitmap=await createImageBitmap(file);
+   try{
+    if(bitmap.width*bitmap.height>4000000)throw Error('The reference image exceeds 4 megapixels.');
+    const scale=Math.min(1,1024/Math.max(bitmap.width,bitmap.height));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(64,Math.round(bitmap.width*scale));canvas.height=Math.max(64,Math.round(bitmap.height*scale));
+    const ctx=canvas.getContext('2d');if(!ctx)throw Error('Could not prepare the reference image.');
+    ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);
+    const uri=canvas.toDataURL('image/jpeg',.86);
+    if(uri.length>3200040)throw Error('Reference image is too large.');
+    return {reference_image:uri,reference_strength:0.45,permission:true};
+   }finally{bitmap.close();}
+  }
   // Native FLUX Schnell img2img has a single VAE image input, not independent
   // reference encoders. Assemble a readable contact sheet rather than
   // pretending all files are supplied to distinct model conditioning slots.
@@ -359,8 +377,8 @@ async function initWorkspace(){
   return {reference_image:uri,reference_strength:0.45,permission:true};
  }
  function syncReferenceUI(){
-  const isFlux=modelField.value==='flux',button=byId('lig-reference-quick-add'),tray=byId('lig-reference-tray');
-  if(button){button.hidden=!isFlux;button.title=state.config?.local?.referenceAvailable?'Add reference images':'Update PC worker for FLUX image-to-image';}
+  const isFlux=['flux','flux2_klein_local_edit'].includes(modelField.value),button=byId('lig-reference-quick-add'),tray=byId('lig-reference-tray');
+  if(button){button.hidden=!isFlux;button.title=modelField.value==='flux2_klein_local_edit'?'Add one reference picture for FLUX.2 Klein Image Edit':state.config?.local?.referenceAvailable?'Add reference images':'Update PC worker for FLUX image-to-image';}
   const input=byId('lig-reference-image');if(input)input.disabled=!isFlux;
   if(tray)tray.style.display=isFlux?'':'none';
  }
@@ -610,7 +628,7 @@ async function initWorkspace(){
 
   const modelCost=modelId==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(availableModels.get(modelId)?.cost||Infinity);
   if(modelId!=='flux'&&!availableModels.has(modelId)){setMessage(modelStatus(modelId).reason,true);return;}
-  if(modelId!=='flux'&&modelId!=='z_image_turbo'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
+  if(modelId!=='flux'&&modelId!=='z_image_turbo'&&modelId!=='flux2_klein_local_edit'&&!['pro','lifetime'].includes(state.account?.plan)){pricing();setMessage('Choose a LOOX plan to use premium models.',true);return;}
   if(!resumeId&&state.account?.wallet?.balance<modelCost){
    pricing();setMessage('You need more AI credits to generate this image.',true);return;
   }
@@ -619,13 +637,15 @@ async function initWorkspace(){
   isBusy=true;generateButton.disabled=true;ratioField.disabled=true;modelField.disabled=true;
   let view=null;
   try{
-   const reference=!resumeId&&modelId==='flux'?await prepareFluxReference():null;
-   const settings=modelId==='flux'?(reference?{reference:'Image-to-image',reference_similarity:Math.round(reference.reference_strength*100)+'%'}:{}):Object.fromEntries(Object.entries(settingFields).filter(([,f])=>!f.block.hidden).map(([key,f])=>[key,f.select.value]));
+   const reference=!resumeId&&['flux','flux2_klein_local_edit'].includes(modelId)?await prepareFluxReference():null;
+   if(modelId==='flux2_klein_local_edit'&&!resumeId&&!reference)throw Error('Upload one reference image to use FLUX.2 Klein Image Edit.');
+   const settings=['flux','flux2_klein_local_edit'].includes(modelId)?(reference?{reference:'Image-to-image',reference_similarity:Math.round(reference.reference_strength*100)+'%'}:{}):Object.fromEntries(Object.entries(settingFields).filter(([,f])=>!f.block.hidden).map(([key,f])=>[key,f.select.value]));
    const entry=await sessions.begin({prompt,ratio,model_id:modelId,model_name:modelId==='flux'?'FLUX.1 Schnell':allModels.get(modelId)?.name||'AI image',media_type:'image',settings});
    const follow=sessions.nearBottom();
    view=outputCard(prompt,ratio,entry.model_name);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
-   const id=resumeId||(await api(modelId==='flux'?'job':'cloud_job',{
-    ...(modelId==='flux'?{operation:'generate'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(modelId==='flux'?(reference||{}):{settings}),...(seed==null?{}:{seed})
+   const isLocal=['flux','flux2_klein_local_edit'].includes(modelId);
+   const id=resumeId||(await api(isLocal?'job':'cloud_job',{
+    ...(isLocal?{operation:modelId==='flux'?'generate':'generate_flux2_klein_edit'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(isLocal?(reference||{}):{settings}),...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
    if(promptField.value.trim()===prompt)promptField.value='';
