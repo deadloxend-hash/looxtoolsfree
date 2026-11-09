@@ -112,6 +112,11 @@ if(page==='community.html'){
    promptPanel.hidden=!promptPanel.hidden;
    promptButton.textContent=promptPanel.hidden?'View prompt':'Hide prompt';
    promptButton.setAttribute('aria-expanded',String(!promptPanel.hidden));
+   if(!promptPanel.hidden)requestAnimationFrame(()=>{
+    const text=promptPanel.querySelector('.loox-mobile-feed-prompt-text');
+    const expand=promptPanel.querySelector('.loox-mobile-feed-expand');
+    if(text&&expand&&!text.classList.contains('is-expanded'))expand.hidden=text.scrollHeight<=text.clientHeight+2;
+   });
   };
   menuButton('View profile',()=>location.assign(profileHref));
   menuButton('Copy post link',copyPost);
@@ -152,7 +157,16 @@ if(page==='community.html'){
   if(post.caption){
    const caption=element('p','loox-mobile-feed-caption');
    caption.append(element('strong','',post.username||post.display_name||'LOOX creator'),document.createTextNode(' '+post.caption));
-   info.append(caption);
+   const moreCaption=action('more',()=>{
+    const expanded=caption.classList.toggle('is-expanded');
+    moreCaption.textContent=expanded?'less':'more';
+    moreCaption.setAttribute('aria-expanded',String(expanded));
+   },'loox-mobile-feed-caption-more',fail);
+   moreCaption.hidden=true;moreCaption.setAttribute('aria-expanded','false');
+   info.append(caption,moreCaption);
+   requestAnimationFrame(()=>{
+    if(caption.isConnected)moreCaption.hidden=caption.scrollHeight<=caption.clientHeight+2;
+   });
   }
   const meta=element('div','loox-mobile-feed-meta');
   const commentsLink=action((Number(post.comments)||0)?'View all '+post.comments+' comments':'Add a comment',openComments,'loox-mobile-feed-comments',fail);
@@ -173,7 +187,6 @@ if(page==='community.html'){
    promptControls.append(action('Copy prompt',copyPrompt,'loox-mobile-feed-pill',fail));
    if(post.allow_remix!==false)promptControls.append(action('Recreate',()=>launch(post,self),'loox-mobile-feed-pill loox-mobile-feed-recreate',fail));
    promptPanel.append(promptText,expand,promptControls);
-   promptPanel.addEventListener('transitionend',()=>{}, {once:true});
   }else{
    promptBar.append(element('span','loox-mobile-feed-private','Prompt private'));
   }
