@@ -1747,3 +1747,18 @@ body.loox-community-photo-wall .loox-mobile-feed-info{display:none}
 @media(max-width:700px) and (prefers-reduced-motion:reduce){
  body.loox-community-photo-wall #community-root .loox-mobile-feed-action{transition:none!important}
 }
+
+/* Mobile feed caption expansion; only visible when text exceeds two lines. */
+@media(max-width:700px){
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-caption.is-expanded{
+  display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-caption-more{
+  align-self:flex-start!important;background:none!important;border:0!important;
+  padding:0!important;margin:-3px 0 0!important;min-height:22px!important;
+  color:#ac9cb9!important;font:600 12px/1.4 Inter,system-ui,sans-serif!important;
+  cursor:pointer!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-caption-more[hidden],
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-expand[hidden]{display:none!important}
+}
