@@ -10,6 +10,9 @@
  // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.
  // AI Audio currently links to the Audio-filtered tools listing, not an audio generator.
  const hasSessionHistory=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page);
+ // Six AI navigation tabs must start with a closed sidebar on every visit,
+ // whether opened by refresh, a tab switch, or a desktop breakpoint change.
+ const closedByDefaultTabs=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html','community.html','trending.html','templates.html'].includes(page);
  if(hasSessionHistory)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
@@ -190,9 +193,13 @@
  const closeDrawer=()=>setDrawer(false);
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
- // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
-  desktop.addEventListener('change',()=>setDrawer(!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome)));
- setDrawer(!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
+ // Every AI tab starts collapsed; the user can always open it manually.
+ // Do not automatically expand these six tabs when switching desktop/mobile.
+ desktop.addEventListener('change',()=>{
+  if(closedByDefaultTabs)setDrawer(false);
+  else setDrawer(!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
+ });
+ setDrawer(!closedByDefaultTabs&&!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
  scrim.addEventListener('click',closeDrawer);
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only
