@@ -1869,3 +1869,22 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox
   transition:none!important;
  }
 }
+
+/* AI Chat: desktop LOOX navigation docks alongside the workspace instead
+   of covering the conversation. Keep mobile as an overlay. */
+@media(min-width:901px){
+ body.ai-chat.loox-sitewide-active > main.ai-chat-stage{
+  box-sizing:border-box!important;
+  padding-left:0!important;
+  transition:padding-left .3s cubic-bezier(.2,.83,.23,1)!important;
+ }
+ body.ai-chat.loox-sitewide-active.loox-sitewide-sidebar-open > main.ai-chat-stage{
+  padding-left:252px!important;
+ }
+ body.ai-chat.loox-sitewide-active.loox-sitewide-sidebar-open > aside#loox-sitewide-drawer{
+  box-shadow:none!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.ai-chat.loox-sitewide-active > main.ai-chat-stage{transition:none!important}
+}
