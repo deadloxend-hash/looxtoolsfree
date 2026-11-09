@@ -277,3 +277,66 @@ body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat{
 body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat:hover{
  background:#41324d!important;color:#fff!important;
 }
+
+/* V12: SINGLE AUTHORITATIVE SIDEBAR STYLE.
+   This stylesheet loads after sitewide CSS on every AI tab. No different
+   type scale or active rows when there are zero versus many sessions. */
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-list>.loox-workspace-navigation{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ flex:0 0 auto!important;gap:3px!important;min-width:0!important;width:100%!important;
+ margin:0!important;padding:10px 12px 12px!important;box-sizing:border-box!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link{
+ display:flex!important;flex:0 0 auto!important;align-items:center!important;
+ box-sizing:border-box!important;width:100%!important;
+ height:38px!important;min-height:38px!important;max-height:38px!important;
+ margin:0!important;padding:0 11px!important;gap:10px!important;
+ border:0!important;border-radius:9px!important;
+ background:transparent!important;box-shadow:none!important;
+ color:#dcd4e5!important;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif!important;
+ font-size:12px!important;font-weight:500!important;line-height:1.35!important;
+ letter-spacing:0!important;text-decoration:none!important;transform:none!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:hover:not([aria-current="page"]),
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:active:not([aria-current="page"]){
+ background:transparent!important;color:#f7f1fc!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:focus-visible:not([aria-current="page"]){
+ background:#211b2b!important;outline:1px solid #70568a!important;outline-offset:-1px!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link[aria-current="page"],
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link[aria-current="page"]:hover{
+ background:#34263f!important;color:#fff!important;font-weight:600!important;
+ border-radius:9px!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon{
+ display:grid!important;place-items:center!important;flex:0 0 18px!important;
+ width:18px!important;min-width:18px!important;height:18px!important;color:#b9a7ca!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon svg{
+ width:17px!important;height:17px!important;display:block!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-label{
+ flex:1 1 auto!important;min-width:0!important;white-space:nowrap!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;font:inherit!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-group{
+ margin:9px 0 0!important;padding:8px 0 0!important;border-top:1px solid #382c40!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-group>summary{
+ display:flex!important;align-items:center!important;
+ height:38px!important;min-height:38px!important;
+ padding:0 11px!important;font:500 12px/1.35 Inter,system-ui,sans-serif!important;
+ border-radius:9px!important;color:#c7b7d3!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-group>summary:hover{
+ background:transparent!important;color:#f7f1fc!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-creative-tools-title{
+ margin-top:6px!important;padding:0 11px!important;
+ border-radius:9px!important;border-top:0!important;
+ font-size:12px!important;font-weight:550!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-creative-links>a.loox-workspace-link{
+ padding-left:17px!important;
+}
