@@ -1347,3 +1347,58 @@ body .community-dialog.community-viewer[open] .community-viewer-stage{
  overflow:visible!important;
  touch-action:pan-y!important;
 }
+
+/* V20 — Community mobile photo wall: compact three-column natural-ratio masonry.
+   Intentionally scoped to Community on phones; desktop, Trending, profile and post viewer stay unchanged. */
+@media(max-width:700px){
+ body.loox-community-photo-wall #community-root.loox-community{
+  padding-left:5px!important;padding-right:5px!important;
+  max-width:100%!important;
+ }
+ body.loox-community-photo-wall #community-root .community-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+  column-count:auto!important;
+  width:100%!important;
+  align-items:start!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-masonry-column{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  min-width:0!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-masonry-column>.community-card{
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:13px!important;
+  overflow:hidden!important;
+  background:#141018!important;
+  box-shadow:none!important;
+ }
+ body.loox-community-photo-wall #community-root .community-card-art,
+ body.loox-community-photo-wall #community-root .community-card-art .community-media{
+  border-radius:13px!important;
+  overflow:hidden!important;
+ }
+ body.loox-community-photo-wall #community-root .community-card-art .community-media.loox-media-ready img,
+ body.loox-community-photo-wall #community-root .community-card-art .community-media.loox-media-ready video{
+  object-fit:cover!important;
+ }
+ body.loox-community-photo-wall #community-root .community-card-body{
+  display:none!important;
+ }
+ body.loox-community-photo-wall #community-root .community-card-hover{
+  opacity:0!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+ }
+ body.loox-community-photo-wall #community-root .community-media:focus-visible{
+  outline:2px solid #cda1f4!important;
+  outline-offset:-2px!important;
+ }
+}
