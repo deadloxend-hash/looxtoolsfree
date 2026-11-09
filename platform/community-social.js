@@ -287,14 +287,14 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
    const fresh=result(await this.state.client.from('loox_community_posts').select('id').eq('id',post.id).maybeSingle());if(!fresh)throw Error('This post is no longer public.');
-   const d=modal(post.caption||'Creation');d.classList.add('community-viewer');const status=e('p','community-note'),stage=e('div','community-viewer-stage'),panel=e('section','community-viewer-info'),media=e(post.media_type==='video'?'video':'img');media.className='community-detail-media';
+   const d=modal('');d.classList.add('community-viewer');d.setAttribute('aria-label','Community post');d.querySelector('.community-dialog-head h2')?.remove();const status=e('p','community-note'),stage=e('div','community-viewer-stage'),panel=e('section','community-viewer-info'),media=e(post.media_type==='video'?'video':'img');media.className='community-detail-media';
    const controls=e('div','community-viewer-controls');const fail=err=>status.textContent=err.message;
    media.src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});if(post.media_type==='video'){media.controls=true;media.playsInline=true;media.preload='metadata';trackMeaningfulView(media,post,this.state,count=>status.textContent=count+' views');}else{media.alt=post.caption;media.tabIndex=0;media.title='Click to zoom';const zoom=()=>media.classList.toggle('is-zoomed');media.addEventListener('click',zoom);media.addEventListener('keydown',event=>{if(event.key==='Enter')zoom();});}
    controls.append(a('Full screen',()=>stage.requestFullscreen?.(),'community-button',fail));const index=this.posts?.findIndex(p=>p.id===post.id)??-1;
    const next=delta=>{const p=this.posts?.[index+delta];if(p){d.close();return this.details(p);}};
    if(index>0)controls.append(a('← Previous',()=>next(-1),'community-button',fail));if(index>=0&&index<this.posts.length-1)controls.append(a('Next →',()=>next(1),'community-button',fail));
    let touchX;stage.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});stage.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>80&&!media.classList.contains('is-zoomed'))Promise.resolve(next(delta<0?1:-1)).catch(fail);},{passive:true});
-   d.addEventListener('close',()=>{if(post.media_type==='video'){media.pause();media.removeAttribute('src');media.load();}});stage.append(media,controls);
+   d.addEventListener('close',()=>{if(post.media_type==='video'){media.pause();media.removeAttribute('src');media.load();}});stage.append(media);
    const creator=e('a','community-creator loox-social-creator');
    creator.href='creator.html?id='+encodeURIComponent(post.creator_id);
    creator.setAttribute('aria-label','Open '+(post.display_name||post.username)+' profile');
@@ -323,7 +323,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     follow.setAttribute('aria-pressed',String(followed));
     creatorRow.append(follow);
    }
-   panel.append(creatorRow,e('p','community-bio',post.caption),
+   panel.append(creatorRow,
     e('p','community-note',new Date(post.created_at).toLocaleString()),
     e('p','community-model',this.modelName(post.model_id)),
     ...(post.media_type==='video'?[e('p','community-note',(post.view_count||0)+' views')]:[]));
@@ -373,8 +373,24 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     d.close();await this.load(true);
    },'loox-social-edit'));
    else actions.append(icon('report','Report post',()=>this.report(post)));
-   stage.append(actions);
-   if(post.shared_prompt){panel.append(e('h3','','Prompt'),e('p','community-shared-prompt',post.shared_prompt));const promptActions=e('div','loox-social-prompt-actions');panel.append(promptActions);promptActions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',fail));
+   const viewerToolbar=e('div','loox-social-viewer-toolbar');viewerToolbar.append(actions,controls);stage.append(viewerToolbar);
+   if(post.shared_prompt){
+    const promptText=e('p','community-shared-prompt loox-social-prompt-text',post.shared_prompt);
+    const promptToggle=a('Show more',()=>{
+     const expanded=promptText.classList.toggle('is-expanded');
+     promptToggle.textContent=expanded?'Show less':'Show more';
+     promptToggle.setAttribute('aria-expanded',String(expanded));
+    },'loox-social-prompt-toggle',fail);
+    promptToggle.hidden=true;promptToggle.setAttribute('aria-expanded','false');
+    panel.append(e('h3','','Prompt'),promptText,promptToggle);
+    const measurePrompt=()=>{
+     if(!promptText.isConnected||promptText.classList.contains('is-expanded'))return;
+     promptToggle.hidden=promptText.scrollHeight<=promptText.clientHeight+2;
+    };
+    requestAnimationFrame(measurePrompt);
+    window.addEventListener('resize',measurePrompt,{passive:true});
+    d.addEventListener('close',()=>window.removeEventListener('resize',measurePrompt),{once:true});
+    const promptActions=e('div','loox-social-prompt-actions');panel.append(promptActions);promptActions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',fail));
     if(post.allow_remix!==false)promptActions.append(a('Recreate',()=>{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:post.media_type==='video'?'video':'image',prompt:post.shared_prompt,operation:post.model_id,model:(this.state.config?.models?.find(m=>m.operation===post.model_id)||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)}));location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');},'community-primary',fail));
    }else panel.append(e('p','community-note','The creator kept this prompt private.'));
    panel.append(status);d.append(stage,panel);await this.comments(post,panel);
