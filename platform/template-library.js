@@ -48,9 +48,9 @@ root.replaceChildren(toolbar,section);
 async function categories(){const rows=result(await state.client.from('loox_template_categories').select('name').order('name'));categoryOptions=rows.map(t=>t.name);if(cat.value&&!categoryOptions.includes(cat.value)){cat.value='';category='';catButton.textContent='All categories⌄';}}
 async function loadStyles(){const rows=result(await state.client.from('loox_template_styles').select('name').order('name'));styleOptions=rows.map(t=>t.name);for(const name of [...selectedStyles])if(!styleOptions.includes(name))selectedStyles.delete(name);updateStyleButton();}
 let debounce;search.oninput=()=>{clearTimeout(debounce);debounce=setTimeout(()=>{query=search.value.trim();load(true)},220);};
-function media(t){const box=e('div','loox-gallery-media');if(t.media_path){const m=document.createElement(t.kind==='video'?'video':'img');m.dataset.pending='true';fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({action:'public_media',type:'template',id:t.id,variant:'preview'}),{credentials:'omit'}).then(r=>r.json().then(data=>{if(!r.ok)throw Error(data.error||'Template unavailable.');return data;})).then(data=>{if(m.isConnected)m.src=data.url}).catch(()=>{if(m.isConnected)m.replaceWith(e('span','community-note','Preview unavailable'));});if(t.kind==='video'){m.muted=true;m.loop=true;m.playsInline=true;m.preload='metadata';m.onmouseenter=()=>m.play().catch(()=>{});m.onmouseleave=()=>m.pause();}else{m.loading='lazy';m.decoding='async';m.alt=t.title;}box.append(m);}return box;}
+function media(t,full=false){const box=e('div','loox-gallery-media');if(t.media_path){const m=document.createElement(t.kind==='video'?'video':'img');m.dataset.pending='true';fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({action:'public_media',type:'template',id:t.id,variant:full?'original':'preview'}),{credentials:'omit'}).then(r=>r.json().then(data=>{if(!r.ok)throw Error(data.error||'Template unavailable.');return data;})).then(data=>{if(m.isConnected)m.src=data.url}).catch(()=>{if(m.isConnected)m.replaceWith(e('span','community-note','Preview unavailable'));});if(t.kind==='video'){m.muted=true;m.loop=true;m.playsInline=true;m.preload='metadata';m.onmouseenter=()=>m.play().catch(()=>{});m.onmouseleave=()=>m.pause();}else{m.loading='lazy';m.decoding='async';m.alt=t.title;}box.append(m);}return box;}
 function launch(t){sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:t.kind,prompt:t.prompt,model:t.model_id,settings:t.settings,reference_path:t.kind==='image'?t.media_path:null,reference_id:t.kind==='image'?t.id:null}));if(state.user)rpc(state,'loox_launch_template',{p_template:t.id}).catch(()=>{});location.assign(t.kind==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');}
-function details(t){const overlay=e('div','loox-template-overlay'),panel=e('div','loox-template-detail'),back=a('← Back',()=>overlay.remove(),'loox-gallery-chip'),visual=media(t),info=e('div','loox-template-info'),h=e('h2','',t.title),meta=e('p','',t.category+' · '+(t.styles?.length?t.styles.join(', '):(t.style||'No style'))+' · '+t.kind),description=e('p','',t.description||''),prompt=e('p','loox-template-prompt',t.prompt),copy=a('Copy prompt',()=>navigator.clipboard.writeText(t.prompt).catch(()=>{}),'loox-gallery-chip'),recreate=a('Recreate this',()=>launch(t),'loox-recreate');info.append(h,meta,description,prompt,copy,recreate);panel.append(back,visual,info);overlay.append(panel);overlay.onclick=ev=>{if(ev.target===overlay)overlay.remove()};document.body.append(overlay);}
+function details(t){const overlay=e('div','loox-template-overlay'),panel=e('div','loox-template-detail'),back=a('← Back',()=>overlay.remove(),'loox-gallery-chip'),visual=media(t,true),info=e('div','loox-template-info'),h=e('h2','',t.title),meta=e('p','',t.category+' · '+(t.styles?.length?t.styles.join(', '):(t.style||'No style'))+' · '+t.kind),description=e('p','',t.description||''),prompt=e('p','loox-template-prompt',t.prompt),copy=a('Copy prompt',()=>navigator.clipboard.writeText(t.prompt).catch(()=>{}),'loox-gallery-chip'),recreate=a('Recreate this',()=>launch(t),'loox-recreate');info.append(h,meta,description,prompt,copy,recreate);panel.append(back,visual,info);overlay.append(panel);overlay.onclick=ev=>{if(ev.target===overlay)overlay.remove()};document.body.append(overlay);}
 function card(t){
  const card=e('article','loox-gallery-card'),art=media(t),caption=e('div','loox-gallery-caption'),
  h=e('h3','',t.title),meta=e('small','',t.category),btn=a('Recreate this',()=>details(t),'loox-recreate');
@@ -68,10 +68,28 @@ function card(t){
  card.onkeydown=ev=>{if(ev.target===card&&(ev.key==='Enter'||ev.key===' ')){ev.preventDefault();details(t);}};
  return card;
 }
+// Explicit columns prevent CSS multicol balancing from leaving the right side empty.
+let masonryColumns=0;
+function columnCount(){return matchMedia('(max-width:700px)').matches?2:matchMedia('(max-width:1100px)').matches?3:5;}
+function renderMasonry(){
+ const count=columnCount();
+ const cards=[...grid.querySelectorAll('.loox-gallery-card')];
+ const cols=Array.from({length:count},()=>e('div','loox-gallery-masonry-column'));
+ // Preserve DOM image elements and their cached image URLs across resize.
+ for(const [index,item] of cards.entries())cols[index%count].append(item);
+ grid.replaceChildren(...cols);masonryColumns=count;
+}
+window.addEventListener('resize',()=>{
+ if(masonryColumns&&masonryColumns!==columnCount())renderMasonry();
+});
 async function load(reset){const turn=++epoch;if(reset){offset=0;grid.replaceChildren();}notice.textContent='Loading templates…';more.hidden=true;try{if(kind==='saved'&&!state.user){notice.textContent='Sign in to view saved templates.';return;}
 let q=state.client.from('loox_template_catalog').select('id,title,description,prompt,kind,category,style,styles,model_id,settings,media_path').eq('active',true).not('media_path','is',null).order('created_at',{ascending:false});
 if(kind!=='saved')q=q.eq('kind',kind);
 if(category)q=q.eq('category',category);if(selectedStyles.size)q=q.overlaps('styles',[...selectedStyles]);if(query)q=q.ilike('title','%'+query.replace(/[\\%_]/g,'')+'%');
 if(kind==='saved'){const saved=result(await state.client.from('loox_saved_templates').select('template_id').eq('user_id',state.user.id).limit(500));if(!saved.length){notice.textContent='No saved templates yet.';return;}q=q.in('id',saved.map(x=>x.template_id));}
-const rows=result(await q.range(offset,offset+19));if(turn!==epoch)return;for(const t of rows)grid.append(card(t));offset+=rows.length;more.hidden=rows.length<20;notice.textContent=grid.children.length?'':'No templates yet. New creations will appear here soon.';}catch(err){if(turn===epoch)notice.textContent=err.message;}}
+const rows=result(await q.range(offset,offset+19));if(turn!==epoch)return;
+ for(const t of rows)grid.append(card(t));
+ offset+=rows.length;more.hidden=rows.length<20;
+ notice.textContent=grid.querySelector('.loox-gallery-card')?'':'No templates yet. New creations will appear here soon.';
+ renderMasonry();}catch(err){if(turn===epoch)notice.textContent=err.message;}}
 await initialize({publicAccess:true});await Promise.all([categories(),loadStyles()]).catch(err=>notice.textContent=err.message);await load(true);document.addEventListener('loox-user',()=>load(true));
