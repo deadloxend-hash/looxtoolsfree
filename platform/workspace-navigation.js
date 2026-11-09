@@ -28,14 +28,15 @@ export function mountWorkspaceNavigation(host){
  if(!host||host.querySelector('.loox-workspace-navigation'))return;
  const nav=document.createElement('nav');nav.className='loox-workspace-navigation';nav.setAttribute('aria-label','LOOX AI workspace navigation');
  const active=new URL(location.href);
+ const siteRoot=new URL('../',import.meta.url);
  function add(parent,kind,label,href,external=false){
-  const link=document.createElement('a');link.href=href;link.className='loox-workspace-link';
+  const link=document.createElement('a');link.href=new URL(href,siteRoot).href;link.className='loox-workspace-link';
   if(external){link.target='_blank';link.rel='noopener noreferrer';}
   const ico=document.createElement('span');ico.className='loox-workspace-icon';ico.innerHTML=workspaceIcon(kind);
   const text=document.createElement('span');text.className='loox-workspace-label';text.textContent=label;link.append(ico,text);
   if(external){const outgoing=document.createElement('span');outgoing.className='loox-workspace-external';outgoing.innerHTML=workspaceIcon('external');link.append(outgoing);}
-  const target=new URL(href,location.href);
-  if(target.pathname===active.pathname&&target.search===active.search&&(!target.hash||target.hash===active.hash))link.setAttribute('aria-current','page');
+  const target=new URL(href,siteRoot);
+  if(target.pathname===active.pathname&&target.search===active.search&&(!target.hash||!active.hash||target.hash===active.hash))link.setAttribute('aria-current','page');
   parent.append(link);return link;
  }
  const primary=[
