@@ -2328,3 +2328,74 @@ body.loox-apps-open{overflow:hidden!important}
   min-width:40px!important;min-height:40px!important;margin:0!important;
  }
 }
+
+/* V96: single home-style mobile header for AI generation, Trending and Templates. */
+@media(max-width:790px){
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header{
+  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+  box-sizing:border-box!important;width:100%!important;
+  height:64px!important;min-height:64px!important;max-height:64px!important;
+  padding:8px 12px!important;gap:8px!important;
+  background:#101018!important;border-bottom:1px solid #292335!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .lig-head-start{
+  order:0!important;flex:0 1 auto!important;min-width:0!important;
+  margin:0 auto 0 0!important;justify-self:auto!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .lig-page-name{
+  display:none!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .loox-workspace-brand,
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .loox-workspace-wordmark{
+  overflow:visible!important;min-width:max-content!important;
+  padding-right:5px!important;letter-spacing:-.055em!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .loox-chat-header-search,
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .loox-mobile-app-native-trigger{
+  box-sizing:border-box!important;display:grid!important;place-items:center!important;
+  position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+  order:1!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important;
+  height:38px!important;min-height:38px!important;
+  margin:0!important;padding:0!important;
+  border:1px solid #715183!important;border-radius:12px!important;
+  background:#23192e!important;color:#e6c8ff!important;
+  transform:none!important;cursor:pointer!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .loox-chat-header-search svg{
+  width:19px!important;height:19px!important;display:block!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .loox-mobile-app-native-trigger{order:2!important}
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .lig-header-user[data-loox-account]{
+  display:flex!important;visibility:visible!important;opacity:1!important;
+  order:3!important;position:relative!important;
+  top:auto!important;left:auto!important;right:auto!important;
+  transform:none!important;flex:0 0 auto!important;
+  align-items:center!important;justify-content:center!important;
+  width:auto!important;min-width:0!important;max-width:none!important;
+  height:40px!important;min-height:40px!important;
+  margin:0!important;padding:0!important;gap:0!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .lig-header-user .lx-credit-chip,
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .lig-header-user .lx-credit-bundle,
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .lig-header-user .lx-upgrade{
+  display:none!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header .lig-header-user .lx-profile-trigger{
+  display:grid!important;place-items:center!important;
+  width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;
+  margin:0!important;
+ }
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .loox-ai-workspace-tabs,
+ body.loox-generator-no-topnav:is(.lig-body,.community-page):not(.ai-chat) > header.lig-header > .lig-head-tabs{
+  display:none!important;
+ }
+ body.loox-creative-landing #loox-sitewide-header .loox-sitewide-inner{
+  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+ }
+ body.loox-creative-landing #loox-sitewide-header .loox-sitewide-logo-wrap{margin-right:auto!important}
+ body.loox-creative-landing #loox-sitewide-header .loox-sitewide-search{
+  order:6!important;margin-left:0!important;
+ }
+ body.loox-creative-landing #loox-sitewide-header .loox-mobile-app-trigger{order:7!important;margin:0!important}
+ body.loox-creative-landing #loox-sitewide-header .loox-sitewide-account{order:8!important;margin:0!important}
+}
