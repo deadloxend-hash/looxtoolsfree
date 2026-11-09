@@ -22,6 +22,74 @@ if(discoveryPage){
 if(page==='trending.html'){
  community.sort='trending';root.querySelector('h1').textContent='Trending';root.querySelector('.community-heading p').textContent='Stay ahead with the newest trending templates.';root.querySelector('[aria-label="Sort community"]').value='trending';
 }
+// Replace browser-native select menus only on discovery pages. Reuse the
+// original select's change event so all existing backend filters keep working.
+if(discoveryPage){
+ const selects=[...root.querySelectorAll('.community-filters select')];
+ const menu=element('div','loox-discovery-select-menu');
+ menu.hidden=true;menu.setAttribute('role','listbox');
+ document.body.append(menu);
+ let active=null;
+ const close=()=>{
+  menu.hidden=true;
+  if(active)active.setAttribute('aria-expanded','false');
+  active=null;
+ };
+ const place=button=>{
+  const rect=button.getBoundingClientRect();
+  menu.style.width='max-content';
+  menu.style.minWidth=Math.ceil(rect.width)+'px';
+  menu.style.maxWidth=Math.min(218,window.innerWidth-20)+'px';
+  menu.hidden=false;
+  const bounds=menu.getBoundingClientRect();
+  menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-bounds.width-10))+'px';
+  menu.style.top=(rect.bottom+6+bounds.height>innerHeight-8
+   ? Math.max(8,rect.top-bounds.height-6):rect.bottom+6)+'px';
+ };
+ for(const select of selects){
+  const wrap=element('span','loox-discovery-select-wrap');
+  const button=element('button','loox-discovery-select-trigger');
+  button.type='button';button.setAttribute('aria-haspopup','listbox');
+  button.setAttribute('aria-expanded','false');
+  button.setAttribute('aria-label',select.getAttribute('aria-label')||'Select filter');
+  const sync=()=>{button.textContent=select.selectedOptions[0]?.textContent||'Select';};
+  sync();
+  select.addEventListener('change',sync);
+  select.parentNode.insertBefore(wrap,select);
+  wrap.append(select,button);
+  select.classList.add('loox-discovery-native-select');
+  button.onclick=()=>{
+   if(active===button){close();return;}
+   close();active=button;button.setAttribute('aria-expanded','true');menu.replaceChildren();
+   for(const option of select.options){
+    const item=element('button','loox-discovery-select-option',option.textContent);
+    item.type='button';item.setAttribute('role','option');
+    item.setAttribute('aria-selected',String(option.value===select.value));
+    item.onclick=()=>{
+     select.value=option.value;
+     select.dispatchEvent(new Event('change',{bubbles:true}));
+     sync();close();button.focus();
+    };
+    menu.append(item);
+   }
+   place(button);
+  };
+ }
+ document.addEventListener('pointerdown',ev=>{
+  if(active&&!menu.contains(ev.target)&&ev.target!==active)close();
+ });
+ document.addEventListener('keydown',ev=>{
+  if(ev.key==='Escape'&&active){close();return;}
+  if(ev.key==='ArrowDown'&&active&&document.activeElement===active){
+   ev.preventDefault();menu.querySelector('button')?.focus();
+  }
+ });
+ // Unlike the former template bug, an internal scroll is NOT a page scroll.
+ window.addEventListener('scroll',ev=>{
+  if(active&&ev.target!==menu&&!menu.contains(ev.target))close();
+ },true);
+ window.addEventListener('resize',close);
+}
 await community.show();
 if(page==='collections.html'&&!new URLSearchParams(location.search).get('id')){
  root.querySelector('h1').textContent='Collections';root.querySelector('.community-heading p').textContent='Keep your favorite ideas together. Collections start private.';community.grid.replaceChildren();community.more.hidden=true;
