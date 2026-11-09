@@ -2,9 +2,11 @@ import {state,auth,initialize} from './account.js?v=9';
 import {element as e,action as a,result,rpc} from './community.js?v=4';
 const root=document.getElementById('template-library'),workflow=location.pathname.endsWith('workflows.html');
 let kind='image',category='',query='',offset=0,epoch=0;const selectedStyles=new Set();
-const heading=e('div','loox-gallery-heading'),title=e('h1','',workflow?'Workflow starters':'Explore Templates'),subtitle=e('p','','Explore original LOOX creations. Choose a template to reuse its prompt in the AI generator.');
-heading.append(title,subtitle);
-const search=e('input','loox-gallery-search');search.type='search';search.placeholder='Search templates...';search.setAttribute('aria-label','Search templates');
+const search=e('input','loox-gallery-search');search.type='search';search.placeholder='Search Templates';search.setAttribute('aria-label','Search Templates');
+const searchWrap=e('div','loox-gallery-search-wrap');
+const searchIcon=e('span','loox-gallery-search-icon');searchIcon.setAttribute('aria-hidden','true');
+searchIcon.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.4 4.4"/></svg>';
+searchWrap.append(searchIcon,search);
 const filters=e('div','loox-gallery-filters'),types=e('div','loox-gallery-types');
 for(const [label,value] of [['Image','image'],['Video','video'],['Saved','saved']]){const b=a(label,()=>{kind=value;offset=0;updateTypes();load(true)},'loox-gallery-chip');b.dataset.type=value;types.append(b);}
 function updateTypes(){types.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.type===kind)));}
@@ -40,8 +42,9 @@ document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeMenu();});
 window.addEventListener('scroll',closeMenu,true);window.addEventListener('resize',closeMenu);
 const reset=a('Clear filters',()=>{cat.value='';selectedStyles.clear();search.value='';category='';query='';catButton.textContent='All categories⌄';updateStyleButton();closeMenu();load(true)},'loox-gallery-chip');
 filters.append(types,catButton,styleButton,reset);
-const section=e('div','loox-gallery-section'),label=e('h2','','Discover creations'),grid=e('div','loox-gallery-grid'),notice=e('p','community-note'),more=a('Load more',()=>load(false),'community-more',err=>notice.textContent=err.message);section.append(label,grid,notice,more);
-root.replaceChildren(search,filters,heading,section);
+const section=e('div','loox-gallery-section'),grid=e('div','loox-gallery-grid'),notice=e('p','community-note'),more=a('Load more',()=>load(false),'community-more',err=>notice.textContent=err.message);section.append(grid,notice,more);
+const toolbar=e('div','loox-gallery-toolbar');toolbar.append(searchWrap,filters);
+root.replaceChildren(toolbar,section);
 async function categories(){const rows=result(await state.client.from('loox_template_categories').select('name').order('name'));categoryOptions=rows.map(t=>t.name);if(cat.value&&!categoryOptions.includes(cat.value)){cat.value='';category='';catButton.textContent='All categories⌄';}}
 async function loadStyles(){const rows=result(await state.client.from('loox_template_styles').select('name').order('name'));styleOptions=rows.map(t=>t.name);for(const name of [...selectedStyles])if(!styleOptions.includes(name))selectedStyles.delete(name);updateStyleButton();}
 let debounce;search.oninput=()=>{clearTimeout(debounce);debounce=setTimeout(()=>{query=search.value.trim();load(true)},220);};
