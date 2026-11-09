@@ -284,3 +284,50 @@ body .loox-template-detail>.loox-gallery-media>img{
 body .loox-template-detail>.loox-gallery-media.loox-media-pending{
  min-height:180px!important;
 }
+
+/* V10 compact, content-sized Categories / Styles dropdowns. */
+#template-library .loox-dropdown-trigger{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ gap:7px!important;max-width:170px!important;min-width:0!important;
+ padding-inline:12px!important;text-align:center!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;
+}
+#template-library .loox-dropdown-trigger::after{
+ content:"";display:block;flex:0 0 6px;width:6px;height:6px;
+ border-right:1.7px solid currentColor;border-bottom:1.7px solid currentColor;
+ transform:translateY(-2px) rotate(45deg);
+ transition:transform .18s ease;
+}
+#template-library .loox-dropdown-trigger[aria-expanded="true"]::after{
+ transform:translateY(2px) rotate(225deg);
+}
+.loox-custom-menu.loox-custom-menu-compact{
+ width:max-content!important;min-width:120px!important;
+ max-width:min(244px,calc(100vw - 20px))!important;
+ max-height:min(340px,55dvh)!important;
+ padding:5px!important;border-radius:12px!important;
+ border:1px solid #654977!important;
+ background:rgba(30,22,39,.97)!important;
+ backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+ box-shadow:0 16px 35px #050208a8!important;
+}
+.loox-custom-menu.loox-custom-menu-compact .loox-custom-option{
+ width:100%!important;min-height:32px!important;max-width:100%!important;
+ padding:7px 9px!important;gap:10px!important;border-radius:8px!important;
+ font:550 12px/1.35 Inter,system-ui,sans-serif!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+.loox-custom-menu.loox-custom-menu-compact .loox-custom-option:hover{
+ background:#473157!important;
+}
+.loox-custom-menu.loox-custom-menu-compact .loox-option-check{
+ flex:0 0 12px!important;text-align:center!important;
+}
+@media(max-width:700px){
+ #template-library .loox-dropdown-trigger{
+  max-width:136px!important;padding-inline:10px!important;gap:6px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ #template-library .loox-dropdown-trigger::after{transition:none!important}
+}
