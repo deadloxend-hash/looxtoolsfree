@@ -23,8 +23,12 @@ export class MediaSessions {
   this.toggle.setAttribute('aria-label','Hide generative sessions');
   this.list=el('div','loox-session-list');this.list.id='loox-media-sessions';
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
-  const recent=el('div','loox-session-recent-label','Recent');
-  this.rail.replaceChildren(head,this.button('＋ New chat',()=>this.fresh()),recent,this.list,this.more);
+  const recent=el('div','loox-session-recent-label');
+  recent.append(el('span','','Recent'));
+  const addChat=this.button('+',()=>this.fresh());
+  addChat.className='loox-session-new-compact';addChat.title='New chat';addChat.setAttribute('aria-label','New chat');
+  recent.append(addChat);
+  this.rail.replaceChildren(recent,this.list,this.more);
   if(!this.rail.isConnected)this.root.append(this.rail);
   this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim,this.toggle);
   // New generator workspaces begin with Generative sessions expanded on every screen size.
