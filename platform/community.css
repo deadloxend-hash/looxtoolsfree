@@ -1762,3 +1762,170 @@ body.loox-community-photo-wall .loox-mobile-feed-info{display:none}
  body.loox-community-photo-wall #community-root .loox-mobile-feed-caption-more[hidden],
  body.loox-community-photo-wall #community-root .loox-mobile-feed-expand[hidden]{display:none!important}
 }
+
+/* V24 — clean Community-only mobile navigation and discovery controls. */
+body.loox-community-photo-wall .loox-community-notification,
+body.loox-community-photo-wall .loox-community-date-filter{display:none}
+@media(max-width:700px){
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header.loox-gallery-workspace-header{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+  min-height:60px!important;
+  padding:8px 12px!important;
+  overflow:visible!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-head-start{
+  order:0!important;
+  margin:0 auto 0 0!important;
+  min-width:0!important;
+  flex:0 0 auto!important;
+  justify-content:flex-start!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .loox-workspace-brand{
+  display:inline-flex!important;min-width:0!important;
+  margin:0!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .loox-workspace-wordmark{
+  font-size:27px!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .loox-community-notification{
+  display:grid!important;
+  place-items:center!important;
+  order:1!important;
+  flex:0 0 36px!important;
+  width:36px!important;height:36px!important;min-height:36px!important;
+  padding:6px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#f4eef9!important;
+  cursor:pointer!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .loox-community-notification svg{
+  width:24px!important;height:24px!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-header-user{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  order:2!important;
+  flex:0 0 auto!important;
+  width:auto!important;min-width:0!important;
+  margin:0!important;padding:0!important;
+  align-items:center!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-header-user .lx-credit-chip,
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-header-user .lx-upgrade,
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-header-user .lx-credit-bundle{
+  display:none!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-header-user .lx-profile-details{
+  display:flex!important;
+  margin:0!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .lig-header-user .lx-profile-trigger{
+  display:grid!important;
+  place-items:center!important;
+  width:36px!important;height:36px!important;
+  min-width:36px!important;
+  min-height:36px!important;
+  margin:0!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header .loox-community-mobile-menu{
+  order:3!important;
+  margin:0!important;
+  flex:0 0 auto!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-discovery-toolbar{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:7px!important;
+  padding:2px 10px 7px!important;
+  margin:0!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-discovery-search-wrap{
+  display:flex!important;
+  order:0!important;
+  flex:0 0 auto!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+ }
+ body.loox-community-photo-wall #community-root .community-search{
+  height:38px!important;
+  font-size:13px!important;
+ }
+ body.loox-community-photo-wall #community-root .community-filters{
+  display:flex!important;
+  order:1!important;
+  flex:0 0 auto!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:0 0 3px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scrollbar-width:none!important;
+ }
+ body.loox-community-photo-wall #community-root .community-filters::-webkit-scrollbar{display:none}
+ body.loox-community-photo-wall #community-root .community-filter,
+ body.loox-community-photo-wall #community-root .loox-discovery-select-trigger,
+ body.loox-community-photo-wall #community-root .loox-community-filter-trigger{
+  min-height:33px!important;
+  height:33px!important;
+  font-size:11px!important;
+  white-space:nowrap!important;
+  flex:0 0 auto!important;
+ }
+ body.loox-community-photo-wall #community-root .community-tools,
+ body.loox-community-photo-wall #community-root .loox-community-collections-button{
+  display:none!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-date-filter{
+  display:block!important;
+  position:relative!important;
+  flex:0 0 auto!important;
+  min-width:0!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-filter-trigger{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  border:1px solid #5c496a!important;
+  border-radius:999px!important;
+  padding:6px 11px!important;
+  background:#281e30!important;
+  color:#e8ddf0!important;
+  font:600 11px/1.3 system-ui!important;
+  cursor:pointer!important;
+  list-style:none!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-filter-trigger::after{
+  content:"⌄";font-size:14px;line-height:1;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-filter-trigger::-webkit-details-marker{display:none}
+ body.loox-community-photo-wall #community-root .loox-community-filter-panel{
+  position:fixed!important;
+  top:auto!important;
+  left:auto!important;
+  z-index:160!important;
+  margin-top:6px!important;
+  padding:8px!important;
+  border:1px solid #5a466a!important;
+  border-radius:12px!important;
+  background:#201727!important;
+  box-shadow:0 12px 24px #0009!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-date-filter:not([open]) .loox-community-filter-panel{
+  display:none!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-filter-panel .loox-discovery-select-trigger{
+  display:inline-flex!important;
+ }
+}
