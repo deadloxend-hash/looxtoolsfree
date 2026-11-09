@@ -289,8 +289,11 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    const fresh=result(await this.state.client.from('loox_community_posts').select('id').eq('id',post.id).maybeSingle());if(!fresh)throw Error('This post is no longer public.');
    const d=modal('');d.classList.add('community-viewer');d.setAttribute('aria-label','Community post');d.querySelector('.community-dialog-head h2')?.remove();const status=e('p','community-note'),stage=e('div','community-viewer-stage'),panel=e('section','community-viewer-info'),media=e(post.media_type==='video'?'video':'img');media.className='community-detail-media';
    const controls=e('div','community-viewer-controls');const fail=err=>status.textContent=err.message;
+   const mobileCommunity=location.pathname.split('/').pop()==='community.html'&&matchMedia('(max-width:700px)').matches&&typeof this.mobileComments==='function'&&typeof this.mobileDetails==='function';
    media.src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});if(post.media_type==='video'){media.controls=true;media.playsInline=true;media.preload='metadata';trackMeaningfulView(media,post,this.state,count=>status.textContent=count+' views');}else{media.alt=post.caption;media.tabIndex=0;media.title='Click to zoom';const zoom=()=>media.classList.toggle('is-zoomed');media.addEventListener('click',zoom);media.addEventListener('keydown',event=>{if(event.key==='Enter')zoom();});}
-   controls.append(a('Full screen',()=>stage.requestFullscreen?.(),'community-button',fail));const index=this.posts?.findIndex(p=>p.id===post.id)??-1;
+   controls.append(a('Full screen',()=>stage.requestFullscreen?.(),'community-button',fail));
+   if(mobileCommunity)controls.append(a('Details',()=>this.mobileDetails(post),'community-button loox-mobile-viewer-details',fail));
+   const index=this.posts?.findIndex(p=>p.id===post.id)??-1;
    const next=delta=>{const p=this.posts?.[index+delta];if(p){d.close();return this.details(p);}};
    if(index>0)controls.append(a('← Previous',()=>next(-1),'community-button',fail));if(index>=0&&index<this.posts.length-1)controls.append(a('Next →',()=>next(1),'community-button',fail));
    let touchX;stage.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});stage.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>80&&!media.classList.contains('is-zoomed'))Promise.resolve(next(delta<0?1:-1)).catch(fail);},{passive:true});
@@ -324,10 +327,11 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     creatorRow.append(follow);
    }
    panel.append(creatorRow,
-    e('p','community-note',new Date(post.created_at).toLocaleString()),
-    e('p','community-model',this.modelName(post.model_id)),
+    e('p','community-note loox-viewer-uploaded-at',new Date(post.created_at).toLocaleString()),
+    e('p','community-model loox-viewer-model',this.modelName(post.model_id)),
     ...(post.media_type==='video'?[e('p','community-note',(post.view_count||0)+' views')]:[]));
    const icons={
+    comment:'<path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.4-4.1A8.5 8.5 0 1 1 20 11.5Z"/>',
     heart:'<path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/>',
     save:'<path d="M5 4.5A2.5 2.5 0 0 1 7.5 2h9A2.5 2.5 0 0 1 19 4.5V22l-7-5-7 5V4.5Z"/>',
     collection:'<path d="M3 7h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M3 7V5a2 2 0 0 1 2-2h5m6 9v6m-3-3h6"/>',
@@ -347,7 +351,9 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    like.dataset.postId=post.id;this.renderLike(post,like);
    const save=icon('save','Save post',()=>this.save(post,save),'loox-viewer-save');
    save.dataset.postId=post.id;save.setAttribute('aria-pressed',String(!!post.saved));
-   actions.append(like,save,
+   actions.append(like);
+   if(mobileCommunity)actions.append(icon('comment','Open comments',async()=>{d.close();await this.mobileComments(post);},'loox-mobile-viewer-comment'));
+   actions.append(save,
     icon('collection','Add to collection',()=>this.collections(post)),
     icon('share','Share post',async()=>{
      const url=new URL('community.html?post='+post.id,location.href).href;
@@ -394,10 +400,11 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     if(post.allow_remix!==false)promptActions.append(a('Recreate',()=>{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:post.media_type==='video'?'video':'image',prompt:post.shared_prompt,operation:post.model_id,model:(this.state.config?.models?.find(m=>m.operation===post.model_id)||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)}));location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');},'community-primary',fail));
    }else panel.append(e('p','community-note','The creator kept this prompt private.'));
    panel.append(status);d.append(stage,panel);
+   // Mobile comments use a focused sheet, without duplicating the large viewer.
    // A newly opened post must always begin with its image, not at the comments.
    // Reset again after asynchronous comments finish changing the dialog height.
    d.scrollTop=0;
-   await this.comments(post,panel);
+   if(!mobileCommunity)await this.comments(post,panel);
    d.scrollTop=0;
    requestAnimationFrame(()=>{if(d.open){d.scrollTop=0;stage.scrollTop=0;}});
    
