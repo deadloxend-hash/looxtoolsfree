@@ -103,14 +103,36 @@
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';
  sidebar.setAttribute('aria-label','LOOX main navigation');
  const sideContent=el('div','loox-sitewide-drawer-list');
+ // Reuse the real MediaSessions DOM only in image/video generation workspaces.
+ // Marketing landing pages must never display private session history.
+ const mediaWorkspace=['ai-text-to-image.html','ai-video-generator.html'].includes(page);
+ if(mediaWorkspace){
+  const dockSessions=()=>{
+   const rail=document.getElementById('loox-media-session-rail');
+   if(!rail||!rail.querySelector('#loox-media-sessions'))return false;
+   if(rail.parentElement!==sideContent)sideContent.prepend(rail);
+   document.body.classList.add('loox-media-sessions-in-drawer');
+   return true;
+  };
+  if(!dockSessions()){
+   const observer=new MutationObserver(()=>{
+    if(dockSessions())observer.disconnect();
+   });
+   observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['id']});
+   window.addEventListener('pagehide',()=>observer.disconnect(),{once:true});
+  }
+ }
  const fallback=el('a','loox-sitewide-drawer-link','Home');
  fallback.href=url('ai-image-landing.html');sideContent.append(fallback);
  sidebar.append(sideContent);
  const navStyle=el('link');navStyle.rel='stylesheet';
- navStyle.href=url('platform/workspace-navigation.css?v=7');
+ navStyle.href=url('platform/workspace-navigation.css?v=8');
  document.head.append(navStyle);
  import(url('platform/workspace-navigation.js?v=7')).then(({mountWorkspaceNavigation})=>{
+  // Keep the live session list when async navigation finishes loading.
+  const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
+  if(existingRail)sideContent.prepend(existingRail);
  }).catch(error=>console.warn('LOOX main navigation failed:',error));
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
