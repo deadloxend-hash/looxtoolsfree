@@ -176,6 +176,12 @@ export class Community {
   const mobileHeader=element('div','loox-ig-card-header');
   const profileLink=creator.cloneNode(true);
   profileLink.classList.add('loox-ig-profile');
+  // Share the asynchronously resolved avatar with the phone feed header.
+  const profileAvatar=profileLink.querySelector('.community-avatar');
+  if(post.avatar_path&&profileAvatar)mediaURL(this.state,post.avatar_path,'loox-avatars',{type:'avatar',id:post.creator_id}).then(url=>{
+   if(!profileAvatar.isConnected)return;
+   const img=element('img');img.alt='';img.loading='lazy';img.src=url;profileAvatar.replaceChildren(img);
+  }).catch(()=>{});
   const more=action('⋯',()=>this.details(post).catch(e=>this.note(e.message)),'loox-ig-more',e=>this.note(e.message));
   more.setAttribute('aria-label','Open post options and report');more.title='Post options';
   mobileHeader.append(profileLink,more);
