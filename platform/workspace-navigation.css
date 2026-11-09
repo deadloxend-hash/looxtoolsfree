@@ -266,3 +266,14 @@ body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-layout>.ai-recent-toggle,
 body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-layout>.ai-recent-scrim{
  display:none!important;
 }
+
+/* V11: subtle Recent + button consistent with compact Projects controls. */
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat{
+ flex:0 0 22px!important;width:22px!important;height:22px!important;
+ min-height:22px!important;border-radius:6px!important;
+ font:500 16px/1 system-ui,sans-serif!important;
+ background:#27212e!important;border-color:#493b50!important;color:#bfb3c8!important;
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat:hover{
+ background:#41324d!important;color:#fff!important;
+}
