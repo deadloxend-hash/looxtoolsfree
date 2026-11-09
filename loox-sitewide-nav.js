@@ -32,7 +32,9 @@
  const creditDock=el('div','loox-sitewide-credit-dock');
  const creditBundle=el('div','loox-sitewide-credit-bundle');
  creditDock.append(creditBundle);
- const wordmark=el('span','loox-sitewide-wordmark','LOOX');logo.append(wordmark);
+ const wordmark=el('span','loox-sitewide-wordmark loox-workspace-wordmark');
+ wordmark.append(document.createTextNode('LOO'),el('span','loox-workspace-x','X'));
+ logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
  [['AI Agent','ai-chat.html'],['AI Image',imageTabHref],['AI Video',videoTabHref],['Community','community.html'],['Trending','trending.html'],['Templates','templates.html']].forEach(([name,href])=>{
