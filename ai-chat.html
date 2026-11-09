@@ -145,7 +145,7 @@ body.ai-chat .loox-uc-agent-toolbar #aiModelMenu button{min-height:53px!importan
     if(search&&apps&&search.nextElementSibling!==apps)header.insertBefore(search,apps);
     if(apps&&apps.nextElementSibling!==account)header.insertBefore(apps,account);
     if(account.nextElementSibling)header.append(account);
-    const important=(node,property,value)=>node?.style.setProperty(property,value,'important');
+    const important=(node,property,value)=>{if(node&&(node.style.getPropertyValue(property)!==value||node.style.getPropertyPriority(property)!=='important'))node.style.setProperty(property,value,'important');};
     [search,apps,account].forEach((node,i)=>important(node,'order',String(i+1)));
     important(account,'margin-left','0');
     important(account,'flex','0 0 auto');
