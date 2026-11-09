@@ -51,7 +51,7 @@
  inner.append(logoWrap,links,search,creditDock,account);
   // AI Image marketing page: no visible credits/upgrade in its top navigation.
   // Keep balances available in the account popover and generator workspace.
-  if(page==='ai-image-landing.html'){
+  if(page==='ai-image-landing.html'||page==='ai-video-landing.html'){
     creditDock.remove();
     inner.insertBefore(search,account);
   }
