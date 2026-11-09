@@ -287,7 +287,8 @@ export class Community {
    }
    similar.append(strip);
   }
-  d.append(stage,info,status);
+  // Keep the creator visible before the artwork, including on short mobile screens.
+  d.append(creator,stage,info,status);
   if(options.length)d.append(similar);
  }
 
