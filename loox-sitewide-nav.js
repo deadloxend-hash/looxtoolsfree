@@ -103,6 +103,13 @@
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';
  sidebar.setAttribute('aria-label','LOOX main navigation');
  const sideContent=el('div','loox-sitewide-drawer-list');
+ // Do not reveal the drawer halfway through async navigation/session setup.
+ let navigationReady=false;
+ const revealWhenReady=()=>{
+  if(!navigationReady)return;
+  if(hasSessionHistory&&!sideContent.querySelector(page==='ai-chat.html'?'#aiRecentPanel':'#loox-media-session-rail'))return;
+  sideContent.classList.add('loox-sidebar-ready');
+ };
  // Reuse the real MediaSessions DOM only in image/video generation workspaces.
  // Marketing landing pages must never display private session history.
  const mediaWorkspace=['ai-text-to-image.html','ai-video-generator.html'].includes(page);
@@ -112,6 +119,7 @@
   if(chatSessions){
    sideContent.append(chatSessions);
    document.body.classList.add('loox-chat-sessions-in-drawer');
+   revealWhenReady();
   }
  }
  if(mediaWorkspace){
@@ -120,6 +128,7 @@
    if(!rail||!rail.querySelector('#loox-media-sessions'))return false;
    if(rail.parentElement!==sideContent)sideContent.append(rail);
    document.body.classList.add('loox-media-sessions-in-drawer');
+   revealWhenReady();
    return true;
   };
   if(!dockSessions()){
@@ -141,7 +150,21 @@
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
   if(existingRail)sideContent.append(existingRail);
- }).catch(error=>console.warn('LOOX main navigation failed:',error));
+  navigationReady=true;
+  revealWhenReady();
+ }).catch(error=>{
+  console.warn('LOOX main navigation failed:',error);
+  navigationReady=true;
+  revealWhenReady();
+ });
+ // If history cannot initialize, show a usable navigation instead of a blank drawer.
+ // Normally history mounts long before this fallback fires.
+ if(hasSessionHistory)setTimeout(()=>{
+  if(!sideContent.classList.contains('loox-sidebar-ready')){
+   if(!sideContent.querySelector('.loox-workspace-navigation'))return;
+   sideContent.classList.add('loox-sidebar-ready');
+  }
+ },4500);
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
