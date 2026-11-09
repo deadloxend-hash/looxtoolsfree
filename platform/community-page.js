@@ -1,5 +1,5 @@
 import {state,auth,initialize} from './account.js?v=9';
-import {Community,element,action,result} from './community.js?v=4';
+import {Community,element,action,result} from './community.js?v=5';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const community=new Community({state,auth,initialize,root});
 if(page==='trending.html'){

@@ -172,7 +172,7 @@ document.addEventListener('keydown',event=>{
  if(event.key==='Escape')document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
 });
 export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut();if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
-const sections=[['profile','My Profile'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
+const sections=[['profile','Account Overview'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);}
 export async function plans(host){
  host.replaceChildren(el('p','Loading plans…'));let cfg;
@@ -213,7 +213,7 @@ function drawDashboard(){
  const a=state.account;
  const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'#'+id));host.append(nav);
  function section(id,title){const s=el('section',null,'lx-card');s.id=id;s.append(el('h2',title));host.append(s);return s;}
- section('profile','My profile').append(el('h3','Welcome, '+a.profile.name),el('p',a.jobs.length+' recent AI actions'),el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
+ section('profile','Account overview').append(el('h3','Welcome, '+a.profile.name),el('p',a.jobs.length+' recent AI actions'),el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
  section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),button('Buy credits',pricing));
  const jobs=section('usage','Recent AI jobs');if(!a.jobs.length)jobs.append(el('p','No AI jobs yet.'));
  for(const j of a.jobs){const row=el('div',null,'lx-row');row.append(el('span',labels[j.operation]+' · '+j.state));

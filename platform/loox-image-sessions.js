@@ -1,5 +1,5 @@
 import {mountWorkspaceNavigation} from './workspace-navigation.js?v=6';
-import {publishCreation} from './community.js?v=4';
+import {publishCreation} from './community.js?v=5';
 // Private media conversations; job API remains responsible for credits and files.
 const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!=null)n.textContent=text;return n;};
 const checked=r=>{if(r.error)throw Error(r.error.message);return r.data;};
