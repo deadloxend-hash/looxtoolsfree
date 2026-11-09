@@ -331,3 +331,15 @@ body .loox-template-detail>.loox-gallery-media.loox-media-pending{
 @media(prefers-reduced-motion:reduce){
  #template-library .loox-dropdown-trigger::after{transition:none!important}
 }
+
+/* V11: menu scroll must remain inside the menu, not trigger page scroll dismissal. */
+.loox-custom-menu.loox-custom-menu-compact{
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+ scrollbar-width:thin!important;scrollbar-color:#8866a1 #241a30!important;
+ touch-action:pan-y!important;
+}
+.loox-custom-menu.loox-custom-menu-compact::-webkit-scrollbar{width:5px}
+.loox-custom-menu.loox-custom-menu-compact::-webkit-scrollbar-thumb{
+ background:#8866a1;border-radius:8px;
+}
