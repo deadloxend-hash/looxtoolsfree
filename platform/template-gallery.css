@@ -262,3 +262,17 @@ body .loox-template-detail>.loox-gallery-media>video{
  max-width:100%!important;max-height:75dvh!important;
  aspect-ratio:auto!important;object-fit:contain!important;
 }
+
+/* V8 — stable original-image loading state in template details. */
+body .loox-template-detail>.loox-gallery-media{
+ min-height:180px!important;display:flex!important;
+ align-items:center!important;justify-content:center!important;
+ flex-direction:column!important;gap:8px!important;
+}
+body .loox-template-detail .loox-media-loading{
+ display:block;color:#cbbbd5;font:500 13px/1.4 system-ui,sans-serif;
+ text-align:center;padding:16px;
+}
+body .loox-template-detail>.loox-gallery-media>img{
+ flex:0 1 auto!important;
+}
