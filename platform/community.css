@@ -432,3 +432,27 @@ body.loox-discovery-gallery .loox-discovery-select-trigger[aria-expanded=true]{
   transition:none!important;
  }
 }
+
+/* V9 — heart shortcut alongside share and save on every public gallery card. */
+.community-hover-tools .community-like-shortcut{
+ display:grid!important;place-items:center!important;
+ width:34px!important;height:34px!important;
+ flex:0 0 34px!important;border-radius:50%!important;
+ color:#fff!important;background:rgba(20,16,23,.82)!important;
+}
+.community-hover-tools .community-like-shortcut[aria-pressed="true"]{
+ color:#ff728f!important;background:rgba(55,25,41,.92)!important;
+ border-color:#ff8eab!important;
+}
+.community-hover-tools .community-like-shortcut:hover,
+.community-hover-tools .community-like-shortcut:focus-visible{
+ background:#513046!important;
+}
+.community-hover-tools .community-like-shortcut svg{
+ width:17px!important;height:17px!important;pointer-events:none!important;
+}
+@media(hover:none){
+ .community-hover-tools .community-like-shortcut{
+  width:32px!important;height:32px!important;flex-basis:32px!important;
+ }
+}
