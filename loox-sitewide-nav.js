@@ -154,6 +154,14 @@
   const nativeAppTrigger=buildAppTrigger();
   nativeAppTrigger.classList.add('loox-mobile-app-native-trigger');
   const accountSlot=native.querySelector('.lig-header-user,[data-loox-account]');
+  if(page==='ai-chat.html'){
+   const chatSearch=el('button','loox-chat-header-search');
+   chatSearch.type='button';chatSearch.setAttribute('aria-label','Search LOOX tools');
+   chatSearch.title='Search LOOX tools';chatSearch.innerHTML=icons.search;
+   chatSearch.addEventListener('click',()=>search.click());
+   if(accountSlot)native.insertBefore(chatSearch,accountSlot);
+   else native.append(chatSearch);
+  }
   if(accountSlot)native.insertBefore(nativeAppTrigger,accountSlot);
   else native.append(nativeAppTrigger);
  }
