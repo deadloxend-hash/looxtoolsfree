@@ -12,7 +12,8 @@ if(page==='community.html'){
  const svg=(path)=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+path+'</svg>';
  const icons={
   comment:svg('<path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.4-4.1A8.5 8.5 0 1 1 20 11.5Z"/>'),
-  share:svg('<path d="m21 3-9 18-3.6-7.4L1 10l20-7Zm0 0L8.4 13.6"/>'),
+  share:svg('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.6 6.6-4m-6.6 8.8 6.6 3.1"/>'),
+  details:svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/>'),
   save:svg('<path d="M6 3.5A1.5 1.5 0 0 1 7.5 2h9A1.5 1.5 0 0 1 18 3.5V22l-6-4.5L6 22V3.5Z"/>'),
   more:svg('<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>')
  };
@@ -80,16 +81,50 @@ if(page==='community.html'){
    feedback.textContent='Prompt copied.';
   };
   const openComments=async()=>{
-   await self.details(post);
-   const dialog=document.querySelector('dialog.community-viewer[open]');
-   const section=dialog?.querySelector('.loox-conversation');
-   if(dialog&&section){
-    requestAnimationFrame(()=>{
-     if(!dialog.open)return;
-     const top=section.getBoundingClientRect().top-dialog.getBoundingClientRect().top+dialog.scrollTop-16;
-     dialog.scrollTop=Math.max(0,top);
-    });
+   // Comments have their own focused sheet; do not open the full image viewer.
+   const d=element('dialog','loox-community-comments-sheet');
+   d.setAttribute('aria-label','Post comments');
+   const top=element('div','loox-community-sheet-head');
+   const title=element('h2','','Comments');
+   const close=action('×',()=>d.close(),'loox-community-sheet-close',fail);
+   close.setAttribute('aria-label','Close comments');
+   top.append(title,close);
+   d.append(top);
+   d.addEventListener('close',()=>d.remove(),{once:true});
+   document.body.append(d);
+   d.showModal();
+   d.addEventListener('click',event=>{if(event.target===d)d.close();});
+   try{
+    await self.comments(post,d);
+    if(d.open)d.scrollTop=0;
+   }catch(error){
+    const message=element('p','community-note',error.message||'Comments unavailable.');
+    d.append(message);
    }
+  };
+  const openDetails=()=>{
+   const d=element('dialog','loox-community-details-sheet');
+   d.setAttribute('aria-label','Post details');
+   const top=element('div','loox-community-sheet-head');
+   const heading=element('h2','','Post details');
+   const close=action('×',()=>d.close(),'loox-community-sheet-close',fail);
+   close.setAttribute('aria-label','Close details');
+   top.append(heading,close);
+   d.append(top);
+   const info=element('dl','loox-community-details-list');
+   const detail=(label,value)=>{
+    const row=element('div','loox-community-details-row');
+    row.append(element('dt','',label),element('dd','',value));
+    info.append(row);
+   };
+   detail('Uploaded',new Date(post.created_at).toLocaleString());
+   detail('AI model',self.modelName(post.model_id));
+   detail('Created by',post.display_name||post.username||'LOOX creator');
+   d.append(info);
+   d.addEventListener('close',()=>d.remove(),{once:true});
+   document.body.append(d);
+   d.showModal();
+   d.addEventListener('click',event=>{if(event.target===d)d.close();});
   };
   const download=async()=>{
    if(post.allow_download===false)return;
@@ -117,6 +152,7 @@ if(page==='community.html'){
     if(text&&expand&&!text.classList.contains('is-expanded'))expand.hidden=text.scrollHeight<=text.clientHeight+2;
    });
   };
+  menuButton('View details',openDetails);
   menuButton('View profile',()=>location.assign(profileHref));
   menuButton('Copy post link',copyPost);
   if(post.shared_prompt){
@@ -144,11 +180,13 @@ if(page==='community.html'){
    else await copyPost();
   });
   share.innerHTML=icons.share;
+  const details=makeAction('View post details',openDetails,'loox-mobile-feed-action loox-mobile-feed-details');
+  details.innerHTML=icons.details;
   const save=makeAction('Save post',()=>self.save(post,save),'loox-mobile-feed-action community-save-shortcut loox-mobile-feed-save');
   save.dataset.postId=post.id;
   save.setAttribute('aria-pressed',String(!!post.saved));
   save.innerHTML=icons.save;
-  actions.append(like,comment,share,save);
+  actions.append(like,comment,share,details,save);
   const info=element('div','loox-mobile-feed-info');
   const likeCount=element('strong','loox-mobile-feed-like-count',(Number(post.likes)||0).toLocaleString()+' likes');
   likeCount.dataset.postId=post.id;
@@ -169,7 +207,7 @@ if(page==='community.html'){
   }
   const meta=element('div','loox-mobile-feed-meta');
   const commentsLink=action((Number(post.comments)||0)?'View all '+post.comments+' comments':'Add a comment',openComments,'loox-mobile-feed-comments',fail);
-  meta.append(commentsLink,element('span','',new Date(post.created_at).toLocaleDateString()));
+  meta.append(commentsLink);
   info.append(meta);
   const promptBar=element('div','loox-mobile-feed-prompt-bar');
   let promptButton;
