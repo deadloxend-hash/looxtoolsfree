@@ -348,20 +348,39 @@ if(discoveryPage){
  window.addEventListener('resize',close);
 }
 if(page==='community.html'){
- // Place the existing date filter inside one compact disclosure; preserve
- // the native select's own change listener and the accessible custom trigger.
+ // Keep the live sort/date selects and their backend listeners, but group both
+ // controls inside the phone Filter dropdown rather than occupying two pills.
  const dates=root.querySelector('select[aria-label="Trending period"]');
- const wrap=dates?.closest('.loox-discovery-select-wrap');
- if(wrap){
+ const dateWrap=dates?.closest('.loox-discovery-select-wrap');
+ const sort=root.querySelector('select[aria-label="Sort community"]');
+ const sortWrap=sort?.closest('.loox-discovery-select-wrap');
+ if(dateWrap&&sortWrap){
+  const filters=dateWrap.parentNode;
+  const sortMarker=document.createComment('Original sort position');
+  filters.insertBefore(sortMarker,sortWrap);
   const details=element('details','loox-community-date-filter');
   const summary=element('summary','loox-community-filter-trigger','Filter');
-  summary.setAttribute('aria-label','Filter by date');
+  summary.setAttribute('aria-label','Open community sorting and filtering');
   const panel=element('div','loox-community-filter-panel');
-  wrap.parentNode.insertBefore(details,wrap);
-  panel.append(wrap);details.append(summary,panel);
+  const sortRow=element('div','loox-community-filter-row');
+  const dateRow=element('div','loox-community-filter-row');
+  sortRow.append(element('span','loox-community-filter-label','Sort by'),sortWrap);
+  dateRow.append(element('span','loox-community-filter-label','Time period'),dateWrap);
+  panel.append(sortRow,dateRow);
+  filters.insertBefore(details,dateWrap.nextSibling);
+  details.append(summary,panel);
+  // On larger screens retain the previous separate sorting pill.
+  const query=window.matchMedia('(max-width:700px)');
+  const arrange=()=>{
+   if(query.matches){sortRow.append(sortWrap);}
+   else{filters.insertBefore(sortWrap,sortMarker);details.open=false;}
+  };
+  arrange();
+  query.addEventListener?.('change',arrange);
+  sort.addEventListener('change',()=>{details.open=false;});
   dates.addEventListener('change',()=>{details.open=false;});
   document.addEventListener('pointerdown',event=>{
-   if(details.open&&!details.contains(event.target))details.open=false;
+   if(details.open&&!details.contains(event.target)&&!event.target.closest('.loox-discovery-select-menu'))details.open=false;
   });
  }
 }
