@@ -188,13 +188,13 @@
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
  dockToggle.setAttribute('aria-controls','loox-sitewide-drawer');dockToggle.setAttribute('aria-expanded','false');
- dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true">|</span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
+ dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
  // Do not mount the unrelated sitewide tools drawer in the focused AI workspaces.
  if(!aiSessionsOnly)document.body.append(scrim,sidebar,dockToggle);
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
   if(aiSessionsOnly)open=false;
-  else if(desktop.matches&&pinnedWorkspace)open=true;
+  // Workspace sidebars default to open, but the edge tab always lets users hide or restore them.
   sidebar.classList.toggle('is-open',open);
   scrim.classList.toggle('is-open',open&&!desktop.matches);
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
@@ -202,13 +202,15 @@
   dockToggle.setAttribute('aria-label',open?'Collapse LOOX sidebar':'Open LOOX sidebar');
   dockToggle.title=open?'Collapse sidebar':'Expand sidebar';
   dockToggle.querySelector('.loox-dock-arrow').textContent=open?'‹':'›';
+  burger.setAttribute('aria-expanded',String(open));
+  burger.setAttribute('aria-label',open?'Hide LOOX navigation':'Show LOOX navigation');
  };
  const closeDrawer=()=>setDrawer(false);
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
  // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
   desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches&&(pinnedWorkspace||isHome)));
- setDrawer(!aiSessionsOnly&&desktop.matches&&isHome&&page!=='ai-chat.html');
+ setDrawer(!aiSessionsOnly&&desktop.matches&&(pinnedWorkspace||isHome));
  scrim.addEventListener('click',closeDrawer);
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only

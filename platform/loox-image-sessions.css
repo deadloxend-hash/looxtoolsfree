@@ -207,3 +207,32 @@ body.loox-community-route .loox-session-rail,body.loox-community-route .loox-ses
 @media(min-width:901px){
  .loox-session-toggle,.ai-recent-toggle{display:none!important}
 }
+
+/* V17 — the thin vertical | tab is visible on Agent, Image and Video at every size. */
+.loox-session-rail,.ai-recent-panel{overflow:visible!important}
+.loox-session-toggle,.ai-recent-toggle,
+.loox-session-rail.collapsed .loox-session-toggle,
+.ai-recent-panel.is-collapsed .ai-recent-toggle{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:absolute!important;top:98px!important;left:auto!important;right:-22px!important;
+ width:22px!important;min-width:22px!important;height:58px!important;
+ padding:0!important;margin:0!important;
+ border:1px solid #4d3c57!important;border-left:0!important;
+ border-radius:0 8px 8px 0!important;background:#221c2b!important;
+ color:#e5dbee!important;font:650 15px/1 Inter,system-ui,sans-serif!important;
+ z-index:45!important;cursor:pointer!important;
+}
+.loox-session-toggle::before,.ai-recent-toggle::before{
+ content:"";display:block;width:2px;height:19px;margin-right:3px;
+ border-radius:2px;background:currentColor;opacity:.65
+}
+.loox-session-toggle:hover,.ai-recent-toggle:hover,
+.loox-session-toggle:focus-visible,.ai-recent-toggle:focus-visible{
+ background:#43314f!important;outline:1px solid #9472b5!important;
+}
+@media(max-width:900px){
+ .loox-session-toggle,.ai-recent-toggle,
+ .loox-session-rail.collapsed .loox-session-toggle,.ai-recent-panel.is-collapsed .ai-recent-toggle{
+  top:78px!important;height:54px!important;
+ }
+}
