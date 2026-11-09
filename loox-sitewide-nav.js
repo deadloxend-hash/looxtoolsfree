@@ -134,7 +134,7 @@
  fallback.href=url('ai-image-landing.html');sideContent.append(fallback);
  sidebar.append(sideContent);
  const navStyle=el('link');navStyle.rel='stylesheet';
- navStyle.href=url('platform/workspace-navigation.css?v=9');
+ navStyle.href=url('platform/workspace-navigation.css?v=10');
  document.head.append(navStyle);
  import(url('platform/workspace-navigation.js?v=7')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
