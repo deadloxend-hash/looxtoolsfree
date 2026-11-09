@@ -150,7 +150,7 @@
  const navStyle=el('link');navStyle.rel='stylesheet';
  navStyle.href=url('platform/workspace-navigation.css?v=10');
  document.head.append(navStyle);
- import(url('platform/workspace-navigation.js?v=7')).then(({mountWorkspaceNavigation})=>{
+ import(url('platform/workspace-navigation.js?v=8')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
