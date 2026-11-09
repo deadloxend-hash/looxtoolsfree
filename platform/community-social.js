@@ -6,11 +6,11 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   async save(post,button){
    if(!this.state.user)return this.auth('login');if(button.disabled)return;button.disabled=true;
    try{const q=this.state.client.from('loox_saved_posts');result(post.saved?await q.delete().eq('user_id',this.state.user.id).eq('post_id',post.id):await q.insert({user_id:this.state.user.id,post_id:post.id}));post.saved=!post.saved;
-    const controls=[...this.root.querySelectorAll('[data-post-id]')].filter(node=>node.dataset.postId===post.id);
+    const controls=[...document.querySelectorAll('.community-save-shortcut[data-post-id], .loox-viewer-save[data-post-id]')].filter(node=>node.dataset.postId===post.id);
     if(!controls.includes(button))controls.push(button);
     for(const control of controls){
      control.setAttribute('aria-pressed',String(post.saved));
-     if(control.classList.contains('community-save-shortcut')){
+     if(control.classList.contains('community-save-shortcut')||control.classList.contains('loox-viewer-save')){
       control.title=post.saved?'Remove saved creation':'Save creation';
       control.setAttribute('aria-label',post.saved?'Remove saved post':'Save post');
      }else control.textContent=post.saved?'Saved':'Save';
@@ -71,13 +71,89 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    if(index>0)controls.append(a('← Previous',()=>next(-1),'community-button',fail));if(index>=0&&index<this.posts.length-1)controls.append(a('Next →',()=>next(1),'community-button',fail));
    let touchX;stage.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});stage.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>80&&!media.classList.contains('is-zoomed'))Promise.resolve(next(delta<0?1:-1)).catch(fail);},{passive:true});
    d.addEventListener('close',()=>{if(post.media_type==='video'){media.pause();media.removeAttribute('src');media.load();}});stage.append(media,controls);
-   const creator=e('a','community-creator','@'+post.username);creator.href='creator.html?username='+encodeURIComponent(post.username);if(this.state.user?.id!==post.creator_id){const summary=await rpc(this.state,'loox_creator_summary',{p_creator:post.creator_id});let followed=!!summary?.followed;const follow=a(followed?'Following':'Follow',async()=>{if(!this.state.user)return this.auth('login');follow.disabled=true;try{const q=this.state.client.from('loox_creator_follows');result(followed?await q.delete().eq('follower_id',this.state.user.id).eq('creator_id',post.creator_id):await q.insert({follower_id:this.state.user.id,creator_id:post.creator_id}));followed=!followed;follow.textContent=followed?'Following':'Follow';follow.setAttribute('aria-pressed',String(followed));}finally{follow.disabled=false;}},'community-button',fail);follow.setAttribute('aria-pressed',String(followed));panel.append(follow);}panel.append(creator,e('p','community-bio',post.caption),e('p','community-note',new Date(post.created_at).toLocaleString()),e('p','community-model',this.modelName(post.model_id)),...(post.media_type==='video'?[e('p','community-note',(post.view_count||0)+' views')]:[]));
-   const actions=e('div','community-post-actions'),like=a('',()=>this.like(post,like),'community-button',fail);this.renderLike(post,like);const save=a(post.saved?'Saved':'Save',()=>this.save(post,save),'community-button',fail);save.setAttribute('aria-pressed',String(!!post.saved));actions.append(like,save,a('Collection',()=>this.collections(post),'community-button',fail),a('Share',async()=>{const url=new URL('community.html?post='+post.id,location.href).href;if(navigator.share)await navigator.share({title:post.caption,url});else{await navigator.clipboard.writeText(url);status.textContent='Link copied.';}},'community-button',fail));
-   if(post.allow_download!==false)actions.append(a('Download',async()=>{const url=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'}),r=await fetch(url);if(!r.ok)throw Error('Download unavailable.');const blob=await r.blob(),link=e('a');link.href=URL.createObjectURL(blob);link.download='loox-'+post.id+(post.media_type==='video'?'.mp4':'.png');link.click();setTimeout(()=>URL.revokeObjectURL(link.href),10000);},'community-button',fail));
-   if(post.shared_prompt){panel.append(e('h3','','Prompt'),e('p','community-shared-prompt',post.shared_prompt));actions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',fail));
-    if(post.allow_remix!==false)actions.append(a('Recreate',()=>{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:post.media_type==='video'?'video':'image',prompt:post.shared_prompt,operation:post.model_id,model:(this.state.config?.models?.find(m=>m.operation===post.model_id)||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)}));location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');},'community-primary',fail));
+   const creator=e('a','community-creator loox-social-creator');
+   creator.href='creator.html?id='+encodeURIComponent(post.creator_id);
+   creator.setAttribute('aria-label','Open '+(post.display_name||post.username)+' profile');
+   const creatorAvatar=e('span','community-avatar',post.display_name?.slice(0,1)||post.username?.slice(0,1)||'L');
+   const creatorNames=e('span','loox-social-creator-names');
+   creatorNames.append(e('strong','',post.display_name||post.username),e('small','','@'+post.username));
+   creator.append(creatorAvatar,creatorNames);
+   if(post.avatar_path)mediaURL(this.state,post.avatar_path,'loox-avatars',{type:'avatar',id:post.creator_id})
+    .then(url=>{if(!creatorAvatar.isConnected)return;const img=e('img');img.alt='';img.src=url;
+     img.onerror=()=>img.remove();creatorAvatar.replaceChildren(img);}).catch(()=>{});
+   const creatorRow=e('div','loox-social-creator-row');
+   creatorRow.append(creator);
+   if(this.state.user?.id!==post.creator_id){
+    const summary=await rpc(this.state,'loox_creator_summary',{p_creator:post.creator_id});
+    let followed=!!summary?.followed;
+    const follow=a(followed?'Following':'Follow',async()=>{
+     if(!this.state.user)return this.auth('login');follow.disabled=true;
+     try{
+      const q=this.state.client.from('loox_creator_follows');
+      result(followed?await q.delete().eq('follower_id',this.state.user.id).eq('creator_id',post.creator_id):
+       await q.insert({follower_id:this.state.user.id,creator_id:post.creator_id}));
+      followed=!followed;follow.textContent=followed?'Following':'Follow';
+      follow.setAttribute('aria-pressed',String(followed));
+     }finally{follow.disabled=false;}
+    },'community-button loox-social-follow',fail);
+    follow.setAttribute('aria-pressed',String(followed));
+    creatorRow.append(follow);
+   }
+   panel.append(creatorRow,e('p','community-bio',post.caption),
+    e('p','community-note',new Date(post.created_at).toLocaleString()),
+    e('p','community-model',this.modelName(post.model_id)),
+    ...(post.media_type==='video'?[e('p','community-note',(post.view_count||0)+' views')]:[]));
+   const icons={
+    heart:'<path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/>',
+    save:'<path d="M5 4.5A2.5 2.5 0 0 1 7.5 2h9A2.5 2.5 0 0 1 19 4.5V22l-7-5-7 5V4.5Z"/>',
+    collection:'<path d="M3 7h7l2 2h9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/><path d="M3 7V5a2 2 0 0 1 2-2h5m6 9v6m-3-3h6"/>',
+    share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.6 6.6-4m-6.6 8.8 6.6 3.1"/>',
+    download:'<path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 17v3h16v-3"/>',
+    report:'<path d="M5 21V4m0 1c6-4 9 4 16 0v11c-7 4-10-4-16 0"/>',
+    edit:'<path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/>'
+   };
+   const actions=e('div','loox-social-photo-actions');
+   const icon=(name,label,fn,cls='')=>{
+    const b=a('',fn,'loox-social-action '+cls,fail);
+    b.title=label;b.setAttribute('aria-label',label);
+    b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[name]+'</svg>';
+    return b;
+   };
+   const like=icon('heart','Like post',()=>this.like(post,like),'community-like-shortcut');
+   like.dataset.postId=post.id;this.renderLike(post,like);
+   const save=icon('save','Save post',()=>this.save(post,save),'loox-viewer-save');
+   save.dataset.postId=post.id;save.setAttribute('aria-pressed',String(!!post.saved));
+   actions.append(like,save,
+    icon('collection','Add to collection',()=>this.collections(post)),
+    icon('share','Share post',async()=>{
+     const url=new URL('community.html?post='+post.id,location.href).href;
+     if(navigator.share)await navigator.share({title:post.caption,url});
+     else{await navigator.clipboard.writeText(url);status.textContent='Link copied.';}
+    }));
+   if(post.allow_download!==false)actions.append(icon('download','Download original',async()=>{
+    const url=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});
+    try{
+     const response=await fetch(url);if(!response.ok)throw Error('Download unavailable.');
+     const blob=await response.blob(),link=e('a');
+     link.href=URL.createObjectURL(blob);
+     link.download='loox-'+post.id+(post.media_type==='video'?'.mp4':blob.type==='image/jpeg'?'.jpg':blob.type==='image/webp'?'.webp':'.png');
+     document.body.append(link);link.click();link.remove();
+     setTimeout(()=>URL.revokeObjectURL(link.href),60000);
+    }catch{window.open(url,'_blank','noopener,noreferrer');status.textContent='Original opened in a new tab.';}
+   }));
+   if(this.state.user?.id===post.creator_id)actions.append(icon('edit','Edit post',async()=>{
+    const caption=window.prompt('Edit caption (changes require approval)',post.caption);
+    if(caption===null)return;
+    const share=window.confirm('Make the generation prompt public? OK = share, Cancel = private.');
+    await rpc(this.state,'loox_manage_post',{p_id:post.id,p_action:'edit',p_caption:caption.trim(),p_share_prompt:share});
+    d.close();await this.load(true);
+   },'loox-social-edit'));
+   else actions.append(icon('report','Report post',()=>this.report(post)));
+   stage.append(actions);
+   if(post.shared_prompt){panel.append(e('h3','','Prompt'),e('p','community-shared-prompt',post.shared_prompt));const promptActions=e('div','loox-social-prompt-actions');panel.append(promptActions);promptActions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',fail));
+    if(post.allow_remix!==false)promptActions.append(a('Recreate',()=>{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:post.media_type==='video'?'video':'image',prompt:post.shared_prompt,operation:post.model_id,model:(this.state.config?.models?.find(m=>m.operation===post.model_id)||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)}));location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');},'community-primary',fail));
    }else panel.append(e('p','community-note','The creator kept this prompt private.'));
-   actions.append(a('Report',()=>this.report(post),'community-button',fail));if(this.state.user?.id===post.creator_id)actions.append(a('Manage post',()=>this.manage(),'community-button',fail));panel.append(actions,status);d.append(stage,panel);await this.comments(post,panel);
+   panel.append(status);d.append(stage,panel);await this.comments(post,panel);
   },
   modelName(operation){const model=this.state.config?.models?.find(m=>m.operation===operation)||this.state.config?.videoModels?.find(m=>operation===m.operation||operation?.startsWith(m.operation+'_'));return model?.name||(operation==='generate'?'FLUX.1 Schnell':operation==='generate_video'?'Wan 2.1 Local':operation?.replace(/^(generate_|video_)/,'').replaceAll('_',' ')||'Model metadata unavailable');}
  });
