@@ -48,7 +48,60 @@ root.replaceChildren(toolbar,section);
 async function categories(){const rows=result(await state.client.from('loox_template_categories').select('name').order('name'));categoryOptions=rows.map(t=>t.name);if(cat.value&&!categoryOptions.includes(cat.value)){cat.value='';category='';catButton.textContent='All categories⌄';}}
 async function loadStyles(){const rows=result(await state.client.from('loox_template_styles').select('name').order('name'));styleOptions=rows.map(t=>t.name);for(const name of [...selectedStyles])if(!styleOptions.includes(name))selectedStyles.delete(name);updateStyleButton();}
 let debounce;search.oninput=()=>{clearTimeout(debounce);debounce=setTimeout(()=>{query=search.value.trim();load(true)},220);};
-function media(t,full=false){const box=e('div','loox-gallery-media');if(t.media_path){const m=document.createElement(t.kind==='video'?'video':'img');m.dataset.pending='true';fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({action:'public_media',type:'template',id:t.id,variant:full?'original':'preview'}),{credentials:'omit'}).then(r=>r.json().then(data=>{if(!r.ok)throw Error(data.error||'Template unavailable.');return data;})).then(data=>{if(m.isConnected)m.src=data.url}).catch(()=>{if(m.isConnected)m.replaceWith(e('span','community-note','Preview unavailable'));});if(t.kind==='video'){m.muted=true;m.loop=true;m.playsInline=true;m.preload='metadata';m.onmouseenter=()=>m.play().catch(()=>{});m.onmouseleave=()=>m.pause();}else{m.loading='lazy';m.decoding='async';m.alt=t.title;}box.append(m);}return box;}
+function media(t,full=false){
+ const box=e('div','loox-gallery-media');
+ if(!t.media_path)return box;
+ const m=document.createElement(t.kind==='video'?'video':'img');
+ if(t.kind==='video'){
+  m.muted=true;m.loop=true;m.playsInline=true;m.preload='metadata';
+  m.onmouseenter=()=>m.play().catch(()=>{});
+  m.onmouseleave=()=>m.pause();
+ }else{
+  // Prevent browser broken-image icons while original media is being loaded.
+  m.alt=t.title;m.decoding='async';m.loading=full?'eager':'lazy';
+  m.style.visibility='hidden';
+ }
+ const status=e('span','loox-media-loading',full?'Loading image…':'');
+ if(full)box.append(status);
+ box.append(m);
+ async function signedUrl(variant){
+  const params=new URLSearchParams({action:'public_media',type:'template',id:t.id,variant});
+  // A signed URL must never be reused from the browser cache after expiration.
+  params.set('request',String(Date.now()));
+  const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+params,{credentials:'omit',cache:'no-store'});
+  const data=await response.json();
+  if(!response.ok||!data.url)throw Error(data.error||'Template unavailable.');
+  return data.url;
+ }
+ async function showImage(variant){
+  const url=await signedUrl(variant);
+  if(!box.isConnected)return;
+  if(t.kind==='video'){
+   m.src=url;return;
+  }
+  // Decode the actual image before assigning its URL to the visible element.
+  const image=new Image();image.decoding='async';
+  await new Promise((resolve,reject)=>{
+   image.onload=resolve;image.onerror=()=>reject(Error('Image unavailable'));
+   image.src=url;
+  });
+  if(!box.isConnected)return;
+  m.src=url;m.style.visibility='visible';
+  if(status.isConnected)status.remove();
+ }
+ (async()=>{
+  try{
+   await showImage(full?'original':'preview');
+  }catch(error){
+   if(full){
+    try{await showImage('preview');return;}catch{}
+   }
+   if(status.isConnected)status.textContent='Image unavailable';
+   if(!full&&m.isConnected)m.replaceWith(e('span','community-note','Preview unavailable'));
+  }
+ })();
+ return box;
+}
 function launch(t){sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:t.kind,prompt:t.prompt,model:t.model_id,settings:t.settings,reference_path:t.kind==='image'?t.media_path:null,reference_id:t.kind==='image'?t.id:null}));if(state.user)rpc(state,'loox_launch_template',{p_template:t.id}).catch(()=>{});location.assign(t.kind==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');}
 function details(t){const overlay=e('div','loox-template-overlay'),panel=e('div','loox-template-detail'),back=a('← Back',()=>overlay.remove(),'loox-gallery-chip'),visual=media(t,true),info=e('div','loox-template-info'),h=e('h2','',t.title),meta=e('p','',t.category+' · '+(t.styles?.length?t.styles.join(', '):(t.style||'No style'))+' · '+t.kind),description=e('p','',t.description||''),prompt=e('p','loox-template-prompt',t.prompt),copy=a('Copy prompt',()=>navigator.clipboard.writeText(t.prompt).catch(()=>{}),'loox-gallery-chip'),recreate=a('Recreate this',()=>launch(t),'loox-recreate');info.append(h,meta,description,prompt,copy,recreate);panel.append(back,visual,info);overlay.append(panel);overlay.onclick=ev=>{if(ev.target===overlay)overlay.remove()};document.body.append(overlay);}
 function card(t){
