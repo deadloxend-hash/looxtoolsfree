@@ -207,3 +207,116 @@ body.loox-discovery-gallery .community-media video{
  body.loox-discovery-gallery .community-filter,
  body.loox-discovery-gallery .community-card-body{transition:none!important}
 }
+
+/* V6: uncluttered public art cards and Instagram-style original media viewer. */
+body.loox-discovery-gallery .community-card-hover .community-hover-creator{
+ display:none!important;
+}
+/* A creator is still clearly credited inside the full viewer. */
+body.loox-discovery-gallery .community-card-hover{
+ background:linear-gradient(180deg,#08060b66,transparent 35%)!important;
+}
+body.loox-discovery-gallery .community-card-body .community-card-line{
+ display:none!important;
+}
+body .loox-post-viewer{
+ width:min(960px,calc(100vw - 22px))!important;max-width:960px!important;
+ max-height:min(94dvh,1100px)!important;
+ border:1px solid #4d385d!important;border-radius:19px!important;
+ padding:14px!important;background:#17121f!important;color:#f6f0ff!important;
+ box-shadow:0 22px 90px #000b!important;
+}
+body .loox-post-viewer .community-dialog-head{
+ margin-bottom:9px!important;
+}
+body .loox-post-viewer .community-dialog-head h2{
+ font-size:13px!important;letter-spacing:.01em!important;
+}
+body .loox-post-stage{
+ position:relative;display:flex;align-items:center;justify-content:center;
+ min-height:190px;max-height:70dvh;
+ width:100%;overflow:hidden;border-radius:12px;
+ background:#08070d;
+}
+body .loox-post-stage>.community-detail-media{
+ display:block;width:auto!important;height:auto!important;
+ max-width:100%!important;max-height:70dvh!important;
+ object-fit:contain!important;border:0!important;margin:auto!important;
+}
+body .loox-post-media-status{
+ position:absolute;top:40%;left:0;right:0;text-align:center;
+ color:#c2b3ce;font-size:12px;pointer-events:none;
+}
+body .loox-post-action-bar{
+ position:absolute;bottom:13px;left:50%;transform:translateX(-50%);
+ display:flex;align-items:center;justify-content:center;gap:10px;
+ padding:7px 10px;border-radius:999px;
+ background:rgba(14,12,19,.72);border:1px solid #ffffff3b;
+ backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+ box-shadow:0 6px 30px #0008;z-index:4;
+}
+body .loox-post-icon-button{
+ width:40px;height:40px;display:inline-grid;place-items:center;
+ background:#302838;color:#fff;border:1px solid #fff3;border-radius:50%;
+ padding:0;cursor:pointer;transition:background-color .18s,transform .18s;
+}
+body .loox-post-icon-button:hover,
+body .loox-post-icon-button:focus-visible{
+ background:#684186;transform:translateY(-1px);
+}
+body .loox-post-icon-button[aria-pressed="true"]{
+ background:#75439a;border-color:#d5a6ff;color:white;
+}
+body .loox-post-icon-button:disabled{
+ opacity:.42;cursor:not-allowed;transform:none!important;
+}
+body .loox-post-icon-button svg{height:20px;width:20px;display:block}
+body .loox-post-info{padding:13px 3px 0;display:grid;gap:7px}
+body .loox-post-info .community-creator{font-size:12px;font-weight:700}
+body .loox-post-caption{
+ margin:0;line-height:1.5;color:#f0e7f8;font-size:13px;
+}
+body .loox-post-info>.community-note{margin:0;font-size:11px}
+body .loox-post-prompt summary{
+ cursor:pointer;color:#d6b7ed;font:650 12px system-ui;
+ padding:8px 0;
+}
+body .loox-post-prompt .community-shared-prompt{
+ margin:3px 0 8px;white-space:pre-wrap;max-height:170px;overflow:auto;
+}
+body .loox-post-related{
+ margin-top:20px;padding:13px 0 0;border-top:1px solid #4a3955;
+}
+body .loox-post-related h3{font-size:15px;margin:0 0 12px}
+body .loox-post-related-grid{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;
+}
+body .loox-post-related-item{
+ display:flex;flex-direction:column;gap:6px;text-align:left;
+ border:0;border-radius:10px;padding:0 0 7px;
+ overflow:hidden;background:#251b30;color:#eee3f5;cursor:pointer;
+}
+body .loox-post-related-item img,
+body .loox-post-related-item video{
+ width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#15111d;
+}
+body .loox-post-related-item span{
+ padding:0 8px;font-size:11px;line-height:1.4;
+ overflow:hidden;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+}
+body .loox-post-related-item:hover,
+body .loox-post-related-item:focus-visible{outline:2px solid #ae83d0;outline-offset:1px}
+@media(max-width:650px){
+ body .loox-post-viewer{
+  width:100vw!important;max-width:100vw!important;height:100dvh!important;
+  max-height:100dvh!important;border-radius:0!important;padding:12px!important;
+ }
+ body .loox-post-stage{max-height:62dvh}
+ body .loox-post-stage>.community-detail-media{max-height:62dvh!important}
+ body .loox-post-action-bar{bottom:10px;gap:8px;padding:6px 8px}
+ body .loox-post-icon-button{width:37px;height:37px}
+ body .loox-post-related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ body .loox-post-icon-button{transition:none}
+}
