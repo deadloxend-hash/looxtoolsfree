@@ -73,7 +73,105 @@ export class Community {
  renderLike(post,b){b.textContent=(post.liked?'♥ ':'♡ ')+post.likes;b.setAttribute('aria-pressed',String(post.liked));b.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+post.likes+' likes');}
  async like(post,button){if(!this.state.user){this.auth('login');return;}if(post.creator_id===this.state.user.id){this.note('You cannot like your own creation.');return;}if(this.pendingLikes.has(post.id))return;this.pendingLikes.add(post.id);const uid=this.state.user.id,before={liked:post.liked,likes:post.likes};post.liked=!post.liked;post.likes=Number(post.likes)+(post.liked?1:-1);this.renderLike(post,button);
  try{const q=this.state.client.from('loox_post_likes');result(post.liked?await q.insert({post_id:post.id,user_id:uid}):await q.delete().eq('post_id',post.id).eq('user_id',uid));}catch(error){Object.assign(post,before);this.renderLike(post,button);throw error;}finally{this.pendingLikes.delete(post.id);}}
- async details(post){const d=modal(post.caption),status=element('p','community-note'),media=element(post.media_type==='video'?'video':'img');media.className='community-detail-media';media.src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});if(post.media_type==='video'){media.controls=true;media.playsInline=true;}else media.alt=post.caption;const creator=element('a','community-creator','@'+post.username);creator.href='creator.html?id='+post.creator_id;d.append(media,creator,element('p','community-note',new Date(post.created_at).toLocaleString()));if(post.shared_prompt)d.append(element('p','community-shared-prompt',post.shared_prompt),action('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',e=>status.textContent=e.message));else d.append(element('p','community-note','The creator kept this prompt private.'));d.append(status);}
+ async details(post){
+  const d=modal(post.caption),status=element('p','community-note');
+  d.classList.add('loox-post-viewer');
+  const head=d.querySelector('.community-dialog-head');
+  if(head)head.querySelector('h2').textContent='Community post';
+  const stage=element('div','loox-post-stage');
+  const media=element(post.media_type==='video'?'video':'img','community-detail-media');
+  media.alt=post.media_type==='video'?'':post.caption;
+  if(post.media_type==='video'){media.controls=true;media.playsInline=true;}
+  const mediaStatus=element('p','loox-post-media-status','Loading original…');
+  stage.append(media,mediaStatus);
+  try{
+   media.src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});
+   if(post.media_type==='image')media.onload=()=>mediaStatus.remove();
+   else media.onloadeddata=()=>mediaStatus.remove();
+   media.onerror=()=>{mediaStatus.textContent='Original unavailable';};
+  }catch(e){mediaStatus.textContent='Original unavailable';}
+  const bar=element('div','loox-post-action-bar');
+  const icons={
+   heart:'<path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/>',
+   save:'<path d="M5 4.5A2.5 2.5 0 0 1 7.5 2h9A2.5 2.5 0 0 1 19 4.5V22l-7-5-7 5V4.5Z"/>',
+   download:'<path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 17v3h16v-3"/>',
+   link:'<path d="M10 13a5 5 0 0 0 7.6.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.6-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>'
+  };
+  const control=(name,label,fn)=>{
+   const b=action('',fn,'loox-post-icon-button',e=>status.textContent=e.message);
+   b.setAttribute('aria-label',label);b.title=label;
+   b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[name]+'</svg>';
+   return b;
+  };
+  const like=control('heart','Like this post',async()=>{
+   await this.like(post,like);
+   like.setAttribute('aria-pressed',String(!!post.liked));
+   like.title=post.liked?'Unlike post':'Like post';
+   status.textContent=post.liked?'Liked':'Like removed';
+  });
+  like.setAttribute('aria-pressed',String(!!post.liked));
+  const save=control('save','Save post',async()=>{
+   await this.save(post,save);
+   save.setAttribute('aria-pressed',String(!!post.saved));
+   save.title=post.saved?'Remove saved post':'Save post';
+   status.textContent=post.saved?'Saved':'Removed from saved';
+  });
+  save.dataset.postId=post.id;save.setAttribute('aria-pressed',String(!!post.saved));
+  const download=control('download','Download original',async()=>{
+   const url=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});
+   const ext=post.media_type==='video'?'mp4':'png';
+   try{
+    const response=await fetch(url,{mode:'cors'});
+    if(!response.ok)throw Error('Download unavailable');
+    const blob=await response.blob();
+    const link=document.createElement('a'),local=URL.createObjectURL(blob);
+    link.href=local;link.download='loox-creation-'+post.id+'.'+(blob.type==='image/webp'?'webp':blob.type==='image/jpeg'?'jpg':ext);
+    document.body.append(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(local),60000);
+   }catch{
+    // The media CDN may not expose cross-origin fetch; allow saving from a new tab.
+    window.open(url,'_blank','noopener,noreferrer');
+    status.textContent='Original opened in a new tab. Use Save image/video as if download does not start.';
+   }
+  });
+  const share=control('link','Copy post link',async()=>{
+   await navigator.clipboard.writeText(new URL('community.html?post='+encodeURIComponent(post.id),location.href).href);
+   status.textContent='Post link copied';
+  });
+  bar.append(like,save,download,share);
+  stage.append(bar);
+  const info=element('div','loox-post-info');
+  const creator=element('a','community-creator','@'+post.username);creator.href='creator.html?id='+post.creator_id;
+  info.append(creator,element('p','loox-post-caption',post.caption),element('p','community-note',new Date(post.created_at).toLocaleString()));
+  if(post.shared_prompt){
+   const prompt=element('details','loox-post-prompt'),summary=element('summary','','View prompt');
+   prompt.append(summary,element('p','community-shared-prompt',post.shared_prompt),
+    action('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied';},'community-button',e=>status.textContent=e.message));
+   info.append(prompt);
+  }
+  const similar=element('section','loox-post-related');
+  const options=this.posts.filter(p=>p.id!==post.id&&p.media_type===post.media_type).slice(0,8);
+  if(options.length){
+   similar.append(element('h3','','More like this'));
+   const strip=element('div','loox-post-related-grid');
+   for(const candidate of options){
+    const tile=action('',async()=>{d.close();await this.details(candidate);},'loox-post-related-item',e=>status.textContent=e.message);
+    tile.setAttribute('aria-label','Open similar post: '+candidate.caption);
+    const thumb=element(candidate.media_type==='video'?'video':'img');
+    thumb.loading='lazy';thumb.alt=candidate.caption;
+    if(candidate.media_type==='video'){thumb.muted=true;thumb.playsInline=true;thumb.preload='metadata';}
+    tile.append(thumb,element('span','',candidate.caption));
+    mediaURL(this.state,candidate.media_path,'loox-results',{type:'post',id:candidate.id}).then(url=>{
+     if(thumb.isConnected)thumb.src=url;
+    }).catch(()=>{tile.classList.add('loox-related-unavailable');});
+    strip.append(tile);
+   }
+   similar.append(strip);
+  }
+  d.append(stage,info,status);
+  if(options.length)d.append(similar);
+ }
+
  async loadProfile(seq){const p=await rpc(this.state,'loox_creator_summary',{p_creator:this.creator});if(seq!==this.epoch)return;this.profile.replaceChildren();const own=this.state.user?.id===this.creator;
  if(!p){this.profile.append(element('h2','',own?'Create your public profile':'This profile is private or unavailable'),element('p','community-note',own?'Choose the name and picture people see on your creations.':'Only public creator profiles appear in the community.'));if(own)this.profile.append(action('Set up profile',()=>editCreator({state:this.state,auth:this.auth,onSave:()=>this.load(true)}),'community-primary',e=>this.note(e.message)));return;}
  const avatar=element('div','community-profile-avatar',p.display_name.slice(0,1));if(p.avatar_path)try{const img=element('img');img.src=await mediaURL(this.state,p.avatar_path,'loox-avatars',{type:'avatar',id:p.user_id});img.alt=p.display_name;avatar.replaceChildren(img);}catch{}
