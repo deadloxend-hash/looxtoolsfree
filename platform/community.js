@@ -105,6 +105,7 @@ export class Community {
   };
   const like=control('heart','Like this post',async()=>{
    await this.like(post,like);
+   like.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons.heart+'</svg>';
    like.setAttribute('aria-pressed',String(!!post.liked));
    like.title=post.liked?'Unlike post':'Like post';
    status.textContent=post.liked?'Liked':'Like removed';
@@ -112,6 +113,7 @@ export class Community {
   like.setAttribute('aria-pressed',String(!!post.liked));
   const save=control('save','Save post',async()=>{
    await this.save(post,save);
+   save.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons.save+'</svg>';
    save.setAttribute('aria-pressed',String(!!post.saved));
    save.title=post.saved?'Remove saved post':'Save post';
    status.textContent=post.saved?'Saved':'Removed from saved';
@@ -134,6 +136,7 @@ export class Community {
     status.textContent='Original opened in a new tab. Use Save image/video as if download does not start.';
    }
   });
+  if(post.allow_download===false){download.disabled=true;download.title='Downloads disabled by creator';download.setAttribute('aria-label','Downloads disabled by creator');}
   const share=control('link','Copy post link',async()=>{
    await navigator.clipboard.writeText(new URL('community.html?post='+encodeURIComponent(post.id),location.href).href);
    status.textContent='Post link copied';
