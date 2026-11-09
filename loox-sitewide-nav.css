@@ -1732,3 +1732,24 @@ body.loox-sitewide-active .lx-avatar{overflow:hidden;flex-shrink:0}
 @media(prefers-reduced-motion:reduce){
  body.loox-sitewide-active.loox-workspace-sidebar > main{transition:none!important}
 }
+
+/* V61 — the landing-page navigation is the ONLY site navigation. */
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation{
+ border-bottom:0!important;max-height:none!important;min-height:0!important;
+ width:100%!important;overflow-y:auto!important;overflow-x:hidden!important;
+ padding:7px 5px 15px!important;box-sizing:border-box!important
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-list{
+ min-height:0!important;min-width:0!important;width:100%!important;
+ display:flex!important;flex-direction:column!important;overflow-y:auto!important
+}
+body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-dock-toggle{
+ display:flex!important;visibility:visible!important;pointer-events:auto!important;
+ top:165px!important;z-index:10005!important
+}
+body.loox-generator-no-topnav.loox-sitewide-active > aside#loox-sitewide-drawer{
+ z-index:10004!important
+}
+body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
+ display:block!important;z-index:10003!important
+}

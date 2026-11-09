@@ -1,5 +1,8 @@
 /* One reusable LOOX navigation for AI sessions and all workspace pages. */
 const paths={
+ home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
+ grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+ face:'<circle cx="12" cy="12" r="9"/><path d="M9 10h.01M15 10h.01M9 15c1.6 1.3 4.4 1.3 6 0"/>',
  pen:'<path d="M12 20h9"/><path d="m16.5 3.5 4 4L10 18l-5 1 1-5L16.5 3.5Z"/><path d="m14 6 4 4"/>',
  image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 16-5-5L5 21"/>',
  video:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 10 5-5m4 5 5-5m-7 14 5-5"/>',
@@ -36,12 +39,14 @@ export function mountWorkspaceNavigation(host){
   parent.append(link);return link;
  }
  const primary=[
+  ['home','Home','ai-image-landing.html'],
   ['pen','AI Agent','ai-chat.html'],
   ['image','AI Image','ai-text-to-image.html#generate'],
   ['video','AI Video','ai-video-generator.html#generate'],
   ['globe','Community','community.html'],
   ['trending','Trending','trending.html'],
-  ['sparkles','Templates','templates.html']
+  ['sparkles','Templates','templates.html'],
+  ['grid','Utilities','index.html']
  ];
  for(const [icon,label,href] of primary)add(nav,icon,label,href);
  const workspace=document.createElement('details');workspace.className='loox-workspace-group';
@@ -61,7 +66,8 @@ export function mountWorkspaceNavigation(host){
   ['photo','Photo editor','photo-editor.html'],
   ['editvideo','Video editor','video-editor.html'],
   ['erase','Background remover','bg-remove.html'],
-  ['upscale','AI upscaler','ai-image-upscaler.html']
+  ['upscale','AI upscaler','ai-image-upscaler.html'],
+  ['face','Face swap','faceswap.html']
  ])add(creative,icon,label,href,true);
  nav.append(creative);
  host.prepend(nav);

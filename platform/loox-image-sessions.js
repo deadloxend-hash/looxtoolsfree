@@ -1,4 +1,3 @@
-import {mountWorkspaceNavigation} from './workspace-navigation.js?v=6';
 import {publishCreation} from './community.js?v=5';
 // Private media conversations; job API remains responsible for credits and files.
 const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!=null)n.textContent=text;return n;};
@@ -26,7 +25,7 @@ export class MediaSessions {
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
   const recent=el('div','loox-session-recent-label','Recent');
   this.rail.replaceChildren(head,this.button('＋ New chat',()=>this.fresh()),recent,this.list,this.more);
-  if(!this.rail.isConnected)this.root.append(this.rail);mountWorkspaceNavigation(this.rail);
+  if(!this.rail.isConnected)this.root.append(this.rail);
   this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim,this.toggle);
   // New generator workspaces begin with Generative sessions expanded on every screen size.
   this.collapse(matchMedia('(max-width:900px)').matches);

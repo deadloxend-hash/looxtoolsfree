@@ -9,9 +9,8 @@
  if(pinnedWorkspace)document.body.classList.add('loox-workspace-sidebar');
  // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.
  // AI Audio currently links to the Audio-filtered tools listing, not an audio generator.
- const aiSessionsOnly=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page)
-   || (page==='index.html'&&new URLSearchParams(location.search).get('category')?.toLowerCase()==='audio');
- if(aiSessionsOnly)document.body.classList.add('loox-ai-sessions-only');
+ const hasSessionHistory=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page);
+ if(hasSessionHistory)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
  const inMediaGenerator=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page);
@@ -100,103 +99,31 @@
   else native.append(tabs);
   if(nativeTabs)nativeTabs.classList.add('loox-internal-templates-tabs');
  }
- // Clickable sidebar, matching the Home/AI grouping.
- const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';sidebar.setAttribute('aria-label','LOOX tools navigation');
- const sideContent=el('nav','loox-sitewide-drawer-list');
- const svgIcons={
-  home:'<path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/>',
-  ai:'<path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"/><path d="m20 17 .5 1.5L22 19l-1.5.5L20 21l-.5-1.5L18 19l1.5-.5z"/>',
-  photo:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',
-  video:'<rect x="3" y="5" width="14" height="14" rx="2"/><path d="m17 10 4-3v10l-4-3z"/>',
-  face:'<circle cx="12" cy="12" r="8"/><path d="M9 10h.01M15 10h.01M9 15c1.6 1.3 4.4 1.3 6 0"/>',
-  blur:'<path d="M7 3h10M7 21h10M3 7v10M21 7v10"/><circle cx="12" cy="12" r="4"/>',
-  remove:'<path d="M3 6h18M7 3v6m10-6v6M5 12l4 4m0-4-4 4m9-4 4 4m0-4-4 4"/>',
-  folder:'<path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
-  guide:'<path d="M4 5a2 2 0 0 1 2-2h6v17H6a2 2 0 0 0-2 2zM20 5a2 2 0 0 0-2-2h-6v17h6a2 2 0 0 1 2 2z"/>',
-  diamond:'<path d="m6 3-4 6 10 12L22 9l-4-6zM2 9h20M9 3l-2 6 5 12 5-12-2-6"/>',
-  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
-  design:'<path d="m12 2 9 5-9 5-9-5 9-5z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/>',
-  audio:'<path d="M3 10v4M7 6v12M11 3v18M15 7v10M19 4v16M23 10v4"/>',
-  grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'
- };
- const iconNode=name=>{
-  const wrap=el('span','loox-sitewide-drawer-icon');
-  wrap.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(svgIcons[name]||svgIcons.grid)+'</svg>';
-  return wrap;
- };
- // The same navigation structure is shared by every desktop and mobile page.
- // No separate promotional tiles or PDF dropdowns in the sidebar.
- const targetIsCurrent=href=>{
-  const target=new URL(href,root),here=new URL(location.href);
-  if(target.pathname!==here.pathname||target.search!==here.search)return false;
-  if(target.hash)return target.hash===here.hash;
-  return !here.hash || page!=='index.html';
- };
- const addLink=([label,href,icon])=>{
-  const a=el('a','loox-sitewide-drawer-link');a.href=url(href);
-  a.append(iconNode(icon),el('span','loox-sitewide-drawer-label',label));
-  if(targetIsCurrent(href))a.setAttribute('aria-current','page');
-  sideContent.append(a);
-  return a;
- };
- const group=(name,rows)=>{
-  sideContent.append(el('h2','loox-sitewide-group',name));
-  rows.forEach(addLink);
- };
- group('Navigation',[
-  ['Home','index.html','home'],
-  ['AI Studio','ai-image-landing.html','ai'],
-  ['Community','community.html','grid'],
-  ['Trending','trending.html','ai'],
-  ['Templates','templates.html','grid'],
-  ['Workflow starters','workflows.html','folder'],
-  ['Collections','collections.html','folder'],
-  ['My creator profile','creator.html','user']
- ]);
- group('Editors',[
-  ['Photo Editor','photo-editor.html','photo'],
-  ['Video Editor','video-editor.html','video'],
-  ['Design Studio','design-studio.html','design']
- ]);
- group('AI Generators',[
-  ['AI Photo Generator','ai-image-landing.html','photo'],
-  ['AI Video Generator','ai-video-landing.html','video'],
-  // Dedicated AI audio generation is not available yet; link to working audio utilities.
-  ['AI Audio Generator','index.html?category=Audio#tools','audio'],
-  ['AI Face Swap','faceswap.html','face']
- ]);
- group('Utilities',[
-  ['AI Background Remover','bg-remove.html','remove'],
-  ['AI Face Blur','face-blur.html','blur']
- ]);
- const explore=addLink(['Explore All Tools','index.html#tools','grid']);
- explore.classList.add('loox-sitewide-explore-link');
- group('System / User',[
-  ['Guides & Tutorials','guides.html','guide'],
-  ['Pricing & Credits','pricing.html','diamond'],
-  ['My Account','account.html','user']
- ]);
+ // One canonical landing-page navigation drawer on every LOOX page.
+ const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';
+ sidebar.setAttribute('aria-label','LOOX main navigation');
+ const sideContent=el('div','loox-sitewide-drawer-list');
+ const fallback=el('a','loox-sitewide-drawer-link','Home');
+ fallback.href=url('ai-image-landing.html');sideContent.append(fallback);
  sidebar.append(sideContent);
- // The same exact workspace menu is shared with the AI Agent and generation rails.
- if(!aiSessionsOnly){
-  const stylesheet=el('link');stylesheet.rel='stylesheet';stylesheet.href=url('platform/workspace-navigation.css?v=6');document.head.append(stylesheet);
-  import(url('platform/workspace-navigation.js?v=6')).then(({mountWorkspaceNavigation})=>{
-   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
-  }).catch(error=>console.warn('LOOX workspace navigation could not load:',error));
- }
+ const navStyle=el('link');navStyle.rel='stylesheet';
+ navStyle.href=url('platform/workspace-navigation.css?v=7');
+ document.head.append(navStyle);
+ import(url('platform/workspace-navigation.js?v=7')).then(({mountWorkspaceNavigation})=>{
+  sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
+ }).catch(error=>console.warn('LOOX main navigation failed:',error));
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
  dockToggle.setAttribute('aria-controls','loox-sitewide-drawer');dockToggle.setAttribute('aria-expanded','false');
  dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
  // Do not mount the unrelated sitewide tools drawer in the focused AI workspaces.
- if(!aiSessionsOnly)document.body.append(scrim,sidebar,dockToggle);
+ document.body.append(scrim,sidebar,dockToggle);
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
-  if(aiSessionsOnly)open=false;
   // Workspace sidebars default to open, but the edge tab always lets users hide or restore them.
   sidebar.classList.toggle('is-open',open);
-  scrim.classList.toggle('is-open',open&&!desktop.matches);
+  scrim.classList.toggle('is-open',open&&(!desktop.matches||hasSessionHistory));
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
   dockToggle.setAttribute('aria-expanded',String(open));
   dockToggle.setAttribute('aria-label',open?'Collapse LOOX sidebar':'Open LOOX sidebar');
@@ -209,8 +136,8 @@
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
  // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
-  desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches&&(pinnedWorkspace||isHome)));
- setDrawer(!aiSessionsOnly&&desktop.matches&&(pinnedWorkspace||isHome));
+  desktop.addEventListener('change',()=>setDrawer(!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome)));
+ setDrawer(!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
  scrim.addEventListener('click',closeDrawer);
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only

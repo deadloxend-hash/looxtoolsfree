@@ -1,4 +1,3 @@
-import {mountWorkspaceNavigation} from './workspace-navigation.js?v=6';
 import {auth,state,initialize,pricing} from './account.js?v=9';
 
 const $=id=>document.getElementById(id);
@@ -7,7 +6,7 @@ const prompt=$('aiPrompt'),form=$('aiForm'),send=$('aiSend');
 const modelButton=$('aiModelButton'),modelMenu=$('aiModelMenu');
 const toolsButton=$('aiToolsButton'),toolsMenu=$('aiToolsMenu');
 const modelName=$('aiModelName'),status=$('aiStatus'),thread=$('aiThread');
-const recentPanel=$('aiRecentPanel'),recentToggle=$('aiRecentToggle');mountWorkspaceNavigation(recentPanel?.querySelector('.ai-recent-inner')||recentPanel);
+const recentPanel=$('aiRecentPanel'),recentToggle=$('aiRecentToggle');
 const recentList=$('aiRecentList'),recentMore=$('aiRecentMore'),recentScrim=$('aiRecentScrim');
 // The landing-page grip must remain outside the translating rail so it stays visible when closed.
 if(recentPanel&&recentToggle){
