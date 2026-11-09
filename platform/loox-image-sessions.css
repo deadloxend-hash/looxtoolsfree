@@ -196,3 +196,14 @@ body.loox-community-route .loox-session-rail,body.loox-community-route .loox-ses
 .loox-session-pin svg{display:block;width:15px;height:15px;pointer-events:none}
 .loox-session-row.is-pinned .loox-session-pin,.ai-recent-item.is-pinned .loox-session-pin{color:#c5bdcd!important;filter:none!important}
 .loox-session-pin:hover,.loox-session-pin:focus-visible{color:#e3ddeb!important}
+
+/* V6: clean, three-word recent labels with full titles retained in tooltips. */
+.loox-session-entry,.ai-recent-open,.loox-session-recent-label,
+.loox-session-head,.ai-recent-head{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif!important}
+.loox-session-entry,.ai-recent-open{font-size:12.5px!important;font-weight:500!important;letter-spacing:-.012em;line-height:1.45!important}
+.loox-session-entry,.ai-recent-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ai-recent-item{padding-left:9px!important}
+.ai-recent-item .ai-session-icon{display:none!important}
+@media(min-width:901px){
+ .loox-session-toggle,.ai-recent-toggle{display:none!important}
+}

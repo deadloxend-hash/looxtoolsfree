@@ -109,3 +109,25 @@ body.loox-uc.loox-conversations.lig-body .lig-compose-wrap .loox-uc-title:not([h
   margin-bottom:8px!important;
  }
 }
+
+/* V6: Shared, readable LOOX workspace navigation and scalable line icons. */
+:root{--loox-ai-sidebar-width:252px}
+.loox-workspace-navigation{width:100%;min-width:0;gap:3px;padding:3px 0 12px;max-height:min(55dvh,480px);overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#6c5775 transparent;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+.loox-workspace-navigation a.loox-workspace-link{display:flex;gap:11px;align-items:center;min-height:37px;padding:7px 11px;font:500 13px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;letter-spacing:-.012em;color:#ddd5e4}
+.loox-workspace-navigation a.loox-workspace-link:hover,.loox-workspace-navigation a.loox-workspace-link[aria-current="page"]{color:#fff;background:#30243c}
+.loox-workspace-navigation .loox-workspace-icon{display:grid;flex:none;place-items:center;width:19px;height:19px;color:#b79ccf}
+.loox-workspace-navigation svg{display:block;width:18px;height:18px}
+.loox-workspace-navigation .loox-workspace-label{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.loox-workspace-navigation .loox-workspace-external{display:grid;place-items:center;width:14px;height:14px;opacity:.6}
+.loox-workspace-navigation .loox-workspace-external svg{width:13px;height:13px}
+.loox-workspace-navigation .loox-workspace-group{border-top:1px solid #33283d;margin-top:7px;padding-top:6px}
+.loox-workspace-navigation .loox-workspace-group summary{display:flex;align-items:center;gap:10px;min-height:36px;padding:9px 11px;font:600 12px/1.2 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;cursor:pointer;list-style:none;color:#bbb0c9}
+.loox-workspace-navigation .loox-workspace-group summary::-webkit-details-marker{display:none}
+.loox-workspace-navigation .loox-workspace-group summary:after{content:"";width:6px;height:6px;margin-left:auto;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);transition:transform .15s}
+.loox-workspace-navigation .loox-workspace-group[open] summary:after{transform:rotate(225deg)}
+.loox-workspace-navigation .loox-workspace-group summary svg{width:17px;height:17px}
+.loox-workspace-navigation .loox-workspace-group>a{padding-left:19px}
+.loox-workspace-navigation a.loox-creative-tools-title{margin-top:8px;border-top:1px solid #33283d;border-radius:0;padding-top:15px;font-weight:650;color:#d5b8ef}
+.loox-workspace-navigation .loox-creative-links>a{padding-left:19px}
+body.loox-sitewide-active .loox-sitewide-drawer-list>.loox-workspace-navigation{max-height:calc(100dvh - 150px);padding:6px 10px 14px}
+@media(max-height:650px){.loox-workspace-navigation{max-height:43dvh}.loox-workspace-navigation a.loox-workspace-link{min-height:34px;padding-top:5px;padding-bottom:5px}}

@@ -1,10 +1,11 @@
-import {mountWorkspaceNavigation} from './workspace-navigation.js?v=2';
+import {mountWorkspaceNavigation} from './workspace-navigation.js?v=6';
 import {publishCreation} from './community.js?v=4';
 // Private media conversations; job API remains responsible for credits and files.
 const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!=null)n.textContent=text;return n;};
 const checked=r=>{if(r.error)throw Error(r.error.message);return r.data;};
 const pinSvg='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 5 5-3 1-3 5-5-5 5-3 1-3Z"/><path d="m10 14-7 7"/></svg>';
 const date=t=>new Date(t).toLocaleString();
+const sessionPreview=title=>String(title||'Untitled session').trim().split(/\s+/u).slice(0,3).join(' ');
 export class MediaSessions {
  constructor(options){
   Object.assign(this,options);this.id=null;this.epoch=0;this.user=undefined;this.offset=0;
@@ -69,7 +70,7 @@ export class MediaSessions {
   if(!this.state.user)return;const uid=this.state.user.id;if(reset)this.offset=0;
   const rows=checked(await this.state.client.from('loox_media_sessions').select('*').order('updated_at',{ascending:false}).order('id').range(this.offset,this.offset+39));
   if(uid!==this.state.user?.id)return;if(reset)this.list.replaceChildren();this.offset+=rows.length;this.more.hidden=rows.length<40;
-  for(const s of rows){const row=el('div','loox-session-row');row.classList.toggle('active',s.id===this.id);const open=this.button(s.title,()=>this.open(s.id));open.className='loox-session-entry';open.title=s.title+'\nCreated '+date(s.created_at)+'\nLast activity '+date(s.updated_at);
+  for(const s of rows){const row=el('div','loox-session-row');row.classList.toggle('active',s.id===this.id);const open=this.button(sessionPreview(s.title),()=>this.open(s.id));open.className='loox-session-entry';open.title=s.title+'\nCreated '+date(s.created_at)+'\nLast activity '+date(s.updated_at);
    const menu=el('details','loox-session-menu'),summary=el('summary','','⋯');summary.setAttribute('aria-label','Session actions');
    const pin=this.button('',()=>this.togglePinnedSession(s.id));pin.className='loox-session-pin';pin.innerHTML=pinSvg;pin.title='Pin chat';pin.setAttribute('aria-label','Pin chat');pin.setAttribute('aria-pressed','false');
    menu.append(summary,this.button('Rename',async()=>{const title=window.prompt('Session name',s.title)?.trim();if(!title)return;checked(await this.state.client.from('loox_media_sessions').update({title:title.slice(0,120)}).eq('id',s.id));await this.loadList();}),this.button('Delete session',async()=>{if(this.isBusy())throw Error('Wait for the current generation.');if(!confirm('Delete this session? Original media files and credit records stay in your account.'))return;checked(await this.state.client.from('loox_media_sessions').delete().eq('id',s.id));if(this.id===s.id)await this.fresh();else await this.loadList();}));const thumb=el('span','loox-session-thumb','✧');row.append(thumb,open,pin,menu);this.list.append(row);row.dataset.session=s.id;

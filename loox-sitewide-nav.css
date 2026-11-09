@@ -1621,3 +1621,17 @@ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active
 #loox-sitewide-header .loox-sitewide-logo{color:#fff!important;text-decoration:none!important}
 @media(max-width:790px){#loox-sitewide-header .loox-sitewide-wordmark{font-size:25px}}
 @media(max-width:480px){#loox-sitewide-header .loox-sitewide-wordmark{font-size:22px}}
+
+/* V6: identical AI navigation, consistent typography and always-present desktop workspace rail. */
+body.loox-sitewide-active .loox-sitewide-links a{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;font-size:12px;font-weight:550;letter-spacing:-.015em;white-space:nowrap}
+body.loox-sitewide-active .loox-ai-workspace-symbol svg{width:17px;height:17px;display:block}
+body.loox-sitewide-active .loox-internal-templates-tabs{display:none!important}
+body.loox-sitewide-active .loox-sitewide-drawer-list{width:100%;min-width:0}
+@media(min-width:901px){
+ body.loox-sitewide-active:not(.loox-ai-sessions-only) .loox-sitewide-burger,
+ body.loox-sitewide-active:not(.loox-ai-sessions-only) .loox-sitewide-dock-toggle{display:none!important}
+}
+@media(max-width:1200px){
+ body.loox-sitewide-active .loox-sitewide-links{gap:clamp(4px,1vw,12px)}
+ body.loox-sitewide-active .loox-sitewide-links a{font-size:11px;padding-inline:5px}
+}

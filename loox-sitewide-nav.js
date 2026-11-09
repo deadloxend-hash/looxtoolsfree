@@ -34,7 +34,7 @@
  const wordmark=el('span','loox-sitewide-wordmark','LOOX');logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
- [['AI Image',imageTabHref],['AI Videos',videoTabHref],['Guides','guides.html'],['Pricing','pricing.html'],['Blog','blog.html']].forEach(([name,href])=>{
+ [['AI Agent','ai-chat.html'],['AI Image','ai-text-to-image.html#generate'],['AI Video','ai-video-generator.html#generate'],['Community','community.html'],['Trending','trending.html'],['Templates','templates.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);if(href.split('#')[0]===page)link.setAttribute('aria-current','page');
   if(name==='Blog'){const outbound=el('span','loox-blog-arrow','↗');outbound.setAttribute('aria-hidden','true');link.append(outbound);}
   links.append(link);
@@ -63,83 +63,40 @@
   native.classList.add(editor?'loox-sitewide-workspacebar':'loox-sitewide-simplebar');
   }
  }
- // In focused AI workspaces replace only the mode navigation, not the
- // existing generation forms, templates controllers or account controls.
- const workspaces={
-  'ai-chat.html':'agent',
-  'ai-text-to-image.html':'image',
-  'ai-video-generator.html':'video'
- };
- if(native&&workspaces[page]&&!native.querySelector('.loox-ai-workspace-tabs')){
-  const tabs=el('nav','loox-ai-workspace-tabs');
-  tabs.setAttribute('aria-label','LOOX AI workspaces');
-  const rows=[
-   ['AI Agent','ai-chat.html','agent','✧'],
-   ['AI Image',imageTabHref,'image','▧'],
-   ['AI Video',videoTabHref,'video','▷'],
-   ['AI Audio','index.html?category=Audio#tools','audio','♫']
-  ];
-  rows.forEach(([label,href,kind,symbol])=>{
-   const link=el('a','loox-ai-workspace-tab');
-   link.href=url(href);link.setAttribute('data-ai-tab',kind);
-   const ico=el('span','loox-ai-workspace-symbol',symbol);
-   ico.setAttribute('aria-hidden','true');
-   link.append(ico,document.createTextNode(label));
-   if(workspaces[page]===kind){link.classList.add('is-active');link.setAttribute('aria-current','page');}
-   tabs.append(link);
+ // Identical workspace destinations are used across Agent, Image, Video and Community.
+ const workspaceKind={'ai-chat.html':'agent','ai-text-to-image.html':'image','ai-video-generator.html':'video'};
+ if(native&&workspaceKind[page]&&!native.querySelector('.loox-ai-workspace-tabs')){
+  const tabs=el('nav','loox-ai-workspace-tabs');tabs.setAttribute('aria-label','LOOX AI workspaces');
+  const icons={
+   agent:'<path d="M12 20h9M16.5 3.5l4 4L10 18l-5 1 1-5L16.5 3.5z"/>',
+   image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 16-5-5L5 21"/>',
+   video:'<rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 10 5-5m4 5 5-5"/>',
+   community:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c-4.5 4.7-4.5 13.3 0 18m0-18c4.5 4.7 4.5 13.3 0 18"/>',
+   trending:'<path d="m3 17 6-6 4 4 8-8M15 7h6v6"/>',
+   templates:'<path d="m12 3 2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>'
+  };
+  [
+   ['AI Agent','ai-chat.html','agent'],
+   ['AI Image','ai-text-to-image.html#generate','image'],
+   ['AI Video','ai-video-generator.html#generate','video'],
+   ['Community','community.html','community'],
+   ['Trending','trending.html','trending'],
+   ['Templates','templates.html','templates']
+  ].forEach(([label,href,kind])=>{
+   const a=el('a','loox-ai-workspace-tab');a.href=url(href);
+   a.dataset.aiTab=kind;
+   const icon=el('span','loox-ai-workspace-symbol');
+   icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[kind]+'</svg>';
+   a.append(icon,document.createTextNode(label));
+   if(workspaceKind[page]===kind){a.classList.add('is-active');a.setAttribute('aria-current','page');}
+   tabs.append(a);
   });
-  // AI Agent has no in-page template controller: link to Image templates.
-   if(page==='ai-chat.html'){
-    const templatesLink=el('a','loox-ai-workspace-tab loox-ai-template-tab','Community');
-    templatesLink.href=url('ai-text-to-image.html#templates');
-    tabs.append(templatesLink);
-   }
-   const templateTabs=native.querySelector('.lig-head-tabs');
+  const nativeTabs=native.querySelector('.lig-head-tabs');
   const accountHost=native.querySelector('[data-loox-account]');
-  if(templateTabs)native.insertBefore(tabs,templateTabs);
+  if(nativeTabs)native.insertBefore(tabs,nativeTabs);
   else if(accountHost)native.insertBefore(tabs,accountHost);
   else native.append(tabs);
-  // Reuse the actual Templates button so the existing image/video
-  // template handlers remain attached. Do not stack a second tab bar.
-  if(templateTabs){
-   const templatesButton=templateTabs.querySelector('[data-lig-view="templates"],[data-lvg-view="templates"]');
-   if(templatesButton){
-    templatesButton.classList.remove('lig-tab');
-    templatesButton.classList.add('loox-ai-workspace-tab','loox-ai-template-tab');
-    templatesButton.textContent='Community';
-    templatesButton.setAttribute('aria-label','Browse community');
-    tabs.append(templatesButton);
-    const activeTool=tabs.querySelector('[data-ai-tab="'+workspaces[page]+'"]');
-    const refreshTemplateState=()=>{
-     const templatesOpen=location.hash==='#templates';
-     // Apply the route before the async model/account bootstrap finishes.
-     document.body.classList.toggle('loox-community-route',templatesOpen);
-     const generate=document.getElementById('lig-generate-view')||document.getElementById('lvg-generate-view');
-     const community=document.getElementById('lig-templates-view')||document.getElementById('lvg-templates-view');
-     if(generate&&community){generate.hidden=templatesOpen;community.hidden=!templatesOpen;}
-     templatesButton.classList.toggle('is-active',templatesOpen);
-     templatesButton.setAttribute('aria-pressed',String(templatesOpen));
-     if(activeTool){
-      activeTool.classList.toggle('is-active',!templatesOpen);
-      if(templatesOpen)activeTool.removeAttribute('aria-current');
-      else activeTool.setAttribute('aria-current','page');
-     }
-    };
-    templatesButton.addEventListener('click',()=>queueMicrotask(refreshTemplateState));
-    window.addEventListener('hashchange',refreshTemplateState);
-    refreshTemplateState();
-   }
-   // Video editor remains available as a small contextual action.
-   const editAction=templateTabs.querySelector('a[href*="video-editor.html"]');
-   if(editAction){
-    editAction.classList.remove('lig-tab');
-    editAction.classList.add('loox-generator-edit-link');
-    const headStart=native.querySelector('.lig-head-start');
-    if(headStart)headStart.append(editAction);
-    else native.insertBefore(editAction,tabs);
-   }
-   templateTabs.remove();
-  }
+  if(nativeTabs)nativeTabs.classList.add('loox-internal-templates-tabs');
  }
  // Clickable sidebar, matching the Home/AI grouping.
  const sidebar=el('aside','loox-sitewide-drawer');sidebar.id='loox-sitewide-drawer';sidebar.setAttribute('aria-label','LOOX tools navigation');
@@ -218,6 +175,13 @@
   ['My Account','account.html','user']
  ]);
  sidebar.append(sideContent);
+ // The same exact workspace menu is shared with the AI Agent and generation rails.
+ if(!aiSessionsOnly){
+  const stylesheet=el('link');stylesheet.rel='stylesheet';stylesheet.href=url('platform/workspace-navigation.css?v=6');document.head.append(stylesheet);
+  import(url('platform/workspace-navigation.js?v=6')).then(({mountWorkspaceNavigation})=>{
+   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
+  }).catch(error=>console.warn('LOOX workspace navigation could not load:',error));
+ }
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
@@ -228,6 +192,7 @@
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
   if(aiSessionsOnly)open=false;
+  else if(desktop.matches)open=true;
   sidebar.classList.toggle('is-open',open);
   scrim.classList.toggle('is-open',open&&!desktop.matches);
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
@@ -240,7 +205,7 @@
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
  // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
-  desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches&&isHome&&page!=='ai-chat.html'));
+  desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches));
  setDrawer(!aiSessionsOnly&&desktop.matches&&isHome&&page!=='ai-chat.html');
  scrim.addEventListener('click',closeDrawer);
 
@@ -273,13 +238,13 @@
  // Small persistent account panel pinned to the bottom of the shared sidebar.
  // Keep it separate from the scrollable navigation; mirror the real account name.
  const sideFooter=el('div','loox-sidebar-footer');
- const sideAccount=el('a','loox-sidebar-account-row');sideAccount.href=url('account.html');
+ const sideAccount=el('a','loox-sidebar-account-row');sideAccount.href=url('creator.html');
  sideAccount.setAttribute('aria-label','Manage your LOOX account');
  const avatarMark=el('span','loox-sidebar-avatar');
  avatarMark.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/><path d="M5.5 19c.8-4 12.2-4 13 0"/></svg>';
  const sideIdentity=el('span','loox-sidebar-identity');
- const sideName=el('strong','loox-sidebar-account-name','My Account');
- const sideSubtitle=el('small','','Manage account');sideIdentity.append(sideName,sideSubtitle);
+ const sideName=el('strong','loox-sidebar-account-name','Profile');
+ const sideSubtitle=el('small','','Creator & account');sideIdentity.append(sideName,sideSubtitle);
  sideAccount.append(avatarMark,sideIdentity);
  const sideOptions=el('div','loox-sidebar-utility-panel');sideOptions.hidden=true;
  sideOptions.id='loox-sidebar-utility-panel';
@@ -464,7 +429,7 @@
    existingLinks.replaceChildren();
    existingLinks.classList.add('loox-popover-links');
    const items=[
-    ['Profile','profile','account.html#profile'],
+    ['Profile','profile','creator.html'],
     ['Subscriptions','subscription','account.html#subscription'],
     ['Usage','usage','account.html#usage'],
     ['Settings','settings','settings.html#workspace-preferences'],
@@ -506,8 +471,8 @@
     enableProfileShortcuts(menu);
   });
   const userName=account.querySelector('.loox-popover-name,.lx-profile-name')?.textContent?.trim();
-  sideName.textContent=userName||'My Account';
-  sideSubtitle.textContent=userName?'Manage account':'Sign in or create account';
+  sideName.textContent=userName||'Profile';
+  sideSubtitle.textContent=userName?'Creator & account':'Sign in or create account';
  }
  const accountObserver=new MutationObserver(syncAccountHeader);
  accountObserver.observe(account,{childList:true});

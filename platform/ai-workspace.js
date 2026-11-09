@@ -1,4 +1,4 @@
-import {mountWorkspaceNavigation} from './workspace-navigation.js?v=2';
+import {mountWorkspaceNavigation} from './workspace-navigation.js?v=6';
 import {auth,state,initialize,pricing} from './account.js?v=9';
 
 const $=id=>document.getElementById(id);
@@ -55,6 +55,7 @@ async function loadAttachments(id){
  if(seq!==openingAttachments||id!==currentThreadId||owner!==state.user?.id)return;
  attachments=data.items||[];drawThread();
 }
+const sessionPreview=title=>String(title||'Untitled session').trim().split(/\s+/u).slice(0,3).join(' ');
 let mobile=window.matchMedia('(max-width:760px)');
 let recentClosed=mobile.matches;
 
@@ -273,7 +274,7 @@ function createRecentRow(t){
  open.title=t.title||'Open conversation';
  const excerpt=document.createElement('span');
  excerpt.className='ai-recent-title';
- excerpt.textContent=t.title||'Conversation';
+ excerpt.textContent=sessionPreview(t.title||'Conversation');
  open.append(excerpt);
  open.title=(t.title||'Conversation')+'\nCreated '+new Date(t.created_at).toLocaleString()+'\nLast activity '+new Date(t.updated_at).toLocaleString();
  const minor=document.createElement('small');
@@ -305,7 +306,7 @@ function createRecentRow(t){
   const title=window.prompt('Session name',t.title)?.trim();if(!title)return;
   try{const result=await state.client.from('loox_chat_threads').update({title:title.slice(0,120)}).eq('id',t.id);if(result.error)throw result.error;await loadRecent(true);}catch(error){note(error.message);}
  });
- del.textContent='Delete';menu.append(summary,rename,del);const icon=document.createElement('span');icon.className='ai-session-icon';icon.textContent='✧';icon.setAttribute('aria-hidden','true');row.append(icon,open,pin,menu);
+ del.textContent='Delete';menu.append(summary,rename,del);row.append(open,pin,menu);
  return row;
 }
 async function loadRecent(reset=true){
