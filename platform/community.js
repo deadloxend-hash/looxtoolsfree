@@ -63,8 +63,73 @@ export class Community {
  catch(error){if(seq===this.epoch){if(reset)this.grid.replaceChildren();this.note(error.message);this.more.hidden=false;this.more.textContent='Try again';}}
  finally{if(seq===this.epoch)this.more.disabled=false;}}
  card(post){const card=element('article','community-card'),open=action('',()=>{},'community-media');open.setAttribute('aria-label','Open '+post.caption);open.dataset.mediaType=post.media_type;
- const media=element(post.media_type==='video'?'video':'img');media.loading='lazy';if(post.media_type==='video'){media.muted=true;media.playsInline=true;media.preload='metadata';media.setAttribute('aria-label',post.caption);}else{media.alt=post.caption;media.decoding='async';}open.append(media);open.addEventListener('click',()=>this.details(post).catch(e=>this.note(e.message)));const art=element('div','community-card-art');art.append(open);card.append(art);
- const observer=new IntersectionObserver(items=>{for(const item of items)if(item.isIntersecting){observer.disconnect();mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id}).then(url=>{if(!media.isConnected)return;media.src=url;if(post.media_type==='video')media.addEventListener('loadedmetadata',()=>{if(media.duration>0)media.currentTime=Math.min(.1,media.duration/2);},{once:true});}).catch(()=>{open.replaceChildren(element('span','','Preview unavailable'));});}},{rootMargin:'300px'});observer.observe(card);
+ // Keep the card at a real height before signed R2 media is fetched.
+ // Do not show a browser broken-image glyph or the alt text as layout content.
+ const media=element(post.media_type==='video'?'video':'img');
+ open.classList.add('loox-media-pending');
+ if(post.media_type==='video'){
+  media.muted=true;media.playsInline=true;media.preload='metadata';
+  media.setAttribute('aria-label',post.caption);
+ }else{
+  media.alt='';media.decoding='async';media.loading='eager';
+ }
+ open.append(media);
+ open.addEventListener('click',()=>this.details(post).catch(e=>this.note(e.message)));
+ const art=element('div','community-card-art');art.append(open);card.append(art);
+ const markReady=(width,height)=>{
+  if(!open.isConnected)return;
+  if(width>0&&height>0)open.style.aspectRatio=width+' / '+height;
+  open.classList.remove('loox-media-pending','loox-media-error');
+  open.classList.add('loox-media-ready');
+ };
+ const markError=()=>{
+  if(!open.isConnected)return;
+  open.classList.remove('loox-media-pending');
+  open.classList.add('loox-media-error');
+  media.removeAttribute('src');
+  if(!open.querySelector('.loox-media-error-label'))
+   open.append(element('span','loox-media-error-label','Preview unavailable'));
+ };
+ const loadPreview=async()=>{
+  if(!open.isConnected)return;
+  if(post.media_type==='video'){
+   const src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id});
+   if(!open.isConnected)return;
+   media.addEventListener('loadedmetadata',()=>{
+    if(media.duration>0)media.currentTime=Math.min(.1,media.duration/2);
+    markReady(media.videoWidth||16,media.videoHeight||9);
+   },{once:true});
+   media.addEventListener('error',markError,{once:true});
+   media.src=src;
+   return;
+  }
+  // Decode off-screen first; promote to the visible gallery only once valid.
+  let lastError;
+  for(const variant of ['preview','original']){
+   try{
+    const src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant});
+    const candidate=new Image();
+    candidate.decoding='async';
+    await new Promise((resolve,reject)=>{
+     candidate.onload=resolve;
+     candidate.onerror=()=>reject(Error('Media could not be decoded'));
+     candidate.src=src;
+    });
+    if(!open.isConnected)return;
+    media.src=src;
+    markReady(candidate.naturalWidth,candidate.naturalHeight);
+    return;
+   }catch(error){lastError=error;}
+  }
+  throw lastError||Error('Preview unavailable');
+ };
+ const observer=new IntersectionObserver(items=>{
+  for(const item of items)if(item.isIntersecting){
+   observer.disconnect();
+   loadPreview().catch(markError);
+  }
+ },{rootMargin:'450px'});
+ observer.observe(card);
  const body=element('div','community-card-body'),creator=element('a','community-creator');creator.href='creator.html?id='+post.creator_id;
  const avatar=element('span','community-avatar',post.display_name?.slice(0,1)||'L');creator.append(avatar,element('span','','@'+post.username));
  const hoverCreator=element('a','community-hover-creator');hoverCreator.href=creator.href;hoverCreator.setAttribute('aria-label','View '+(post.display_name||post.username)+' profile');
