@@ -299,7 +299,7 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loo
 }
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:hover:not([aria-current="page"]),
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:active:not([aria-current="page"]){
- background:transparent!important;color:#f7f1fc!important;
+ background:#292132!important;color:#fff!important;
 }
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:focus-visible:not([aria-current="page"]){
  background:#211b2b!important;outline:1px solid #70568a!important;outline-offset:-1px!important;
@@ -339,4 +339,20 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loo
 }
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-creative-links>a.loox-workspace-link{
  padding-left:17px!important;
+}
+
+/* V13 — Restore subtle navigation hover without confusing the active page. */
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link{
+ transition:background-color .18s ease,color .18s ease!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:hover:not([aria-current="page"]) .loox-workspace-icon{
+ color:#d9b9ef!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-group>summary:hover{
+ background:#292132!important;color:#fff!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link{
+  transition:none!important;
+ }
 }
