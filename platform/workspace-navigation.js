@@ -43,7 +43,7 @@ export function mountWorkspaceNavigation(host){
   ['home','Home','ai-image-landing.html'],
   ['pen','AI Agent','ai-chat.html'],
   ['image','AI Image','ai-text-to-image.html#generate'],
-  ['video','AI Video','ai-video-generator.html#generate'],
+  ['video','AI Video',active.pathname.endsWith('/ai-image-landing.html')?'ai-video-landing.html':'ai-video-generator.html#generate'],
   ['globe','Community','community.html'],
   ['trending','Trending','trending.html'],
   ['sparkles','Templates','templates.html'],

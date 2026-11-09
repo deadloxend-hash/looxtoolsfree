@@ -21,3 +21,17 @@ body.ai-chat>main.ai-chat-stage{flex:1;min-height:0;height:auto;overflow:hidden;
 @keyframes ai-dots{0%,70%,100%{opacity:.3}35%{opacity:1;transform:translateY(-3px)}}@keyframes ai-arrive{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 @media(max-width:600px){.ai-thread{padding:20px 12px 12px}.ai-composer-wrap{padding:8px 10px max(10px,env(safe-area-inset-bottom))}.ai-composer{padding:10px 12px}.ai-msg{font-size:13px}.ai-msg.user{max-width:90%}}
 @media(prefers-reduced-motion:reduce){.ai-msg,.ai-typing-dot{animation:none}}
+
+/* V18: non-collapsible AI Agent sessions with usable mobile chat area. */
+body.ai-chat.ai-agent-permanent-sessions .ai-recent-panel{transform:translateX(0)!important;visibility:visible!important;pointer-events:auto!important}
+body.ai-chat.ai-agent-permanent-sessions .ai-recent-toggle,
+body.ai-chat.ai-agent-permanent-sessions #aiRecentToggle,
+body.ai-chat.ai-agent-permanent-sessions .ai-recent-scrim{display:none!important}
+@media(min-width:761px){body.ai-chat.ai-agent-permanent-sessions .ai-chat-body{margin-left:var(--loox-ai-sidebar-width,252px)!important;width:calc(100% - var(--loox-ai-sidebar-width,252px))!important;min-width:0!important}}
+@media(max-width:760px){
+ body.ai-chat.ai-agent-permanent-sessions .ai-recent-panel{width:min(190px,42vw)!important}
+ body.ai-chat.ai-agent-permanent-sessions .ai-chat-body{width:calc(100% - min(190px,42vw))!important;margin-left:min(190px,42vw)!important;min-width:0!important}
+ body.ai-chat.ai-agent-permanent-sessions .ai-thread{padding:14px 9px!important}
+ body.ai-chat.ai-agent-permanent-sessions .ai-composer-wrap{padding:8px 7px max(8px,env(safe-area-inset-bottom))!important}
+ body.ai-chat.ai-agent-permanent-sessions .ai-composer{padding:9px 8px!important}
+}

@@ -8,14 +8,6 @@ const toolsButton=$('aiToolsButton'),toolsMenu=$('aiToolsMenu');
 const modelName=$('aiModelName'),status=$('aiStatus'),thread=$('aiThread');
 const recentPanel=$('aiRecentPanel'),recentToggle=$('aiRecentToggle');
 const recentList=$('aiRecentList'),recentMore=$('aiRecentMore'),recentScrim=$('aiRecentScrim');
-// The landing-page grip must remain outside the translating rail so it stays visible when closed.
-if(recentPanel&&recentToggle){
- const layout=recentPanel.closest('.ai-chat-layout');
- if(layout)layout.append(recentToggle);
- recentToggle.classList.add('loox-ai-dock-toggle');
- recentToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">‹</span>';
- recentToggle.setAttribute('aria-controls',recentPanel.id);
-}
 const draftsKey='loox-ai-start-v1', historyURL='https://looxtoolfree-backend.vercel.app/api/loox-chat-history';
 const chatURL='https://looxtoolfree-backend.vercel.app/api/loox-chat';
 let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
@@ -64,7 +56,7 @@ async function loadAttachments(id){
 }
 const sessionPreview=title=>String(title||'Untitled session').trim().split(/\s+/u).slice(0,3).join(' ');
 let mobile=window.matchMedia('(max-width:760px)');
-let recentClosed=mobile.matches;
+let recentClosed=false;
 
 function note(value){if(status)status.textContent=value;}
 function allowance(kind=model){
@@ -226,21 +218,15 @@ prompt?.addEventListener('keydown',event=>{
  }
 });
 
-function setRecentOpen(open){
+// AI Agent sessions are permanent and never close on mobile or desktop.
+function setRecentOpen(){
  if(!recentPanel)return;
- recentClosed=!open;
- recentPanel.classList.toggle('is-collapsed',recentClosed);
- document.body.classList.toggle('ai-recent-open',open);
- recentToggle.setAttribute('aria-expanded',String(open));
- recentToggle.querySelector('.loox-dock-arrow').textContent=open?'‹':'›';
- recentToggle.title=open?'Hide generative sessions':'Show generative sessions';
- recentToggle.setAttribute('aria-label',open?'Hide generative sessions':'Show generative sessions');
- if(recentScrim)recentScrim.hidden=!open||!mobile.matches;
+ recentClosed=false;
+ recentPanel.classList.remove('is-collapsed');
+ document.body.classList.add('ai-recent-open','ai-agent-permanent-sessions');
+ if(recentScrim)recentScrim.hidden=true;
 }
-recentToggle?.addEventListener('click',()=>setRecentOpen(recentClosed));
-recentScrim?.addEventListener('click',()=>setRecentOpen(false));
-mobile.addEventListener('change',()=>{if(recentScrim)recentScrim.hidden=recentClosed||!mobile.matches;});
-setRecentOpen(!mobile.matches);
+setRecentOpen();
 
 function chatURLState(id){
  const u=new URL(location.href);
@@ -253,7 +239,6 @@ function newChat(focus=true){
  if(busy){note('Finish the current reply before starting a new chat.');return;}
  currentThreadId=null;messages=[];attachments=[];openingAttachments++;activeAnimation++;
  chatURLState(null);drawThread();
- if(mobile.matches)setRecentOpen(false);
  note('New chat ready.');if(focus)prompt.focus();
  renderSelectedThread();
 }
@@ -348,7 +333,6 @@ async function openThread(id){
   messages=result.messages.map(m=>({role:m.role,text:m.content}));
   attachments=[];drawThread();chatURLState(id);renderSelectedThread();quotaNote();
   await loadAttachments(id).catch(error=>{if(id===currentThreadId)note('Images: '+error.message);});
-  if(mobile.matches)setRecentOpen(false);
  }catch(error){note(error.message);}
 }
 
