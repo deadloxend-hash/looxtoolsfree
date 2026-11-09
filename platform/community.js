@@ -170,6 +170,42 @@ export class Community {
  likeQuick.title=post.liked?'Unlike post':'Like post';
  this.renderLike(post,likeQuick);
  hoverTools.append(likeQuick,copyLink,saveQuick);hover.append(hoverTools,hoverCreator);art.append(hover);
+ // Community phone feed: familiar creator header, full image and accessible actions.
+ // Desktop and the other discovery pages keep their existing gallery cards.
+ if(location.pathname.split('/').pop()==='community.html'){
+  const mobileHeader=element('div','loox-ig-card-header');
+  const profileLink=creator.cloneNode(true);
+  profileLink.classList.add('loox-ig-profile');
+  const more=action('⋯',()=>this.details(post).catch(e=>this.note(e.message)),'loox-ig-more',e=>this.note(e.message));
+  more.setAttribute('aria-label','Open post options and report');more.title='Post options';
+  mobileHeader.append(profileLink,more);
+  card.insertBefore(mobileHeader,art);
+  const mobileFooter=element('div','loox-ig-card-footer');
+  const toolbar=element('div','loox-ig-card-actions');
+  const feedLike=action('',()=>this.like(post,feedLike),'community-like-shortcut loox-ig-action',e=>this.note(e.message));
+  feedLike.dataset.postId=post.id;this.renderLike(post,feedLike);
+  const feedComments=action('',()=>this.details(post).catch(e=>this.note(e.message)),'loox-ig-action loox-ig-comment',e=>this.note(e.message));
+  feedComments.setAttribute('aria-label','View and write comments');
+  feedComments.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.9-5.5a9 9 0 1 1 16.1-4Z"/></svg>';
+  const feedShare=action('',async()=>{
+   const url=new URL('community.html?post='+encodeURIComponent(post.id),location.href).href;
+   if(navigator.share)await navigator.share({title:post.caption,url});
+   else{await navigator.clipboard.writeText(url);this.note('Post link copied.');}
+  },'loox-ig-action loox-ig-share',e=>this.note(e.message));
+  feedShare.setAttribute('aria-label','Share post');
+  feedShare.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg>';
+  const feedSave=action('',()=>this.save(post,feedSave),'community-save-shortcut loox-ig-action loox-ig-save',e=>this.note(e.message));
+  feedSave.dataset.postId=post.id;feedSave.setAttribute('aria-label','Save post');feedSave.setAttribute('aria-pressed',String(!!post.saved));
+  feedSave.innerHTML=saveQuick.innerHTML;
+  toolbar.append(feedLike,feedComments,feedShare,feedSave);
+  const count=element('div','loox-ig-likes',(Number(post.likes)||0).toLocaleString()+' likes');
+  const caption=element('p','loox-ig-caption');
+  caption.append(element('strong','',post.username+' '),document.createTextNode(post.caption||''));
+  const viewComments=action('View '+(Number(post.comments)||0)+' comments',()=>this.details(post).catch(e=>this.note(e.message)),'loox-ig-view-comments',e=>this.note(e.message));
+  const viewPrompt=action(post.shared_prompt?'View prompt · Copy · Recreate':'View post details',()=>this.details(post).catch(e=>this.note(e.message)),'loox-ig-prompt',e=>this.note(e.message));
+  mobileFooter.append(toolbar,count,caption,viewComments,viewPrompt);
+  card.append(mobileFooter);
+ }
  const line=element('div','community-card-line'),like=action('',()=>this.like(post,like),'community-like',e=>this.note(e.message));this.renderLike(post,like);line.append(creator,like);const actions=element('div','community-post-actions'),save=action(post.saved?'Saved':'Save',()=>this.save(post,save),'community-button',e=>this.note(e.message));save.dataset.postId=post.id;save.setAttribute('aria-pressed',String(!!post.saved));actions.append(save,element('span','community-note',(post.comments||0)+' comments'+(post.media_type==='video'?' · '+(post.view_count||0)+' views':'')));body.append(element('p','community-caption',post.caption),element('small','community-note',this.modelName(post.model_id)),line,actions);card.append(body);return card;}
  renderLike(post,b){
   b.setAttribute('aria-pressed',String(!!post.liked));
