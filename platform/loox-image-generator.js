@@ -1,6 +1,6 @@
 import {Community} from './community.js?v=4';
 import {mountModelPicker} from './loox-model-picker.js?v=4';
-import {MediaSessions} from './loox-image-sessions.js?v=15';
+import {MediaSessions} from './loox-image-sessions.js?v=16';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
