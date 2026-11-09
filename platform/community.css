@@ -1194,3 +1194,56 @@ body.creator-page #creator-community button.loox-profile-stat-button:disabled{
  #creator-community .loox-profile-skeleton-avatar,
  #creator-community .loox-profile-skeleton-line{animation:none}
 }
+
+/* V16 — single prompt and unobstructed full-quality post artwork. */
+body .community-viewer>.community-dialog-head{
+ justify-content:flex-end!important;margin:0 0 8px!important;min-height:28px!important
+}
+body .community-viewer .community-viewer-stage{
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ gap:0!important;max-height:none!important;overflow:auto!important
+}
+body .community-viewer .community-viewer-stage .community-detail-media:not(.is-zoomed){
+ display:block!important;width:100%!important;height:auto!important;
+ max-width:100%!important;max-height:75dvh!important;
+ object-fit:contain!important;margin:0!important;border-radius:12px 12px 0 0!important
+}
+body .community-viewer .community-viewer-stage .community-detail-media.is-zoomed{
+ width:150%!important;max-width:none!important;max-height:none!important;align-self:flex-start!important
+}
+body .community-viewer .loox-social-viewer-toolbar{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ flex-wrap:wrap!important;gap:10px!important;width:100%!important;
+ padding:10px 12px!important;background:#17121e!important;border-top:1px solid #3a2b43!important
+}
+body .community-viewer .loox-social-viewer-toolbar .loox-social-photo-actions,
+body .community-viewer .loox-social-viewer-toolbar .community-viewer-controls{
+ position:static!important;inset:auto!important;z-index:auto!important;
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ width:auto!important;max-width:100%!important;gap:7px!important;
+ margin:0!important;padding:0!important;pointer-events:auto!important
+}
+body .community-viewer .loox-social-viewer-toolbar .loox-social-action{
+ width:34px!important;height:34px!important;min-height:34px!important;flex:0 0 34px!important
+}
+body .community-viewer .loox-social-prompt-text{
+ display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;
+ overflow:hidden!important;overflow-wrap:anywhere!important;white-space:pre-wrap!important;
+ line-height:1.55!important;margin:6px 0 0!important
+}
+body .community-viewer .loox-social-prompt-text.is-expanded{
+ display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important
+}
+body .community-viewer .loox-social-prompt-toggle{
+ display:inline-flex;align-items:center;align-self:flex-start;margin:4px 0 6px;
+ padding:4px 0;border:0;background:transparent;color:#d8aaff;
+ font:600 12px/1.5 Inter,system-ui,sans-serif;cursor:pointer
+}
+body .community-viewer .loox-social-prompt-toggle[hidden]{display:none!important}
+body .community-viewer .loox-social-prompt-toggle:hover{text-decoration:underline}
+@media(max-width:780px){
+ body .community-viewer .community-viewer-stage{margin:4px 0 12px!important}
+ body .community-viewer .community-viewer-stage .community-detail-media:not(.is-zoomed){max-height:68dvh!important}
+ body .community-viewer .loox-social-viewer-toolbar{padding:9px!important;gap:8px!important}
+ body .community-viewer .loox-social-viewer-toolbar .community-viewer-controls{justify-content:flex-start!important}
+}
