@@ -729,3 +729,163 @@ body .community-viewer .loox-social-prompt-actions .community-primary{
  body .community-viewer .loox-social-action,
  body .community-viewer .loox-social-creator{transition:none!important}
 }
+
+/* V14 - Creator profile uses the same image-first gallery as Templates and Community.
+   Retain the profile header and all existing post / account functionality. */
+body.loox-profile-masonry #creator-community.loox-community{
+  width:100%!important;max-width:none!important;min-width:0!important;
+  margin:0!important;
+}
+body.loox-profile-masonry #creator-community .community-grid{
+  display:grid!important;columns:auto!important;column-count:auto!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  align-items:start!important;gap:12px!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+}
+body.loox-profile-masonry #creator-community .loox-community-masonry-column{
+  display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:12px!important;min-width:0!important;
+}
+body.loox-profile-masonry #creator-community .loox-community-masonry-column>.community-card{
+  display:block!important;width:100%!important;margin:0!important;
+  break-inside:auto!important;min-width:0!important;
+}
+body.loox-profile-masonry #creator-community .community-card{
+  position:relative!important;border-radius:12px!important;overflow:hidden!important;
+  background:#1a1522!important;border:1px solid #3c3146!important;
+  box-shadow:none!important;transition:border-color .18s ease!important;
+}
+body.loox-profile-masonry #creator-community .community-card:hover{
+  border-color:#77538f!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art{
+  position:relative!important;overflow:hidden!important;background:#1d1726!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art .community-media{
+  display:block!important;position:relative!important;width:100%!important;
+  min-height:0!important;height:auto!important;
+  aspect-ratio:4 / 5!important;overflow:hidden!important;
+  background:#211a2c!important;border:0!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art .community-media img,
+body.loox-profile-masonry #creator-community .community-card-art .community-media video{
+  display:block!important;position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;max-height:none!important;
+  object-fit:contain!important;margin:0!important;
+  visibility:hidden!important;opacity:0!important;
+  background:transparent!important;transition:opacity .28s ease!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art .community-media.loox-media-ready img,
+body.loox-profile-masonry #creator-community .community-card-art .community-media.loox-media-ready video{
+  visibility:visible!important;opacity:1!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art .community-media.loox-media-pending{
+  background:linear-gradient(110deg,#211a2b 8%,#32253b 29%,#211a2b 48%)!important;
+  background-size:230% 100%!important;
+  animation:loox-post-skeleton 1.45s ease-in-out infinite!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art .community-media.loox-media-error{
+  display:grid!important;place-items:center!important;
+  background:#211929!important;
+}
+body.loox-profile-masonry #creator-community .loox-media-error-label{
+  display:block!important;padding:12px!important;text-align:center!important;
+  color:#c5b4d0!important;font-size:12px!important;
+}
+body.loox-profile-masonry #creator-community .community-card-hover{
+  position:absolute!important;inset:0!important;z-index:3!important;
+  display:flex!important;flex-direction:column!important;justify-content:space-between!important;
+  background:linear-gradient(180deg,#07040b55,transparent 32%,transparent 45%,#08040bdc)!important;
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transition:opacity .2s ease,visibility .2s ease!important;
+}
+body.loox-profile-masonry #creator-community .community-card:hover .community-card-hover,
+body.loox-profile-masonry #creator-community .community-card:focus-within .community-card-hover{
+  opacity:1!important;visibility:visible!important;
+}
+body.loox-profile-masonry #creator-community .community-card-art:has(.loox-media-pending) .community-card-hover,
+body.loox-profile-masonry #creator-community .community-card-art:has(.loox-media-error) .community-card-hover{
+  opacity:0!important;visibility:hidden!important;
+}
+body.loox-profile-masonry #creator-community .community-hover-tools{
+  position:relative!important;z-index:5!important;
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:7px!important;padding:9px!important;
+}
+body.loox-profile-masonry #creator-community .community-hover-tools button{
+  display:grid!important;place-items:center!important;
+  flex:0 0 33px!important;width:33px!important;height:33px!important;
+  min-height:33px!important;padding:0!important;border-radius:50%!important;
+  border:1px solid #ffffff50!important;background:#17121ddc!important;
+  color:#fff!important;pointer-events:auto!important;
+}
+body.loox-profile-masonry #creator-community .community-hover-tools button svg{
+  width:17px!important;height:17px!important;
+}
+body.loox-profile-masonry #creator-community .community-hover-tools button[aria-pressed=true]{
+  color:#ff829e!important;border-color:#ff829e!important;
+}
+body.loox-profile-masonry #creator-community .community-hover-creator{
+  display:none!important;
+}
+body.loox-profile-masonry #creator-community .community-card-body{
+  position:absolute!important;bottom:0!important;left:0!important;right:0!important;
+  z-index:4!important;width:100%!important;min-width:0!important;
+  padding:28px 12px 12px!important;margin:0!important;
+  color:#fff!important;background:linear-gradient(0deg,#08050be9,transparent)!important;
+  opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+  transition:opacity .2s ease,visibility .2s ease!important;
+}
+body.loox-profile-masonry #creator-community .community-card:hover .community-card-body,
+body.loox-profile-masonry #creator-community .community-card:focus-within .community-card-body{
+  opacity:1!important;visibility:visible!important;
+}
+body.loox-profile-masonry #creator-community .community-caption{
+  color:#fff!important;display:-webkit-box!important;
+  -webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;
+  overflow:hidden!important;font-size:12px!important;
+  line-height:1.4!important;margin:0 0 4px!important;
+}
+body.loox-profile-masonry #creator-community .community-card-body>.community-note{
+  font-size:10px!important;color:#d6c5e1!important;
+}
+body.loox-profile-masonry #creator-community .community-card-body .community-card-line,
+body.loox-profile-masonry #creator-community .community-card-body .community-post-actions{
+  display:none!important;
+}
+@media(min-width:701px) and (max-width:1100px){
+  body.loox-profile-masonry #creator-community .community-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@media(max-width:700px){
+  body.loox-profile-masonry #creator-community .community-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;
+  }
+  body.loox-profile-masonry #creator-community .loox-community-masonry-column{gap:9px!important}
+  body.loox-profile-masonry #creator-community .community-card-body{
+    opacity:1!important;visibility:visible!important;
+    padding:24px 8px 8px!important;
+  }
+  body.loox-profile-masonry #creator-community .community-card-hover{
+    opacity:1!important;visibility:visible!important;
+    background:linear-gradient(180deg,#08040b55,transparent 25%,transparent 65%,#08040b99)!important;
+  }
+  body.loox-profile-masonry #creator-community .community-hover-tools{
+    gap:4px!important;padding:6px!important;
+  }
+  body.loox-profile-masonry #creator-community .community-hover-tools button{
+    flex-basis:29px!important;width:29px!important;height:29px!important;min-height:29px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body.loox-profile-masonry #creator-community .community-card-art .community-media.loox-media-pending{
+    animation:none!important;background:#241b2e!important;
+  }
+  body.loox-profile-masonry #creator-community .community-card-body,
+  body.loox-profile-masonry #creator-community .community-card-hover,
+  body.loox-profile-masonry #creator-community .community-card-art .community-media img,
+  body.loox-profile-masonry #creator-community .community-card-art .community-media video{
+    transition:none!important;
+  }
+}
