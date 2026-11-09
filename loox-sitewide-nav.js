@@ -5,6 +5,8 @@
 (() => {
  'use strict';
  const page=location.pathname.split('/').pop()||'index.html';
+ const pinnedWorkspace=['community.html','trending.html','templates.html','workflows.html','collections.html','creator.html','account.html'].includes(page);
+ if(pinnedWorkspace)document.body.classList.add('loox-workspace-sidebar');
  // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.
  // AI Audio currently links to the Audio-filtered tools listing, not an audio generator.
  const aiSessionsOnly=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page)
@@ -192,7 +194,7 @@
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
   if(aiSessionsOnly)open=false;
-  else if(desktop.matches)open=true;
+  else if(desktop.matches&&pinnedWorkspace)open=true;
   sidebar.classList.toggle('is-open',open);
   scrim.classList.toggle('is-open',open&&!desktop.matches);
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
@@ -205,7 +207,7 @@
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
  dockToggle.addEventListener('click',()=>burger.click());
  // AI workspace tabs start with the shared sidebar collapsed, including AI Agent.
-  desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches));
+  desktop.addEventListener('change',()=>setDrawer(!aiSessionsOnly&&desktop.matches&&(pinnedWorkspace||isHome)));
  setDrawer(!aiSessionsOnly&&desktop.matches&&isHome&&page!=='ai-chat.html');
  scrim.addEventListener('click',closeDrawer);
 

@@ -1635,3 +1635,22 @@ body.loox-sitewide-active .loox-sitewide-drawer-list{width:100%;min-width:0}
  body.loox-sitewide-active .loox-sitewide-links{gap:clamp(4px,1vw,12px)}
  body.loox-sitewide-active .loox-sitewide-links a{font-size:11px;padding-inline:5px}
 }
+
+/* V7: reserve actual page width for persistent desktop workspace rails.
+   Other pages retain the existing collapsible overlay and full-width editor canvas. */
+@media(min-width:901px){
+ body.loox-sitewide-active.loox-workspace-sidebar > main{
+  margin-left:252px!important;
+  width:calc(100% - 252px)!important;
+  min-width:0!important;
+  max-width:none!important;
+  box-sizing:border-box!important;
+ }
+ body.loox-sitewide-active.loox-workspace-sidebar .loox-sitewide-burger,
+ body.loox-sitewide-active.loox-workspace-sidebar .loox-sitewide-dock-toggle{display:none!important}
+ body.loox-sitewide-active:not(.loox-workspace-sidebar):not(.loox-ai-sessions-only) .loox-sitewide-burger,
+ body.loox-sitewide-active:not(.loox-workspace-sidebar):not(.loox-ai-sessions-only) .loox-sitewide-dock-toggle{display:flex!important}
+}
+@media(max-width:900px){
+ body.loox-sitewide-active.loox-workspace-sidebar > main{margin-left:0!important;width:100%!important}
+}
