@@ -456,3 +456,62 @@ body.loox-discovery-gallery .loox-discovery-select-trigger[aria-expanded=true]{
   width:32px!important;height:32px!important;flex-basis:32px!important;
  }
 }
+
+/* V10 — Professional gallery loading on Community and Trending.
+   Reserve the card's height before the signed image URL arrives so browsers
+   never show broken-image glyphs, captions as alt text or collapsed strips. */
+body.loox-discovery-gallery #community-root .community-card-art{
+ position:relative!important;overflow:hidden!important;background:#191422!important;
+}
+body.loox-discovery-gallery #community-root .community-card-art .community-media{
+ position:relative!important;display:block!important;width:100%!important;
+ min-height:0!important;height:auto!important;aspect-ratio:4 / 5!important;
+ overflow:hidden!important;background:#211a2c!important;border:0!important;
+ border-radius:0!important;
+}
+body.loox-discovery-gallery #community-root .community-card-art .community-media img,
+body.loox-discovery-gallery #community-root .community-card-art .community-media video{
+ position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+ display:block!important;object-fit:cover!important;
+ opacity:0!important;visibility:hidden!important;
+ transition:opacity .28s ease!important;
+ transform:none!important;background:transparent!important;
+}
+body.loox-discovery-gallery #community-root .community-card-art .community-media.loox-media-ready img,
+body.loox-discovery-gallery #community-root .community-card-art .community-media.loox-media-ready video{
+ opacity:1!important;visibility:visible!important;
+ object-fit:contain!important;
+}
+body.loox-discovery-gallery #community-root .community-card-art .community-media.loox-media-pending{
+ background:linear-gradient(110deg,#221b2b 8%,#31253a 29%,#221b2b 48%)!important;
+ background-size:230% 100%!important;
+ animation:loox-post-skeleton 1.45s ease-in-out infinite!important;
+}
+@keyframes loox-post-skeleton{
+ 0%{background-position:120% 0}100%{background-position:-120% 0}
+}
+body.loox-discovery-gallery #community-root .community-card-art .community-media.loox-media-error{
+ display:grid!important;place-items:center!important;
+ background:#201929!important;
+}
+body.loox-discovery-gallery #community-root .loox-media-error-label{
+ display:block!important;position:relative!important;padding:12px!important;
+ text-align:center!important;color:#b6a4c4!important;
+ font:500 12px/1.4 Inter,system-ui,sans-serif!important;
+}
+body.loox-discovery-gallery #community-root .community-card-art:has(.loox-media-pending) .community-card-hover,
+body.loox-discovery-gallery #community-root .community-card-art:has(.loox-media-error) .community-card-hover{
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+}
+body.loox-discovery-gallery #community-root .community-card-art:has(.loox-media-pending) + .community-card-body{
+ opacity:0!important;visibility:hidden!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-discovery-gallery #community-root .community-card-art .community-media.loox-media-pending{
+  animation:none!important;background:#251d30!important;
+ }
+ body.loox-discovery-gallery #community-root .community-card-art .community-media img,
+ body.loox-discovery-gallery #community-root .community-card-art .community-media video{
+  transition:none!important;
+ }
+}
