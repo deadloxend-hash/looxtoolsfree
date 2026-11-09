@@ -74,3 +74,32 @@
  .lvg-body .loox-prompt-controls .loox-model-trigger{font-size:11px}
  .lvg-body .lig-compose-actions .lig-primary{min-width:135px!important}
 }
+
+/* V5: compact phone video model selector. */
+@media(max-width:750px){
+ .lvg-body .loox-prompt-controls .loox-model-picker .loox-model-panel{
+  box-sizing:border-box!important;
+  position:absolute!important;bottom:calc(100% + 8px)!important;
+  left:0!important;right:auto!important;
+  width:min(365px,calc(100vw - 46px))!important;
+  max-width:calc(100vw - 46px)!important;
+  max-height:min(360px,46dvh)!important;
+  padding:8px!important;border-radius:14px!important;
+  overflow:hidden!important;z-index:1200!important;
+ }
+ .lvg-body .loox-model-picker .loox-model-search-box{
+  height:35px!important;min-height:35px!important;margin-bottom:5px!important;
+ }
+ .lvg-body .loox-model-picker .loox-model-scroll{
+  overflow-y:auto!important;max-height:100%!important;overscroll-behavior:contain!important;
+ }
+ .lvg-body .loox-model-picker .loox-model-section{margin-bottom:5px!important}
+ .lvg-body .loox-model-picker .loox-model-heading{margin:7px 5px 4px!important}
+ .lvg-body .loox-model-picker .loox-model-heading-title{font-size:9px!important}
+ .lvg-body .loox-model-picker .loox-model-heading-subtitle{font-size:9px!important}
+ .lvg-body .loox-model-picker .loox-model-choice{padding:5px 3px!important;gap:8px!important}
+ .lvg-body .loox-model-picker .loox-model-icon{height:29px!important;width:29px!important;flex-basis:29px!important}
+ .lvg-body .loox-model-picker .loox-model-name{font-size:11px!important}
+ .lvg-body .loox-model-picker .loox-model-description{font-size:9px!important}
+ .lvg-body .loox-model-picker .loox-model-cost{font-size:9px!important;padding:4px!important}
+}
