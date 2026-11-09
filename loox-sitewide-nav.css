@@ -2090,3 +2090,21 @@ body.loox-gallery-workspace .loox-ai-workspace-tab.is-active{
  }
  body.loox-gallery-workspace .loox-ai-workspace-symbol{display:none!important}
 }
+
+/* V76: prevent the LOOX wordmark X from being clipped on narrow headers. */
+#loox-sitewide-header .loox-sitewide-logo-wrap,
+#loox-sitewide-header .loox-sitewide-logo{
+ overflow:visible!important;
+}
+#loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark{
+ padding-right:5px!important;
+ margin-right:0!important;
+ letter-spacing:-.065em!important;
+ overflow:visible!important;
+ flex-shrink:0!important;
+}
+#loox-sitewide-header .loox-sitewide-logo .loox-workspace-x{
+ display:inline-block!important;
+ padding-right:2px!important;
+ overflow:visible!important;
+}
