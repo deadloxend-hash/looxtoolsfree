@@ -1888,3 +1888,23 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox
 @media(prefers-reduced-motion:reduce){
  body.ai-chat.loox-sitewide-active > main.ai-chat-stage{transition:none!important}
 }
+
+/* V72: avoid the temporary navigation-only sidebar layout during page reload.
+   Reveal a fully assembled nav + sessions panel, rather than the transient
+   fallback link and half-initialized session history. */
+body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list:not(.loox-sidebar-ready){
+ visibility:hidden!important;
+ opacity:0!important;
+ pointer-events:none!important;
+}
+body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list.loox-sidebar-ready{
+ visibility:visible!important;
+ opacity:1!important;
+ pointer-events:auto!important;
+}
+body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list{
+ transition:opacity .24s ease!important;
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list{transition:none!important}
+}
