@@ -2090,3 +2090,21 @@ body.loox-gallery-workspace .loox-ai-workspace-tab.is-active{
  }
  body.loox-gallery-workspace .loox-ai-workspace-symbol{display:none!important}
 }
+
+/* V76: fixed-size sidebar typography regardless of whether sessions exist
+   or the visitor is signed in. Prevent apparently enlarged empty-state nav. */
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link,
+body.loox-ai-sessions-only #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link,
+body.loox-media-sessions-in-drawer #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link,
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link{
+ font-size:12px!important;font-weight:550!important;line-height:1.35!important;
+ letter-spacing:-.012em!important;
+ min-height:35px!important;padding:6px 10px!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon,
+body.loox-ai-sessions-only #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon{
+ width:18px!important;height:18px!important;min-width:18px!important;
+}
+body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon svg{
+ width:17px!important;height:17px!important;
+}
