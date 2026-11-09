@@ -78,7 +78,7 @@ export class Community {
  const art=element('div','community-card-art');art.append(open);card.append(art);
  const markReady=(width,height)=>{
   if(!open.isConnected)return;
-  if(width>0&&height>0)open.style.aspectRatio=width+' / '+height;
+  if(width>0&&height>0)open.style.setProperty('aspect-ratio',width+' / '+height,'important');
   open.classList.remove('loox-media-pending','loox-media-error');
   open.classList.add('loox-media-ready');
  };
