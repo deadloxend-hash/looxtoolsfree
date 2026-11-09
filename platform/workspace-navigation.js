@@ -36,12 +36,15 @@ export function mountWorkspaceNavigation(host){
   const text=document.createElement('span');text.className='loox-workspace-label';text.textContent=label;link.append(ico,text);
   if(external){const outgoing=document.createElement('span');outgoing.className='loox-workspace-external';outgoing.innerHTML=workspaceIcon('external');link.append(outgoing);}
   const target=new URL(href,siteRoot);
-  // Exactly one navigation item may be current. Saved session query params
-  // and #generate should not affect which top-level workspace is selected.
-  if(target.pathname===active.pathname &&
-     !['ai-image-landing.html','ai-video-landing.html'].includes(target.pathname.split('/').pop())){
-   link.setAttribute('aria-current','page');
-  }
+  // A Community feed is a distinct destination: never highlight
+  // Community, Saved creations and Following at the same time.
+  // Generator session query params and #generate are intentionally ignored.
+  const currentFeed=active.searchParams.get('feed')||'';
+  const targetFeed=target.searchParams.get('feed')||'';
+  const sameRoute=target.pathname===active.pathname;
+  const isCommunity=target.pathname.endsWith('/community.html');
+  const selected=sameRoute&&(!isCommunity||currentFeed===targetFeed);
+  if(selected)link.setAttribute('aria-current','page');
   parent.append(link);return link;
  }
  const primary=[
