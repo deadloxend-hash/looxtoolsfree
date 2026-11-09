@@ -58,8 +58,7 @@ if(page==='community.html'){
     avatar.replaceChildren(img);
    }).catch(()=>{});
   const headRight=element('div','loox-mobile-feed-head-right');
-  const profileLink=element('a','loox-mobile-feed-profile','Profile');profileLink.href=profileHref;
-  headRight.append(profileLink);
+  // Avatar and username already link to the profile; no duplicate Profile button.
   const options=element('details','loox-mobile-feed-options');
   const trigger=element('summary','loox-mobile-feed-options-trigger');
   trigger.innerHTML=icons.more;trigger.setAttribute('aria-label','More post options');trigger.title='More post options';
