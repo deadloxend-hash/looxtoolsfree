@@ -1,5 +1,5 @@
 import {state,auth,initialize} from './account.js?v=9';
-import {Community,element,action,result} from './community.js?v=18';
+import {Community,element,action,result} from './community.js?v=19';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
 if(discoveryPage)document.body.classList.add('loox-discovery-gallery');
