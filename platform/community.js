@@ -235,7 +235,25 @@ export class Community {
   bar.append(like,save,download,share);
   stage.append(bar);
   const info=element('div','loox-post-info');
-  const creator=element('a','community-creator','@'+post.username);creator.href='creator.html?id='+post.creator_id;
+  const creator=element('a','community-creator loox-post-creator-profile');
+  creator.href='creator.html?id='+encodeURIComponent(post.creator_id);
+  creator.setAttribute('aria-label','View '+(post.display_name||post.username)+' creator profile');
+  const profileAvatar=element('span','community-avatar',post.display_name?.slice(0,1)||post.username?.slice(0,1)||'L');
+  const profileNames=element('span','loox-post-creator-names');
+  profileNames.append(
+   element('strong','',post.display_name||post.username),
+   element('small','','@'+post.username)
+  );
+  creator.append(profileAvatar,profileNames);
+  if(post.avatar_path){
+   mediaURL(this.state,post.avatar_path,'loox-avatars',{type:'avatar',id:post.creator_id})
+    .then(url=>{
+     if(!profileAvatar.isConnected)return;
+     const img=element('img');img.src=url;img.alt='';img.loading='lazy';
+     img.onerror=()=>{img.remove();};
+     profileAvatar.replaceChildren(img);
+    }).catch(()=>{});
+  }
   info.append(creator,element('p','loox-post-caption',post.caption),element('p','community-note',new Date(post.created_at).toLocaleString()));
   if(post.shared_prompt){
    const prompt=element('details','loox-post-prompt'),summary=element('summary','','View prompt');
