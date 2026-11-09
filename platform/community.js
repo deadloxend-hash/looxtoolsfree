@@ -38,9 +38,9 @@ export async function editCreator({state,auth,onSave=()=>{}}){
 }
 export class Community {
  constructor({state,auth,initialize,root,creator=null,kind='all'}){Object.assign(this,{state,auth,initialize,root,creator,kind});this.sort=new URLSearchParams(location.search).get('feed')||'latest';this.query='';this.collection=new URLSearchParams(location.search).get('id')&&location.pathname.endsWith('collections.html')?new URLSearchParams(location.search).get('id'):null;this.days=30;this.posts=[];this.offset=0;this.epoch=0;this.initialized=false;this.pendingLikes=new Set();this.masonryCount=0;this.build();this.onMasonryResize=()=>{if(this.usesDiscoveryMasonry()&&this.masonryCount!==this.discoveryColumns())this.renderDiscoveryMasonry();};window.addEventListener('resize',this.onMasonryResize,{passive:true});document.addEventListener('loox-user',()=>{urls.clear();if(this.initialized)this.load(true);});}
- build(){this.root.classList.add('loox-community');this.root.replaceChildren();const head=element('div','community-heading'),titles=element('div');titles.append(element('span','community-eyebrow','MADE WITH LOOX'),element('h1','',this.creator?'Profile':'Community'),element('p','',this.creator?'Your creator identity and LOOX account in one place.':'Discover the people and ideas behind the creations.'));head.append(titles,action('Profile',()=>{if(!this.state.user)return this.auth('login');location.assign('creator.html');},'community-button',e=>this.note(e.message)));this.root.append(head);const tools=element('div','community-tools');tools.append(action('Collections',()=>this.collections(),'community-button',e=>this.note(e.message)),action('Notifications',()=>this.notifications(),'community-button',e=>this.note(e.message)));this.root.append(tools);
+ build(){this.root.classList.add('loox-community');this.root.replaceChildren();const head=element('div','community-heading'),titles=element('div');if(this.creator){titles.append(element('h1','','Profile'));head.append(titles);}else{titles.append(element('span','community-eyebrow','MADE WITH LOOX'),element('h1','','Community'),element('p','','Discover the people and ideas behind the creations.'));head.append(titles,action('Profile',()=>{if(!this.state.user)return this.auth('login');location.assign('creator.html');},'community-button',e=>this.note(e.message)));}this.root.append(head);const tools=element('div','community-tools');tools.append(action('Collections',()=>this.collections(),'community-button',e=>this.note(e.message)),action('Notifications',()=>this.notifications(),'community-button',e=>this.note(e.message)));this.tools=tools;tools.hidden=!!this.creator;this.root.append(tools);
  this.profile=element('section','community-profile');this.profile.hidden=!this.creator;this.root.append(this.profile);
- const filters=element('div','community-filters');for(const [name,kind] of [['All media','all'],['Images','image'],['Videos','video']]){const b=action(name,()=>{this.kind=kind;this.load(true);},'community-filter',e=>this.note(e.message));b.dataset.kind=kind;filters.append(b);}const sort=element('select');sort.setAttribute('aria-label','Sort community');for(const [label,value] of [['Newest','latest'],['Following','following'],['Trending','trending'],['Popular','popular'],['Saved','saved'],['Liked','liked']])sort.append(new Option(label,value));sort.value=this.sort;sort.addEventListener('change',()=>{this.sort=sort.value;this.load(true);});filters.append(sort);const search=element('input','community-search');search.type='search';search.placeholder='Search creations, creators or models';search.setAttribute('aria-label','Search community');let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{this.query=search.value.trim();this.load(true);},300);});filters.append(search);const days=element('select');days.setAttribute('aria-label','Trending period');for(const [label,n] of [['Today',1],['This week',7],['This month',30]])days.append(new Option(label,n));days.value='30';days.addEventListener('change',()=>{this.days=Number(days.value);this.sort='trending';sort.value='trending';this.load(true);});filters.append(days);this.root.append(filters);
+ const filters=element('div','community-filters');for(const [name,kind] of [['All media','all'],['Images','image'],['Videos','video']]){const b=action(name,()=>{this.kind=kind;this.load(true);},'community-filter',e=>this.note(e.message));b.dataset.kind=kind;filters.append(b);}const sort=element('select');sort.setAttribute('aria-label','Sort community');for(const [label,value] of [['Newest','latest'],['Following','following'],['Trending','trending'],['Popular','popular'],['Saved','saved'],['Liked','liked']])sort.append(new Option(label,value));sort.value=this.sort;sort.addEventListener('change',()=>{this.sort=sort.value;this.load(true);});filters.append(sort);const search=element('input','community-search');search.type='search';search.placeholder='Search creations, creators or models';search.setAttribute('aria-label','Search community');let timer;search.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(()=>{this.query=search.value.trim();this.load(true);},300);});filters.append(search);const days=element('select');days.setAttribute('aria-label','Trending period');for(const [label,n] of [['Today',1],['This week',7],['This month',30]])days.append(new Option(label,n));days.value='30';days.addEventListener('change',()=>{this.days=Number(days.value);this.sort='trending';sort.value='trending';this.load(true);});filters.append(days);this.filters=filters;this.root.append(filters);
  this.status=element('p','community-note');this.status.setAttribute('role','status');this.grid=element('div','community-grid');this.more=action('Load more',()=>this.load(false),'community-more',e=>this.note(e.message));this.more.hidden=true;this.root.append(this.status,this.grid,this.more);}
  usesDiscoveryMasonry(){return ['community.html','trending.html','creator.html'].includes(location.pathname.split('/').pop());}
  discoveryColumns(){return matchMedia('(max-width:700px)').matches?2:matchMedia('(max-width:1100px)').matches?3:5;}
@@ -57,8 +57,8 @@ export class Community {
  }
  note(text){this.status.textContent=text;}
  async show(){if(!this.initialized){this.initialized=true;try{await this.initialize({publicAccess:true});}catch{}await this.load(true);}else await this.load(true);}
- async load(reset=true){const seq=++this.epoch,uid=this.state.user?.id;if(reset){this.offset=0;this.posts=[];}const offset=this.offset;this.more.disabled=true;this.note('Loading creations…');this.root.querySelectorAll('[data-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind===this.kind)));
- try{if(this.creator)await this.loadProfile(seq);if(['following','saved','liked'].includes(this.sort)&&!this.state.user){this.grid.replaceChildren();this.more.hidden=true;this.note('Sign in to see your '+this.sort+' feed.');return;}const data=await rpc(this.state,'loox_discover',{p_kind:this.kind,p_sort:this.sort,p_offset:offset,p_creator:this.creator,p_query:this.query,p_collection:this.collection,p_days:this.days});if(seq!==this.epoch||uid!==this.state.user?.id)return;
+ async load(reset=true){const seq=++this.epoch,uid=this.state.user?.id;this.profileOnly=Boolean(this.creator&&this.creator!==uid);this.root.classList.toggle('loox-profile-only',this.profileOnly);if(this.filters)this.filters.hidden=Boolean(this.creator);if(this.tools)this.tools.hidden=Boolean(this.creator);if(this.grid)this.grid.hidden=this.profileOnly;if(this.status)this.status.hidden=this.profileOnly;if(reset){this.offset=0;this.posts=[];}const offset=this.offset;this.more.disabled=true;this.note('Loading creations…');this.root.querySelectorAll('[data-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind===this.kind)));
+ try{if(this.creator)await this.loadProfile(seq);if(this.profileOnly){this.grid.replaceChildren();this.more.hidden=true;this.note('');return;}if(['following','saved','liked'].includes(this.sort)&&!this.state.user){this.grid.replaceChildren();this.more.hidden=true;this.note('Sign in to see your '+this.sort+' feed.');return;}const data=await rpc(this.state,'loox_discover',{p_kind:this.kind,p_sort:this.sort,p_offset:offset,p_creator:this.creator,p_query:this.query,p_collection:this.collection,p_days:this.days});if(seq!==this.epoch||uid!==this.state.user?.id)return;
  if(reset)this.grid.replaceChildren();for(const post of data.items||[]){this.posts.push(post);const card=this.card(post);card.dataset.feedPosition=String(this.posts.length-1);this.grid.append(card);}this.renderDiscoveryMasonry();this.offset=offset+(data.items||[]).length;this.more.hidden=!data.has_more;this.more.textContent='Load more';this.note(this.offset?'':this.sort==='following'?'Follow creators to see their newest public posts here.':'No matching public creations yet. Private generations stay in My Creations.');if(!offset){const postId=new URLSearchParams(location.search).get('post');const target=this.posts.find(p=>p.id===postId);if(target&&!this.openedLink){this.openedLink=true;await this.details(target);}else if(postId&&!this.openedLink){const linked=await rpc(this.state,'loox_public_post',{p_id:postId});this.openedLink=true;if(linked)await this.details(linked);else this.note('This post is unavailable or private.');}}}
  catch(error){if(seq===this.epoch){if(reset)this.grid.replaceChildren();this.note(error.message);this.more.hidden=false;this.more.textContent='Try again';}}
  finally{if(seq===this.epoch)this.more.disabled=false;}}
@@ -292,11 +292,108 @@ export class Community {
   if(options.length)d.append(similar);
  }
 
- async loadProfile(seq){const p=await rpc(this.state,'loox_creator_summary',{p_creator:this.creator});if(seq!==this.epoch)return;this.profile.replaceChildren();const own=this.state.user?.id===this.creator;
- if(!p){this.profile.append(element('h2','',own?'Create your public profile':'This profile is private or unavailable'),element('p','community-note',own?'Choose the name and picture people see on your creations.':'Only public creator profiles appear in the community.'));if(own)this.profile.append(action('Set up profile',()=>editCreator({state:this.state,auth:this.auth,onSave:()=>this.load(true)}),'community-primary',e=>this.note(e.message)));return;}
- const avatar=element('div','community-profile-avatar',p.display_name.slice(0,1));if(p.avatar_path)try{const img=element('img');img.src=await mediaURL(this.state,p.avatar_path,'loox-avatars',{type:'avatar',id:p.user_id});img.alt=p.display_name;avatar.replaceChildren(img);}catch{}
- const text=element('div');text.append(element('h2','',p.display_name),element('p','community-handle','@'+p.username),element('p','community-bio',p.bio),element('p','community-counts',p.posts+' posts · '+p.followers+' followers · '+p.following+' following · '+(p.total_views||0)+' video views'));this.profile.append(avatar,text);
- if(own){const actions=element('div','community-profile-actions');actions.append(action('Edit profile',()=>editCreator({state:this.state,auth:this.auth,onSave:()=>this.load(true)}),'community-button',e=>this.note(e.message)),action('Manage posts',()=>this.manage(),'community-button',e=>this.note(e.message)));actions.append(action('Privacy settings',()=>this.privacy(p),'community-button',e=>this.note(e.message)),action('Collections',()=>this.collections(),'community-button',e=>this.note(e.message)));const accountLink=element('a','community-button','Account & credits');accountLink.href='account.html';actions.append(accountLink);this.profile.append(actions);}else{const follow=action(p.followed?'Following':'Follow',async()=>{if(!this.state.user)return this.auth('login');follow.disabled=true;try{const q=this.state.client.from('loox_creator_follows');result(p.followed?await q.delete().eq('follower_id',this.state.user.id).eq('creator_id',p.user_id):await q.insert({follower_id:this.state.user.id,creator_id:p.user_id}));await this.loadProfile(seq);}finally{follow.disabled=false;}},'community-primary',e=>this.note(e.message));follow.setAttribute('aria-pressed',String(p.followed));this.profile.append(follow);}}
+
+ async connections(p_creator,kind){
+  const d=modal(kind==='followers'?'Followers':'Following');
+  const list=element('div','loox-connections-list'),status=element('p','community-note');
+  const more=action('Show more',()=>load(),'community-button',err=>status.textContent=err.message);
+  more.hidden=true;d.append(list,more,status);
+  let offset=0,busy=false;
+  const load=async()=>{
+   if(busy)return;busy=true;more.disabled=true;
+   try{
+    const data=await rpc(this.state,'loox_creator_connections',
+      {p_creator,p_kind:kind,p_offset:offset});
+    if(data.hidden){
+     status.textContent='This creator keeps their connections private.';
+     more.hidden=true;return;
+    }
+    const items=data.items||[];
+    for(const p of items){
+     const row=element('a','loox-connection-person');
+     row.href='creator.html?id='+encodeURIComponent(p.user_id);
+     const photo=element('span','loox-connection-avatar',(p.display_name||'L').slice(0,1).toUpperCase());
+     if(p.avatar_path)mediaURL(this.state,p.avatar_path,'loox-avatars',{type:'avatar',id:p.user_id})
+       .then(url=>{
+        if(!photo.isConnected)return;
+        const img=element('img');img.alt='';img.loading='lazy';img.src=url;
+        img.addEventListener('error',()=>img.remove(),{once:true});
+        photo.replaceChildren(img);
+       }).catch(()=>{});
+     const details=element('span','loox-connection-name');
+     details.append(element('strong','',p.display_name||p.username),
+      element('small','','@'+p.username));
+     if(p.bio)details.append(element('small','loox-connection-bio',p.bio));
+     row.append(photo,details);list.append(row);
+    }
+    offset+=items.length;more.hidden=!data.has_more;
+    if(!offset)status.textContent=kind==='followers'?'No followers yet.':'Not following anyone yet.';
+    else status.textContent='';
+   }catch(error){status.textContent=error.message;}
+   finally{busy=false;more.disabled=false;}
+  };
+  await load();
+ }
+ async loadProfile(seq){
+  const p=await rpc(this.state,'loox_creator_summary',{p_creator:this.creator});
+  if(seq!==this.epoch)return;
+  this.profile.replaceChildren();const own=this.state.user?.id===this.creator;
+  if(!p){
+   this.profile.append(element('h2','',own?'Create your profile':'Profile unavailable'),
+    element('p','community-note',own?'Choose your public name, photo and bio.':'This creator profile is private or unavailable.'));
+   if(own)this.profile.append(action('Set up profile',()=>editCreator({state:this.state,auth:this.auth,onSave:()=>this.load(true)}),'community-primary',e=>this.note(e.message)));
+   return;
+  }
+  const avatar=element('div','community-profile-avatar',(p.display_name||'L').slice(0,1).toUpperCase());
+  if(p.avatar_path)try{
+    const img=element('img');img.src=await mediaURL(this.state,p.avatar_path,'loox-avatars',{type:'avatar',id:p.user_id});
+    img.alt=p.display_name;img.onerror=()=>img.remove();avatar.replaceChildren(img);
+  }catch{}
+  const text=element('div','loox-profile-details');
+  const heading=element('div','loox-profile-name-row');
+  heading.append(element('h2','',p.display_name));
+  const badge=element('span','community-plan-badge', (p.plan_badge||'Basic')+' plan');
+  badge.dataset.plan=(p.plan_badge||'Basic').toLowerCase();
+  heading.append(badge);
+  text.append(heading,element('p','community-handle','@'+p.username));
+  if(p.bio)text.append(element('p','community-bio',p.bio));
+  const counts=element('div','community-counts loox-profile-counts');
+  counts.append(element('span','loox-profile-stat',p.posts+' posts'));
+  for(const kind of ['followers','following']){
+   const count=Number(p[kind]||0);
+   const button=action(count+' '+kind,()=>this.connections(p.user_id,kind),
+      'loox-profile-stat loox-profile-stat-button',e=>this.note(e.message));
+   const hidden=!own&&Boolean(p.hide_connections);
+   button.disabled=hidden;button.title=hidden?'Connections are private':'View '+kind;
+   counts.append(button);
+  }
+  counts.append(element('span','loox-profile-stat',(p.total_views||0)+' video views'));
+  text.append(counts);
+  this.profile.append(avatar,text);
+  if(own){
+   const actions=element('div','community-profile-actions');
+   actions.append(
+    action('Edit profile',()=>editCreator({state:this.state,auth:this.auth,onSave:()=>this.load(true)}),'community-button',e=>this.note(e.message)),
+    action('Manage posts',()=>this.manage(),'community-button',e=>this.note(e.message)),
+    action('Privacy settings',()=>this.privacy(p),'community-button',e=>this.note(e.message)),
+    action('Collections',()=>this.collections(),'community-button',e=>this.note(e.message)));
+   const accountLink=element('a','community-button','Account & credits');
+   accountLink.href='account.html';actions.append(accountLink);this.profile.append(actions);
+  }else{
+   const follow=action(p.followed?'Following':'Follow',async()=>{
+    if(!this.state.user)return this.auth('login');
+    follow.disabled=true;
+    try{
+     const q=this.state.client.from('loox_creator_follows');
+     result(p.followed?await q.delete().eq('follower_id',this.state.user.id)
+        .eq('creator_id',p.user_id):await q.insert({follower_id:this.state.user.id,creator_id:p.user_id}));
+     await this.loadProfile(seq);
+    }finally{follow.disabled=false;}
+   },'community-primary',e=>this.note(e.message));
+   follow.setAttribute('aria-pressed',String(p.followed));
+   this.profile.append(follow);
+  }
+ }
  async manage(){const d=modal('Manage your public posts'),status=element('p','community-note');d.append(status);let offset=0;const list=element('div','community-manage');d.append(list);const more=action('Load more',load,'community-button',e=>status.textContent=e.message);d.append(more);const self=this;async function load(){more.disabled=true;try{const rows=result(await self.state.client.from('loox_community_posts').select('*').eq('creator_id',self.state.user.id).order('created_at',{ascending:false}).range(offset,offset+23));offset+=rows.length;more.hidden=rows.length<24;for(const p of rows){const row=element('div','community-manage-row');row.append(element('strong','',p.caption),element('small','community-note',p.status+' · '+(p.visible?'visible after approval':'hidden')));for(const [label,act] of [[p.visible?'Hide':'Show',p.visible?'hide':'show'],['Edit','edit'],['Post permissions','permissions'],['Delete post','delete']])row.append(action(label,async()=>{if(act==='permissions'){await self.postPermissions(p);return;}if(act==='delete'&&!confirm('Delete this Community post? Your private original stays saved.'))return;let caption=null,share=null;if(act==='edit'){caption=window.prompt('Caption (changes require approval)',p.caption);if(caption===null)return;share=confirm('Share the generation prompt publicly? OK = share; Cancel = keep private.');}await rpc(self.state,'loox_manage_post',{p_id:p.id,p_action:act,p_caption:caption,p_share_prompt:share});d.close();await self.load(true);},'community-button',e=>status.textContent=e.message));list.append(row);}if(!offset)status.textContent='No submissions yet.';}finally{more.disabled=false;}}await load();}
 }
 
