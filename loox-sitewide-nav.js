@@ -67,7 +67,7 @@
   }
  }
  // Identical workspace destinations are used across Agent, Image, Video and Community.
- const workspaceKind={'ai-chat.html':'agent','ai-text-to-image.html':'image','ai-video-generator.html':'video'};
+ const workspaceKind={'ai-chat.html':'agent','ai-text-to-image.html':'image','ai-video-generator.html':'video','community.html':'community','trending.html':'trending','templates.html':'templates'};
  if(native&&workspaceKind[page]&&!native.querySelector('.loox-ai-workspace-tabs')){
   const tabs=el('nav','loox-ai-workspace-tabs');tabs.setAttribute('aria-label','LOOX AI workspaces');
   const icons={
