@@ -30,7 +30,7 @@ if(page==='community.html'){
   location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');
  };
  Community.prototype.mobileComments=async function(post){
-  const d=element('dialog','loox-community-comments-sheet');
+  const d=element('dialog','community-dialog loox-community-comments-sheet');
   d.setAttribute('aria-label','Post comments');
   const top=element('div','loox-community-sheet-head');
   const title=element('h2','','Comments');
@@ -46,7 +46,7 @@ if(page==='community.html'){
   }catch(error){d.append(element('p','community-note',error.message||'Comments unavailable.'));}
  };
  Community.prototype.mobileDetails=function(post){
-  const d=element('dialog','loox-community-details-sheet');
+  const d=element('dialog','community-dialog loox-community-details-sheet');
   d.setAttribute('aria-label','Post details');
   const top=element('div','loox-community-sheet-head');
   const heading=element('h2','','Post details');
