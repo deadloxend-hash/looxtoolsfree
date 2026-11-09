@@ -2134,3 +2134,21 @@ body.loox-community-photo-wall .loox-community-date-filter{display:none}
   overflow-wrap:anywhere!important;
  }
 }
+
+/* V27: keep upload/model metadata behind Details in mobile Community post viewer. */
+@media(max-width:700px){
+ body.loox-community-photo-wall .community-viewer-info>.loox-viewer-uploaded-at,
+ body.loox-community-photo-wall .community-viewer-info>.loox-viewer-model{
+  display:none!important;
+ }
+ body.loox-community-photo-wall .community-viewer .loox-mobile-viewer-details{
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:33px!important;
+  padding:7px 12px!important;
+ }
+ body.loox-community-photo-wall .community-viewer .loox-mobile-viewer-comment{
+  display:grid!important;
+  place-items:center!important;
+ }
+}
