@@ -537,7 +537,7 @@ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .lo
 (()=>{
  const init=()=>{
   const cue=document.querySelector('#image-hero .creative-scroll');
-  if(cue){document.body.append(cue);cue.textContent='Scroll to explore ';const arrow=document.createElement('span');arrow.setAttribute('aria-hidden','true');arrow.textContent='↓';cue.append(arrow);}
+  if(cue && window.matchMedia('(max-width:720px)').matches){document.body.append(cue);cue.textContent='Scroll to explore ';const arrow=document.createElement('span');arrow.setAttribute('aria-hidden','true');arrow.textContent='↓';cue.append(arrow);}
   const update=()=>document.body.classList.toggle('has-scrolled',window.scrollY>90);
   update();window.addEventListener('scroll',update,{passive:true});
  };
