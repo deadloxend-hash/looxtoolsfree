@@ -2223,3 +2223,23 @@ body.loox-apps-open{overflow:hidden!important}
   overflow:visible!important;padding-right:5px!important;letter-spacing:-.055em!important;
  }
 }
+
+/* V93: mobile sidebar stays fully within viewport after scrolling home. */
+@media(max-width:790px){
+ body.loox-sitewide-active > aside#loox-sitewide-drawer,
+ body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer{
+  position:fixed!important;
+  top:0!important;bottom:0!important;left:0!important;
+  height:100dvh!important;max-height:100dvh!important;
+  padding-top:calc(18px + env(safe-area-inset-top,0px))!important;
+  overflow-y:auto!important;overscroll-behavior:contain!important;
+  z-index:10006!important;
+ }
+ body.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
+  position:fixed!important;inset:0!important;
+  z-index:10004!important;
+ }
+ body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{
+  z-index:10007!important;
+ }
+}
