@@ -2279,3 +2279,52 @@ body.loox-apps-open{overflow:hidden!important}
  .loox-mobile-app-layer .loox-mobile-app-sheet,
  .loox-mobile-app-layer .loox-mobile-app-scrim{transition:none!important}
 }
+
+/* V95: AI Agent mobile header matches LOOX home: logo, search, apps, avatar. */
+@media(max-width:790px){
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lx-header.lig-header.loox-sitewide-chatbar{
+  box-sizing:border-box!important;
+  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+  height:64px!important;min-height:64px!important;max-height:64px!important;
+  width:100%!important;padding:8px 12px!important;gap:8px!important;
+  background:#101018!important;border-bottom:1px solid #292335!important;
+ }
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-head-start{
+  order:0!important;margin-right:auto!important;flex:0 1 auto!important;min-width:0!important;
+ }
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-page-name{display:none!important}
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-workspace-brand,
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-workspace-wordmark{
+  overflow:visible!important;min-width:max-content!important;padding-right:6px!important;
+  letter-spacing:-.055em!important;
+ }
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-chat-header-search,
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-mobile-app-native-trigger{
+  box-sizing:border-box!important;
+  display:grid!important;place-items:center!important;
+  flex:0 0 38px!important;width:38px!important;min-width:38px!important;
+  height:38px!important;min-height:38px!important;
+  padding:0!important;margin:0!important;border:1px solid #715183!important;
+  border-radius:12px!important;background:#23192e!important;color:#e6c8ff!important;
+  cursor:pointer!important;
+ }
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-chat-header-search{order:1!important}
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-mobile-app-native-trigger{order:2!important}
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .loox-chat-header-search svg{width:19px!important;height:19px!important}
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header > .lig-header-user[data-loox-account]{
+  order:3!important;position:relative!important;top:auto!important;left:auto!important;right:auto!important;
+  transform:none!important;display:flex!important;flex:0 0 auto!important;
+  align-items:center!important;justify-content:center!important;gap:0!important;
+  margin:0!important;min-width:0!important;width:auto!important;
+ }
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-header-user .lx-credit-chip,
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-header-user .lx-credit-bundle,
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-header-user .lx-upgrade,
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-header-user .lx-profile-details:not(:has(.lx-profile-trigger)){
+  display:none!important;
+ }
+ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active > header.lig-header .lig-header-user .lx-profile-trigger{
+  display:grid!important;place-items:center!important;width:40px!important;height:40px!important;
+  min-width:40px!important;min-height:40px!important;margin:0!important;
+ }
+}
