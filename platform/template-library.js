@@ -50,7 +50,8 @@ async function loadStyles(){const rows=result(await state.client.from('loox_temp
 let debounce;search.oninput=()=>{clearTimeout(debounce);debounce=setTimeout(()=>{query=search.value.trim();load(true)},220);};
 function media(t,full=false){
  const box=e('div','loox-gallery-media');
- if(!t.media_path)return box;
+ box.classList.add('loox-media-pending');
+ if(!t.media_path){box.classList.remove('loox-media-pending');return box;}
  const m=document.createElement(t.kind==='video'?'video':'img');
  if(t.kind==='video'){
   m.muted=true;m.loop=true;m.playsInline=true;m.preload='metadata';
@@ -87,6 +88,7 @@ function media(t,full=false){
   });
   if(!box.isConnected)return;
   m.src=url;m.style.visibility='visible';
+  box.classList.remove('loox-media-pending');
   if(status.isConnected)status.remove();
  }
  (async()=>{
@@ -96,6 +98,7 @@ function media(t,full=false){
    if(full){
     try{await showImage('preview');return;}catch{}
    }
+   box.classList.remove('loox-media-pending');
    if(status.isConnected)status.textContent='Image unavailable';
    if(!full&&m.isConnected)m.replaceWith(e('span','community-note','Preview unavailable'));
   }
