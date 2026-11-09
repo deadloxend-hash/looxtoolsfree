@@ -2152,3 +2152,46 @@ body.loox-community-photo-wall .loox-community-date-filter{display:none}
   place-items:center!important;
  }
 }
+
+/* V28: pin the notification bell directly beside the avatar on phone headers.
+   Four explicit grid tracks avoid any inherited flex auto-spacing. */
+@media(max-width:700px){
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header.loox-gallery-workspace-header{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 36px 40px 38px!important;
+  grid-template-rows:44px!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:5px!important;
+  padding:8px 12px!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header>.lig-head-start{
+  grid-column:1!important;grid-row:1!important;
+  justify-self:start!important;
+  width:auto!important;
+  min-width:0!important;
+  margin:0!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header>.loox-community-notification{
+  grid-column:2!important;grid-row:1!important;
+  justify-self:center!important;
+  align-self:center!important;
+  position:static!important;
+  margin:0!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header>.lig-header-user{
+  grid-column:3!important;grid-row:1!important;
+  justify-self:center!important;
+  align-self:center!important;
+  margin:0!important;
+  width:40px!important;
+  max-width:40px!important;
+  overflow:visible!important;
+ }
+ body.loox-community-photo-wall.loox-gallery-workspace>header.lig-header>.loox-community-mobile-menu{
+  grid-column:4!important;grid-row:1!important;
+  justify-self:end!important;
+  align-self:center!important;
+  margin:0!important;
+ }
+}
