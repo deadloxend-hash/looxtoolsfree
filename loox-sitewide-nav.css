@@ -1654,3 +1654,9 @@ body.loox-sitewide-active .loox-sitewide-drawer-list{width:100%;min-width:0}
 @media(max-width:900px){
  body.loox-sitewide-active.loox-workspace-sidebar > main{margin-left:0!important;width:100%!important}
 }
+
+/* V8: the same creator picture is used in the account header and sidebar. */
+body.loox-sitewide-active .loox-creator-avatar-img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center;border-radius:inherit}
+body.loox-sitewide-active .loox-sidebar-avatar,
+body.loox-sitewide-active .loox-popover-avatar,
+body.loox-sitewide-active .lx-avatar{overflow:hidden;flex-shrink:0}

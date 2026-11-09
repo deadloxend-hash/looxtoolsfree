@@ -462,6 +462,41 @@
   }
  }
 
+ // Reuse the public creator avatar as the single account/avatar identity.
+ // Fall back to the account initial if no creator image is configured.
+ let avatarUser=null,avatarLoaded=false,avatarUrl=null,avatarTask=null;
+ function paintCreatorAvatar(imageUrl){
+  if(!imageUrl)return;
+  const holders=[
+   ...document.querySelectorAll('[data-loox-account] .lx-avatar'),
+   ...document.querySelectorAll('[data-loox-account] .loox-popover-avatar'),
+   avatarMark
+  ];
+  for(const holder of holders){
+   if(!holder||holder.querySelector('img')?.src===imageUrl)continue;
+   const img=el('img','loox-creator-avatar-img');
+   img.src=imageUrl;img.alt='';img.loading='lazy';img.decoding='async';
+   img.addEventListener('error',()=>{if(img.isConnected)img.remove();},{once:true});
+   holder.replaceChildren(img);
+  }
+ }
+ function syncCreatorAvatar(){
+  const uid=looxAccountModule?.state?.user?.id;
+  if(!uid||!looxAccountModule?.state?.client)return;
+  if(avatarUser===uid&&avatarLoaded){if(avatarUrl)paintCreatorAvatar(avatarUrl);return;}
+  if(avatarUser===uid&&avatarTask)return;
+  avatarUser=uid;avatarLoaded=false;
+  avatarTask=(async()=>{
+   const {data,error}=await looxAccountModule.state.client.from('loox_creator_profiles').select('avatar_path').eq('user_id',uid).maybeSingle();
+   if(error||!data?.avatar_path)return;
+   const endpoint=new URL('https://looxtoolfree-backend.vercel.app/api/loox');
+   endpoint.search=new URLSearchParams({action:'public_media',type:'avatar',id:uid,variant:'preview'}).toString();
+   const response=await fetch(endpoint.href,{credentials:'omit',cache:'no-store'});
+   const body=await response.json().catch(()=>({}));
+   if(response.ok&&body.url&&looxAccountModule.state.user?.id===uid){avatarUrl=body.url;paintCreatorAvatar(avatarUrl);}
+  })().catch(()=>{}).finally(()=>{avatarLoaded=true;avatarTask=null;});
+ }
+ document.addEventListener('loox-account',()=>{avatarLoaded=false;avatarUrl=null;});
  function syncAccountHeader(){
   const credit=account.querySelector('.lx-credit-chip');
   const upgrade=account.querySelector('.lx-upgrade');
@@ -475,6 +510,7 @@
   const userName=account.querySelector('.loox-popover-name,.lx-profile-name')?.textContent?.trim();
   sideName.textContent=userName||'Profile';
   sideSubtitle.textContent=userName?'Creator & account':'Sign in or create account';
+  syncCreatorAvatar();
  }
  const accountObserver=new MutationObserver(syncAccountHeader);
  accountObserver.observe(account,{childList:true});
