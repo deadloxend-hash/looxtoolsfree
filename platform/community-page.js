@@ -4,6 +4,7 @@ const root=document.getElementById('community-root'),page=location.pathname.spli
 const discoveryPage=page==='community.html'||page==='trending.html';
 if(discoveryPage)document.body.classList.add('loox-discovery-gallery');
 const community=new Community({state,auth,initialize,root});
+window.__looxOpenCommunityNotifications=()=>community.notifications().catch(error=>community.note(error.message));
 if(discoveryPage){
  // Keep the existing sort, filter, search, collection and notification handlers.
  // Only move their live DOM controls into a compact Templates-style toolbar.
@@ -91,6 +92,11 @@ if(discoveryPage){
  window.addEventListener('resize',close);
 }
 await community.show();
+if(new URLSearchParams(location.search).get('notifications')==='1'){
+ const dest=new URL(location.href);dest.searchParams.delete('notifications');
+ history.replaceState(history.state,'',dest.href);
+ await window.__looxOpenCommunityNotifications();
+}
 if(page==='collections.html'&&!new URLSearchParams(location.search).get('id')){
  root.querySelector('h1').textContent='Collections';root.querySelector('.community-heading p').textContent='Keep your favorite ideas together. Collections start private.';community.grid.replaceChildren();community.more.hidden=true;
  if(!state.user){community.note('Sign in to manage your collections.');root.append(action('Sign in',()=>auth('login'),'community-primary'));}
