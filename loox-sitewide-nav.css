@@ -2163,3 +2163,19 @@ body.loox-apps-open{overflow:hidden!important}
 }
 @media(min-width:791px){.loox-mobile-app-layer{display:none!important}}
 @media(prefers-reduced-motion:reduce){.loox-mobile-app-icon,.loox-mobile-app-layer{transition:none!important}}
+
+/* V91: landing mobile app button sits between search and avatar. */
+@media(max-width:790px){
+ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-sitewide-search,
+ body.loox-creative-landing[data-creative-mode="video"] #loox-sitewide-header .loox-sitewide-search{
+  order:6!important;margin-left:auto!important;
+ }
+ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-mobile-app-trigger,
+ body.loox-creative-landing[data-creative-mode="video"] #loox-sitewide-header .loox-mobile-app-trigger{
+  order:7!important;margin:0!important;
+ }
+ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .loox-sitewide-account,
+ body.loox-creative-landing[data-creative-mode="video"] #loox-sitewide-header .loox-sitewide-account{
+  order:8!important;margin-left:0!important;
+ }
+}
