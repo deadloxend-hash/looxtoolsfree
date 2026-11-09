@@ -45,6 +45,27 @@ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .lo
  }
 }
 </style>
+<!-- Mobile first-screen scroll cue -->
+<style>
+@media(max-width:720px){
+ body[data-image-showcase] .creative-scroll{
+  position:fixed!important;left:50%!important;bottom:calc(18px + env(safe-area-inset-bottom,0px))!important;
+  transform:translateX(-50%)!important;z-index:160!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  gap:10px!important;padding:10px 15px!important;
+  border:1px solid rgba(211,179,255,.35)!important;border-radius:99px!important;
+  background:rgba(22,14,34,.84)!important;backdrop-filter:blur(12px);
+  color:#f5e9ff!important;font:600 11px/1.25 Inter,system-ui,sans-serif!important;
+  letter-spacing:.02em!important;white-space:nowrap!important;
+  box-shadow:0 6px 24px rgba(0,0,0,.38)!important;
+  transition:opacity .25s ease,visibility .25s ease!important;
+ }
+ body[data-image-showcase] .creative-scroll span{display:inline-block;animation:loox-scroll-nudge 1.6s ease-in-out infinite}
+ body[data-image-showcase].has-scrolled .creative-scroll{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+}
+@keyframes loox-scroll-nudge{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+@media(prefers-reduced-motion:reduce){body[data-image-showcase] .creative-scroll span{animation:none!important}}
+</style>
 </head>
 <body class="lx-shell loox-creative-landing" data-creative-mode="image" data-image-showcase>
 <header class="lx-header">
@@ -512,6 +533,11 @@ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .lo
 </p>
 </div>
 </footer>
+<script>
+(()=>{const update=()=>document.body.classList.toggle('has-scrolled',window.scrollY>90);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',update,{once:true});else update();
+window.addEventListener('scroll',update,{passive:true});})();
+</script>
 <script defer src="platform/loox-animated-prompts.js?v=1">
 </script>
 </body>
