@@ -35,7 +35,7 @@
  const wordmark=el('span','loox-sitewide-wordmark','LOOX');logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
- [['AI Agent','ai-chat.html'],['AI Image','ai-text-to-image.html#generate'],['AI Video',page==='ai-image-landing.html'?'ai-video-landing.html':'ai-video-generator.html#generate'],['Community','community.html'],['Trending','trending.html'],['Templates','templates.html']].forEach(([name,href])=>{
+ [['AI Agent','ai-chat.html'],['AI Image',imageTabHref],['AI Video',videoTabHref],['Community','community.html'],['Trending','trending.html'],['Templates','templates.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);if(href.split('#')[0]===page)link.setAttribute('aria-current','page');
   if(name==='Blog'){const outbound=el('span','loox-blog-arrow','↗');outbound.setAttribute('aria-hidden','true');link.append(outbound);}
   links.append(link);
