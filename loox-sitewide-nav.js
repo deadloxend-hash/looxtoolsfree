@@ -48,7 +48,14 @@
  const search=el('button','loox-sitewide-search');search.type='button';
  search.setAttribute('aria-label','Search all LOOX tools');search.title='Search tools';search.innerHTML=icons.search;
  const account=el('div','loox-sitewide-account');account.setAttribute('data-loox-account','');
- inner.append(logoWrap,links,search,creditDock,account);nav.append(inner);
+ inner.append(logoWrap,links,search,creditDock,account);
+  // AI Image marketing page: no visible credits/upgrade in its top navigation.
+  // Keep balances available in the account popover and generator workspace.
+  if(page==='ai-image-landing.html'){
+    creditDock.remove();
+    inner.insertBefore(search,account);
+  }
+  nav.append(inner);
  document.body.prepend(nav);
  document.body.classList.add('loox-sitewide-active');
  // Retire the earlier navigation rail on EVERY page, including AI tools.
