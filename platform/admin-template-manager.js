@@ -55,13 +55,16 @@ async function uploadTemplateMedia(file,kind){
   const sha256=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
   return api('r2_media',{purpose:'template_video_complete',path:prepared.path,sha256});
  }
- if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2_097_152)
-  throw Error('Choose a PNG, JPG or WebP image under 2 MB.');
- const image=await new Promise((resolve,reject)=>{
-  const reader=new FileReader();reader.onload=()=>resolve(reader.result);
-  reader.onerror=()=>reject(Error('Unable to read template image.'));reader.readAsDataURL(file);
- });
- return api('r2_media',{purpose:'template',image});
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>16_000_000)
+  throw Error('Choose a PNG, JPG or WebP image up to 16 MB.');
+ const prepared=await api('r2_media',{purpose:'template_image_prepare',content_type:file.type,bytes:file.size});
+ if(!prepared.upload_url||!prepared.path)throw Error('Could not prepare the original image upload.');
+ const stored=await fetch(prepared.upload_url,{method:'PUT',headers:{'Content-Type':file.type},
+  body:file,signal:AbortSignal.timeout(120000),redirect:'error'});
+ if(!stored.ok)throw Error('R2 did not accept the original image. Please retry.');
+ const digest=await crypto.subtle.digest('SHA-256',await file.arrayBuffer());
+ const sha256=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
+ return api('r2_media',{purpose:'template_image_complete',path:prepared.path,sha256});
 }
 async function load(){grid.replaceChildren();if(!isAdmin()){note.textContent='Sign in with your LOOX template administrator account.';form.hidden=true;return;}form.hidden=false;note.textContent='Loading templates…';
 try{const {data,error}=await state.client.from('loox_template_catalog').select('*').order('created_at',{ascending:false}).limit(500);if(error)throw error;items=data;for(const t of data){const card=E('article','loox-preset-card'),art=E('div','loox-preset-art'),body=E('div','loox-preset-body'),actions=E('div','community-post-actions');if(t.media_path){const media=document.createElement(t.kind==='video'?'video':'img');
