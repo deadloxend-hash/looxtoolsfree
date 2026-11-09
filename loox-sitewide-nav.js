@@ -158,20 +158,71 @@
   else native.append(nativeAppTrigger);
  }
  let appLastFocus=null;
+ const appSheet=appLayer.querySelector('.loox-mobile-app-sheet');
+ const appScrim=appLayer.querySelector('[data-close-apps]');
+ let appClosing=false;
+ let closeTimer=null;
  const closeApps=()=>{
-  if(appLayer.hidden)return;
-  appLayer.hidden=true;document.body.classList.remove('loox-apps-open');
+  if(appLayer.hidden||appClosing)return;
+  appClosing=true;
+  appLayer.classList.add('is-closing');
   appTriggers.forEach(b=>b.setAttribute('aria-expanded','false'));
-  if(appLastFocus?.isConnected)appLastFocus.focus();
+  const finish=()=>{
+   clearTimeout(closeTimer);appLayer.hidden=true;appClosing=false;
+   appLayer.classList.remove('is-closing','is-dragging');
+   appSheet.style.removeProperty('--loox-sheet-drag');
+   appScrim.style.removeProperty('opacity');
+   document.body.classList.remove('loox-apps-open');
+   if(appLastFocus?.isConnected)appLastFocus.focus();
+  };
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();
+  else closeTimer=setTimeout(finish,210);
  };
  const openApps=trigger=>{
+  if(closeTimer)clearTimeout(closeTimer);
+  appClosing=false;appLayer.classList.remove('is-closing','is-dragging');
+  appSheet.style.removeProperty('--loox-sheet-drag');
+  appScrim.style.removeProperty('opacity');
   appLastFocus=trigger;appLayer.hidden=false;document.body.classList.add('loox-apps-open');
   appTriggers.forEach(b=>b.setAttribute('aria-expanded','true'));
   appLayer.querySelector('.loox-mobile-app-close').focus();
  };
  appTriggers.forEach(button=>button.addEventListener('click',()=>appLayer.hidden?openApps(button):closeApps()));
  appLayer.querySelector('.loox-mobile-app-close').addEventListener('click',closeApps);
- appLayer.querySelector('[data-close-apps]').addEventListener('click',closeApps);
+ appScrim.addEventListener('click',closeApps);
+ // Native touch dragging: swipe the sheet downward to dismiss, without
+ // blocking taps on links or normal scrolling through its content.
+ let swipeStart=null,swipeDistance=0;
+ appSheet.addEventListener('touchstart',event=>{
+  if(appLayer.hidden||appClosing||event.touches.length!==1||appSheet.scrollTop>0)return;
+  if(event.target.closest('a,button,input,textarea,select'))return;
+  swipeStart={y:event.touches[0].clientY,x:event.touches[0].clientX};
+  swipeDistance=0;
+ },{passive:true});
+ appSheet.addEventListener('touchmove',event=>{
+  if(!swipeStart||event.touches.length!==1)return;
+  const dy=event.touches[0].clientY-swipeStart.y;
+  const dx=Math.abs(event.touches[0].clientX-swipeStart.x);
+  if(dy<0||dx>Math.max(30,dy))return;
+  if(dy>6){
+   event.preventDefault();
+   swipeDistance=Math.min(dy,appSheet.getBoundingClientRect().height);
+   appLayer.classList.add('is-dragging');
+   appSheet.style.setProperty('--loox-sheet-drag',swipeDistance+'px');
+   appScrim.style.opacity=String(Math.max(.15,1-swipeDistance/350));
+  }
+ },{passive:false});
+ const finishSwipe=()=>{
+  if(!swipeStart)return;
+  swipeStart=null;
+  const shouldClose=swipeDistance>85;
+  swipeDistance=0;appLayer.classList.remove('is-dragging');
+  appSheet.style.removeProperty('--loox-sheet-drag');
+  appScrim.style.removeProperty('opacity');
+  if(shouldClose)closeApps();
+ };
+ appSheet.addEventListener('touchend',finishSwipe,{passive:true});
+ appSheet.addEventListener('touchcancel',finishSwipe,{passive:true});
  document.addEventListener('keydown',event=>{
   if(appLayer.hidden)return;
   if(event.key==='Escape'){event.preventDefault();closeApps();}
