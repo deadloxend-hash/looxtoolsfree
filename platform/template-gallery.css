@@ -95,3 +95,23 @@
  #template-library .loox-gallery-card .loox-gallery-caption,
  #template-library .loox-gallery-card .loox-gallery-media>.loox-recreate{transition:none!important}
 }
+
+/* V5 — exact column counts requested for desktop and mobile.
+   Override the earlier auto-width columns, including very narrow phones. */
+#template-library .loox-gallery-grid{
+ columns:auto!important;
+ column-width:auto!important;
+ column-count:5!important;
+ column-gap:12px!important;
+}
+@media (min-width:701px) and (max-width:1100px){
+ #template-library .loox-gallery-grid{
+  columns:auto!important;column-width:auto!important;column-count:3!important;
+ }
+}
+@media (max-width:700px){
+ #template-library .loox-gallery-grid{
+  columns:auto!important;column-width:auto!important;column-count:2!important;
+  column-gap:9px!important;
+ }
+}
