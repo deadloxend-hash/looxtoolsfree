@@ -160,7 +160,7 @@ export class Community {
    b.title=post.liked?'Unlike post':'Like post';
   }else b.textContent=(post.liked?'♥ ':'♡ ')+(Number(post.likes)||0);
  }
- async like(post,button){if(!this.state.user){this.auth('login');return;}if(post.creator_id===this.state.user.id){this.note('You cannot like your own creation.');return;}if(this.pendingLikes.has(post.id))return;this.pendingLikes.add(post.id);const uid=this.state.user.id,before={liked:post.liked,likes:post.likes};post.liked=!post.liked;post.likes=Number(post.likes)+(post.liked?1:-1);this.renderLike(post,button);
+ async like(post,button){if(!this.state.user){this.auth('login');return;}if(this.pendingLikes.has(post.id))return;this.pendingLikes.add(post.id);const uid=this.state.user.id,before={liked:!!post.liked,likes:Number(post.likes)||0};post.liked=!before.liked;post.likes=Math.max(0,before.likes+(post.liked?1:-1));this.renderLike(post,button);
   const syncCard=()=>{document.querySelectorAll('.community-like-shortcut[data-post-id="'+post.id+'"]').forEach(other=>this.renderLike(post,other));};
   syncCard();
  try{const q=this.state.client.from('loox_post_likes');result(post.liked?await q.insert({post_id:post.id,user_id:uid}):await q.delete().eq('post_id',post.id).eq('user_id',uid));}catch(error){Object.assign(post,before);this.renderLike(post,button);syncCard();throw error;}finally{this.pendingLikes.delete(post.id);}}
