@@ -36,7 +36,12 @@ export function mountWorkspaceNavigation(host){
   const text=document.createElement('span');text.className='loox-workspace-label';text.textContent=label;link.append(ico,text);
   if(external){const outgoing=document.createElement('span');outgoing.className='loox-workspace-external';outgoing.innerHTML=workspaceIcon('external');link.append(outgoing);}
   const target=new URL(href,siteRoot);
-  if(target.pathname===active.pathname&&target.search===active.search&&(!target.hash||!active.hash||target.hash===active.hash))link.setAttribute('aria-current','page');
+  // Exactly one navigation item may be current. Saved session query params
+  // and #generate should not affect which top-level workspace is selected.
+  if(target.pathname===active.pathname &&
+     !['ai-image-landing.html','ai-video-landing.html'].includes(target.pathname.split('/').pop())){
+   link.setAttribute('aria-current','page');
+  }
   parent.append(link);return link;
  }
  const primary=[
