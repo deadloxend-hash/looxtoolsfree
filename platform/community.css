@@ -615,3 +615,117 @@ body .loox-post-viewer .loox-post-creator-names small{
  body.loox-discovery-gallery #community-root .community-card-hover .community-hover-creator,
  body .loox-post-viewer .loox-post-creator-profile{transition:none!important}
 }
+
+/* V12 — Single Instagram-style post viewer. Social actions overlay artwork.
+   Keep Collections accessible and never replace icon contents with status text. */
+body .community-viewer .community-viewer-stage{
+ position:relative!important;isolation:isolate!important;overflow:hidden!important;
+ background:#0c0911!important;border-radius:14px!important;
+}
+body .community-viewer .loox-social-photo-actions{
+ position:absolute!important;z-index:15!important;right:12px!important;top:12px!important;
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;
+ flex-wrap:wrap!important;gap:7px!important;
+ max-width:calc(100% - 24px)!important;
+ padding:0!important;margin:0!important;pointer-events:none!important;
+}
+body .community-viewer .loox-social-action{
+ display:grid!important;place-items:center!important;flex:0 0 37px!important;
+ width:37px!important;height:37px!important;min-height:37px!important;
+ padding:0!important;margin:0!important;line-height:1!important;
+ border-radius:50%!important;border:1px solid rgba(255,255,255,.4)!important;
+ background:rgba(20,16,26,.82)!important;color:#f6f0ff!important;
+ backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;
+ box-shadow:0 4px 14px #05020860!important;
+ cursor:pointer!important;pointer-events:auto!important;
+ transition:background-color .2s,border-color .2s,transform .2s!important;
+}
+body .community-viewer .loox-social-action:hover,
+body .community-viewer .loox-social-action:focus-visible{
+ background:rgba(93,58,119,.97)!important;
+ border-color:#dfbdf4!important;transform:translateY(-1px)!important;
+}
+body .community-viewer .loox-social-action[aria-pressed="true"]{
+ background:#62407b!important;border-color:#d6a2ff!important;
+}
+body .community-viewer .loox-social-action.community-like-shortcut[aria-pressed="true"]{
+ color:#ff7395!important;border-color:#f58dae!important;
+ background:rgba(61,27,49,.94)!important;
+}
+body .community-viewer .loox-social-action svg{
+ display:block!important;width:18px!important;height:18px!important;pointer-events:none!important;
+}
+body .community-viewer .community-viewer-controls{
+ position:absolute!important;bottom:10px!important;left:10px!important;z-index:10!important;
+ display:flex!important;flex-wrap:wrap!important;gap:6px!important;
+ max-width:calc(100% - 20px)!important;margin:0!important;padding:0!important;
+}
+body .community-viewer .community-viewer-controls .community-button{
+ min-height:30px!important;padding:6px 10px!important;
+ background:#17121dcc!important;border:1px solid #ffffff44!important;
+ border-radius:999px!important;color:#fff!important;font-size:11px!important;
+ backdrop-filter:blur(8px)!important;
+}
+body .community-viewer .loox-social-creator-row{
+ display:flex!important;align-items:center!important;gap:9px!important;
+ margin:0 0 14px!important;min-width:0!important;
+}
+body .community-viewer .loox-social-creator{
+ display:inline-flex!important;align-items:center!important;gap:10px!important;
+ flex:1 1 auto!important;min-width:0!important;padding:4px 10px 4px 4px!important;
+ border:1px solid #624d70!important;border-radius:999px!important;
+ text-decoration:none!important;background:#282034!important;color:#fff!important;
+ transition:background .18s,border-color .18s!important;
+}
+body .community-viewer .loox-social-creator:hover,
+body .community-viewer .loox-social-creator:focus-visible{
+ background:#433050!important;border-color:#b78bd0!important;
+}
+body .community-viewer .loox-social-creator .community-avatar{
+ width:36px!important;height:36px!important;min-width:36px!important;
+ flex:0 0 36px!important;border-radius:50%!important;overflow:hidden!important;
+ display:grid!important;place-items:center!important;
+ background:#59406c!important;
+}
+body .community-viewer .loox-social-creator .community-avatar img{
+ display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;
+}
+body .community-viewer .loox-social-creator-names{
+ display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;
+ line-height:1.25!important;
+}
+body .community-viewer .loox-social-creator-names strong{
+ color:#fff!important;font:700 13px/1.25 Inter,system-ui,sans-serif!important;
+ white-space:nowrap!important;text-overflow:ellipsis!important;overflow:hidden!important;
+}
+body .community-viewer .loox-social-creator-names small{
+ color:#cdbad9!important;font:500 11px/1.25 Inter,system-ui,sans-serif!important;
+ white-space:nowrap!important;text-overflow:ellipsis!important;overflow:hidden!important;
+}
+body .community-viewer .loox-social-follow{
+ flex:0 0 auto!important;min-height:32px!important;border-radius:999px!important;
+ padding:6px 12px!important;font-size:11px!important;
+}
+body .community-viewer .loox-social-prompt-actions{
+ display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:10px 0 16px!important;
+}
+body .community-viewer .loox-social-prompt-actions .community-button,
+body .community-viewer .loox-social-prompt-actions .community-primary{
+ min-height:34px!important;padding:8px 12px!important;
+ border-radius:10px!important;font-size:12px!important;
+}
+@media(max-width:700px){
+ body .community-viewer .loox-social-photo-actions{
+  top:8px!important;right:8px!important;gap:5px!important;
+  max-width:calc(100% - 16px)!important;
+ }
+ body .community-viewer .loox-social-action{
+  width:33px!important;height:33px!important;min-height:33px!important;flex-basis:33px!important;
+ }
+ body .community-viewer .loox-social-action svg{width:17px!important;height:17px!important}
+ body .community-viewer .loox-social-creator-row{margin-bottom:10px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body .community-viewer .loox-social-action,
+ body .community-viewer .loox-social-creator{transition:none!important}
+}
