@@ -183,3 +183,70 @@ body.loox-media-sessions-in-drawer .lig-main > .loox-session-scrim{
   max-height:45dvh!important;
  }
 }
+
+/* V9 — AI Agent shares the exact Image / Video sidebar order:
+   navigation links, Recent + compact New Chat, then pinned profile.
+   Reuse the real chat panel to preserve its existing history handlers. */
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer .loox-sitewide-drawer-list{
+ display:flex!important;flex-direction:column!important;min-height:0!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiRecentPanel{
+ position:relative!important;inset:auto!important;left:auto!important;right:auto!important;
+ top:auto!important;bottom:auto!important;transform:none!important;
+ display:flex!important;flex:0 0 auto!important;flex-direction:column!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ height:auto!important;min-height:0!important;max-height:min(51dvh,510px)!important;
+ padding:12px 10px 10px!important;margin:0!important;gap:7px!important;
+ z-index:auto!important;box-sizing:border-box!important;overflow:hidden!important;
+ border:0!important;border-bottom:1px solid #352b3e!important;
+ box-shadow:none!important;background:transparent!important;
+ visibility:visible!important;pointer-events:auto!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiRecentPanel .ai-recent-inner{
+ display:flex!important;flex-direction:column!important;min-height:0!important;
+ width:100%!important;max-height:inherit!important;overflow:hidden!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiRecentList{
+ flex:1 1 auto!important;min-height:52px!important;max-height:min(35dvh,350px)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;scrollbar-width:thin!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer .loox-workspace-navigation{
+ flex:1 1 auto!important;min-height:90px!important;max-height:none!important;
+ overflow-y:auto!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer .loox-chat-recent-label{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:8px!important;min-height:32px!important;margin:0 3px 4px!important;padding:0 3px 5px!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat{
+ flex:0 0 27px!important;display:inline-grid!important;place-items:center!important;
+ width:27px!important;height:27px!important;min-height:27px!important;
+ margin:0!important;padding:0!important;border:1px solid #51415d!important;
+ border-radius:7px!important;background:#30243d!important;color:#fff!important;
+ font:700 19px/1 system-ui,sans-serif!important;cursor:pointer!important
+}
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat:hover,
+body.loox-chat-sessions-in-drawer #loox-sitewide-drawer #aiNewChat:focus-visible{
+ background:#51336c!important;outline:2px solid #b889d8!important;outline-offset:1px!important
+}
+/* The conversation no longer reserves a second column for its old history rail. */
+body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-body,
+body.ai-chat.loox-chat-sessions-in-drawer.ai-agent-permanent-sessions .ai-chat-body{
+ margin-left:0!important;width:100%!important;max-width:100%!important;min-width:0!important
+}
+body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-layout{
+ width:100%!important;height:100%!important
+}
+@media(min-width:901px){
+ body.ai-chat.loox-chat-sessions-in-drawer.loox-sitewide-active > main.ai-chat-stage{
+  box-sizing:border-box!important;
+  padding-left:0!important;
+  transition:padding-left .3s cubic-bezier(.2,.83,.23,1)!important
+ }
+ body.ai-chat.loox-chat-sessions-in-drawer.loox-sitewide-active.loox-sitewide-sidebar-open > main.ai-chat-stage{
+  padding-left:252px!important
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.ai-chat.loox-chat-sessions-in-drawer > main.ai-chat-stage{transition:none!important}
+}
