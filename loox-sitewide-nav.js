@@ -256,7 +256,8 @@
  document.addEventListener('keydown',event=>{
   if(event.key==='Escape'&&!sideOptions.hidden)closeSideOptions();
  });
- sideFooter.append(sideAccount,sideOptions,sideActions);
+ // Keep account access here; quick utilities remain available in the profile menu.
+ sideFooter.append(sideAccount);
  sidebar.append(sideFooter);
 
  function enableProfileShortcuts(menu){
