@@ -1174,3 +1174,23 @@ body.creator-page #creator-community button.loox-profile-stat-button:disabled{
  .community-dialog .loox-comment-input,
  body.creator-page #creator-community button.loox-profile-stat-button{transition:none!important}
 }
+
+/* Profile skeleton while the creator summary arrives. */
+#creator-community .loox-profile-skeleton-avatar,
+#creator-community .loox-profile-skeleton-line{
+ background:linear-gradient(100deg,#30273c 18%,#483854 48%,#30273c 78%);
+ background-size:200% 100%;
+ animation:loox-profile-loading 1.6s ease-in-out infinite;
+}
+#creator-community .loox-profile-skeleton-lines{
+ display:flex;flex:1;flex-direction:column;gap:13px;max-width:400px;min-width:0;
+}
+#creator-community .loox-profile-skeleton-line{display:block;height:14px;border-radius:999px}
+#creator-community .loox-profile-skeleton-wide{width:70%;height:22px}
+#creator-community .loox-profile-skeleton-medium{width:48%}
+#creator-community .loox-profile-skeleton-short{width:30%}
+@keyframes loox-profile-loading{from{background-position:100% 50%}to{background-position:-100% 50%}}
+@media(prefers-reduced-motion:reduce){
+ #creator-community .loox-profile-skeleton-avatar,
+ #creator-community .loox-profile-skeleton-line{animation:none}
+}

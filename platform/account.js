@@ -197,11 +197,11 @@ export function nextAccountUrl(page){
  return page+'?from='+encodeURIComponent(current);
 }
 export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
-export async function initialize({publicAccess=false}={}){
+export async function initialize({publicAccess=false,waitForAccount=true}={}){
  renderHeader();
  const accountPage=!!document.querySelector('[data-dashboard],[data-upgrade-page],[data-settings-page]');
  if(publicAccess||accountPage||store().getItem(sessionKey)||location.search.includes('code=')){
-  try{await client();renderHeader();if(state.user)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
+  try{await client();renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
  }
  if(accountPage)drawDashboard();
  const planHost=document.querySelector('[data-pricing]');if(planHost)plans(planHost);
