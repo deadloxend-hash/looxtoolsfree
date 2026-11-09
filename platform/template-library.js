@@ -19,7 +19,10 @@ let openButton=null;
 function closeMenu(){menu.hidden=true;openButton?.setAttribute('aria-expanded','false');openButton=null;}
 function showMenu(button,values,selected,onPick,allLabel){if(openButton===button){closeMenu();return;}closeMenu();openButton=button;button.setAttribute('aria-expanded','true');menu.replaceChildren();
 for(const value of ['',...values]){const label=value||allLabel;const item=e('button','loox-custom-option',label);item.type='button';item.setAttribute('role','option');item.setAttribute('aria-selected',String(value===selected));item.append(e('span','loox-option-check',value===selected?'✓':''));item.onclick=()=>{onPick(value);button.textContent=(value||allLabel);closeMenu();load(true);};menu.append(item);}
-const rect=button.getBoundingClientRect();menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-250))+'px';menu.style.top=Math.min(rect.bottom+6,innerHeight-140)+'px';menu.style.maxWidth=Math.min(244,innerWidth-20)+'px';menu.style.width='max-content';menu.hidden=false;}
+const rect=button.getBoundingClientRect();menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-250))+'px';menu.style.top=Math.min(rect.bottom+6,innerHeight-140)+'px';menu.style.maxWidth=Math.min(244,innerWidth-20)+'px';menu.style.width='max-content';menu.hidden=false;
+const menuHeight=menu.getBoundingClientRect().height;
+menu.style.top=(rect.bottom+6+menuHeight>innerHeight-8
+ ? Math.max(8,rect.top-menuHeight-6):rect.bottom+6)+'px';}
 catButton.onclick=()=>showMenu(catButton,categoryOptions,cat.value,v=>{cat.value=v;category=v;},'Categories');
 function updateStyleButton(){const names=[...selectedStyles];styleButton.textContent=names.length?('Styles ('+names.length+')'):'Styles';styleButton.setAttribute('aria-pressed',String(names.length>0));}
 function showStyleMenu(){
@@ -34,12 +37,21 @@ function showStyleMenu(){
   menu.append(item);
  }
  const rect=styleButton.getBoundingClientRect();menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-250))+'px';menu.style.top=Math.min(rect.bottom+6,innerHeight-140)+'px';menu.style.maxWidth=Math.min(244,innerWidth-20)+'px';menu.style.width='max-content';menu.hidden=false;
+const menuHeight=menu.getBoundingClientRect().height;
+menu.style.top=(rect.bottom+6+menuHeight>innerHeight-8
+ ? Math.max(8,rect.top-menuHeight-6):rect.bottom+6)+'px';
 }
 function showStyleMenuRefresh(){openButton=null;showStyleMenu();}
 styleButton.onclick=showStyleMenu;
 document.addEventListener('pointerdown',ev=>{if(!menu.hidden&&!menu.contains(ev.target)&&ev.target!==openButton)closeMenu();});
 document.addEventListener('keydown',ev=>{if(ev.key==='Escape')closeMenu();});
-window.addEventListener('scroll',closeMenu,true);window.addEventListener('resize',closeMenu);
+// Captured scroll events also fire when the menu itself scrolls. Keep the
+// dropdown open for wheel/touch scrolling inside it, close on page scrolling.
+window.addEventListener('scroll',ev=>{
+ if(!menu.hidden&&(ev.target===menu||menu.contains(ev.target)))return;
+ closeMenu();
+},true);
+window.addEventListener('resize',closeMenu);
 const reset=a('Clear filters',()=>{cat.value='';selectedStyles.clear();search.value='';category='';query='';catButton.textContent='Categories';updateStyleButton();closeMenu();load(true)},'loox-gallery-chip');
 filters.append(types,catButton,styleButton,reset);
 const section=e('div','loox-gallery-section'),grid=e('div','loox-gallery-grid'),notice=e('p','community-note'),more=a('Load more',()=>load(false),'community-more',err=>notice.textContent=err.message);section.append(grid,notice,more);
