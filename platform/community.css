@@ -356,3 +356,79 @@ body.loox-discovery-gallery #community-root .community-card .community-media vid
   gap:9px!important;
  }
 }
+
+/* V8: matching compact, wheel/touch-scrollable dropdowns for Community and Trending. */
+body.loox-discovery-gallery .loox-discovery-native-select{
+ position:absolute!important;width:1px!important;height:1px!important;
+ overflow:hidden!important;clip-path:inset(50%)!important;
+ opacity:0!important;pointer-events:none!important;
+}
+body.loox-discovery-gallery .loox-discovery-select-wrap{
+ display:inline-flex!important;position:relative!important;flex:0 0 auto!important;
+}
+body.loox-discovery-gallery .loox-discovery-select-trigger{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ gap:9px!important;padding:7px 13px!important;height:34px!important;
+ min-height:34px!important;border:1px solid #685078!important;
+ border-radius:999px!important;background:rgba(38,32,45,.66)!important;
+ color:#f0e7fa!important;font:600 12px/1.1 Inter,system-ui,sans-serif!important;
+ white-space:nowrap!important;cursor:pointer!important;
+ transition:background-color .2s,border-color .2s!important;
+}
+body.loox-discovery-gallery .loox-discovery-select-trigger::after{
+ content:"";display:block;flex:0 0 6px;width:6px;height:6px;
+ border-right:1.7px solid currentColor;border-bottom:1.7px solid currentColor;
+ transform:translateY(-2px) rotate(45deg);
+ transition:transform .18s ease;
+}
+body.loox-discovery-gallery .loox-discovery-select-trigger[aria-expanded=true]::after{
+ transform:translateY(2px) rotate(225deg);
+}
+body.loox-discovery-gallery .loox-discovery-select-trigger:hover,
+body.loox-discovery-gallery .loox-discovery-select-trigger[aria-expanded=true]{
+ background:#493158!important;border-color:#ad80c7!important;
+}
+.loox-discovery-select-menu{
+ position:fixed!important;z-index:100200!important;
+ display:flex!important;flex-direction:column!important;
+ width:max-content;min-width:110px;max-width:min(218px,calc(100vw - 20px));
+ max-height:min(320px,55dvh)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;
+ padding:5px!important;border:1px solid #654977!important;
+ border-radius:12px!important;background:rgba(30,22,39,.97)!important;
+ backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;
+ box-shadow:0 16px 35px #050208a8!important;
+ scrollbar-width:thin!important;scrollbar-color:#8866a1 #241a30!important;
+}
+.loox-discovery-select-menu[hidden]{display:none!important}
+.loox-discovery-select-menu::-webkit-scrollbar{width:5px}
+.loox-discovery-select-menu::-webkit-scrollbar-thumb{background:#8866a1;border-radius:8px}
+.loox-discovery-select-menu .loox-discovery-select-option{
+ width:100%!important;min-height:33px!important;
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ padding:7px 10px!important;border:0!important;border-radius:8px!important;
+ color:#f0e7fa!important;background:transparent!important;
+ font:550 12px/1.3 Inter,system-ui,sans-serif!important;
+ text-align:left!important;white-space:nowrap!important;
+ cursor:pointer!important;
+}
+.loox-discovery-select-menu .loox-discovery-select-option:hover,
+.loox-discovery-select-menu .loox-discovery-select-option:focus-visible{
+ background:#473157!important;outline:none!important;
+}
+.loox-discovery-select-menu .loox-discovery-select-option[aria-selected=true]{
+ background:#56346f!important;color:white!important;
+}
+@media(max-width:700px){
+ body.loox-discovery-gallery .loox-discovery-select-trigger{
+  height:31px!important;min-height:31px!important;font-size:11px!important;
+  padding:6px 10px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-discovery-gallery .loox-discovery-select-trigger,
+ body.loox-discovery-gallery .loox-discovery-select-trigger::after{
+  transition:none!important;
+ }
+}
