@@ -276,3 +276,11 @@ body .loox-template-detail .loox-media-loading{
 body .loox-template-detail>.loox-gallery-media>img{
  flex:0 1 auto!important;
 }
+
+/* Keep gallery card footprints steady while images decode asynchronously. */
+#template-library .loox-gallery-card .loox-gallery-media.loox-media-pending{
+ min-height:145px!important;
+}
+body .loox-template-detail>.loox-gallery-media.loox-media-pending{
+ min-height:180px!important;
+}
