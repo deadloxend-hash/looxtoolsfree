@@ -16,13 +16,18 @@ export class MediaSessions {
   this.rail=this.root.querySelector(':scope > .loox-session-rail')||el('aside','loox-session-rail');
   this.rail.className='loox-session-rail';this.rail.setAttribute('aria-label','Generative sessions');
   const head=el('div','loox-session-head');head.append(el('strong','','Generative sessions'));
-  this.toggle=this.button('‹',()=>this.collapse(!this.rail.classList.contains('collapsed')));this.toggle.className='loox-session-toggle';this.toggle.setAttribute('aria-label','Toggle generative sessions');head.append(this.toggle);
-  this.list=el('div','loox-session-list');this.list.id='loox-media-sessions';this.toggle.setAttribute('aria-controls',this.list.id);
+  this.toggle=this.button('',()=>this.collapse(!this.rail.classList.contains('collapsed')));
+  this.toggle.className='loox-session-toggle loox-ai-dock-toggle';
+  this.toggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">‹</span>';
+  this.rail.id='loox-media-session-rail';
+  this.toggle.setAttribute('aria-controls',this.rail.id);
+  this.toggle.setAttribute('aria-label','Hide generative sessions');
+  this.list=el('div','loox-session-list');this.list.id='loox-media-sessions';
   this.more=this.button('Load more',()=>this.loadList(false));this.more.hidden=true;
   const recent=el('div','loox-session-recent-label','Recent');
   this.rail.replaceChildren(head,this.button('＋ New chat',()=>this.fresh()),recent,this.list,this.more);
   if(!this.rail.isConnected)this.root.append(this.rail);mountWorkspaceNavigation(this.rail);
-  this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim);
+  this.scrim=this.button('',()=>this.collapse(true));this.scrim.className='loox-session-scrim';this.scrim.setAttribute('aria-label','Close sessions');this.root.append(this.scrim,this.toggle);
   // New generator workspaces begin with Generative sessions expanded on every screen size.
   this.collapse(matchMedia('(max-width:900px)').matches);
   const main=this.root.closest('main');
@@ -55,8 +60,8 @@ export class MediaSessions {
    for(const [id,waiters] of queued){const value=byId.get(id)||{id,state:'missing',url:null};for(const waiter of waiters){if(waiter.owner!==this.state.user?.id){waiter.reject(Error('Your account changed. Please reopen your session.'));continue;}if(value.url)this.statusCache.set(waiter.cacheKey,{url:value.url,value,expires:Date.now()+240000});waiter.resolve(value);}}
   }catch(error){for(const [,waiters] of queued)for(const waiter of waiters)waiter.reject(error);}
  }
- setCommunity(on){this.root.classList.toggle('loox-community-view',on);this.rail.hidden=on;this.scrim.hidden=on||this.rail.classList.contains('collapsed')||!matchMedia('(max-width:900px)').matches;}
- collapse(closed){this.rail.classList.toggle('collapsed',closed);this.root.classList.toggle('loox-sessions-collapsed',closed);this.toggle.textContent=closed?'›':'‹';this.toggle.setAttribute('aria-expanded',String(!closed));this.scrim.hidden=closed||!matchMedia('(max-width:900px)').matches;}
+ setCommunity(on){this.root.classList.toggle('loox-community-view',on);this.rail.hidden=on;this.toggle.hidden=on;this.scrim.hidden=on||this.rail.classList.contains('collapsed')||!matchMedia('(max-width:900px)').matches;}
+ collapse(closed){this.rail.classList.toggle('collapsed',closed);this.root.classList.toggle('loox-sessions-collapsed',closed);this.toggle.querySelector('.loox-dock-arrow').textContent=closed?'›':'‹';this.toggle.setAttribute('aria-expanded',String(!closed));this.toggle.setAttribute('aria-label',closed?'Show generative sessions':'Hide generative sessions');this.toggle.title=closed?'Show generative sessions':'Hide generative sessions';this.scrim.hidden=closed||!matchMedia('(max-width:900px)').matches;}
  url(){const u=new URL(location.href);if(this.id)u.searchParams.set('session',this.id);else u.searchParams.delete('session');history.replaceState(null,'',u.pathname+u.search+u.hash);}
  nearBottom(){return this.scroll.scrollHeight-this.scroll.scrollTop-this.scroll.clientHeight<160;}
  bottom(near){if(near)requestAnimationFrame(()=>this.scroll.scrollTo({top:this.scroll.scrollHeight,behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'}));}

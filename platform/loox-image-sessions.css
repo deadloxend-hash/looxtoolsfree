@@ -236,3 +236,87 @@ body.loox-community-route .loox-session-rail,body.loox-community-route .loox-ses
   top:78px!important;height:54px!important;
  }
 }
+
+/* V18 — the same animated vertical grip used by ai-image-landing.html.
+   The control is now a sibling of the sliding rail; it remains visible when closed.
+   These selectors are intentionally scoped to Agent / Image / Video only. */
+:root{--loox-ai-dock-ease:cubic-bezier(.2,.83,.23,1)}
+body.loox-conversations .lig-main.loox-sessions-layout,
+body.ai-chat .ai-chat-layout{position:relative!important}
+body.loox-conversations .loox-session-rail,
+body.ai-chat .ai-recent-panel{
+ transition:transform .3s var(--loox-ai-dock-ease)!important
+}
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle{
+ display:flex!important;
+ position:absolute!important;
+ z-index:45!important;
+ top:50%!important;
+ bottom:auto!important;
+ left:0!important;
+ right:auto!important;
+ transform:translateY(-50%)!important;
+ align-items:center!important;
+ justify-content:center!important;
+ width:20px!important;
+ min-width:20px!important;
+ height:64px!important;
+ padding:0!important;
+ margin:0!important;
+ border:0!important;
+ border-radius:0 9px 9px 0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+ color:#d7c0ed!important;
+ cursor:pointer!important;
+ transition:left .3s var(--loox-ai-dock-ease),background .2s!important
+}
+body.loox-conversations .lig-main.loox-sessions-layout:not(.loox-sessions-collapsed) > button.loox-ai-dock-toggle,
+body.ai-chat.ai-recent-open .ai-chat-layout > button.loox-ai-dock-toggle{
+ left:min(var(--loox-ai-sidebar-width,252px),84vw)!important
+}
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle .loox-dock-bars,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle .loox-dock-bars{
+ display:block!important;
+ width:2px!important;
+ height:32px!important;
+ flex:none!important;
+ font-size:0!important;
+ line-height:0!important;
+ background:#cbb4e5!important;
+ border-radius:6px!important;
+ box-shadow:0 0 7px #8a4fc06b!important;
+ transition:opacity .16s ease!important
+}
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle .loox-dock-arrow,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle .loox-dock-arrow{
+ display:none!important;
+ font:800 27px/1 system-ui,sans-serif!important;
+ color:#dec4ff!important;
+}
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle:hover,
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle:focus-visible,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle:hover,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle:focus-visible{
+ background:#3b2655!important;
+ outline:2px solid #b884d2!important;
+ outline-offset:0
+}
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle:hover .loox-dock-bars,
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle:focus-visible .loox-dock-bars,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle:hover .loox-dock-bars,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle:focus-visible .loox-dock-bars{display:none!important}
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle:hover .loox-dock-arrow,
+body.loox-conversations .lig-main > button.loox-ai-dock-toggle:focus-visible .loox-dock-arrow,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle:hover .loox-dock-arrow,
+body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle:focus-visible .loox-dock-arrow{display:block!important}
+body.loox-conversations .lig-main.loox-community-view > button.loox-ai-dock-toggle,
+body.loox-community-route .lig-main > button.loox-ai-dock-toggle,
+body.loox-conversations button.loox-ai-dock-toggle[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ body.loox-conversations .lig-main > button.loox-ai-dock-toggle,
+ body.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle,
+ body.loox-conversations .loox-session-rail,
+ body.ai-chat .ai-recent-panel{transition:none!important}
+}

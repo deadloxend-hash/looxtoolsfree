@@ -9,6 +9,14 @@ const toolsButton=$('aiToolsButton'),toolsMenu=$('aiToolsMenu');
 const modelName=$('aiModelName'),status=$('aiStatus'),thread=$('aiThread');
 const recentPanel=$('aiRecentPanel'),recentToggle=$('aiRecentToggle');mountWorkspaceNavigation(recentPanel?.querySelector('.ai-recent-inner')||recentPanel);
 const recentList=$('aiRecentList'),recentMore=$('aiRecentMore'),recentScrim=$('aiRecentScrim');
+// The landing-page grip must remain outside the translating rail so it stays visible when closed.
+if(recentPanel&&recentToggle){
+ const layout=recentPanel.closest('.ai-chat-layout');
+ if(layout)layout.append(recentToggle);
+ recentToggle.classList.add('loox-ai-dock-toggle');
+ recentToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">‹</span>';
+ recentToggle.setAttribute('aria-controls',recentPanel.id);
+}
 const draftsKey='loox-ai-start-v1', historyURL='https://looxtoolfree-backend.vercel.app/api/loox-chat-history';
 const chatURL='https://looxtoolfree-backend.vercel.app/api/loox-chat';
 let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
@@ -225,8 +233,9 @@ function setRecentOpen(open){
  recentPanel.classList.toggle('is-collapsed',recentClosed);
  document.body.classList.toggle('ai-recent-open',open);
  recentToggle.setAttribute('aria-expanded',String(open));
- recentToggle.textContent=open?'‹':'›';
+ recentToggle.querySelector('.loox-dock-arrow').textContent=open?'‹':'›';
  recentToggle.title=open?'Hide generative sessions':'Show generative sessions';
+ recentToggle.setAttribute('aria-label',open?'Hide generative sessions':'Show generative sessions');
  if(recentScrim)recentScrim.hidden=!open||!mobile.matches;
 }
 recentToggle?.addEventListener('click',()=>setRecentOpen(recentClosed));
