@@ -889,3 +889,288 @@ body.loox-profile-masonry #creator-community .community-card-body .community-pos
     transition:none!important;
   }
 }
+
+/* V15: Threaded comments, compact composer, enriched notifications and clean creator profile. */
+.community-dialog .loox-conversation{
+ display:flex;flex-direction:column;min-width:0;gap:10px;
+ margin:16px 0 0;padding:14px 0 0;border-top:1px solid #44344f;
+}
+.community-dialog .loox-conversation>h3{
+ margin:0 0 2px;font-size:16px;font-weight:700;color:#f5eefb;
+}
+.community-dialog .loox-thread-list{
+ display:flex;flex-direction:column;gap:0;min-height:0;
+ max-height:min(510px,55vh);overflow-y:auto;overscroll-behavior:contain;
+ padding-right:6px;scrollbar-width:thin;scrollbar-color:#725b84 transparent;
+}
+.community-dialog .loox-comment-thread{
+ display:block;min-width:0;border-bottom:1px solid #362a42;padding:13px 0;
+}
+.community-dialog .loox-comment-thread:last-of-type{border-bottom:0}
+.community-dialog .community-comment{
+ padding:0;margin:0;border:0;min-width:0;
+ display:flex;flex-direction:column;gap:7px;
+}
+.community-dialog .loox-comment-top{
+ display:flex;align-items:center;justify-content:space-between;
+ gap:12px;min-width:0;
+}
+.community-dialog .loox-comment-author{
+ display:flex;align-items:center;gap:9px;min-width:0;max-width:100%;
+ color:#f4edf9;text-decoration:none;
+}
+.community-dialog .loox-comment-avatar{
+ display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;
+ border-radius:50%;overflow:hidden;background:#604275;
+ border:1px solid #846699;color:#fff;font-size:13px;font-weight:700;
+}
+.community-dialog .loox-comment-avatar img{
+ width:100%;height:100%;object-fit:cover;display:block;
+}
+.community-dialog .loox-comment-author-labels{
+ display:flex;flex-direction:column;gap:2px;min-width:0;line-height:1.25;
+}
+.community-dialog .loox-comment-author-labels strong{
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ font-size:12px;font-weight:650;color:#f6effc;
+}
+.community-dialog .loox-comment-author-labels small{
+ overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ font-size:10px;color:#bba8c7;
+}
+.community-dialog .loox-comment-author:hover strong{color:#d7b4f4}
+.community-dialog .loox-comment-date{
+ flex:0 0 auto;color:#93839f;font-size:10px;white-space:nowrap;
+}
+.community-dialog .community-comment .loox-comment-text{
+ margin:0 0 0 43px;white-space:pre-wrap;overflow-wrap:anywhere;
+ color:#e9e0f0;font-size:12px;line-height:1.55;
+}
+.community-dialog .loox-comment-actions{
+ display:flex;align-items:center;flex-wrap:wrap;gap:12px;
+ margin:0 0 0 43px;
+}
+.community-dialog .loox-comment-action,
+.community-dialog .loox-reply-cancel{
+ background:none;border:0;padding:3px 1px;min-height:22px;
+ font:500 11px/1.3 Inter,system-ui,sans-serif;
+ color:#ae9cba;cursor:pointer;
+}
+.community-dialog .loox-comment-action:hover,
+.community-dialog .loox-reply-cancel:hover{color:#e2baff}
+.community-dialog .loox-thread-replies{
+ display:flex;flex-direction:column;gap:12px;
+ margin:10px 0 0 25px;padding:0 0 0 14px;
+ border-left:2px solid #473456;
+}
+.community-dialog .community-comment.is-reply .loox-comment-avatar{
+ width:28px;height:28px;flex-basis:28px;font-size:11px;
+}
+.community-dialog .community-comment.is-reply .loox-comment-text,
+.community-dialog .community-comment.is-reply .loox-comment-actions{margin-left:37px}
+.community-dialog .loox-reply-more-wrap{
+ margin:0 0 6px 45px;
+}
+.community-dialog .loox-reply-more-wrap:has(button[hidden]){display:none}
+.community-dialog .loox-comments-more{
+ align-self:flex-start;min-height:31px!important;padding:6px 12px!important;
+ font-size:11px!important;border-radius:9px!important;
+}
+.community-dialog .loox-comment-status{min-height:0;margin:0 0 4px}
+.community-dialog .loox-compact-comment-form{
+ display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+ margin:4px 0 0;
+}
+.community-dialog .loox-comment-input{
+ box-sizing:border-box;width:100%!important;
+ height:66px!important;min-height:66px!important;max-height:165px!important;
+ resize:vertical;border:1px solid #554365;
+ background:#21192b;color:#fff;
+ border-radius:11px;padding:10px 12px;
+ font:400 12px/1.5 Inter,system-ui,sans-serif;
+ transition:border-color .18s,background .18s;
+}
+.community-dialog .loox-comment-input:focus{
+ border-color:#a879ce;outline:0;background:#261d32;
+}
+.community-dialog .loox-comment-send{
+ font-size:12px!important;min-height:34px!important;
+ padding:8px 16px!important;border-radius:9px!important;
+}
+.community-dialog .loox-reply-banner{
+ display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+ color:#d3b6ed;font-size:11px;
+ padding:6px 10px;background:#36243f;border-radius:9px;
+}
+.community-dialog .loox-reply-banner[hidden]{display:none!important}
+.community-dialog .loox-reply-cancel{color:#f0cfef}
+.community-dialog .loox-notification-list{
+ display:flex;flex-direction:column;gap:8px;
+ max-height:min(65vh,600px);overflow-y:auto;scrollbar-width:thin;
+ margin-top:14px;
+}
+.community-dialog .loox-notification{
+ display:flex;align-items:flex-start;gap:12px;
+ border:1px solid #3c2c48;border-radius:12px;
+ background:#201827;padding:12px!important;
+}
+.community-dialog .loox-notification.is-unread{
+ background:#2e203c;border-color:#8b63a6;border-left:3px solid #c48df0;
+}
+.community-dialog .loox-notification-avatar{
+ display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;
+ border-radius:50%;overflow:hidden;border:1px solid #655078;
+ background:#604275;color:#fff;
+ text-decoration:none;font-size:15px;font-weight:700;
+}
+.community-dialog .loox-notification-avatar img{
+ width:100%;height:100%;display:block;object-fit:cover;
+}
+.community-dialog .loox-notification-content{
+ display:flex;flex-direction:column;flex:1 1 auto;min-width:0;
+ gap:6px;text-decoration:none;color:#ece3f4;line-height:1.4;
+}
+.community-dialog .loox-notification-content:hover .loox-notification-heading{
+ color:#e1bbfc;
+}
+.community-dialog .loox-notification-heading{font-size:12px;font-weight:700}
+.community-dialog .loox-notification-message{
+ font-size:12px;color:#e2d3ee;white-space:pre-wrap;overflow-wrap:anywhere;
+ display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.community-dialog .loox-notification-post{
+ font-size:11px;color:#b3a1bf;
+ white-space:nowrap;text-overflow:ellipsis;overflow:hidden;
+}
+.community-dialog .loox-notification-time{font-size:10px;color:#94839f}
+.community-dialog .loox-notification-thumb{
+ flex:0 0 54px;width:54px;height:64px;overflow:hidden;
+ border-radius:8px;background:#32283c;
+}
+.community-dialog .loox-notification-thumb img{
+ width:100%;height:100%;object-fit:cover;
+}
+.community-dialog .loox-notification-markall{
+ font-size:11px!important;min-height:32px!important;
+}
+body.creator-page #creator-community.loox-profile-only{
+ padding-bottom:24px!important;
+}
+body.creator-page #creator-community .community-heading{
+ margin:0 0 16px!important;
+}
+body.creator-page #creator-community .community-heading h1{
+ font-size:23px!important;margin:0!important;
+ font-weight:700!important;letter-spacing:-.02em!important;
+}
+body.creator-page #creator-community .community-tools[hidden],
+body.creator-page #creator-community .community-filters[hidden],
+body.creator-page #creator-community .community-grid[hidden],
+body.creator-page #creator-community .community-more[hidden],
+body.creator-page #creator-community .community-note[hidden]{
+ display:none!important;
+}
+body.creator-page #creator-community.loox-profile-only .community-grid,
+body.creator-page #creator-community.loox-profile-only .community-tools,
+body.creator-page #creator-community.loox-profile-only .community-filters,
+body.creator-page #creator-community.loox-profile-only .community-more{
+ display:none!important;
+}
+body.creator-page #creator-community.loox-profile-only .community-profile{
+ margin-top:4px!important;
+}
+body.creator-page #creator-community .community-profile{
+ gap:18px!important;
+}
+body.creator-page #creator-community .loox-profile-details{
+ min-width:0;display:flex;flex-direction:column;gap:7px;
+ flex:1 1 auto;
+}
+body.creator-page #creator-community .loox-profile-name-row{
+ display:flex;align-items:center;flex-wrap:wrap;gap:10px;min-width:0;
+}
+body.creator-page #creator-community .loox-profile-name-row h2{
+ margin:0!important;font-size:23px!important;line-height:1.3!important;
+}
+body.creator-page #creator-community .community-plan-badge{
+ display:inline-flex;align-items:center;min-height:24px;padding:4px 9px;
+ border-radius:999px;background:#342b40;color:#e6d9ee;
+ font:650 10px/1.2 Inter,system-ui,sans-serif;
+ border:1px solid #685577;white-space:nowrap;
+}
+body.creator-page #creator-community .community-plan-badge[data-plan="pro"]{
+ background:#483064;color:#eed8ff;border-color:#b17de4;
+}
+body.creator-page #creator-community .community-plan-badge[data-plan="lifetime"]{
+ background:#5c4526;color:#ffedc2;border-color:#b99a61;
+}
+body.creator-page #creator-community .loox-profile-counts{
+ display:flex;align-items:center;flex-wrap:wrap;gap:7px 14px;margin:6px 0 0;
+}
+body.creator-page #creator-community .loox-profile-stat{
+ font:500 12px/1.5 Inter,system-ui,sans-serif;color:#bcaecb;
+ white-space:nowrap;
+}
+body.creator-page #creator-community button.loox-profile-stat-button{
+ display:inline-flex;align-items:center;
+ border:0;background:none;padding:2px 0;
+ cursor:pointer;color:#d5b4ed;text-decoration:underline;
+ text-underline-offset:4px;text-decoration-color:#584368;
+ transition:color .16s;
+}
+body.creator-page #creator-community button.loox-profile-stat-button:hover{
+ color:#f8dcff;text-decoration-color:#bd8fe8;
+}
+body.creator-page #creator-community button.loox-profile-stat-button:disabled{
+ color:#9985a5;text-decoration:none;cursor:default;
+}
+.community-dialog .loox-connections-list{
+ display:flex;flex-direction:column;gap:8px;
+ margin:12px 0;max-height:min(60vh,560px);overflow-y:auto;
+}
+.community-dialog .loox-connection-person{
+ display:flex;gap:12px;align-items:center;text-decoration:none;
+ padding:10px;border:1px solid #46354f;border-radius:12px;
+ background:#231b2c;color:#f1e6f6;min-width:0;
+}
+.community-dialog .loox-connection-person:hover{
+ background:#35253f;border-color:#8864a1;
+}
+.community-dialog .loox-connection-avatar{
+ flex:0 0 42px;width:42px;height:42px;
+ border-radius:50%;background:#5d416d;display:grid;place-items:center;
+ color:#fff;overflow:hidden;font-size:14px;font-weight:700;
+}
+.community-dialog .loox-connection-avatar img{
+ width:100%;height:100%;object-fit:cover;
+}
+.community-dialog .loox-connection-name{
+ display:flex;flex-direction:column;gap:3px;min-width:0;
+}
+.community-dialog .loox-connection-name strong{
+ font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.community-dialog .loox-connection-name small{
+ font-size:11px;color:#bca9c8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.community-dialog .loox-connection-name .loox-connection-bio{
+ max-width:100%;font-size:11px;color:#9888a6;
+}
+@media(max-width:700px){
+ .community-dialog .loox-thread-list{max-height:52vh;padding-right:2px}
+ .community-dialog .loox-comment-top{gap:6px}
+ .community-dialog .loox-comment-date{font-size:9px}
+ .community-dialog .loox-comment-avatar{flex-basis:30px;width:30px;height:30px}
+ .community-dialog .community-comment .loox-comment-text,
+ .community-dialog .loox-comment-actions{margin-left:39px}
+ .community-dialog .loox-thread-replies{margin-left:15px;padding-left:11px}
+ .community-dialog .loox-notification{padding:10px!important;gap:9px}
+ .community-dialog .loox-notification-avatar{flex-basis:31px;width:31px;height:31px}
+ .community-dialog .loox-notification-thumb{flex-basis:46px;width:46px;height:56px}
+ body.creator-page #creator-community .community-profile{align-items:flex-start}
+ body.creator-page #creator-community .loox-profile-name-row h2{font-size:20px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .community-dialog .loox-comment-input,
+ body.creator-page #creator-community button.loox-profile-stat-button{transition:none!important}
+}
