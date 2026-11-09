@@ -106,6 +106,14 @@
  // Reuse the real MediaSessions DOM only in image/video generation workspaces.
  // Marketing landing pages must never display private session history.
  const mediaWorkspace=['ai-text-to-image.html','ai-video-generator.html'].includes(page);
+ const chatWorkspace=page==='ai-chat.html';
+ if(chatWorkspace){
+  const chatSessions=document.getElementById('aiRecentPanel');
+  if(chatSessions){
+   sideContent.append(chatSessions);
+   document.body.classList.add('loox-chat-sessions-in-drawer');
+  }
+ }
  if(mediaWorkspace){
   const dockSessions=()=>{
    const rail=document.getElementById('loox-media-session-rail');
@@ -126,11 +134,11 @@
  fallback.href=url('ai-image-landing.html');sideContent.append(fallback);
  sidebar.append(sideContent);
  const navStyle=el('link');navStyle.rel='stylesheet';
- navStyle.href=url('platform/workspace-navigation.css?v=8');
+ navStyle.href=url('platform/workspace-navigation.css?v=9');
  document.head.append(navStyle);
  import(url('platform/workspace-navigation.js?v=7')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
-  const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):null;
+  const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
   if(existingRail)sideContent.append(existingRail);
  }).catch(error=>console.warn('LOOX main navigation failed:',error));
