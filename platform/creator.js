@@ -1,5 +1,5 @@
 import {state,auth,initialize} from './account.js?v=9';
-import {Community,result} from './community.js?v=18';
+import {Community,result} from './community.js?v=19';
 const root=document.getElementById('creator-community');
 try{
  const params=new URLSearchParams(location.search);
