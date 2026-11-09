@@ -1328,3 +1328,22 @@ body .community-dialog.community-viewer[open]>.community-viewer-stage{
   width:calc(100vw - 16px)!important;
  }
 }
+
+/* V19 — one continuous scroll area for image, details, and all comments.
+   Nested touch-scrolling in the comment list trapped mobile swipes. */
+body .community-dialog.community-viewer[open]{
+ overflow-y:auto!important;
+ -webkit-overflow-scrolling:touch;
+ touch-action:pan-y!important;
+}
+body .community-dialog.community-viewer[open] .loox-thread-list{
+ max-height:none!important;
+ height:auto!important;
+ overflow:visible!important;
+ overscroll-behavior:auto!important;
+ touch-action:pan-y!important;
+}
+body .community-dialog.community-viewer[open] .community-viewer-stage{
+ overflow:visible!important;
+ touch-action:pan-y!important;
+}
