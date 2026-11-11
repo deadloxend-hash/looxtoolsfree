@@ -140,7 +140,7 @@
   visual.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+appIcons[kind]+'</svg>';
   a.append(visual,el('span','loox-mobile-app-label',label));appGrid.append(a);
  });
- document.body.append(appLayer);
+ document.documentElement.append(appLayer);
  const appTriggers=[];
  const buildAppTrigger=()=>{
   const button=el('button','loox-mobile-app-trigger');button.type='button';
