@@ -94,7 +94,10 @@
    ['AI Video','ai-video-generator.html#generate','video'],
    ['Community','community.html','community'],
    ['Trending','trending.html','trending'],
-   ['Templates','templates.html','templates']
+   ['Templates','templates.html','templates'],
+  ['Photo Editor','photo-editor.html','image'],
+  ['Video Editor','video-editor.html','video'],
+  ['Design Studio','design-studio.html','templates']
   ].forEach(([label,href,kind])=>{
    const a=el('a','loox-ai-workspace-tab');a.href=url(href);
    a.dataset.aiTab=kind;
@@ -120,7 +123,10 @@
   ['AI Video',videoTabHref,'video'],
   ['Community','community.html','community'],
   ['Trending','trending.html','trending'],
-  ['Templates','templates.html','templates']
+  ['Templates','templates.html','templates'],
+  ['Photo Editor','photo-editor.html','image'],
+  ['Video Editor','video-editor.html','video'],
+  ['Design Studio','design-studio.html','templates']
  ];
  const appIcons={
   agent:'<path d="M7 8h10M7 12h7"/><path d="M5 4h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 3v-3a2 2 0 0 1-2-2V7a3 3 0 0 1 3-3z"/>',
@@ -131,7 +137,7 @@
   templates:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 5v14M5 12h14M7 7h2m6 10h2"/>'
  };
  const appLayer=el('dialog','loox-mobile-app-layer');appLayer.hidden=true;
- appLayer.innerHTML='<div class="loox-mobile-app-scrim" data-close-apps></div><section class="loox-mobile-app-sheet" role="dialog" aria-modal="true" aria-label="LOOX apps"><div class="loox-mobile-app-handle"></div><div class="loox-mobile-app-heading"><div><small>LOOX CREATIVE STUDIO</small><h2>Explore LOOX</h2></div><button type="button" class="loox-mobile-app-close" aria-label="Close apps">×</button></div><div class="loox-mobile-app-grid"></div></section>';
+ appLayer.innerHTML='<div class="loox-mobile-app-scrim" data-close-apps></div><section class="loox-mobile-app-sheet" role="dialog" aria-modal="true" aria-label="LOOX apps"><div class="loox-mobile-app-handle"></div><div class="loox-mobile-app-heading"><div><small>LOOX CREATIVE STUDIO</small><h2>Web apps</h2></div><button type="button" class="loox-mobile-app-close" aria-label="Close apps">×</button></div><div class="loox-mobile-app-grid"></div></section>';
  const appGrid=appLayer.querySelector('.loox-mobile-app-grid');
  appDestinations.forEach(([label,href,kind])=>{
   const a=el('a','loox-mobile-app-tile');a.href=url(href);
@@ -140,6 +146,7 @@
   visual.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+appIcons[kind]+'</svg>';
   a.append(visual,el('span','loox-mobile-app-label',label));appGrid.append(a);
  });
+ const appFooter=el('a','loox-apps-all','Explore all tools');appFooter.href=url('index.html#tools');appLayer.querySelector('.loox-mobile-app-sheet').append(appFooter);
  document.body.append(appLayer);
  // Native modal top layer prevents transformed ancestors and competing page CSS from clipping the launcher.
  appLayer.style.setProperty('position','fixed','important');
@@ -664,6 +671,11 @@
  const dialog=el('dialog','loox-sitewide-finder');
  dialog.innerHTML='<div class="loox-sitewide-finder-head"><div><small>LOOX WORKSPACES</small><h2>Find a tool</h2></div><button type="button" aria-label="Close tool search" class="loox-sitewide-finder-close">×</button></div><div class="loox-sitewide-finder-input">'+icons.search+'<input type="search" placeholder="Search every tool…" aria-label="Search every LOOX tool"></div><div class="loox-sitewide-finder-tabs" role="group" aria-label="Filter tools"><button type="button" data-filter="all" aria-pressed="true">All tools</button><button type="button" data-filter="image">Image</button><button type="button" data-filter="video">Video</button><button type="button" data-filter="text">Text</button><button type="button" data-filter="ai">AI</button></div><p class="loox-sitewide-finder-status" role="status"></p><div class="loox-sitewide-finder-results"></div>';
  document.body.append(dialog);
+ const mobileFix=document.createElement('link');mobileFix.rel='stylesheet';mobileFix.href=url('platform/loox-mobile-refinements.css?v=1');document.head.append(mobileFix);
+ const fitFinder=()=>{const v=window.visualViewport;dialog.style.setProperty('--finder-height',(v?.height||innerHeight)+'px');dialog.style.setProperty('--finder-top',(v?.offsetTop||0)+'px');};
+ window.visualViewport?.addEventListener('resize',fitFinder);window.visualViewport?.addEventListener('scroll',fitFinder);fitFinder();
+ dialog.addEventListener('close',()=>document.body.classList.remove('loox-finder-open'));
+
  const field=dialog.querySelector('input');const results=dialog.querySelector('.loox-sitewide-finder-results');const status=dialog.querySelector('.loox-sitewide-finder-status');
  let tools=[],loaded=false,filter='all';
  function paint(){
@@ -684,7 +696,7 @@
  }
  async function openFinder(){
   closeLogo();closeDrawer();if(!dialog.open)dialog.showModal();
-  field.focus();
+  document.body.classList.add('loox-finder-open');fitFinder();field.focus({preventScroll:true});
   if(!loaded){status.textContent='Loading tools…';try{
    const response=await fetch(url('assets/tool-catalog.json?v=40'));if(!response.ok)throw new Error('Tool directory unavailable');
    tools=await response.json();loaded=true;paint();

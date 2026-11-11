@@ -3,10 +3,10 @@
 (function(){
  function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
  const routes=[
-  ['Image Generation','ai-text-to-image.html#generate','image'],
-  ['Video Generation','ai-video-generator.html#generate','video'],
+  ['AI Image','ai-text-to-image.html#generate','image'],
+  ['AI Video','ai-video-generator.html#generate','video'],
   ['AI Agent','ai-chat.html','agent'],
-  ['Community','ai-text-to-image.html#templates','community']
+
  ];
  function links(kind){
   const bar=el('nav','loox-uc-links');
@@ -143,7 +143,15 @@
   }
   actions.prepend(left);
   // Keep all existing form submit buttons exactly where they were.
-  wrap.append(links(video?'video':'image'));
+  wrap.prepend(links(video?'video':'image'));
+  const browse=el('section','loox-start-templates');browse.setAttribute('aria-label','Start with a template');
+  browse.append(el('h2','','Start with a template'));
+  const library=el('div');library.id='template-library';library.dataset.generatorKind=video?'video':'image';browse.append(library);wrap.after(browse);
+  const style=el('link');style.rel='stylesheet';style.href='platform/template-gallery.css?v=1';document.head.append(style);
+  import('./template-library.js?v=2').catch(()=>{library.textContent='Templates are unavailable. Please try again later.'});
+  document.body.classList.add('loox-has-start-templates');
+  if(new URLSearchParams(location.search).has('template'))requestAnimationFrame(()=>{wrap.scrollIntoView({block:'start'});textarea.focus({preventScroll:true});});
+
   const results=document.getElementById(prefix+'-results');
   markEmpty(results);
  }
@@ -170,7 +178,7 @@
    send.textContent='Send';
    send.setAttribute('aria-label','Send message');
   }
-  wrap.append(links('agent'));
+  wrap.prepend(links('agent'));
   markEmpty(document.getElementById('aiThread'));
  }
  function run(){
