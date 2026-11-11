@@ -184,7 +184,7 @@
    if(appLastFocus?.isConnected)appLastFocus.focus();
   };
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();
-  else closeTimer=setTimeout(finish,210);
+  else closeTimer=setTimeout(finish,320);
  };
  const openApps=trigger=>{
   if(closeTimer)clearTimeout(closeTimer);
