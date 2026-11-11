@@ -2436,3 +2436,32 @@ body.loox-apps-open{overflow:hidden!important}
  .loox-mobile-app-tile[aria-current=page] .loox-mobile-app-icon{outline:2px solid #8654cb!important;outline-offset:3px!important}
 }
 @media(prefers-reduced-motion:reduce){.loox-mobile-app-sheet,.loox-mobile-app-scrim{transition:none!important}}
+
+/* V99: Adobe-like full viewport app switcher on phones (not a small modal). */
+@media(max-width:790px){
+ .loox-mobile-app-layer{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2147483000!important;display:block!important;padding:0!important}
+ .loox-mobile-app-layer[hidden]{display:none!important}
+ .loox-mobile-app-scrim{position:absolute!important;inset:0!important;background:rgba(0,0,0,.42)!important;backdrop-filter:none!important}
+ .loox-mobile-app-sheet{
+  position:absolute!important;top:0!important;bottom:0!important;left:0!important;right:0!important;
+  width:100vw!important;height:100dvh!important;max-height:none!important;min-height:0!important;
+  margin:0!important;box-sizing:border-box!important;
+  padding:calc(38px + env(safe-area-inset-top,0px)) 22px calc(30px + env(safe-area-inset-bottom,0px))!important;
+  border:0!important;border-radius:0!important;
+  background:#fff!important;box-shadow:none!important;
+  overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+  transform:translate3d(0,100%,0)!important;
+  transition:transform .44s cubic-bezier(.22,1,.36,1)!important;
+ }
+ .loox-mobile-app-layer:not(.is-closing):not(.is-dragging) .loox-mobile-app-sheet{transform:translate3d(0,0,0)!important}
+ .loox-mobile-app-layer.is-closing .loox-mobile-app-sheet{transform:translate3d(0,100%,0)!important}
+ .loox-mobile-app-layer.is-dragging .loox-mobile-app-sheet{transform:translate3d(0,var(--loox-sheet-drag,0px),0)!important;transition:none!important}
+ .loox-mobile-app-handle{display:none!important}
+ .loox-mobile-app-heading{margin:0 0 36px!important;align-items:center!important}
+ .loox-mobile-app-heading small{display:none!important}
+ .loox-mobile-app-heading h2{font-size:25px!important;letter-spacing:-.03em!important;margin:0!important}
+ .loox-mobile-app-close{width:40px!important;height:40px!important;flex-basis:40px!important}
+ .loox-mobile-app-grid{gap:36px 12px!important;align-content:start!important}
+ .loox-mobile-app-icon{width:76px!important;height:76px!important}
+ .loox-mobile-app-label{font-size:14px!important}
+}
