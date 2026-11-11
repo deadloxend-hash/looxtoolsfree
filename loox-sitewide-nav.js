@@ -130,7 +130,7 @@
   trending:'<path d="m3 17 6-6 4 4 8-9M15 6h6v6"/>',
   templates:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 5v14M5 12h14M7 7h2m6 10h2"/>'
  };
- const appLayer=el('div','loox-mobile-app-layer');appLayer.hidden=true;
+ const appLayer=el('dialog','loox-mobile-app-layer');appLayer.hidden=true;
  appLayer.innerHTML='<div class="loox-mobile-app-scrim" data-close-apps></div><section class="loox-mobile-app-sheet" role="dialog" aria-modal="true" aria-label="LOOX apps"><div class="loox-mobile-app-handle"></div><div class="loox-mobile-app-heading"><div><small>LOOX CREATIVE STUDIO</small><h2>Explore LOOX</h2></div><button type="button" class="loox-mobile-app-close" aria-label="Close apps">×</button></div><div class="loox-mobile-app-grid"></div></section>';
  const appGrid=appLayer.querySelector('.loox-mobile-app-grid');
  appDestinations.forEach(([label,href,kind])=>{
@@ -140,7 +140,19 @@
   visual.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+appIcons[kind]+'</svg>';
   a.append(visual,el('span','loox-mobile-app-label',label));appGrid.append(a);
  });
- document.documentElement.append(appLayer);
+ document.body.append(appLayer);
+ // Native modal top layer prevents transformed ancestors and competing page CSS from clipping the launcher.
+ appLayer.style.setProperty('position','fixed','important');
+ appLayer.style.setProperty('inset','0','important');
+ appLayer.style.setProperty('width','100vw','important');
+ appLayer.style.setProperty('height','100dvh','important');
+ appLayer.style.setProperty('max-width','none','important');
+ appLayer.style.setProperty('max-height','none','important');
+ appLayer.style.setProperty('margin','0','important');
+ appLayer.style.setProperty('padding','0','important');
+ appLayer.style.setProperty('border','0','important');
+ appLayer.style.setProperty('background','transparent','important');
+ appLayer.style.setProperty('overflow','hidden','important');
  const appTriggers=[];
  const buildAppTrigger=()=>{
   const button=el('button','loox-mobile-app-trigger');button.type='button';
@@ -176,7 +188,7 @@
   appLayer.classList.add('is-closing');
   appTriggers.forEach(b=>b.setAttribute('aria-expanded','false'));
   const finish=()=>{
-   clearTimeout(closeTimer);appLayer.hidden=true;appClosing=false;
+   clearTimeout(closeTimer);if(appLayer.open)appLayer.close();appLayer.hidden=true;appClosing=false;
    appLayer.classList.remove('is-closing','is-dragging');
    appSheet.style.removeProperty('--loox-sheet-drag');
    appScrim.style.removeProperty('opacity');
@@ -191,13 +203,14 @@
   appClosing=false;appLayer.classList.remove('is-closing','is-dragging');
   appSheet.style.removeProperty('--loox-sheet-drag');
   appScrim.style.removeProperty('opacity');
-  appLastFocus=trigger;appLayer.hidden=false;document.body.classList.add('loox-apps-open');
+  appLastFocus=trigger;appLayer.hidden=false;if(!appLayer.open)appLayer.showModal();document.body.classList.add('loox-apps-open');
   appTriggers.forEach(b=>b.setAttribute('aria-expanded','true'));
   appLayer.querySelector('.loox-mobile-app-close').focus();
  };
  appTriggers.forEach(button=>button.addEventListener('click',()=>appLayer.hidden?openApps(button):closeApps()));
  appLayer.querySelector('.loox-mobile-app-close').addEventListener('click',closeApps);
  appScrim.addEventListener('click',closeApps);
+ appLayer.addEventListener('cancel',event=>{event.preventDefault();closeApps();});
  // Native touch dragging: swipe the sheet downward to dismiss, without
  // blocking taps on links or normal scrolling through its content.
  let swipeStart=null,swipeDistance=0;
