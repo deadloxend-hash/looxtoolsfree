@@ -368,3 +368,47 @@ body.loox-conversations .lig-main > .loox-session-scrim{
 
 /* Safari must keep restored media painted when the sidebar changes layout. */
 body.loox-conversations .lig-results > .lig-output{content-visibility:visible!important;contain-intrinsic-size:none!important}
+
+
+/* V23: iOS generator scrolling. This must override the conversation shell's
+   viewport locks, including the sitewide-active workspace height override. */
+@media (max-width: 900px) {
+  html:has(body.loox-conversations.loox-focus-generator.lig-body) {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+  }
+  body.loox-conversations.loox-focus-generator.lig-body {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+  }
+  body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace,
+  body.loox-conversations.loox-focus-generator.lig-body.loox-sitewide-active > main.lig-workspace {
+    height: auto !important;
+    max-height: none !important;
+    min-height: calc(100dvh - var(--loox-sitewide-height, 68px)) !important;
+    overflow: visible !important;
+  }
+  body.loox-conversations.loox-focus-generator.lig-body .lig-main.loox-sessions-layout,
+  body.loox-conversations.loox-focus-generator.lig-body .lig-main.loox-sessions-collapsed {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  body.loox-conversations.loox-focus-generator.lig-body .lig-content-scroll {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+  }
+  body.loox-conversations.loox-focus-generator.lig-body .lig-content-scroll[hidden] {
+    display: none !important;
+  }
+}
