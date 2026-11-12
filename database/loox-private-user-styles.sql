@@ -8,7 +8,7 @@ create table public.loox_user_styles (
  created_at timestamptz not null default now()
 );
 alter table public.loox_user_styles enable row level security;
-revoke all on public.loox_user_styles from anon;
+revoke all on public.loox_user_styles from anon, authenticated;
 grant select,insert,update,delete on public.loox_user_styles to authenticated;
 create policy own_styles_select on public.loox_user_styles for select to authenticated using (user_id=(select auth.uid()));
 create policy own_styles_insert on public.loox_user_styles for insert to authenticated with check (user_id=(select auth.uid()) and (preview_job_id is null or exists(select 1 from public.loox_jobs j where j.id=preview_job_id and j.user_id=(select auth.uid()))));
