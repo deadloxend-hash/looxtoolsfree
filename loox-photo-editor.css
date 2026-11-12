@@ -388,3 +388,21 @@
  .filter-choice img{width:67px;height:67px}
  .filter-choice{width:71px;min-width:71px;max-width:71px}
 }
+
+
+/* V19: show all six primary photo tools on narrow mobile screens.
+   More tools remain available by swiping the rail horizontally. */
+@media(max-width:767px){
+ .mobile-bar{
+  overscroll-behavior-x:contain!important;
+  scroll-padding-inline:7px!important;
+ }
+ .mobile-bar button{
+  box-sizing:border-box!important;
+  flex:0 0 clamp(49px,15.7vw,64px)!important;
+  width:clamp(49px,15.7vw,64px)!important;
+  min-width:clamp(49px,15.7vw,64px)!important;
+  max-width:64px!important;
+  padding-inline:2px!important;
+ }
+}
