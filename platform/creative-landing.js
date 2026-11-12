@@ -1,4 +1,16 @@
-import {state,config,initialize} from './account.js?v=9';
+(async()=>{
+// Landing pages only stage a draft. Their composer and model controls work
+// independently of login, account SDK loading, and authentication.
+const state={config:null};
+async function config(){
+ const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?action=config',{
+  credentials:'omit',signal:AbortSignal.timeout(12000)
+ });
+ if(!response.ok)throw Error('Could not load model availability.');
+ state.config=await response.json();
+ return state.config;
+}
+
 const kind=document.body.dataset.creativeMode,video=kind==='video';
 const prompt=document.getElementById('creative-prompt'),model=document.getElementById('creative-model'),status=document.getElementById('creative-landing-status');
 const key='loox-creative-launch-v1',destination=video?'ai-video-generator.html':'ai-text-to-image.html';
@@ -46,4 +58,6 @@ if(motion&&toggle){
  if(managed)document.addEventListener('visibilitychange',()=>{if(document.hidden)motion.pause();else if(wanted&&visible)play();});
 }
 
-try{await initialize();await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available){model.value=available.id;const count=models.filter(m=>m.available).length;status.textContent=count+' image model'+(count===1?'':'s')+' available · Your prompt is prepared here; generation and credit cost are confirmed in Studio.';}else{model.value='flux';status.textContent='Image models are temporarily unavailable. You can still prepare your idea and explore the Studio.';}}}catch(error){status.textContent=error.message;}
+try{await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available){model.value=available.id;const count=models.filter(m=>m.available).length;status.textContent=count+' image model'+(count===1?'':'s')+' available · Your prompt is prepared here; generation and credit cost are confirmed in Studio.';}else{model.value='flux';status.textContent='Image models are temporarily unavailable. You can still prepare your idea and explore the Studio.';}}}catch(error){status.textContent=error.message;}
+
+})();
