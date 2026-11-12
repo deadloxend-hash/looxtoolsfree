@@ -14,7 +14,20 @@ window.addEventListener('pageshow',()=>{
   prompt.value='';
   if(document.activeElement===prompt)prompt.blur();
 });
-function enter(event){event.preventDefault();const launch={kind,prompt:prompt.value.trim(),model:model.value};if(!video){const ratio=document.querySelector('input[name="creative-ratio"]:checked');if(ratio)launch.settings={aspect_ratio:ratio.value};}try{sessionStorage.setItem(key,JSON.stringify(launch));}catch{}location.assign(destination+'#generate');}
+function enter(event){
+ event.preventDefault();
+ const launch={kind,prompt:prompt.value.trim(),model:model.value};
+ if(video){
+  // Keep video-only staging separate from the Image landing implementation.
+  const settings=window.__looxVideoLandingSettings?.();
+  if(settings)launch.settings=settings;
+ }else{
+  const ratio=document.querySelector('input[name="creative-ratio"]:checked');
+  if(ratio)launch.settings={aspect_ratio:ratio.value};
+ }
+ try{sessionStorage.setItem(key,JSON.stringify(launch));}catch{}
+ location.assign(destination+'#generate');
+}
 document.getElementById('creative-landing-form').addEventListener('submit',enter);
 for(const b of document.querySelectorAll('[data-example]'))b.addEventListener('click',()=>{prompt.value=b.dataset.example;prompt.focus();});
 const motion=document.querySelector('video'),toggle=document.getElementById('creative-motion');
