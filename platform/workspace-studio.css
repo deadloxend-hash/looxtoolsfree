@@ -760,3 +760,20 @@ body.loox-studio .loox-sheet .studio-select-option:focus-visible{
  body.loox-studio .loox-sheet .studio-select-toggle,
  body.loox-studio .loox-sheet .studio-select-option{transition:none!important;animation:none!important}
 }
+
+/* When Video duration is moved from the old inline toolbar into Settings,
+   restore natural card height so the expanded LOOX picker never overlaps. */
+body.loox-studio.lvg-body .loox-sheet .loox-video-extra-setting,
+body.loox-studio.lvg-body .loox-sheet #lvg-duration-block{
+ display:grid!important;align-items:stretch!important;
+ height:auto!important;min-height:0!important;max-height:none!important;
+ width:100%!important;flex:none!important;box-sizing:border-box!important;
+ padding:12px!important;gap:8px!important;
+}
+body.loox-studio.lvg-body .loox-sheet #lvg-duration-block>label{
+ display:block!important;margin:0!important;color:#cbbbd8!important;
+ font:600 12px/1.3 Inter,system-ui,sans-serif!important;
+}
+body.loox-studio .loox-sheet .studio-select-picker:has(.studio-select-panel:not([hidden])){
+ position:relative!important;z-index:2!important;
+}
