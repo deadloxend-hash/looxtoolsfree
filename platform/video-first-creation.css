@@ -405,3 +405,32 @@ body[data-creative-mode="video"] #video-hero .video-scroll-cue{
  body[data-creative-mode="video"] #video-hero .video-landing-submit,
  body[data-creative-mode="video"] #video-hero .video-ratio-choice{transition:none!important}
 }
+
+/* Video landing: always use LOOX selector, even while scripts/API initialize.
+   Never expose Android's native select popup as a loading fallback. */
+body[data-creative-mode="video"] #video-hero #creative-model{
+ position:absolute!important;
+ display:block!important;
+ width:1px!important;height:1px!important;
+ padding:0!important;margin:0!important;border:0!important;
+ opacity:0!important;visibility:hidden!important;
+ clip-path:inset(100%)!important;pointer-events:none!important;
+ overflow:hidden!important;
+}
+body[data-creative-mode="video"] #video-hero #video-landing-model-trigger{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ box-sizing:border-box!important;
+ min-height:43px!important;width:100%!important;
+ min-width:0!important;
+ padding:9px 12px!important;
+ background:#2b2236!important;color:#f6eafa!important;
+ border:1px solid #9470ab!important;border-radius:11px!important;
+ font:600 12px/1.25 Inter,system-ui,sans-serif!important;
+ cursor:pointer!important;
+}
+body[data-creative-mode="video"] #video-hero #video-landing-model-options[hidden]{
+ display:none!important;
+}
+body[data-creative-mode="video"] #video-hero .video-duration-options .video-duration-loading{
+ color:#cab7d6!important;
+}
