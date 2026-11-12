@@ -4,6 +4,7 @@ const root=document.getElementById('community-root'),page=location.pathname.spli
 const discoveryPage=page==='community.html'||page==='trending.html';
 if(discoveryPage)document.body.classList.add('loox-discovery-gallery');
 if(page==='community.html')document.body.classList.add('loox-community-photo-wall');
+if(page==='trending.html')document.body.classList.add('loox-trending-feed');
 
 /* Mobile Community: a full-width image feed. Existing cards and actions remain
    untouched on desktop, Trending, profiles and other pages. */
@@ -294,6 +295,80 @@ const community=new Community({state,auth,initialize,root});
 if(page==='community.html'){
  const originalColumns=community.discoveryColumns.bind(community);
  community.discoveryColumns=()=>matchMedia('(max-width:700px)').matches?1:originalColumns();
+}
+
+if(page==='trending.html'){
+ // Trending is a discovery feed, not the two-column Community/Template grid.
+ // Build one visible, full-width post per row on phones; keep responsive columns
+ // on larger screens. Reusing real card actions preserves all social handlers.
+ community.discoveryColumns=()=>{
+  if(matchMedia('(max-width:850px)').matches)return 1;
+  return matchMedia('(max-width:1280px)').matches?2:3;
+ };
+ const originalCard=community.card.bind(community);
+ community.card=post=>{
+  const card=originalCard(post);
+  card.classList.add('loox-trending-post');
+  const art=card.querySelector('.community-card-art');
+  const body=card.querySelector('.community-card-body');
+  const overlay=card.querySelector('.community-card-hover');
+  const quick=card.querySelector('.community-hover-tools');
+  if(!art||!body||!quick||!overlay)return card;
+  const actions=element('div','loox-trending-action-row');
+  actions.setAttribute('aria-label','Post actions');
+  const buttons=[...quick.children];
+  for(const button of buttons){
+   button.classList.add('loox-trending-action');
+   actions.append(button);
+  }
+  const comment=element('button','loox-trending-action loox-trending-comment');
+  comment.type='button';
+  comment.setAttribute('aria-label','Open post and comments');
+  comment.title='Post comments';
+  comment.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.4-4.1A8.5 8.5 0 1 1 20 11.5Z"/></svg>';
+  comment.addEventListener('click',()=>community.details(post).catch(error=>community.note(error.message)));
+  actions.insertBefore(comment,buttons[1]||null);
+  const stats=element('div','loox-trending-social-count');
+  const label=()=>{
+   const likes=Number(post.likes)||0;
+   const comments=Number(post.comments)||0;
+   stats.textContent=likes.toLocaleString()+' '+(likes===1?'like':'likes')+'  ·  '+comments.toLocaleString()+' '+(comments===1?'comment':'comments');
+  };
+  label();
+  const like=actions.querySelector('.community-like-shortcut');
+  if(like)new MutationObserver(label).observe(like,{attributes:true,attributeFilter:['aria-label']});
+  const meta=body.querySelector('small.community-note');
+  if(meta)meta.classList.add('loox-trending-model');
+  body.prepend(actions,stats);
+  const profile=overlay.querySelector('.community-hover-creator');
+  if(profile)profile.setAttribute('title','View creator profile');
+  return card;
+ };
+ const headline=element('section','loox-trending-intro');
+ headline.setAttribute('aria-label','Trending creations');
+ const eyebrow=element('span','loox-trending-eyebrow','✦ WHAT’S TRENDING');
+ const h=element('h1','','Made to inspire.');
+ const p=element('p','','Discover standout images and videos shared by LOOX creators.');
+ headline.append(eyebrow,h,p);
+ root.insertBefore(headline,root.querySelector('.community-heading'));
+ // Collections and notifications remain functional but live in one overflow
+ // control rather than taking two full-width toolbar pills on small screens.
+ const toolbar=root.querySelector('.loox-discovery-toolbar');
+ const tools=toolbar?.querySelector('.community-tools');
+ if(toolbar&&tools){
+  const more=element('details','loox-trending-more');
+  const summary=element('summary','','More');
+  summary.setAttribute('aria-label','More community actions');
+  more.append(summary,tools);
+  toolbar.append(more);
+  tools.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{more.open=false;}));
+  document.addEventListener('pointerdown',event=>{
+   if(more.open&&!more.contains(event.target))more.open=false;
+  });
+  document.addEventListener('keydown',event=>{
+   if(event.key==='Escape'&&more.open){more.open=false;summary.focus({preventScroll:true});}
+  });
+ }
 }
 window.__looxOpenCommunityNotifications=()=>community.notifications().catch(error=>community.note(error.message));
 if(page==='community.html'){
