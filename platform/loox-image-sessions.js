@@ -82,7 +82,7 @@ export class MediaSessions {
   });
  }
  async init(){const uid=this.state.user?.id||null;if(uid===this.user)return;if(this.user&&uid!==this.user){this.id=null;this.url();}this.user=uid;this.epoch++;this.id=null;this.statusCache.clear();this.feed.replaceChildren();if(!uid){this.list.replaceChildren(el('p','','Sign in to save your sessions.'));this.more.hidden=true;return;}await this.loadList();const params=new URLSearchParams(location.search),id=params.get('session');if(id)await this.open(id);const reuse=params.get('reuse');if(reuse&&id){const entry=checked(await this.state.client.from('loox_media_entries').select('*').eq('id',reuse).eq('session_id',id).single());const u=new URL(location.href);u.searchParams.delete('reuse');history.replaceState(null,'',u.pathname+u.search+u.hash);await this.reuse(entry);}}
- async fresh(){if(this.isBusy())throw Error('Wait for the current generation.');this.epoch++;this.id=null;this.feed.replaceChildren();this.url();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);this.prompt.focus();}
+ async fresh(){if(this.isBusy())throw Error('Wait for the current generation.');document.dispatchEvent(new Event('loox:session-new'));this.epoch++;this.id=null;this.feed.replaceChildren();this.url();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);this.prompt.focus();}
  pinKey(){return 'loox-pinned-media-sessions:'+this.state.user?.id;}
  pinnedSessions(){try{const v=JSON.parse(localStorage.getItem(this.pinKey())||'[]');return Array.isArray(v)?v:[]}catch{return []}}
  togglePinnedSession(id){const pinned=this.pinnedSessions();const next=pinned.includes(id)?pinned.filter(x=>x!==id):[id,...pinned];try{localStorage.setItem(this.pinKey(),JSON.stringify(next))}catch{}this.refreshPinnedRows();}
@@ -120,6 +120,7 @@ export class MediaSessions {
  async open(id){
   if(this.isBusy())throw Error('Wait for the current generation before opening a session.');
   if(location.hash==='#templates')location.hash='generate';
+  document.dispatchEvent(new CustomEvent('loox:session-open',{detail:{id}}));
   const seq=++this.epoch,uid=this.state.user?.id;
   const priorNodes=[...this.feed.childNodes];
   this.feed.setAttribute('aria-busy','true');
