@@ -1,0 +1,55 @@
+/* LOOX shared dark-purple select popovers. Scoped to enhanced dropdowns only. */
+.loox-dropdown{position:relative;min-width:0;width:100%;isolation:isolate}
+.loox-dropdown:not(.is-ready)>button,.loox-dropdown:not(.is-ready)>.loox-dropdown-menu{display:none!important}
+.loox-dropdown.is-ready>select{
+ position:absolute!important;width:1px!important;height:1px!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ clip-path:inset(100%)!important;overflow:hidden!important;
+ padding:0!important;margin:0!important;border:0!important;
+}
+.loox-dropdown-trigger{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;
+ width:100%;min-width:0;min-height:43px;gap:12px;
+ padding:10px 13px;border-radius:12px;border:1px solid #735680;
+ background:#281f33;color:#f2eafa;text-align:left;
+ font:550 13px/1.3 Inter,system-ui,sans-serif;
+ cursor:pointer;box-shadow:inset 0 1px #ffffff0a;
+}
+.loox-dropdown-trigger:hover,.loox-dropdown.is-open .loox-dropdown-trigger{
+ border-color:#b88cdd;background:#332440;
+}
+.loox-dropdown-trigger:disabled{opacity:.55;cursor:not-allowed}
+.loox-dropdown-value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.loox-dropdown-chevron{flex:none;font-size:19px;line-height:1;color:#c59bdb}
+.loox-dropdown.is-open .loox-dropdown-chevron{transform:rotate(180deg)}
+.loox-dropdown-menu{
+ box-sizing:border-box;position:absolute;top:calc(100% + 7px);
+ left:0;right:0;min-width:100%;max-height:min(300px,42dvh);
+ overflow-y:auto;overscroll-behavior:contain;z-index:9999;
+ border:1px solid #906cad;border-radius:14px;
+ padding:6px;background:#21192bf7;backdrop-filter:blur(20px);
+ box-shadow:0 18px 48px #000b;
+ scrollbar-width:thin;scrollbar-color:#79588f transparent;
+}
+.loox-dropdown.open-up .loox-dropdown-menu{top:auto;bottom:calc(100% + 7px)}
+.loox-dropdown-menu[hidden]{display:none!important}
+.loox-dropdown-option{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;
+ width:100%;min-height:43px;gap:12px;padding:11px 12px;
+ border:1px solid transparent;border-radius:9px;background:transparent;
+ color:#e9dff0;text-align:left;cursor:pointer;
+ font:500 13px/1.3 Inter,system-ui,sans-serif;
+}
+.loox-dropdown-option>span:first-child{min-width:0;overflow-wrap:anywhere}
+.loox-dropdown-option[aria-selected=true],
+.loox-dropdown-option:hover:not(:disabled){background:#62417e9c;border-color:#b082d07a;color:#fff}
+.loox-dropdown-option:disabled{opacity:.38;cursor:not-allowed}
+.loox-dropdown-check{color:#d9b0f8;font-size:15px;flex:none}
+.loox-dropdown :is(.loox-dropdown-trigger,.loox-dropdown-option):focus-visible{
+ outline:2px solid #d8aff7!important;outline-offset:2px!important;
+}
+@media(max-width:720px){
+ .loox-dropdown-trigger{min-height:44px;font-size:13px;padding:10px 12px}
+ .loox-dropdown-menu{max-height:min(280px,38dvh)}
+ .loox-dropdown-option{min-height:45px;font-size:13px}
+}
