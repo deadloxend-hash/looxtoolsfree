@@ -127,22 +127,31 @@ function refreshButton(){
   generateButton.disabled=busy || Boolean(state.user&&!online);
   generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Cloud model unavailable':'GPU offline · Generate unavailable'):'✧ Generate video · '+cost()+' credits';
 }
+let gpuCheckVersion=0;
 async function checkGPU(){
-  if(isCloud()){
-    online=Boolean(modelInfo()?.available);
-    gpuLabel.textContent=online?'● Cloud video model ready':'● Cloud model unavailable · check provider billing and configuration';
-    gpuLabel.dataset.online=String(online);refreshButton();return;
+  // Ignore slow responses for a model that the user has already switched away from.
+  const version=++gpuCheckVersion,selectedModel=modelField.value;
+  if(selectedModel!=='wan21'){
+    const ready=Boolean(state.config?.videoModels?.find(m=>m.id===selectedModel)?.available);
+    if(version!==gpuCheckVersion)return;
+    online=ready;
+    gpuLabel.textContent=ready?'● Cloud video model ready':'● Cloud model unavailable · check provider billing and configuration';
+    gpuLabel.dataset.online=String(ready);
+    refreshButton();return;
   }
   if(!state.user){
-    online=false;gpuLabel.textContent='Sign in to check your PC GPU availability.';
+    online=false;
+    gpuLabel.textContent='Sign in to check your PC GPU availability.';
     gpuLabel.dataset.online='false';refreshButton();return;
   }
   lastGpuCheck=Date.now();
   try{
     const data=await api('gpu');
+    if(version!==gpuCheckVersion||selectedModel!==modelField.value)return;
     online=Boolean(data.video);
     gpuLabel.textContent=online?'● PC GPU online · Wan 2.1 ready':'● PC GPU offline · Start ComfyUI and the LOOX Windows worker';
   }catch{
+    if(version!==gpuCheckVersion||selectedModel!==modelField.value)return;
     online=false;gpuLabel.textContent='Unable to check GPU availability right now.';
   }
   gpuLabel.dataset.online=String(online);
