@@ -83,3 +83,21 @@ body.ds-pro-active .ds-library{border:0!important;border-top:1px solid #4d4d4d!i
 body.ds-pro-active .ds-toolbar{background:#171717!important;border-bottom:1px solid #3b3b3b!important}
 body.ds-pro-active .ds-statusbar{background:#171717!important;border-top:1px solid #3b3b3b!important}
 }
+
+
+/* V3: fit five labeled editor tools across narrow phones; additional tools
+   remain swipeable. Old 67px minimum clipped the fifth item at 360px. */
+@media(max-width:760px){
+ body.ds-pro-active .ds-rail{
+  overscroll-behavior-x:contain!important;
+  scroll-padding-inline:7px!important;
+ }
+ body.ds-pro-active .ds-rail button{
+  box-sizing:border-box!important;
+  flex:0 0 clamp(55px,17vw,64px)!important;
+  width:clamp(55px,17vw,64px)!important;
+  min-width:clamp(55px,17vw,64px)!important;
+  padding-inline:3px!important;
+  scroll-snap-align:start!important;
+ }
+}
