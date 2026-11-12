@@ -181,7 +181,19 @@ if(page==='community.html'){
   save.dataset.postId=post.id;
   save.setAttribute('aria-pressed',String(!!post.saved));
   save.innerHTML=icons.save;
-  actions.append(like,comment,share,details,save);
+  // Show current like and comment totals directly beside their icons.
+  const likeGroup=element('span','loox-engagement-group loox-engagement-like');
+  const likeNumber=element('span','loox-engagement-number',(Number(post.likes)||0).toLocaleString());
+  likeNumber.dataset.postId=post.id;
+  likeGroup.append(like,likeNumber);
+  new MutationObserver(()=>{
+   likeNumber.textContent=(Number(post.likes)||0).toLocaleString();
+  }).observe(like,{attributes:true,attributeFilter:['aria-label']});
+  const commentGroup=element('span','loox-engagement-group loox-engagement-comment');
+  const commentNumber=element('span','loox-engagement-number',(Number(post.comments)||0).toLocaleString());
+  commentNumber.dataset.postId=post.id;
+  commentGroup.append(comment,commentNumber);
+  actions.append(likeGroup,commentGroup,share,details,save);
   const info=element('div','loox-mobile-feed-info');
   const likeCount=element('strong','loox-mobile-feed-like-count',(Number(post.likes)||0).toLocaleString()+' likes');
   likeCount.dataset.postId=post.id;
@@ -202,6 +214,7 @@ if(page==='community.html'){
   }
   const meta=element('div','loox-mobile-feed-meta');
   const commentsLink=action((Number(post.comments)||0)?'View all '+post.comments+' comments':'Add a comment',openComments,'loox-mobile-feed-comments',fail);
+  commentsLink.dataset.postId=post.id;
   meta.append(commentsLink);
   info.append(meta);
   const promptBar=element('div','loox-mobile-feed-prompt-bar');
@@ -291,6 +304,21 @@ if(page==='community.html'){
  });
 }
 
+// Update any visible comment badges after a successful post or deletion.
+document.addEventListener('loox:post-comment-count',event=>{
+ const id=event.detail?.postId,count=Number(event.detail?.count);
+ if(!id||!Number.isFinite(count))return;
+ const formatted=Math.max(0,count).toLocaleString();
+ document.querySelectorAll('.loox-engagement-comment .loox-engagement-number').forEach(node=>{
+  if(node.dataset.postId!==id)return;
+  node.textContent=formatted;
+  const button=node.parentElement?.querySelector('button');
+  if(button)button.setAttribute('aria-label','Open post and comments, '+formatted+' comments');
+ });
+ document.querySelectorAll('.loox-mobile-feed-comments').forEach(node=>{
+  if(node.dataset.postId===id)node.textContent=count>0?'View all '+formatted+' comments':'Add a comment';
+ });
+});
 const community=new Community({state,auth,initialize,root});
 if(page==='community.html'){
  const originalColumns=community.discoveryColumns.bind(community);
@@ -317,29 +345,35 @@ if(page==='trending.html'){
   const actions=element('div','loox-trending-action-row');
   actions.setAttribute('aria-label','Post actions');
   const buttons=[...quick.children];
-  for(const button of buttons){
-   button.classList.add('loox-trending-action');
-   actions.append(button);
+  // Reuse original buttons so likes, sharing and saving continue working.
+  const like=buttons.find(button=>button.classList.contains('community-like-shortcut'));
+  const copy=buttons.find(button=>button.classList.contains('community-copy-shortcut'));
+  const save=buttons.find(button=>button.classList.contains('community-save-shortcut'));
+  if(like){
+   like.classList.add('loox-trending-action');
+   const group=element('span','loox-engagement-group loox-engagement-like');
+   const number=element('span','loox-engagement-number',(Number(post.likes)||0).toLocaleString());
+   number.dataset.postId=post.id;
+   group.append(like,number);actions.append(group);
+   new MutationObserver(()=>{
+    number.textContent=(Number(post.likes)||0).toLocaleString();
+   }).observe(like,{attributes:true,attributeFilter:['aria-label']});
   }
   const comment=element('button','loox-trending-action loox-trending-comment');
   comment.type='button';
-  comment.setAttribute('aria-label','Open post and comments');
+  comment.setAttribute('aria-label','Open post and comments, '+(Number(post.comments)||0)+' comments');
   comment.title='Post comments';
   comment.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.4-4.1A8.5 8.5 0 1 1 20 11.5Z"/></svg>';
   comment.addEventListener('click',()=>community.details(post).catch(error=>community.note(error.message)));
-  actions.insertBefore(comment,buttons[1]||null);
-  const stats=element('div','loox-trending-social-count');
-  const label=()=>{
-   const likes=Number(post.likes)||0;
-   const comments=Number(post.comments)||0;
-   stats.textContent=likes.toLocaleString()+' '+(likes===1?'like':'likes')+'  ·  '+comments.toLocaleString()+' '+(comments===1?'comment':'comments');
-  };
-  label();
-  const like=actions.querySelector('.community-like-shortcut');
-  if(like)new MutationObserver(label).observe(like,{attributes:true,attributeFilter:['aria-label']});
+  const commentGroup=element('span','loox-engagement-group loox-engagement-comment');
+  const commentNumber=element('span','loox-engagement-number',(Number(post.comments)||0).toLocaleString());
+  commentNumber.dataset.postId=post.id;
+  commentGroup.append(comment,commentNumber);actions.append(commentGroup);
+  if(copy){copy.classList.add('loox-trending-action');actions.append(copy);}
+  if(save){save.classList.add('loox-trending-action');actions.append(save);}
   const meta=body.querySelector('small.community-note');
   if(meta)meta.classList.add('loox-trending-model');
-  body.prepend(actions,stats);
+  body.prepend(actions);
   const profile=overlay.querySelector('.community-hover-creator');
   if(profile)profile.setAttribute('title','View creator profile');
   return card;
