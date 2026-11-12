@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Apply one consistent LOOX navigation revision to every standalone site page.
 
-Only page shell references are updated. Tool markup, editor logic, SEO and assets
+Only page shell references are updated. Reuse the latest shared CSS and JS versions, not the old v35 cache. Tool markup, editor logic, SEO and assets
 are preserved. Full guide pages in learn/*/*.html use root-relative depth.
 """
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "35"
+CSS_VERSION = "104"
+JS_VERSION = "102"
 HOME_PAGES = {"index.html", "ai-home.html", "ai-chat.html"}
 ASSETS = (
     ("loox-sitewide-nav.css", "href", "head",
@@ -27,7 +28,8 @@ for page in pages:
     result = content
     prefix = "../" * (len(page.relative_to(ROOT).parts) - 1)
     for filename, attr, section, markup in ASSETS:
-        new_url = f"{prefix}{filename}?v={VERSION}"
+        version = CSS_VERSION if filename.endswith(".css") else JS_VERSION
+        new_url = f"{prefix}{filename}?v={version}"
         pattern = re.compile(
             rf'(?P<before>\b{attr}\s*=\s*["\'])(?:[^"\']*/)?{re.escape(filename)}(?:\?[^"\']*)?(?P<after>["\'])',
             re.IGNORECASE,
