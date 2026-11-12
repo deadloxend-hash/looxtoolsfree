@@ -1,4 +1,5 @@
 import {trackMeaningfulView} from './community-watch.js?v=1';
+import {cloudRequest} from './profile-cloudflare.js?v=1';
 // Persistent social controls. User-generated text is always rendered as textContent.
 // Helpers are injected to keep this module independent of the existing generator.
 export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,modal,field}){
@@ -56,8 +57,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    async function fetchPeople(ids){
     const missing=[...new Set(ids)].filter(id=>id&&!profiles.has(id));
     if(!missing.length)return;
-    const rows=result(await self.state.client.from('loox_creator_profiles')
-     .select('user_id,username,display_name,avatar_path').in('user_id',missing));
+    const rows=(await cloudRequest(self.state,'profiles',{query:{ids:missing.join(',')}})).profiles||[];
     const found=new Map(rows.map(p=>[p.user_id,p]));
     for(const id of missing)profiles.set(id,found.get(id)||{user_id:id,username:'loox_user',display_name:'LOOX creator',avatar_path:null});
    }
@@ -315,14 +315,12 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    const creatorRow=e('div','loox-social-creator-row');
    creatorRow.append(creator);
    if(this.state.user?.id!==post.creator_id){
-    const summary=await rpc(this.state,'loox_creator_summary',{p_creator:post.creator_id});
+    const summary=await cloudRequest(this.state,'profile',{query:{id:post.creator_id}});
     let followed=!!summary?.followed;
     const follow=a(followed?'Following':'Follow',async()=>{
      if(!this.state.user)return this.auth('login');follow.disabled=true;
      try{
-      const q=this.state.client.from('loox_creator_follows');
-      result(followed?await q.delete().eq('follower_id',this.state.user.id).eq('creator_id',post.creator_id):
-       await q.insert({follower_id:this.state.user.id,creator_id:post.creator_id}));
+      await cloudRequest(this.state,'follow',{method:'POST',data:{creator_id:post.creator_id,follow:!followed}});
       followed=!followed;follow.textContent=followed?'Following':'Follow';
       follow.setAttribute('aria-pressed',String(followed));
      }finally{follow.disabled=false;}
@@ -422,6 +420,6 @@ export function installPrivacy(Community,{element:e,action:a,rpc,modal}){
   const d=modal('Profile privacy'),form=e('form'),status=e('p','community-note'),checks={};
   for(const [key,label,value] of [['private','Private profile (only you can see your profile and posts)',profile.is_private],['connections','Hide follower and following lists',profile.hide_connections],['notifications','Receive community notifications',profile.notifications_enabled!==false]]){const l=e('label','community-check'),i=e('input');i.type='checkbox';i.checked=!!value;checks[key]=i;l.append(i,label);form.append(l);}
   form.append(e('p','community-note','New generations always stay private until you submit them and an administrator approves them. Existing signed media links can remain usable for their short expiry period.'));
-  const submit=e('button','community-primary','Save privacy');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{await rpc(this.state,'loox_save_privacy',{p_private:checks.private.checked,p_hide_connections:checks.connections.checked,p_notifications:checks.notifications.checked});d.close();await this.load(true);}catch(error){status.textContent=error.message;submit.disabled=false;}});
+  const submit=e('button','community-primary','Save privacy');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{await cloudRequest(this.state,'privacy',{method:'PATCH',data:{is_private:checks.private.checked,hide_connections:checks.connections.checked,notifications_enabled:checks.notifications.checked}});d.close();await this.load(true);}catch(error){status.textContent=error.message;submit.disabled=false;}});
  };
 }
