@@ -18,6 +18,12 @@ const communityModule=[
  "export async function rpc(state,method,body){if(method==='loox_creator_summary')return window.__p;if(method==='loox_discover')return {items:window.__posts,has_more:false};if(method==='loox_public_post')return window.__posts[0];if(method==='loox_save_creator'){window.__p.username=body.p_username;window.__p.display_name=body.p_name;window.__p.bio=body.p_bio;window.__p.avatar_path=body.p_avatar;return null;}throw Error('Unexpected RPC: '+method);}",
  "export async function mediaURL(){return '"+icon+"';}"
 ].join('\n');
+const cloudModule=[
+ "export async function cloudRequest(state,path,options={}){window.__cloudCalls=(window.__cloudCalls||0)+1;const p=window.__p;if(path==='profile'){if(options.method==='PATCH'){Object.assign(p,options.data);return p;}return p;}if(path==='feed')return {items:window.__posts,has_more:false};if(path==='replies')return {items:window.__replies,has_more:false};if(path==='pin'){p.pinned_post_id=options.data.post_id;return {pinned_post_id:p.pinned_post_id};}if(path==='follow'){p.followed=options.data.follow;p.followers+=p.followed?1:-1;return p;}if(path==='save'||path==='like')return {on:options.data.on};if(path==='connections')return {items:[],has_more:false};if(path==='privacy'){Object.assign(p,options.data);return p;}if(path==='notifications')return {items:[]};throw Error('Unexpected cloud action '+path);}",
+ "export async function cloudImage(){return '"+icon+"';}",
+ "export async function cloudUpload(){return {key:'test.webp'};}",
+ "export async function cloudDelete(){return {saved:true};}"
+].join('\n');
 let browser;
 try{
  browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
@@ -35,6 +41,7 @@ async function profilePage(width,path){
  },{user:path?'22222222-2222-4222-8222-222222222222':me,post:'33333333-3333-4333-8333-333333333333'});
  await page.route('**/platform/account.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:accountModule}));
  await page.route('**/platform/community.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:communityModule}));
+ await page.route('**/platform/profile-cloudflare.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:cloudModule}));
  await page.route(/\/(loox-experience|loox-sitewide-nav)\.js\?/,r=>r.fulfill({status:200,contentType:'text/javascript',body:''}));
  await page.goto(root+'creator.html'+(path?'?id='+other:''),{waitUntil:'load'});
  await page.locator('.cx-name-line h2').waitFor({timeout:12000});
