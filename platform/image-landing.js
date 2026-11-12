@@ -1,4 +1,13 @@
-import {config} from './account.js?v=9';
+(async()=>{
+// Standalone landing UI: model dropdown must initialize even if auth fails.
+const config=async()=>{
+ const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?action=config',{
+  credentials:'omit',signal:AbortSignal.timeout(12000)
+ });
+ if(!response.ok)throw Error('Model status temporarily unavailable');
+ return response.json();
+};
+
 const root=document.querySelector('[data-image-showcase]');
 
 // Onboarding belongs to the Image landing HERO only. All content below #discover
@@ -182,3 +191,5 @@ if(root){
   if(first)document.querySelectorAll('[data-feature-model]').forEach(badge=>{badge.textContent=first.name+' · available in studio';badge.parentElement.querySelector('a').addEventListener('click',()=>{try{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:'image',prompt:'',model:first.id}));}catch{}});});
  }catch{document.querySelectorAll('.model-state').forEach(b=>b.textContent='Status not checked');status.textContent='Live availability could not be checked. Open the workspace for the latest model status.';}
 }
+
+})();
