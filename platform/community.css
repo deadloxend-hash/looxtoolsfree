@@ -2686,3 +2686,54 @@ body.community-page.loox-community-photo-wall .community-dialog .loox-comment-ac
   width:34px!important;min-width:34px!important;height:34px!important;min-height:34px!important;
  }
 }
+
+/* V37 — Instagram-like photo double-tap feedback, confined to the Community feed. */
+@media(max-width:700px){
+ body.loox-community-photo-wall #community-root .community-card-art .community-media[data-media-type="image"]{
+  position:relative!important;
+  touch-action:manipulation!important;
+  -webkit-tap-highlight-color:transparent!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-doubletap-heart{
+  position:absolute!important;z-index:18!important;
+  width:118px!important;height:118px!important;
+  display:grid!important;place-items:center!important;
+  padding:0!important;margin:0!important;
+  border:0!important;background:transparent!important;
+  color:#fff!important;pointer-events:none!important;
+  transform-origin:center center!important;
+  animation:loox-community-heart-burst .78s cubic-bezier(.21,.86,.28,1) both!important;
+  filter:drop-shadow(0 5px 15px #140a1a99)!important;
+  will-change:transform,opacity;
+ }
+ body.loox-community-photo-wall #community-root .loox-community-doubletap-heart svg{
+  display:block!important;width:100%!important;height:100%!important;
+  fill:currentColor!important;stroke:none!important;overflow:visible!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-like.loox-community-like-pop{
+  animation:loox-community-like-bounce .42s cubic-bezier(.2,.85,.25,1) both!important;
+ }
+}
+@keyframes loox-community-heart-burst{
+ 0%{opacity:0;transform:translate(-50%,-50%) scale(.28) rotate(-13deg)}
+ 18%{opacity:1;transform:translate(-50%,-50%) scale(1.16) rotate(4deg)}
+ 38%{opacity:1;transform:translate(-50%,-50%) scale(.92) rotate(-2deg)}
+ 57%{opacity:1;transform:translate(-50%,-50%) scale(1.01) rotate(0deg)}
+ 80%{opacity:.93;transform:translate(-50%,-53%) scale(.98)}
+ 100%{opacity:0;transform:translate(-50%,-65%) scale(.94)}
+}
+@keyframes loox-community-like-bounce{
+ 0%{transform:scale(1)}
+ 33%{transform:scale(1.24)}
+ 65%{transform:scale(.9)}
+ 100%{transform:scale(1)}
+}
+@media(max-width:700px) and (prefers-reduced-motion:reduce){
+ body.loox-community-photo-wall #community-root .loox-community-doubletap-heart{
+  animation:none!important;opacity:.88!important;
+  transform:translate(-50%,-50%) scale(.85)!important;will-change:auto!important;
+ }
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-like.loox-community-like-pop{
+  animation:none!important;
+ }
+}
