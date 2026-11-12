@@ -170,3 +170,95 @@ body.ai-chat.loox-chat-sessions-in-drawer #loox-sitewide-drawer .ai-recent-panel
  padding:8px 0!important;background:transparent!important;box-shadow:none!important;border:0!important;
 }
 body.ai-chat.loox-chat-sessions-in-drawer #loox-sitewide-drawer .ai-recent-inner{width:100%;min-width:0}
+
+/* V10: small, aligned generator and assistant controls, with directional scroll behavior. */
+body.loox-studio .studio-quick .studio-button,
+body.loox-studio .studio-quick .studio-clear-style{
+ border-radius:11px!important;padding:7px 10px!important;font-size:11px!important;
+ min-height:32px!important;line-height:1.1!important;white-space:nowrap;
+}
+body.loox-studio .studio-quick .studio-model-trigger{max-width:180px!important;overflow:hidden;text-overflow:ellipsis}
+body.loox-studio .studio-quick .studio-style-trigger{max-width:132px!important;overflow:hidden;text-overflow:ellipsis}
+body.loox-studio .lig-compose-actions .lig-primary{
+ min-height:38px!important;padding:8px 13px!important;border-radius:13px!important;font-size:12px!important;
+ white-space:nowrap!important;
+}
+body.loox-studio .lig-compose-card textarea{min-height:44px!important;height:48px!important;padding:6px 4px!important;max-height:116px!important}
+body.loox-studio .loox-uc-add{height:36px!important;width:36px!important;min-width:36px!important;font-size:20px!important}
+body.loox-studio.ai-chat .ai-actions .ai-round,
+body.loox-studio.ai-chat .ai-actions .ai-model,
+body.loox-studio.ai-chat .ai-actions .ai-send{
+ min-height:32px!important;border-radius:10px!important;padding:5px 9px!important;font-size:11px!important;
+}
+body.loox-studio.ai-chat .ai-actions .ai-round{width:32px!important;min-width:32px!important;padding:4px!important;font-size:17px!important}
+body.loox-studio.ai-chat .ai-actions .ai-send{min-width:54px!important}
+body.loox-studio.ai-chat .ai-composer textarea{min-height:43px!important;height:45px!important;max-height:116px!important;font-size:15px!important}
+body.loox-studio .lig-compose-card,body.loox-studio .ai-composer{transition:padding .18s ease,border-radius .18s ease}
+body.loox-studio .studio-quick,body.loox-studio .studio-video-reference{transition:padding .18s ease,margin .18s ease}
+body.loox-studio.loox-uc-scroll-compact .lig-compose-card{padding:7px 10px!important;border-radius:14px!important}
+body.loox-studio.loox-uc-scroll-compact .lig-compose-card textarea{
+ height:30px!important;min-height:30px!important;max-height:44px!important;padding:2px 4px!important;margin:0 0 2px!important;
+}
+body.loox-studio.loox-uc-scroll-compact .lig-compose-actions{margin:2px 0!important}
+body.loox-studio.loox-uc-scroll-compact .lig-compose-actions .lig-primary{min-height:32px!important;padding:6px 10px!important}
+body.loox-studio.loox-uc-scroll-compact .studio-quick{margin:3px 0 0!important;gap:5px!important}
+body.loox-studio.loox-uc-scroll-compact .studio-quick .studio-button{min-height:29px!important;padding:5px 8px!important}
+body.loox-studio.loox-uc-scroll-compact .studio-credit-cost{display:none!important}
+body.loox-studio.loox-uc-scroll-compact .studio-video-reference{padding:5px 8px!important;margin-bottom:4px!important;gap:4px}
+body.loox-studio.loox-uc-scroll-compact .studio-video-reference .studio-reference-heading small{display:none!important}
+body.loox-studio.loox-uc-scroll-compact .studio-video-reference .studio-upload{min-height:30px!important;padding:5px 10px!important}
+body.loox-studio.loox-uc-scroll-compact .studio-video-reference .studio-reference-preview{max-height:40px!important}
+body.loox-studio.loox-uc-scroll-compact .ai-composer{padding:7px 10px!important;border-radius:14px!important}
+body.loox-studio.loox-uc-scroll-compact .ai-composer textarea{height:30px!important;min-height:30px!important;max-height:44px!important;padding:2px 3px!important}
+body.loox-studio.loox-uc-scroll-compact .ai-actions{margin-top:3px!important}
+@media(max-width:900px){
+ body.loox-studio .lig-compose-card{padding:9px 11px!important;border-radius:16px!important}
+ body.loox-studio .studio-quick{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;gap:6px!important;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:1px 0 2px!important}
+ body.loox-studio .studio-quick::-webkit-scrollbar{display:none}
+ body.loox-studio .studio-quick>*{flex:0 0 auto!important}
+ body.loox-studio .studio-quick .studio-model-trigger{max-width:min(42vw,165px)!important}
+ body.loox-studio .studio-quick .studio-style-trigger{max-width:110px!important}
+ body.loox-studio .studio-quick .studio-button{min-height:32px!important;padding:6px 9px!important}
+ body.loox-studio .lig-compose-actions{flex-wrap:nowrap!important;gap:7px!important}
+ body.loox-studio .lig-compose-actions .lig-primary{max-width:calc(100% - 45px)!important;font-size:12px!important}
+ body.loox-studio .lig-compose textarea{height:44px!important;min-height:43px!important}
+ body.loox-studio.ai-chat .ai-composer{padding:8px 10px!important}
+ body.loox-studio.ai-chat .ai-model{max-width:50vw!important;min-width:0!important}
+ body.loox-studio.ai-chat .ai-model #aiModelName{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+}
+/* Style collection: one sheet, snappy tabs, stable card footprints while previews load. */
+.loox-sheet .studio-style-browser{gap:10px}
+.loox-sheet .studio-style-tabs{gap:6px;scrollbar-width:none;padding:2px 0 4px}
+.loox-sheet .studio-style-tabs::-webkit-scrollbar{display:none}
+.loox-sheet .studio-style-tabs .studio-button{font-size:12px;padding:9px 11px;border-radius:12px}
+.loox-sheet .studio-style-tabs [aria-pressed=true]{background:#6b3b95;color:#fff;border-color:#9666be}
+.loox-sheet .studio-create-style{justify-self:start;padding:7px 10px;border-radius:10px;font-size:12px}
+.loox-sheet .studio-style-grid{display:grid;gap:10px;align-content:start}
+.loox-sheet .studio-style-card{
+ display:flex;flex-direction:column;align-items:stretch;gap:7px;padding:10px!important;
+ border-radius:13px;min-width:0;animation:studio-card-arrive .18s ease both;
+}
+.loox-sheet .studio-style-card .studio-style-apply{
+ display:block;width:100%;min-height:36px;border:0!important;border-radius:8px;background:transparent!important;
+ padding:6px 4px;text-align:left;font-size:13px;font-weight:650;color:#f4eaff;cursor:pointer;
+}
+.loox-sheet .studio-style-card .studio-style-apply:focus-visible{outline:2px solid #b58aec}
+.loox-sheet .studio-style-card .studio-style-actions{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.loox-sheet .studio-style-card .studio-style-actions .studio-button{
+ flex:0 0 auto;min-height:29px;padding:6px 9px;border-radius:9px;font-size:11px;
+}
+.loox-sheet .studio-style-card .studio-style-preview{height:106px;width:100%;flex:none;border-radius:10px;overflow:hidden;background:linear-gradient(125deg,#271b35,#422a55 48%,#271b35)}
+.loox-sheet .studio-style-card .studio-style-preview img{display:block;width:100%;height:100%;object-fit:cover;animation:studio-card-arrive .22s ease}
+.loox-sheet .studio-style-notice{font-size:13px;color:#b9aec5;margin:2px 0 8px}
+.loox-sheet .studio-style-loading{grid-column:1/-1;min-height:100px;display:grid;place-items:center;color:#b7a8c7;font-size:13px}
+@keyframes studio-card-arrive{from{opacity:.65;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:600px){
+ .loox-sheet .studio-style-tabs .studio-button{padding:8px 10px;font-size:11px}
+ .loox-sheet .studio-style-card .studio-style-preview{height:95px}
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-studio .lig-compose-card,body.loox-studio .ai-composer,body.loox-studio .studio-quick,
+ body.loox-studio .studio-video-reference,.loox-sheet .studio-style-card,.loox-sheet .studio-style-preview img{
+ animation:none!important;transition:none!important;
+ }
+}
