@@ -316,3 +316,20 @@ body.creator-page.cx-profile-page #creator-community{
  background:#2b2035;color:#d9b9f1!important;font-size:11px;font-weight:700;
 }
 #creator-community .cx-reply-origin:hover{background:#402a50}
+
+/* Expandable account details are visible only on the signed-in owner's profile. */
+#creator-community .cx-account-panel{
+ margin-top:16px;background:#19141f;border:1px solid #3a2b43;border-radius:12px;
+}
+#creator-community .cx-account-panel summary{
+ list-style:none;cursor:pointer;padding:12px 15px;font-size:12px;font-weight:750;color:#dfc8f0;
+ display:flex;align-items:center;justify-content:space-between;
+}
+#creator-community .cx-account-panel summary::-webkit-details-marker{display:none}
+#creator-community .cx-account-panel summary::after{content:"⌄";font-size:17px;color:#a88bbc}
+#creator-community .cx-account-panel[open] summary::after{transform:rotate(180deg)}
+#creator-community .cx-account-panel-body{border-top:1px solid #3a2b43;padding:13px 15px;display:flex;flex-direction:column;gap:12px}
+#creator-community .cx-account-balance{font-size:12px;color:#cec0d9}
+#creator-community .cx-account-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#creator-community .cx-account-links a{padding:7px 11px;border-radius:99px;border:1px solid #6c517a;color:#ebd9fa!important;font-size:11px;font-weight:700}
+#creator-community .cx-account-links a:hover{background:#362640}
