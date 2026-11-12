@@ -2479,3 +2479,44 @@ body.loox-apps-open{overflow:hidden!important}
  .loox-mobile-app-layer .loox-mobile-app-label{color:#f6f1ff!important}
  .loox-mobile-app-layer.is-opening .loox-mobile-app-sheet{transform:translate3d(0,105%,0)!important}
 }
+
+
+/* V103: Web apps sheet is a true bottom sheet on EVERY LOOX page.
+   Overrides V92/V94's floating-card bottom margin which left a visible gap. */
+.loox-mobile-app-layer{
+ box-sizing:border-box!important;
+ margin:0!important;
+ padding:0!important;
+ align-items:flex-end!important;
+}
+.loox-mobile-app-layer .loox-mobile-app-sheet{
+ box-sizing:border-box!important;
+ margin:0!important;
+ margin-block-end:0!important;
+ bottom:0!important;
+ overscroll-behavior:contain!important;
+}
+@media(max-width:790px){
+ .loox-mobile-app-layer .loox-mobile-app-sheet{
+  position:relative!important;
+  top:auto!important;
+  bottom:0!important;
+  left:auto!important;right:auto!important;
+  flex:0 0 100%!important;
+  width:100%!important;max-width:100%!important;
+  margin:0!important;
+  margin-block:0!important;
+  margin-inline:0!important;
+  border-radius:24px 24px 0 0!important;
+  border-bottom:0!important;
+  min-height:0!important;
+  max-height:min(90dvh,780px)!important;
+  overflow-y:auto!important;
+  padding:18px 20px calc(20px + env(safe-area-inset-bottom,0px))!important;
+  touch-action:pan-y!important;
+ }
+ .loox-mobile-app-layer .loox-mobile-app-scrim{bottom:0!important}
+ .loox-mobile-app-layer .loox-mobile-app-grid{
+  margin-block-end:0!important;
+ }
+}
