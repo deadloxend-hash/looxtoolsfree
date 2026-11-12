@@ -62,7 +62,13 @@ for(const viewport of widths){
      if(style.visibility==='hidden'||style.display==='none'||rect.width<8||rect.height<8)continue;
      if(rect.right>width+6&&rect.left<width&&rect.top>=0&&rect.top<innerHeight){
       const parent=el.closest('.community-filters,.creative-examples,.studio-quick,.studio-tabs,.loox-sitewide-sidebar');
-      if(!parent)bad.push({tag:el.tagName,text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,38),right:Math.round(rect.right)});
+      const editorRail=el.closest('.ds-rail,.ds-toolbar,.mobile-bar,.filter-categories');
+      const intentionallyScrollable=editorRail&&
+       ['auto','scroll'].includes(getComputedStyle(editorRail).overflowX)&&
+       editorRail.scrollWidth>editorRail.clientWidth+2;
+      // Editor toolbars are intentionally horizontally scrollable; their
+      // offscreen buttons are reachable with a swipe, not misaligned.
+      if(!parent&&!intentionallyScrollable)bad.push({tag:el.tagName,text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,38),right:Math.round(rect.right)});
      }
     }
     return {horizontal,viewport:width,clippedButtons:bad.slice(0,8),title:document.title,nav:!!document.querySelector('#loox-sitewide-header')};
