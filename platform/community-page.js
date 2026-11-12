@@ -284,7 +284,7 @@ if(page==='trending.html'){
 if(discoveryPage){
  const selects=[...root.querySelectorAll('.community-filters select')];
  const menu=element('div','loox-discovery-select-menu');
- menu.hidden=true;menu.setAttribute('role','listbox');
+ menu.hidden=true;menu.setAttribute('role','listbox');menu.id='loox-community-select-options';
  document.body.append(menu);
  let active=null;
  const close=()=>{
@@ -293,21 +293,28 @@ if(discoveryPage){
   active=null;
  };
  const place=button=>{
-  const rect=button.getBoundingClientRect();
+  const rect=button.getBoundingClientRect(),v=window.visualViewport;
+  const left=v?.offsetLeft||0,top=v?.offsetTop||0;
+  const viewportWidth=v?.width||innerWidth,viewportHeight=v?.height||innerHeight;
+  const maxWidth=Math.max(100,Math.min(244,viewportWidth-20));
+  menu.style.setProperty('max-width',maxWidth+'px','important');
+  menu.style.minWidth=Math.min(Math.max(136,Math.ceil(rect.width)),maxWidth)+'px';
   menu.style.width='max-content';
-  menu.style.minWidth=Math.ceil(rect.width)+'px';
-  menu.style.maxWidth=Math.min(218,window.innerWidth-20)+'px';
+  menu.style.setProperty('max-height',Math.max(100,Math.min(320,viewportHeight-24))+'px','important');
   menu.hidden=false;
   const bounds=menu.getBoundingClientRect();
-  menu.style.left=Math.max(10,Math.min(rect.left,innerWidth-bounds.width-10))+'px';
-  menu.style.top=(rect.bottom+6+bounds.height>innerHeight-8
-   ? Math.max(8,rect.top-bounds.height-6):rect.bottom+6)+'px';
+  const below=top+viewportHeight-rect.bottom-12,above=rect.top-top-12;
+  const openBelow=below>=Math.min(160,bounds.height)||below>=above;
+  const height=Math.max(84,Math.min(bounds.height,openBelow?below:above));
+  menu.style.setProperty('max-height',height+'px','important');
+  menu.style.left=Math.max(left+10,Math.min(rect.left,left+viewportWidth-bounds.width-10))+'px';
+  menu.style.top=Math.max(top+8,openBelow?rect.bottom+6:rect.top-height-6)+'px';
  };
  for(const select of selects){
   const wrap=element('span','loox-discovery-select-wrap');
   const button=element('button','loox-discovery-select-trigger');
   button.type='button';button.setAttribute('aria-haspopup','listbox');
-  button.setAttribute('aria-expanded','false');
+  button.setAttribute('aria-expanded','false');button.setAttribute('aria-controls',menu.id);
   button.setAttribute('aria-label',select.getAttribute('aria-label')||'Select filter');
   const sync=()=>{button.textContent=select.selectedOptions[0]?.textContent||'Select';};
   sync();
@@ -320,9 +327,10 @@ if(discoveryPage){
    close();active=button;button.setAttribute('aria-expanded','true');menu.replaceChildren();
    for(const option of select.options){
     const item=element('button','loox-discovery-select-option',option.textContent);
-    item.type='button';item.setAttribute('role','option');
+    item.type='button';item.setAttribute('role','option');item.disabled=option.disabled;
     item.setAttribute('aria-selected',String(option.value===select.value));
     item.onclick=()=>{
+     if(option.disabled)return;
      select.value=option.value;
      select.dispatchEvent(new Event('change',{bubbles:true}));
      sync();close();button.focus();
@@ -330,22 +338,31 @@ if(discoveryPage){
     menu.append(item);
    }
    place(button);
+   menu.querySelector('[aria-selected="true"]')?.scrollIntoView({block:'nearest'});
   };
  }
  document.addEventListener('pointerdown',ev=>{
   if(active&&!menu.contains(ev.target)&&ev.target!==active)close();
  });
  document.addEventListener('keydown',ev=>{
-  if(ev.key==='Escape'&&active){close();return;}
-  if(ev.key==='ArrowDown'&&active&&document.activeElement===active){
-   ev.preventDefault();menu.querySelector('button')?.focus();
-  }
+  if(!active)return;
+  if(ev.key==='Escape'){ev.preventDefault();const target=active;close();target.focus({preventScroll:true});return;}
+  if(ev.key==='Tab'&&menu.contains(document.activeElement)){close();return;}
+  if(!['ArrowDown','ArrowUp','Home','End'].includes(ev.key))return;
+  const choices=[...menu.querySelectorAll('button:not(:disabled)')];
+  if(!choices.length)return;
+  ev.preventDefault();
+  const index=choices.indexOf(document.activeElement);
+  if(ev.key==='Home')choices[0].focus();
+  else if(ev.key==='End')choices[choices.length-1].focus();
+  else choices[(index+(ev.key==='ArrowDown'?1:-1)+choices.length)%choices.length].focus();
  });
  // Unlike the former template bug, an internal scroll is NOT a page scroll.
  window.addEventListener('scroll',ev=>{
   if(active&&ev.target!==menu&&!menu.contains(ev.target))close();
  },true);
  window.addEventListener('resize',close);
+ window.visualViewport?.addEventListener('resize',close);
 }
 if(page==='community.html'){
  // Keep the live sort/date selects and their backend listeners, but group both
