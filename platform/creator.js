@@ -1,23 +1,345 @@
-import {state,auth,initialize} from './account.js?v=9';
-import {Community,result} from './community.js?v=19';
+import {state,auth,initialize,api,refresh} from './account.js?v=9';
+import {Community,rpc,mediaURL,result} from './community.js?v=24';
+import {cropAvatar} from './avatar-crop.js?v=1';
+
 const root=document.getElementById('creator-community');
-try{
- const params=new URLSearchParams(location.search);
- const username=params.get('username');
- let id=params.get('id');
- // A direct profile link does not need the account overview before rendering.
- if(username||!id){
-  await initialize({publicAccess:true,waitForAccount:false});
-  id=id||state.user?.id;
-  if(username){
-   const profile=result(await state.client.from('loox_creator_profiles')
-    .select('user_id').eq('username',username.toLowerCase()).maybeSingle());
-   if(!profile)throw Error('This creator profile is private or unavailable.');
-   id=profile.user_id;
-  }
+const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const icons={
+ back:'<path d="m14 5-7 7 7 7M7 12h14"/>',
+ calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/>',
+ pin:'<path d="m16 3 5 5-3 1-3 3v4l-2 2-3-6-5-5 2-2h4l3-3 2-3ZM2 22l9-9"/>',
+ link:'<path d="M10 13a5 5 0 0 0 7.6.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7M14 11a5 5 0 0 0-7.6-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>',
+ location:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
+ edit:'<path d="m16 4 4 4L9 19H5v-4L16 4ZM14 6l4 4"/>',
+ camera:'<path d="M4 7h4l2-3h4l2 3h4v13H4V7Z"/><circle cx="12" cy="13" r="3"/>',
+ more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
+ heart:'<path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/>',
+ comment:'<path d="M21 11a8.5 8.5 0 0 1-8.5 8.5 9 9 0 0 1-4-.9L3 21l1.6-5A8.5 8.5 0 1 1 21 11Z"/>',
+ bookmark:'<path d="M5 4.5A2.5 2.5 0 0 1 7.5 2h9A2.5 2.5 0 0 1 19 4.5V22l-7-5-7 5V4.5Z"/>',
+ share:'<path d="M12 16V3m0 0L7 8m5-5 5 5M5 13v7h14v-7"/>',
+ play:'<path d="m8 5 12 7-12 7V5Z"/>',
+ views:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+ close:'<path d="M5 5l14 14M19 5 5 19"/>',
+ settings:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M4.9 4.9 7 7m10 10 2.1 2.1M2 12h3m14 0h3M4.9 19.1 7 17M17 7l2.1-2.1"/>',
+ check:'<path d="m4 12 5 5L20 6"/>',
+ image:'<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="2"/><path d="m21 16-6-6L5 21"/>'
+};
+const svg=(name,size=19)=>{const span=el('span','cx-icon');span.innerHTML='<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(icons[name]||icons.more)+'</svg>';return span;};
+const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
+const btn=(label,click,cls='cx-button')=>{const b=el('button',cls,label);b.type='button';if(click)b.addEventListener('click',()=>Promise.resolve().then(click).catch(showError));return b;};
+const link=(label,href,cls='')=>{const a=el('a',cls,label);a.href=href;return a;};
+const compact=n=>new Intl.NumberFormat('en',{notation:'compact',maximumFractionDigits:1}).format(Number(n)||0);
+const dateLabel=value=>{const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});};
+let profile=null,creatorId=null,isOwn=false,engine=null,tab='posts',offset=0,epoch=0,loading=false,feed=null,more=null,status=null,title=null,cover=null,headCount=null;
+function showError(e){if(status){status.textContent=e?.message||'Something went wrong. Please retry.';status.hidden=false;}else root.replaceChildren(el('p','cx-error',e?.message||'Could not load profile.'));}
+function notice(s){if(status){status.textContent=s;status.hidden=!s;}}
+function fallbackAvatar(p,cls='cx-avatar'){const a=el('span',cls,((p?.display_name||p?.username||'L').trim().charAt(0)||'L').toUpperCase());const id=p?.user_id||p?.creator_id;
+ if(p?.avatar_path&&id)mediaURL(state,p.avatar_path,'loox-avatars',{type:'avatar',id}).then(url=>{if(!a.isConnected)return;const img=el('img');img.alt='';img.decoding='async';img.loading='lazy';img.src=url;img.onerror=()=>img.remove();a.replaceChildren(img);}).catch(()=>{});
+ return a;
+}
+function profileURL(p){return 'creator.html?username='+encodeURIComponent(p.username);}
+function profileSkeleton(){root.innerHTML='<div class="cx-shell"><div class="cx-center"><div class="cx-top"><span class="cx-skeleton cx-skeleton-title"></span></div><div class="cx-skeleton cx-skeleton-cover"></div><div class="cx-skeleton cx-skeleton-avatar"></div><div class="cx-skeleton cx-skeleton-lines"></div><div class="cx-skeleton cx-skeleton-lines short"></div></div></div>';}
+function emptyPage(message,signIn){
+ root.replaceChildren();
+ const outer=el('section','cx-empty-page');
+ outer.append(el('h1','','Profile'),el('p','',message));
+ if(signIn)outer.append(btn('Sign in',()=>auth('login'),'cx-button cx-button-primary'));
+ outer.append(link('Explore Community','community.html','cx-button'));
+ root.append(outer);
+}
+function setupEngine(){
+ engine=Object.create(Community.prototype);
+ Object.assign(engine,{state,auth,creator:creatorId,pendingLikes:new Set(),posts:[],sort:'latest',kind:'all',offset:0,epoch:0});
+ engine.note=notice;
+ engine.load=async()=>{await refreshProfile();await loadFeed(true);};
+}
+async function refreshProfile(){const p=await rpc(state,'loox_creator_summary',{p_creator:creatorId});
+ if(!p){emptyPage('This profile is private or unavailable.',false);throw Error('Profile unavailable.');}
+ profile=p;isOwn=state.user?.id===creatorId;return p;
+}
+function makeMoreMenu(){
+ const wrap=el('div','cx-menu-wrap'),trigger=btn('','', 'cx-icon-button');
+ trigger.replaceChildren(svg('more'));trigger.setAttribute('aria-label','More profile options');
+ const menu=el('div','cx-menu');menu.hidden=true;
+ function item(label,fn){menu.append(btn(label,async()=>{menu.hidden=true;await fn();},'cx-menu-item'));}
+ item('Copy profile link',async()=>{await navigator.clipboard.writeText(new URL(profileURL(profile),location.href).href);notice('Profile link copied.');});
+ if(isOwn){
+  item('Manage posts',()=>engine.manage());
+  item('Privacy settings',()=>engine.privacy(profile));
+  item('Saved collections',()=>{location.assign('collections.html');});
+  item('Account settings',()=>{location.assign('settings.html');});
  }
- if(!id||!/^[0-9a-f-]{36}$/i.test(id))
-  throw Error('Choose a creator from Community to open their profile.');
- const community=new Community({state,auth,initialize,root,creator:id});
- await community.show();
-}catch(error){root.textContent=error.message;}
+ trigger.addEventListener('click',e=>{e.stopPropagation();menu.hidden=!menu.hidden;});
+ document.addEventListener('click',e=>{if(!wrap.contains(e.target))menu.hidden=true;},{signal:menuAbort.signal});
+ wrap.append(trigger,menu);return wrap;
+}
+let menuAbort=new AbortController();
+function buildPage(){
+ menuAbort.abort();menuAbort=new AbortController();
+ root.replaceChildren();root.className='cx-profile-root';
+ const shell=el('div','cx-shell'),center=el('section','cx-center'),aside=el('aside','cx-aside');
+ const top=el('div','cx-top');
+ const back=btn('',()=>{if(history.length>1)history.back();else location.assign('community.html');},'cx-icon-button cx-back');
+ back.replaceChildren(svg('back'));back.setAttribute('aria-label','Go back');
+ const topText=el('div','cx-top-text');topText.append(el('h1','',profile.display_name||profile.username),el('small','',compact(profile.posts)+' posts'));top.append(back,topText);
+ cover=el('div','cx-cover');
+ const art=el('div','cx-cover-art');art.setAttribute('role','img');art.setAttribute('aria-label','Profile cover');
+ cover.append(art);loadCover(art,profile);
+ if(isOwn){
+  const change=btn('Edit cover',()=>editProfile(),'cx-cover-edit');
+  change.prepend(svg('camera',16));cover.append(change);
+ }
+ const details=el('div','cx-details');
+ const tools=el('div','cx-identity-tools');
+ const avatar=fallbackAvatar(profile,'cx-avatar cx-avatar-xl');
+ avatar.setAttribute('aria-label','Profile picture');
+ const buttons=el('div','cx-profile-buttons');
+ buttons.append(makeMoreMenu());
+ if(isOwn)buttons.append(btn('Edit profile',()=>editProfile(),'cx-button cx-button-outline'));
+ else {
+  const follow=btn(profile.followed?'Following':'Follow',async()=>{
+   if(!state.user){auth('login');return;}
+   follow.disabled=true;
+   try{
+    const query=state.client.from('loox_creator_follows');
+    result(profile.followed?await query.delete().eq('follower_id',state.user.id).eq('creator_id',creatorId):await query.insert({follower_id:state.user.id,creator_id:creatorId}));
+    await refreshProfile();updateFollow(follow);renderCounts(); 
+   }finally{follow.disabled=false;}
+  },'cx-button cx-button-primary cx-follow');
+  buttons.append(follow);updateFollow(follow);
+ }
+ tools.append(avatar,buttons);
+ const names=el('div','cx-names'),line=el('div','cx-name-line');
+ line.append(el('h2','',profile.display_name||profile.username));
+ const badge=el('span','cx-plan',(profile.plan_badge||'Basic')+' plan');badge.dataset.plan=(profile.plan_badge||'Basic').toLowerCase();line.append(badge);
+ names.append(line,el('p','cx-handle','@'+profile.username));
+ if(profile.bio)names.append(el('p','cx-bio',profile.bio));
+ const meta=el('div','cx-meta');
+ if(profile.profile_location){const loc=el('span');loc.append(svg('location',17),el('span','',profile.profile_location));meta.append(loc);}
+ if(profile.profile_website){
+  try{const u=new URL(profile.profile_website);if(u.protocol==='https:'){const web=link(u.hostname.replace(/^www\./,''),u.href);web.rel='noopener noreferrer';web.target='_blank';const m=el('span');m.append(svg('link',17),web);meta.append(m);}}catch{}
+ }
+ if(profile.created_at){const joined=el('span');joined.append(svg('calendar',17),el('span','','Joined '+new Date(profile.created_at).toLocaleDateString(undefined,{month:'long',year:'numeric'})));meta.append(joined);}
+ const counts=el('div','cx-counts');counts.id='cx-counts';
+ details.append(tools,names,meta,counts);
+ const tabs=el('nav','cx-tabs');tabs.setAttribute('aria-label','Profile sections');
+ for(const [value,label] of [['posts','Posts'],['media','Media'],...(isOwn?[['likes','Likes']]:[])]){
+  const b=btn(label,()=>switchTab(value),'cx-tab');b.dataset.tab=value;tabs.append(b);
+ }
+ feed=el('div','cx-feed');
+ status=el('p','cx-status');status.setAttribute('role','status');status.hidden=true;
+ more=btn('Load more',()=>loadFeed(false),'cx-load-more');more.hidden=true;
+ center.append(top,cover,details,tabs,status,feed,more);
+ const side=el('div','cx-side-card');
+ side.append(el('h3','','Explore LOOX'),el('p','','Discover creative people, prompts and inspiring AI artwork.'));
+ for(const [name,href] of [['Community','community.html'],['Trending creations','trending.html'],['Templates','templates.html'],['Create with AI','ai-image-landing.html']])side.append(link(name,href,'cx-side-link'));
+ aside.append(side);
+ shell.append(center,aside);root.append(shell);
+ renderCounts();setTabStyles();
+ if(location.hash==='#media')tab='media';
+ if(location.hash==='#likes'&&isOwn)tab='likes';
+ setTabStyles();loadFeed(true);
+}
+function updateFollow(button){
+ button.textContent=profile.followed?'Following':'Follow';
+ button.classList.toggle('cx-following',!!profile.followed);
+ button.setAttribute('aria-pressed',String(!!profile.followed));
+}
+function renderCounts(){
+ const box=document.getElementById('cx-counts');if(!box)return;box.replaceChildren();
+ for(const kind of ['following','followers']){
+  const b=btn('','', 'cx-count');
+  const n=el('strong','',compact(profile[kind]));
+  b.append(n,el('span','',' '+(kind==='followers'?'Followers':'Following')));
+  b.disabled=!isOwn&&Boolean(profile.hide_connections);
+  if(!b.disabled)b.addEventListener('click',()=>engine.connections(creatorId,kind).catch(showError));
+  else b.title='Connection list is private';
+  box.append(b);
+ }
+ if(profile.total_views)box.append(el('span','cx-view-count',compact(profile.total_views)+' views'));
+}
+function loadCover(target,p){
+ target.classList.toggle('cx-cover-has-image',false);
+ if(!p.cover_key)return;
+ mediaURL(state,p.cover_key,'loox-results',{type:'cover',id:creatorId,variant:'original'}).then(url=>{
+  if(!target.isConnected||p!==profile)return;
+  target.style.backgroundImage='linear-gradient(0deg,rgba(8,8,14,.1),rgba(8,8,14,.1)),url("'+url.replaceAll('"','%22')+'")';
+  target.classList.add('cx-cover-has-image');
+ }).catch(()=>{});
+}
+function setTabStyles(){root.querySelectorAll('.cx-tab').forEach(b=>{const active=b.dataset.tab===tab;b.classList.toggle('cx-tab-active',active);b.setAttribute('aria-current',active?'page':'false');});}
+function switchTab(value){if(tab===value)return;tab=value;setTabStyles();history.replaceState(null,'',location.pathname+location.search+(value==='posts'?'':'#'+value));loadFeed(true);}
+async function loadFeed(reset){
+ if(loading&&!reset)return;
+ if(reset){offset=0;feed.replaceChildren();engine.posts=[];}
+ const run=++epoch,start=offset;loading=true;more.disabled=true;more.hidden=true;
+ if(reset){const skel=el('div','cx-feed-loading');for(let i=0;i<3;i++)skel.append(el('div','cx-post-placeholder cx-skeleton'));feed.append(skel);}
+ notice('');
+ try{
+  const kind=tab==='media'?'all':'all',sort=tab==='likes'?'liked':'latest',creator=tab==='likes'?null:creatorId;
+  const data=await rpc(state,'loox_discover',{p_kind:kind,p_sort:sort,p_offset:start,p_creator:creator,p_query:'',p_collection:null,p_days:30});
+  if(run!==epoch)return;
+  if(reset)feed.replaceChildren();
+  let items=data.items||[];
+  if(tab==='posts'&&start===0&&profile.pinned_post_id){
+   let pinned=items.find(p=>p.id===profile.pinned_post_id);
+   if(!pinned)pinned=await rpc(state,'loox_public_post',{p_id:profile.pinned_post_id}).catch(()=>null);
+   if(run!==epoch)return;
+   if(pinned)items=[pinned,...items.filter(p=>p.id!==pinned.id)];
+  }
+  if(reset)engine.posts=[];
+  for(const post of items){engine.posts.push(post);feed.append(tab==='media'?mediaTile(post):postCard(post));}
+  offset=start+(data.items||[]).length;
+  more.hidden=!data.has_more;
+  if(!offset&&!items.length){
+   const empty=el('div','cx-empty-feed');empty.append(svg(tab==='likes'?'heart':'image',30),
+     el('h3','',tab==='likes'?'No liked posts yet':tab==='media'?'No public media yet':'No posts yet'),
+     el('p','',tab==='likes'?'Posts you like will appear here.':'Approved, public creations will appear here. Private generations stay private.'));
+   if(isOwn&&tab!=='likes')empty.append(link('Create something','ai-image-landing.html','cx-button cx-button-primary'));
+   feed.append(empty);
+  }
+ }catch(e){if(run===epoch){if(reset)feed.replaceChildren();showError(e);more.hidden=true;}}
+ finally{if(run===epoch){loading=false;more.disabled=false;}}
+}
+function preview(post,wrap,asTile=false){
+ const media=el(post.media_type==='video'?'video':'img');
+ if(post.media_type==='video'){media.muted=true;media.playsInline=true;media.preload='metadata';}
+ else{media.alt=post.caption||'Creation';media.decoding='async';media.loading='lazy';}
+ const frame=btn('',()=>engine.details(post),'cx-media-frame');
+ frame.setAttribute('aria-label','View creation: '+(post.caption||'Media'));frame.append(media);
+ if(post.media_type==='video'){const play=el('span','cx-play');play.append(svg('play',22));frame.append(play);}
+ const loadingTag=el('span','cx-media-loading');loadingTag.setAttribute('aria-hidden','true');frame.append(loadingTag);
+ wrap.append(frame);
+ const load=()=>mediaURL(state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'preview'})
+  .then(url=>{if(!frame.isConnected)return;media.onload=()=>frame.classList.add('cx-media-ready');media.onloadeddata=()=>frame.classList.add('cx-media-ready');media.onerror=()=>frame.classList.add('cx-media-error');media.src=url;if(media.readyState>=2)frame.classList.add('cx-media-ready');})
+  .catch(()=>{frame.classList.add('cx-media-error');loadingTag.textContent='Preview unavailable';});
+ if('IntersectionObserver' in window){
+  const io=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){io.disconnect();load();}},{rootMargin:'360px'});
+  io.observe(frame);
+ }else load();
+ return frame;
+}
+function mediaTile(post){const tile=el('article','cx-media-tile');preview(post,tile,true);return tile;}
+function postCard(post){
+ const article=el('article','cx-post');article.dataset.id=post.id;
+ const a=fallbackAvatar({user_id:post.creator_id,username:post.username,display_name:post.display_name,avatar_path:post.avatar_path},'cx-avatar cx-post-avatar');
+ const person=link('', 'creator.html?id='+encodeURIComponent(post.creator_id),'cx-post-person');
+ person.append(el('strong','',post.display_name||post.username),el('span','', '@'+post.username));
+ const timestamp=el('time','cx-post-time',dateLabel(post.created_at));timestamp.dateTime=post.created_at||'';
+ const heading=el('div','cx-post-heading');heading.append(person,timestamp);
+ const toolbar=el('div','cx-post-menu');
+ if(isOwn&&post.creator_id===creatorId){
+  const pinned=post.id===profile.pinned_post_id;
+  const pin=btn('',async()=>{
+   pin.disabled=true;
+   try{await api('community_pin',{post:pinned?null:post.id});await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');}finally{pin.disabled=false;}
+  },'cx-post-more');
+  pin.append(svg('pin',16),el('span','',pinned?'Unpin':'Pin'));
+  pin.title=pinned?'Unpin post':'Pin post';toolbar.append(pin);
+ }
+ const text=el('p','cx-post-caption',post.caption||'');
+ const body=el('div','cx-post-body');body.append(heading,text);
+ if(post.id===profile.pinned_post_id&&tab==='posts'){
+  const tag=el('div','cx-pinned');tag.append(svg('pin',15),el('span','','Pinned'));body.prepend(tag);
+ }
+ if(post.media_type==='video'||post.media_type==='image')preview(post,body);
+ if(post.shared_prompt){const prompt=el('details','cx-prompt');prompt.append(el('summary','','View prompt'),el('p','',post.shared_prompt));body.append(prompt);}
+ const actions=el('div','cx-post-actions');
+ const comment=btn('',()=>engine.details(post),'cx-post-action');
+ comment.append(svg('comment',18),el('span','',compact(post.comments)));comment.setAttribute('aria-label',compact(post.comments)+' comments');
+ const like=btn('',async()=>{
+  if(!state.user)return auth('login');
+  like.disabled=true;
+  const proxy=el('button','community-like');
+  try{await engine.like(post,proxy);updateLike();}finally{like.disabled=false;}
+ },'cx-post-action cx-post-like');
+ const updateLike=()=>{like.replaceChildren(svg('heart',18),el('span','',compact(post.likes)));like.classList.toggle('cx-active',!!post.liked);like.setAttribute('aria-pressed',String(!!post.liked));like.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+Number(post.likes||0)+' likes');};
+ updateLike();
+ const save=btn('',async()=>{
+  if(!state.user)return auth('login');
+  const proxy=el('button','community-button');
+  await engine.save(post,proxy);
+  save.classList.toggle('cx-active',!!post.saved);save.setAttribute('aria-pressed',String(!!post.saved));
+ },'cx-post-action cx-save');
+ save.append(svg('bookmark',18));save.classList.toggle('cx-active',!!post.saved);save.setAttribute('aria-label','Save post');save.setAttribute('aria-pressed',String(!!post.saved));
+ const share=btn('',async()=>{const url=new URL('community.html?post='+encodeURIComponent(post.id),location.href).href;if(navigator.share)await navigator.share({title:post.caption||'LOOX creation',url});else{await navigator.clipboard.writeText(url);notice('Post link copied.');}},'cx-post-action');
+ share.append(svg('share',18));share.setAttribute('aria-label','Share post');
+ actions.append(comment,like,save,share);
+ if(post.media_type==='video'&&Number(post.view_count)>0){const views=el('span','cx-action-views');views.append(svg('views',17),el('span','',compact(post.view_count)));actions.insertBefore(views,save);}
+ body.append(actions);article.append(a,body,toolbar);return article;
+}
+function readDataUrl(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Could not read image.'));reader.readAsDataURL(blob);});}
+function dialog(title){
+ const d=el('dialog','cx-edit-dialog'),wrap=el('div','cx-dialog-content'),heading=el('div','cx-dialog-top');
+ heading.append(btn('',()=>d.close(),'cx-dialog-close'),el('h2','',title));
+ heading.firstElementChild.replaceChildren(svg('close'));heading.firstElementChild.setAttribute('aria-label','Close editor');
+ wrap.append(heading);d.append(wrap);document.body.append(d);d.addEventListener('close',()=>d.remove(),{once:true});d.showModal();return {d,wrap};
+}
+function labeled(form,title,value='',kind='input',limit=100){
+ const l=el('label','cx-field'),name=el('span','',title),input=el(kind);
+ input.value=value||'';input.maxLength=limit;
+ l.append(name,input);form.append(l);return input;
+}
+async function editProfile(){
+ if(!isOwn)return auth('login');
+ const {d,wrap}=dialog('Edit profile');const form=el('form','cx-edit-form');form.noValidate=true;
+ const imageRow=el('div','cx-edit-images'),coverLabel=el('label','cx-edit-cover'),avatarLabel=el('label','cx-edit-avatar');
+ coverLabel.append(svg('camera',24),el('span','','Change cover'));
+ const coverInput=el('input');coverInput.type='file';coverInput.accept='image/png,image/jpeg,image/webp';coverInput.setAttribute('aria-label','Upload cover photo');coverLabel.append(coverInput);
+ if(profile.cover_key)loadCover(coverLabel,profile);
+ const avatar=fallbackAvatar(profile,'cx-avatar cx-edit-avatar-display');
+ avatarLabel.append(avatar,svg('camera',18));
+ const avatarInput=el('input');avatarInput.type='file';avatarInput.accept=coverInput.accept;avatarInput.setAttribute('aria-label','Upload profile picture');avatarLabel.append(avatarInput);
+ imageRow.append(coverLabel,avatarLabel);form.append(imageRow);
+ const removeRow=el('div','cx-remove-images');
+ const removeCover=btn('Remove cover photo',()=>{coverInput.value='';removeCover.dataset.remove='yes';coverLabel.style.backgroundImage='';coverLabel.classList.remove('cx-cover-has-image');notice('Cover photo will be removed when you save.');},'cx-text-action');
+ const removeAvatar=btn('Remove profile picture',()=>{avatarInput.value='';removeAvatar.dataset.remove='yes';avatar.replaceChildren(el('span','',profile.display_name?.charAt(0)||'L'));notice('Profile picture will be removed when you save.');},'cx-text-action');
+ removeRow.append(removeCover,removeAvatar);form.append(removeRow);
+ const name=labeled(form,'Name',profile.display_name||'', 'input',60);name.required=true;
+ const username=labeled(form,'Username',profile.username||'','input',30);username.required=true;username.pattern='[a-z0-9_]{3,30}';
+ const bio=labeled(form,'Bio',profile.bio||'','textarea',500);bio.rows=3;
+ const locationField=labeled(form,'Location',profile.profile_location||'','input',80);
+ const website=labeled(form,'Website (HTTPS)',profile.profile_website||'','input',250);website.placeholder='https://example.com';
+ const note=el('p','cx-edit-note','Only your public profile details appear here. Your email stays private.');
+ const error=el('p','cx-edit-error');error.setAttribute('role','status');error.hidden=true;
+ const save=el('button','cx-button cx-button-primary','Save');save.type='submit';
+ form.append(note,error,save);wrap.append(form);
+ coverInput.addEventListener('change',()=>{const file=coverInput.files?.[0];if(!file)return;removeCover.dataset.remove='no';if(!file.type.startsWith('image/')||file.size>4_000_000){error.textContent='Cover must be a PNG, JPG or WebP under 4 MB.';error.hidden=false;coverInput.value='';return;}const u=URL.createObjectURL(file);coverLabel.style.backgroundImage='url("'+u+'")';coverLabel.classList.add('cx-cover-has-image');d.addEventListener('close',()=>URL.revokeObjectURL(u),{once:true});});
+ avatarInput.addEventListener('change',()=>{const file=avatarInput.files?.[0];if(!file)return;removeAvatar.dataset.remove='no';if(file.size>2_097_152){error.textContent='Avatar must be under 2 MB.';error.hidden=false;avatarInput.value='';return;}const u=URL.createObjectURL(file);avatar.replaceChildren();const img=el('img');img.src=u;img.alt='New avatar preview';avatar.append(img);d.addEventListener('close',()=>URL.revokeObjectURL(u),{once:true});});
+ form.addEventListener('submit',async event=>{
+  event.preventDefault();save.disabled=true;save.textContent='Saving…';error.hidden=true;
+  try{
+   const cleanName=name.value.trim(),cleanUser=username.value.trim().toLowerCase();
+   if(!cleanName||!/^[a-z0-9_]{3,30}$/.test(cleanUser))throw Error('Enter a display name and a username of 3–30 lowercase letters, numbers or underscores.');
+   let avatarPath=removeAvatar.dataset.remove==='yes'?null:profile.avatar_path||null;
+   if(avatarInput.files?.[0]){
+    const cropped=await cropAvatar(avatarInput.files[0]);
+    const uploaded=await api('community_avatar',{image:await readDataUrl(cropped)});
+    avatarPath=uploaded.path;
+   }
+   await rpc(state,'loox_save_creator',{p_username:cleanUser,p_name:cleanName,p_bio:bio.value.trim(),p_avatar:avatarPath});
+   await api('community_details',{location:locationField.value.trim(),website:website.value.trim()});
+   if(removeCover.dataset.remove==='yes')await api('community_cover',{remove:true});
+   else if(coverInput.files?.[0])await api('community_cover',{image:await readDataUrl(coverInput.files[0])});
+   try{await api('profile',{name:cleanName});await refresh();}catch(e){console.warn('Profile saved but account display name sync failed',e);}
+   d.close();await refreshProfile();buildPage();notice('Profile updated.');
+   if(location.search.includes('username='))history.replaceState(null,'',profileURL(profile));
+  }catch(e){error.textContent=e.message||'Could not save your profile.';error.hidden=false;save.disabled=false;save.textContent='Save';}
+ });
+}
+async function main(){
+ profileSkeleton();
+ try{
+  await initialize({publicAccess:true,waitForAccount:false});
+  const params=new URLSearchParams(location.search);
+  const username=params.get('username');const requested=params.get('id');
+  if(requested){if(!UUID.test(requested))throw Error('Invalid profile link.');creatorId=requested;}
+  else if(username){
+   const data=result(await state.client.from('loox_creator_profiles').select('user_id').eq('username',username.trim().toLowerCase()).maybeSingle());
+   if(!data)throw Error('Profile not found or private.');creatorId=data.user_id;
+  }else if(state.user)creatorId=state.user.id;
+  else{emptyPage('Sign in to see your creator profile, or open a creator from Community.',true);return;}
+  await refreshProfile();setupEngine();buildPage();
+ }catch(e){emptyPage(e.message||'Profile unavailable.',false);}
+}
+main();
