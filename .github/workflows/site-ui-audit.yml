@@ -1,0 +1,39 @@
+name: LOOX responsive and static UI audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/site-ui-audit.yml"
+      - "scripts/site-ui-static-audit.py"
+      - "scripts/site-responsive-audit.mjs"
+permissions:
+  contents: read
+jobs:
+  site-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Audit every root and learning page for missing references and duplicate IDs
+        run: python3 scripts/site-ui-static-audit.py
+      - name: Install ephemeral browser testing dependency
+        run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
+      - name: Install browser (if required by runner)
+        run: npx playwright install chromium
+      - name: Run responsive overflow and interaction checks
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-ui-audit-server.log 2>&1 &
+          sleep 2
+          node scripts/site-responsive-audit.mjs
+      - name: Upload report and failure screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: loox-site-ui-audit
+          path: |
+            site-audit-results.json
+            audit-artifacts/
+          if-no-files-found: warn
