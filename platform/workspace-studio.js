@@ -218,7 +218,12 @@ function studioSettingsSelect(select,kind){
    if(kind==='ratio'){
     const shapeWrap=node('span','studio-ratio-icon');
     const shape=node('span','studio-ratio-shape');
-    shape.style.aspectRatio=option.value.replace(':',' / ');
+    const [wide,tall]=option.value.split(':').map(Number);
+    if(wide>0&&tall>0){
+     const scale=Math.min(26/wide,29/tall);
+     shape.style.width=Math.round(wide*scale)+'px';
+     shape.style.height=Math.round(tall*scale)+'px';
+    }
     shapeWrap.append(shape);item.append(shapeWrap);
    }else if(kind==='duration'){
     const icon=node('span','studio-duration-icon','▶');
@@ -269,7 +274,7 @@ function studioSettingsSelect(select,kind){
  });
  select.addEventListener('change',refresh);
  new MutationObserver(refresh).observe(select,{attributes:true,attributeFilter:['disabled','hidden','selected'],childList:true,subtree:true});
- const picker={close,refresh};studioPickers.set(select,picker);
+ const picker={close,refresh,wrap};studioPickers.set(select,picker);
  refresh();return picker;
 }
 function settingsSheet(prefix){
@@ -294,7 +299,9 @@ function settingsSheet(prefix){
  dialog.addEventListener('keydown',event=>{
   if(event.key!=='Escape'||!dialog.querySelector('.studio-select-picker.is-open'))return;
   event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
-  for(const picker of active)picker.close();
+  const expanded=active.find(picker=>picker.wrap.classList.contains('is-open'));
+  for(const picker of active)if(picker!==expanded)picker.close();
+  expanded?.close(true);
  },true);
  dialog.addEventListener('close',closeAll,{once:true});
 }
