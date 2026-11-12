@@ -111,6 +111,8 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
       controls.append(a('Delete',async()=>{
        if(!confirm('Delete this comment?'))return;
        result(await self.state.client.from('loox_post_comments').delete().eq('id',c.id));
+       post.comments=Math.max(0,(Number(post.comments)||0)-1);
+       document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
        await reload();
       },'loox-comment-action',err=>status.textContent=err.message));
     controls.append(a('Report',()=>self.report(post,c.id),'loox-comment-action',err=>status.textContent=err.message));
@@ -193,6 +195,8 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
       const data={post_id:post.id,user_id:self.state.user.id,body};
       if(replyTo)data.parent_id=replyTo.id;
       result(await self.state.client.from('loox_post_comments').insert(data));
+      post.comments=Math.max(0,(Number(post.comments)||0)+1);
+      document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
       input.value='';cancelReply();
       await reload();
      }catch(err){status.textContent=err.message;}
