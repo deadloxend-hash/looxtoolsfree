@@ -601,3 +601,12 @@ body.loox-studio .studio-shot-row button:focus-visible{
  }
  body.loox-studio .studio-budget-link{margin-left:auto!important}
 }
+
+/* V15 — 16px input fonts prevent unwanted mobile Safari zoom while typing. */
+@media(max-width:900px){
+ body.loox-studio .lig-compose-card textarea,
+ body.loox-studio.loox-uc-scroll-compact .lig-compose-card textarea,
+ body.loox-studio .loox-sheet input,
+ body.loox-studio .loox-sheet textarea,
+ body.loox-studio .loox-sheet select{font-size:16px!important}
+}
