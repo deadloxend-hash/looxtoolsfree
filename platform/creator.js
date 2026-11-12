@@ -1,6 +1,7 @@
 import {state,auth,initialize,api,refresh} from './account.js?v=9';
 import {Community,rpc,mediaURL,result} from './community.js?v=24';
 import {cropAvatar} from './avatar-crop.js?v=1';
+import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
 
 const root=document.getElementById('creator-community');
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -35,8 +36,7 @@ function showError(e){if(status){status.textContent=e?.message||'Something went 
 function notice(s){if(status){status.textContent=s;status.hidden=!s;}}
 function fallbackAvatar(p,cls='cx-avatar'){const a=el('span',cls,((p?.display_name||p?.username||'L').trim().charAt(0)||'L').toUpperCase());const id=p?.user_id||p?.creator_id;
  if(p?.avatar_path&&id){
-  const ownPrivate=state.user?.id===id&&Boolean(profile?.is_private);
-  const pending=ownPrivate?api('community_profile_media',null,{kind:'avatar'}).then(d=>d.url):mediaURL(state,p.avatar_path,'loox-avatars',{type:'avatar',id});
+   const pending=cloudImage(state,id,'avatar');
   pending.then(url=>{if(!a.isConnected)return;const img=el('img');img.alt='';img.decoding='async';img.loading='lazy';img.src=url;img.onerror=()=>img.remove();a.replaceChildren(img);}).catch(()=>{});
  }
  return a;
@@ -56,8 +56,13 @@ function setupEngine(){
  Object.assign(engine,{state,auth,creator:creatorId,pendingLikes:new Set(),posts:[],sort:'latest',kind:'all',offset:0,epoch:0});
  engine.note=notice;
  engine.load=async()=>{await refreshProfile();await loadFeed(true);};
+ engine.connections=showConnections;
+ engine.privacy=showPrivacy;
+ engine.notifications=showNotifications;
+ engine.like=async(post)=>{const on=!post.liked;await cloudRequest(state,'like',{method:'POST',data:{post_id:post.id,on}});post.liked=on;post.likes=Math.max(0,Number(post.likes||0)+(on?1:-1));};
+ engine.save=async(post)=>{const on=!post.saved;await cloudRequest(state,'save',{method:'POST',data:{post_id:post.id,on}});post.saved=on;};
 }
-async function refreshProfile(){const p=await rpc(state,'loox_creator_summary',{p_creator:creatorId});
+async function refreshProfile(){const p=await cloudRequest(state,'profile',{query:{id:creatorId}});
  if(!p){emptyPage('This profile is private or unavailable.',false);throw Error('Profile unavailable.');}
  profile=p;isOwn=state.user?.id===creatorId;return p;
 }
@@ -106,9 +111,8 @@ function buildPage(){
    if(!state.user){auth('login');return;}
    follow.disabled=true;
    try{
-    const query=state.client.from('loox_creator_follows');
-    result(profile.followed?await query.delete().eq('follower_id',state.user.id).eq('creator_id',creatorId):await query.insert({follower_id:state.user.id,creator_id:creatorId}));
-    await refreshProfile();updateFollow(follow);renderCounts(); 
+    profile=await cloudRequest(state,'follow',{method:'POST',data:{creator_id:creatorId,follow:!profile.followed}});
+    updateFollow(follow);renderCounts(); 
    }finally{follow.disabled=false;}
   },'cx-button cx-button-primary cx-follow');
   buttons.append(follow);updateFollow(follow);
@@ -185,8 +189,7 @@ function renderCounts(){
 function loadCover(target,p){
  target.classList.toggle('cx-cover-has-image',false);
  if(!p.cover_key)return;
- (isOwn&&p.is_private?api('community_profile_media',null,{kind:'cover'}).then(d=>d.url)
-  :mediaURL(state,p.cover_key,'loox-results',{type:'cover',id:creatorId,variant:'original'})).then(url=>{
+ cloudImage(state,creatorId,'cover').then(url=>{
   if(!target.isConnected||p!==profile)return;
   target.style.backgroundImage='linear-gradient(0deg,rgba(8,8,14,.1),rgba(8,8,14,.1)),url("'+url.replaceAll('"','%22')+'")';
   target.classList.add('cx-cover-has-image');
@@ -202,12 +205,8 @@ async function loadFeed(reset){
  notice('');
  try{
   if(tab==='replies'){
-   const response=await state.client.from('loox_post_comments')
-    .select('id,post_id,body,created_at,parent_id')
-    .eq('user_id',creatorId)
-    .order('created_at',{ascending:false})
-    .range(start,start+19);
-   const replies=result(response);
+   const replyData=await cloudRequest(state,'replies',{query:{creator_id:creatorId,offset:start}});
+   const replies=replyData.items||[];
    if(run!==epoch)return;
    if(reset)feed.replaceChildren();
    for(const reply of replies)feed.append(replyCard(reply));
@@ -216,8 +215,7 @@ async function loadFeed(reset){
    if(!offset)feed.append(emptyContent('No replies yet','Replies to public Community posts will appear here.'));
    return;
   }
-  const kind='all',sort=tab==='likes'?'liked':'latest',creator=tab==='likes'?null:creatorId;
-  const data=await rpc(state,'loox_discover',{p_kind:kind,p_sort:sort,p_offset:start,p_creator:creator,p_query:'',p_collection:null,p_days:30});
+  const data=await cloudRequest(state,'feed',{query:{tab,creator_id:creatorId,offset:start}});
   if(run!==epoch)return;
   if(reset)feed.replaceChildren();
   let items=data.items||[];
@@ -293,7 +291,7 @@ function postCard(post){
   const pinned=post.id===profile.pinned_post_id;
   const pin=btn('',async()=>{
    pin.disabled=true;
-   try{await api('community_pin',{post:pinned?null:post.id});await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');}finally{pin.disabled=false;}
+   try{await cloudRequest(state,'pin',{method:'POST',data:{post_id:pinned?null:post.id}});await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');}finally{pin.disabled=false;}
   },'cx-post-more');
   pin.append(svg('pin',16),el('span','',pinned?'Unpin':'Pin'));
   pin.title=pinned?'Unpin post':'Pin post';toolbar.append(pin);
@@ -311,15 +309,13 @@ function postCard(post){
  const like=btn('',async()=>{
   if(!state.user)return auth('login');
   like.disabled=true;
-  const proxy=el('button','community-like');
-  try{await engine.like(post,proxy);updateLike();}finally{like.disabled=false;}
+  try{await engine.like(post);updateLike();}finally{like.disabled=false;}
  },'cx-post-action cx-post-like');
  const updateLike=()=>{like.replaceChildren(svg('heart',18),el('span','',compact(post.likes)));like.classList.toggle('cx-active',!!post.liked);like.setAttribute('aria-pressed',String(!!post.liked));like.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+Number(post.likes||0)+' likes');};
  updateLike();
  const save=btn('',async()=>{
   if(!state.user)return auth('login');
-  const proxy=el('button','community-button');
-  await engine.save(post,proxy);
+  await engine.save(post);
   save.classList.toggle('cx-active',!!post.saved);save.setAttribute('aria-pressed',String(!!post.saved));
  },'cx-post-action cx-save');
  save.append(svg('bookmark',18));save.classList.toggle('cx-active',!!post.saved);save.setAttribute('aria-label','Save post');save.setAttribute('aria-pressed',String(!!post.saved));
@@ -330,7 +326,7 @@ function postCard(post){
  body.append(actions);article.append(a,body,toolbar);return article;
 }
 function readDataUrl(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Could not read image.'));reader.readAsDataURL(blob);});}
-async function coverDataUrl(file){
+async function coverBlob(file){
  const src=URL.createObjectURL(file);
  try{
   const img=new Image();
@@ -345,7 +341,7 @@ async function coverDataUrl(file){
   context.drawImage(img,0,0,canvas.width,canvas.height);
   const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.84));
   if(!blob||blob.size>3_000_000)throw Error('This cover photo is too large after processing. Please use a smaller image.');
-  return readDataUrl(blob);
+  return blob;
  }finally{URL.revokeObjectURL(src);}
 }
 function dialog(title){
@@ -390,16 +386,11 @@ async function editProfile(){
   try{
    const cleanName=name.value.trim(),cleanUser=username.value.trim().toLowerCase();
    if(!cleanName||!/^[a-z0-9_]{3,30}$/.test(cleanUser))throw Error('Enter a display name and a username of 3–30 lowercase letters, numbers or underscores.');
-   let avatarPath=removeAvatar.dataset.remove==='yes'?null:profile.avatar_path||null;
-   if(avatarInput.files?.[0]){
-    const cropped=await cropAvatar(avatarInput.files[0]);
-    const uploaded=await api('community_avatar',{image:await readDataUrl(cropped)});
-    avatarPath=uploaded.path;
-   }
-   await rpc(state,'loox_save_creator',{p_username:cleanUser,p_name:cleanName,p_bio:bio.value.trim(),p_avatar:avatarPath});
-   await api('community_details',{location:locationField.value.trim(),website:website.value.trim()});
-   if(removeCover.dataset.remove==='yes')await api('community_cover',{remove:true});
-   else if(coverInput.files?.[0])await api('community_cover',{image:await coverDataUrl(coverInput.files[0])});
+   await cloudRequest(state,'profile',{method:'PATCH',data:{username:cleanUser,display_name:cleanName,bio:bio.value.trim(),profile_location:locationField.value.trim(),profile_website:website.value.trim()}});
+   if(removeAvatar.dataset.remove==='yes')await cloudDelete(state,'avatar');
+   else if(avatarInput.files?.[0])await cloudUpload(state,'avatar',await cropAvatar(avatarInput.files[0]));
+   if(removeCover.dataset.remove==='yes')await cloudDelete(state,'cover');
+   else if(coverInput.files?.[0])await cloudUpload(state,'cover',await coverBlob(coverInput.files[0]));
    try{await api('profile',{name:cleanName});await refresh();}catch(e){console.warn('Profile saved but account display name sync failed',e);}
    d.close();await refreshProfile();buildPage();notice('Profile updated.');
    if(location.search.includes('username='))history.replaceState(null,'',profileURL(profile));
@@ -414,8 +405,8 @@ async function main(){
   const username=params.get('username');const requested=params.get('id');
   if(requested){if(!UUID.test(requested))throw Error('Invalid profile link.');creatorId=requested;}
   else if(username){
-   const data=result(await state.client.from('loox_creator_profiles').select('user_id').eq('username',username.trim().toLowerCase()).maybeSingle());
-   if(!data)throw Error('Profile not found or private.');creatorId=data.user_id;
+   const data=await cloudRequest(state,'profile',{query:{username:username.trim().toLowerCase()}});
+   creatorId=data.user_id;
   }else if(state.user)creatorId=state.user.id;
   else{emptyPage('Sign in to see your creator profile, or open a creator from Community.',true);return;}
   await refreshProfile();setupEngine();buildPage();
