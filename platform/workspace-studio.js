@@ -172,8 +172,7 @@ async function stylesSheet(initialTab='explore'){
 const studioPickers=new Map();
 function studioSettingsSelect(select,kind){
  if(studioPickers.has(select))return studioPickers.get(select);
- const wrap=node('div','studio-select-picker'),toggle=button('','', 'studio-select-toggle');
- toggle.onclick=null;
+ const wrap=node('div','studio-select-picker'),toggle=button('',()=>{},'studio-select-toggle');
  toggle.setAttribute('aria-haspopup','listbox');
  toggle.setAttribute('aria-expanded','false');
  const display=node('span','studio-select-value');
@@ -208,8 +207,7 @@ function studioSettingsSelect(select,kind){
   panel.replaceChildren();
   for(const option of options){
    const current=option.value===select.value;
-   const item=button('','', 'studio-select-option '+(kind==='ratio'?'studio-ratio-option':'studio-duration-option'));
-   item.onclick=null;item.disabled=option.disabled;
+   const item=button('',()=>{},'studio-select-option '+(kind==='ratio'?'studio-ratio-option':'studio-duration-option'));item.disabled=option.disabled;
    item.setAttribute('role','option');item.setAttribute('aria-selected',String(current));
    item.dataset.value=option.value;
    if(kind==='ratio'){
@@ -265,7 +263,7 @@ function studioSettingsSelect(select,kind){
   options[next].focus({preventScroll:true});
  });
  select.addEventListener('change',refresh);
- new MutationObserver(refresh).observe(select,{attributes:true,attributeFilter:['disabled'],childList:true,subtree:true});
+ new MutationObserver(refresh).observe(select,{attributes:true,attributeFilter:['disabled','hidden','selected'],childList:true,subtree:true});
  const picker={close,refresh};studioPickers.set(select,picker);
  refresh();return picker;
 }
