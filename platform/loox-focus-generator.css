@@ -18,3 +18,46 @@ body.loox-focus-generator .lig-compose::after{display:none!important}
 body.loox-focus-generator .lig-compose{background:transparent!important;box-shadow:none!important;border:0!important}
 body.loox-focus-generator .lig-compose-card{background:linear-gradient(115deg,rgba(65,39,81,.76),rgba(101,58,84,.48))!important}
 @media(max-width:900px){}
+
+
+/* Mobile Safari: use document scrolling for both image and video workspaces.
+   Avoid trapping template galleries inside a viewport-locked flex container. */
+@media (max-width: 900px) {
+  html:has(body.loox-focus-generator.lig-body) {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+  }
+  body.loox-focus-generator.lig-body {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+  }
+  body.loox-focus-generator.lig-body .lig-workspace {
+    height: auto !important;
+    min-height: calc(100dvh - 68px) !important;
+    overflow: visible !important;
+  }
+  body.loox-focus-generator.lig-body .lig-main {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  body.loox-focus-generator.lig-body .lig-content-scroll {
+    flex: none !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+  }
+  body.loox-focus-generator.lig-body .lig-content-scroll[hidden] {
+    display: none !important;
+  }
+  body.loox-focus-generator.lig-body .lig-compose-wrap {
+    position: relative !important;
+    width: 100% !important;
+  }
+}
