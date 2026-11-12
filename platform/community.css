@@ -2737,3 +2737,28 @@ body.community-page.loox-community-photo-wall .community-dialog .loox-comment-ac
   animation:none!important;
  }
 }
+
+
+/* V39: engagement counts stay next to the heart and comment bubbles. */
+body.loox-community-photo-wall #community-root .loox-mobile-feed-actions .loox-engagement-group{
+ display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex:0 0 auto!important;gap:3px!important;min-width:0!important;
+}
+body.loox-community-photo-wall #community-root .loox-mobile-feed-actions .loox-engagement-number{
+ display:inline-block!important;min-width:8px!important;
+ color:#e7daeF!important;font:650 12px/1.2 Inter,system-ui,sans-serif!important;
+ text-align:left!important;white-space:nowrap!important;font-variant-numeric:tabular-nums;
+}
+body.loox-community-photo-wall #community-root .loox-mobile-feed-actions .loox-engagement-like:has([aria-pressed="true"]) .loox-engagement-number{
+ color:#ff81a4!important;
+}
+body.loox-community-photo-wall #community-root .loox-mobile-feed-like-count{
+ display:none!important;
+}
+@media(max-width:370px){
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-actions{gap:1px!important;padding-inline:6px!important;}
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-actions .loox-engagement-group{gap:1px!important;}
+ body.loox-community-photo-wall #community-root .loox-mobile-feed-actions .loox-mobile-feed-action{
+  width:34px!important;height:36px!important;min-width:34px!important;min-height:36px!important;
+ }
+}
