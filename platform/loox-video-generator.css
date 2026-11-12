@@ -103,3 +103,48 @@
  .lvg-body .loox-model-picker .loox-model-description{font-size:9px!important}
  .lvg-body .loox-model-picker .loox-model-cost{font-size:9px!important;padding:4px!important}
 }
+
+
+/* iOS/mobile: allow the video workspace and template gallery to scroll naturally.
+   Desktop retains the focused fixed-height generator layout. */
+@media (max-width: 900px) {
+  html:has(body.lvg-body.loox-focus-generator) {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.lvg-body.loox-focus-generator {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: clip !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+  }
+  body.lvg-body.loox-focus-generator .lig-workspace {
+    height: auto !important;
+    min-height: calc(100dvh - 68px) !important;
+    overflow: visible !important;
+  }
+  body.lvg-body.loox-focus-generator .lig-main {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  body.lvg-body.loox-focus-generator .lig-content-scroll {
+    flex: none !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    overscroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  body.lvg-body.loox-focus-generator .lig-content-scroll[hidden] {
+    display: none !important;
+  }
+  body.lvg-body.loox-focus-generator .lig-compose-wrap {
+    position: relative !important;
+    width: 100% !important;
+  }
+}
