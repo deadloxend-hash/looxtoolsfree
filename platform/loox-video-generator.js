@@ -1,5 +1,5 @@
 import {Community} from './community.js?v=4';
-import {mountModelPicker} from './loox-model-picker.js?v=4';
+import {mountModelPicker} from './loox-model-picker.js?v=6';
 import {MediaSessions} from './loox-image-sessions.js?v=20';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
 
@@ -44,6 +44,9 @@ function updateModelUI(){
  modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
   m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
  const info=modelInfo();
+ const supportedRatios=modelField.value==='veo_31_fast'?['16:9','9:16']:modelField.value==='kling_30'?['16:9','9:16','1:1']:['16:9','9:16','1:1','4:3','3:4'];
+ for(const option of ratioField.options){option.disabled=!supportedRatios.includes(option.value);option.hidden=option.disabled;}
+ if(!supportedRatios.includes(ratioField.value))ratioField.value=supportedRatios[0];
  if(info&&!info.available)modelNote.textContent+=' Cloud model is not available yet.';
  accountInfo();checkGPU().catch(()=>{});
 }
@@ -354,9 +357,9 @@ document.body.classList.add('loox-generator-ready');
   modelField.classList.add('loox-hidden-native-model');
   const picker=mountModelPicker({
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
-    if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:'available'};
+    if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
-    return {name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
+    return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
    }
   });
   // Keep responsive model status and its displayed price in sync.

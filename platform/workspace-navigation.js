@@ -49,7 +49,7 @@ export function mountWorkspaceNavigation(host){
  }
  const primary=[
   ['home','Home','ai-image-landing.html'],
-  ['pen','AI Agent','ai-chat.html'],
+  ['pen','AI Assistant','ai-chat.html'],
   ['image','AI Image','ai-text-to-image.html#generate'],
   ['video','AI Video',active.pathname.endsWith('/ai-image-landing.html')?'ai-video-landing.html':'ai-video-generator.html#generate'],
   ['globe','Community','community.html'],

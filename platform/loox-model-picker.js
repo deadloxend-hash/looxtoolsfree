@@ -1,3 +1,4 @@
+import {openSheet} from './workspace-sheet.js';
 /* Shared LOOX model picker: icon-led provider groups, credits, search and favorites.
    Native <select> stays the source of truth for generation, keyboard and form handling. */
 const NS='http://www.w3.org/2000/svg';
@@ -102,7 +103,8 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   // Unique variation for individual models, including models sharing one family.
   badge.dataset.variant=id;return badge;
  }
- function close(){panel.hidden=true;trigger.setAttribute('aria-expanded','false');root.classList.remove('is-open');}
+ let sheet;
+ function close(){if(sheet?.open){sheet.close();return;}panel.hidden=true;trigger.setAttribute('aria-expanded','false');root.classList.remove('is-open');}
  function sync(){
   const selected=native.value,model=info(selected);
   face.replaceChildren(icon(selected));
@@ -126,6 +128,9 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const price=node('span','loox-model-cost',(model.cost??'—')+' credits');
   const state=model.status||'';
   if(state==='coming_soon'||state==='temporarily_unavailable')price.classList.add('is-muted');
+  const specs=[...(model.resolutions||[]),...(model.durationOptions||model.durations||[]).map(v=>v+'s')];
+  if(specs.length)main.append(node('small','loox-model-specs',specs.join(' · ')));
+  select.disabled=['coming_soon','temporarily_unavailable'].includes(model.status);
   select.append(icon(id),main,price);
   select.addEventListener('click',()=>{if(native.disabled)return;native.value=id;native.dispatchEvent(new Event('change',{bubbles:true}));sync();close();trigger.focus()});
   const favorite=node('button','loox-model-favorite');favorite.type='button';favorite.append(starIcon());
@@ -166,17 +171,14 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
  }
  trigger.addEventListener('click',()=>{
   if(native.disabled)return;
-  const opening=panel.hidden;
-  document.querySelectorAll('.loox-model-picker.is-open').forEach(other=>{if(other!==root)other.querySelector('.loox-model-trigger')?.click()});
-  panel.hidden=!opening;root.classList.toggle('is-open',opening);
-  trigger.setAttribute('aria-expanded',String(opening));
-  if(opening){search.value='';render();search.focus()}
+  panel.hidden=false;search.value='';render();root.classList.add('is-open');trigger.setAttribute('aria-expanded','true');
+  sheet=openSheet('Choose '+mode+' model',panel,{onClose:()=>{panel.hidden=true;root.append(panel);root.classList.remove('is-open');trigger.setAttribute('aria-expanded','false');sheet=null;}});
  });
  search.addEventListener('input',render);
  panel.addEventListener('loox-model-cost-change',render);
  native.addEventListener('change',()=>{sync();list.querySelectorAll('[data-model-value] .loox-model-choice').forEach(b=>b.setAttribute('aria-selected',String(b.closest('[data-model-value]').dataset.modelValue===native.value)))});
  new MutationObserver(sync).observe(native,{attributes:true,attributeFilter:['disabled']});
- document.addEventListener('pointerdown',e=>{if(!root.contains(e.target))close()});
+ document.addEventListener('pointerdown',e=>{if(!root.contains(e.target)&&!panel.contains(e.target)&&!sheet?.contains(e.target))close()});
  document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&!panel.hidden){close();trigger.focus()}
  });

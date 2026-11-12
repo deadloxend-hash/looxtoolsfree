@@ -166,7 +166,7 @@ function drawThread(){
  activeAnimation++;
  if(!thread)return;
  thread.replaceChildren();
- // A fresh AI Agent session uses the same uncluttered empty workspace as Image/Video.
+ // A fresh AI Assistant session uses the same uncluttered empty workspace as Image/Video.
  // Messages appear only after the user starts the conversation.
  for(const msg of messages)addBubble(msg.text,msg.role,Boolean(msg.error));
  for(const item of attachments)attachmentBubble(item);
@@ -218,7 +218,7 @@ prompt?.addEventListener('keydown',event=>{
  }
 });
 
-// The shared LOOX sidebar owns AI Agent history, just like Image and Video.
+// The shared LOOX sidebar owns AI Assistant history, just like Image and Video.
  // The sitewide navigation bundle can initialize after this module, so rehome
  // the SAME live panel when its drawer becomes available (never clone sessions).
 function dockAgentHistory(){
@@ -236,7 +236,7 @@ if(!dockAgentHistory()){
  window.addEventListener('pagehide',()=>dockObserver.disconnect(),{once:true});
 }
 
-// AI Agent sessions are permanent and never close on mobile or desktop.
+// AI Assistant sessions are permanent and never close on mobile or desktop.
 function setRecentOpen(){
  if(!recentPanel)return;
  recentClosed=false;

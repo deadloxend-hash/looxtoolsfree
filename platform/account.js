@@ -14,7 +14,7 @@ export function button(label,fn,cls='lx-button'){
 function link(label,href){const a=el('a',label);a.href=href;return a;}
 export function msg(node,text){node.textContent=text;node.hidden=!text;}
 export async function config(){
- if(!loading)loading=fetch(endpoint+'?action=config',{signal:AbortSignal.timeout(7000),credentials:'omit'}).then(async r=>{
+ if(!loading)loading=fetch(endpoint+'?action=config',{signal:AbortSignal.timeout(20000),credentials:'omit'}).then(async r=>{
   if(!r.ok)throw Error();state.config=await r.json();return state.config;
  }).catch(()=>{loading=null;throw Error('The LOOX account service is unavailable. Please try again later.');});
  return loading;

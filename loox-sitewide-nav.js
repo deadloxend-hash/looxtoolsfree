@@ -40,7 +40,7 @@
  logo.append(wordmark);
  logoWrap.append(logo);
  const links=el('nav','loox-sitewide-links');links.setAttribute('aria-label','LOOX main navigation');
- [['AI Agent','ai-chat.html'],['AI Image',imageTabHref],['AI Video',videoTabHref],['Community','community.html'],['Trending','trending.html'],['Templates','templates.html']].forEach(([name,href])=>{
+ [['AI Assistant','ai-chat.html'],['AI Image',imageTabHref],['AI Video',videoTabHref],['Community','community.html'],['Trending','trending.html'],['Templates','templates.html']].forEach(([name,href])=>{
   const link=el('a','',name);link.href=url(href);if(href.split('#')[0]===page)link.setAttribute('aria-current','page');
   if(name==='Blog'){const outbound=el('span','loox-blog-arrow','↗');outbound.setAttribute('aria-hidden','true');link.append(outbound);}
   links.append(link);
@@ -89,7 +89,7 @@
    templates:'<path d="m12 3 2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/>'
   };
   [
-   ['AI Agent','ai-chat.html','agent'],
+   ['AI Assistant','ai-chat.html','agent'],
    ['AI Image','ai-text-to-image.html#generate','image'],
    ['AI Video','ai-video-generator.html#generate','video'],
    ['Community','community.html','community'],
@@ -118,7 +118,7 @@
  // Shared LOOX mobile app launcher for every home, landing and creator workspace.
  // Native generator headers get their own trigger because the sitewide bar is hidden there.
  const appDestinations=[
-  ['AI Agent','ai-chat.html','agent'],
+  ['AI Assistant','ai-chat.html','agent'],
   ['AI Image',imageTabHref,'image'],
   ['AI Video',videoTabHref,'video'],
   ['Community','community.html','community'],

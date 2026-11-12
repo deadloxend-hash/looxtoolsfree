@@ -5,7 +5,7 @@
  const routes=[
   ['AI Image','ai-text-to-image.html#generate','image'],
   ['AI Video','ai-video-generator.html#generate','video'],
-  ['AI Agent','ai-chat.html','agent'],
+  ['AI Assistant','ai-chat.html','agent'],
 
  ];
  function links(kind){

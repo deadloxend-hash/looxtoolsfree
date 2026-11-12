@@ -1,5 +1,5 @@
 import {Community} from './community.js?v=4';
-import {mountModelPicker} from './loox-model-picker.js?v=5';
+import {mountModelPicker} from './loox-model-picker.js?v=6';
 import {MediaSessions} from './loox-image-sessions.js?v=20';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
@@ -106,7 +106,7 @@ async function initWorkspace(){
    const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
    if(isModel){
     const m=allModels.get(option.value);
-    const detail=create('small','lig-model-choice-detail',m?.description||'Private generation on your GPU');
+    const detail=create('small','lig-model-choice-detail',m?.description||(id==='flux'?'Fast image generation on your private GPU':'Model details unavailable'));
     const status=modelStatus(option.value);
     const meta=create('small','lig-model-choice-meta',status.label+' · '+(m?.cost||3)+' credits');
     const body=create('span','lig-model-choice-body');body.append(label,detail,meta);
@@ -170,8 +170,8 @@ async function initWorkspace(){
   native:modelField,root:document.querySelector('[data-custom-select="lig-model"]'),
   mode:'image',getInfo:id=>{
    const m=allModels.get(id),status=modelStatus(id);
-   return {description:m?.description||'Private generation on your GPU',
-    cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??3),
+   return {...m,description:m?.description||(id==='flux'?'Fast image generation on your private GPU':'Model details unavailable'),
+    cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??'—'),
     status:m?.status||status.label.toLowerCase().replaceAll(' ','_')};
   }
  });
