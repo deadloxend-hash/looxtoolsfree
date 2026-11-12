@@ -1,5 +1,12 @@
 /* Guided first-video setup. All credits are confirmed in the real workspace. */
-import {config} from './account.js?v=9';
+// Independent of account modules: custom dropdowns must work before API calls.
+async function config(){
+ const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?action=config',{
+  credentials:'omit',signal:AbortSignal.timeout(12000)
+ });
+ if(!response.ok)throw Error('Video models are temporarily unavailable.');
+ return response.json();
+}
 const form=document.getElementById('creative-landing-form'),prompt=document.getElementById('creative-prompt');
 const model=document.getElementById('creative-model'),trigger=document.getElementById('video-landing-model-trigger');
 const menu=document.getElementById('video-landing-model-options'),name=document.getElementById('video-landing-model-name');
@@ -116,6 +123,7 @@ window.__looxVideoLandingSettings=()=>({
  ...(choice&&!choice.local&&duration?{duration}:{})
 });
 syncModel();
+async function hydrateVideoModels(){
 try{
  const cfg=await config();
  const fetched=new Map((cfg?.videoModels||[]).map(x=>[x.id,x]));
@@ -142,3 +150,5 @@ try{
  model.replaceChildren(new Option('Wan 2.1 · Check in Studio','wan21'));model.value='wan21';
  syncModel();status.textContent='Could not verify video model availability. Prepare your scene and check models in Studio.';
 }
+}
+hydrateVideoModels();
