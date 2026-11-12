@@ -233,6 +233,43 @@ function run(){
  const library=$('.loox-start-templates');if(library){main.prepend(library);library.querySelector('h2').textContent='Find your next idea';}
  const nav=$('.loox-uc-links');if(nav)main.prepend(nav);
  const heading=node('div','studio-heading');heading.append(node('span','studio-eyebrow','LOOX CREATIVE STUDIO'),node('h1','',video?'Ideas in motion.':'Make room for imagination.'),node('p','',video?'Turn a scene into your next story.':'Start with an idea. Make it unmistakably yours.'));if(library)library.prepend(heading);
+
+ // Creations and searchable templates are different views, not a long stacked page.
+ const resultsView=document.getElementById(prefix+'-generate-view');
+ if(library&&resultsView){
+  const switcher=node('nav','studio-content-switcher');
+  switcher.setAttribute('aria-label','Creative workspace');
+  const createButton=button('Creations',()=>showContent('create',true),'studio-content-tab');
+  const exploreButton=button('Explore templates',()=>showContent('explore',true),'studio-content-tab');
+  switcher.append(createButton,exploreButton);
+  if(nav)nav.after(switcher);else library.before(switcher);
+  const intro=node('div','studio-generation-intro');
+  intro.append(node('h2','',video?'Your videos':'Your images'),
+    button('Explore templates',()=>showContent('explore',true),'studio-explore-shortcut'));
+  const empty=node('div','studio-creations-empty');
+  empty.append(node('strong','',video?'Your video creations appear here':'Your image creations appear here'),
+   node('p','','Start with a prompt or find inspiration in templates.'),
+   button('Explore templates',()=>showContent('explore',true),'studio-empty-explore'));
+  const feed=document.getElementById(prefix+'-results');
+  if(feed){
+   feed.before(intro,empty);
+   const refreshEmpty=()=>{empty.hidden=!!feed.querySelector('.lig-output,.loox-session-loading,.lig-skeleton');};
+   new MutationObserver(refreshEmpty).observe(feed,{childList:true});
+   refreshEmpty();
+  }
+  function showContent(view,scroll=false){
+   const explore=view==='explore';
+   if(!explore&&location.hash==='#templates')location.hash='generate';
+   document.body.classList.toggle('studio-explore-view',explore);
+   document.body.classList.toggle('studio-create-view',!explore);
+   createButton.setAttribute('aria-pressed',String(!explore));
+   exploreButton.setAttribute('aria-pressed',String(explore));
+   if(scroll)switcher.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+  }
+  document.addEventListener('loox:session-open',()=>showContent('create'));
+  document.addEventListener('loox:session-new',()=>showContent('create'));
+  showContent('create');
+ }
  const toolbar=$('.loox-uc-toolbar');if(toolbar)card.prepend(toolbar);
  const quick=node('div','studio-quick');quick.append(button('Model',()=>{const trigger=$('.loox-model-trigger');if(trigger)trigger.click();else settingsSheet(prefix);},'studio-button studio-model-trigger'),button('☷ Settings',()=>settingsSheet(prefix)),button('✧ Styles',()=>stylesSheet(),'studio-button studio-style-trigger'));
  const clear=button('Clear style',()=>{selectedStyle=null;$('.studio-clear-style').hidden=true;$('.studio-style-trigger').textContent='✧ Styles';notify('Style removed');});const modelField=document.getElementById(prefix+'-model');const modelChip=quick.querySelector('.studio-model-trigger');const syncModelChip=()=>{modelChip.textContent=modelField?.selectedOptions[0]?.textContent||'Model';modelChip.title=modelChip.textContent;};modelField?.addEventListener('change',syncModelChip);syncModelChip();
