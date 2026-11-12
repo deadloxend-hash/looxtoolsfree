@@ -1,0 +1,316 @@
+/* LOOX Trending / V1 — Editorial discovery feed.
+   Scoped to trending.html; Community, Templates and creator pages keep their own UI. */
+body.loox-trending-feed{
+ --trending-edge:#44364e;
+ --trending-muted:#b9abc5;
+ --trending-surface:#1b1522;
+ overflow-x:clip!important;
+}
+body.loox-trending-feed #community-root.loox-community{
+ width:100%!important;max-width:1480px!important;min-width:0!important;
+ margin:0 auto!important;
+ padding:20px clamp(16px,3.3vw,44px) 80px!important;
+ box-sizing:border-box!important;
+}
+body.loox-trending-feed .loox-trending-intro{
+ display:flex;flex-direction:column;align-items:flex-start;gap:8px;
+ max-width:950px;margin:0 0 22px!important;
+ text-align:left;
+}
+body.loox-trending-feed .loox-trending-eyebrow{
+ color:#c99fe9!important;letter-spacing:.15em!important;
+ font:750 10px/1.4 Inter,system-ui,sans-serif!important;
+}
+body.loox-trending-feed .loox-trending-intro h1{
+ margin:0!important;color:#f9f5ff!important;
+ font:760 clamp(27px,3vw,43px)/1.1 Inter,system-ui,sans-serif!important;
+ letter-spacing:-.045em!important;
+}
+body.loox-trending-feed .loox-trending-intro p{
+ color:#b9afc6!important;max-width:600px!important;
+ margin:0!important;font:450 13px/1.5 Inter,system-ui,sans-serif!important;
+}
+body.loox-trending-feed #community-root .loox-discovery-toolbar{
+ display:flex!important;flex-wrap:wrap!important;align-items:center!important;
+ width:100%!important;gap:10px 12px!important;
+ margin:0 0 22px!important;padding:0!important;min-width:0!important;
+}
+body.loox-trending-feed #community-root .loox-discovery-search-wrap{
+ flex:1 1 320px!important;max-width:530px!important;min-width:0!important;
+}
+body.loox-trending-feed #community-root .community-search{
+ box-sizing:border-box!important;min-height:44px!important;height:44px!important;
+ background:#201926!important;border:1px solid #554362!important;
+ border-radius:14px!important;font-size:13px!important;
+}
+body.loox-trending-feed #community-root .community-filters{
+ flex:1 1 auto!important;min-width:0!important;
+ display:flex!important;align-items:center!important;flex-wrap:wrap!important;
+ justify-content:flex-start!important;gap:8px!important;
+ overflow:visible!important;max-width:100%!important;
+}
+body.loox-trending-feed #community-root .community-filter,
+body.loox-trending-feed #community-root .loox-discovery-select-trigger{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:37px!important;height:37px!important;box-sizing:border-box!important;
+ font:600 12px/1.25 Inter,system-ui,sans-serif!important;
+ padding:8px 12px!important;white-space:nowrap!important;
+ border-radius:11px!important;border:1px solid #51415f!important;
+ background:#241c2b!important;color:#e2d6ec!important;
+}
+body.loox-trending-feed #community-root .community-filter[aria-pressed=true]{
+ background:#6c438b!important;color:#fff!important;border-color:#a276c4!important;
+}
+body.loox-trending-feed #community-root .loox-trending-more{
+ position:relative!important;flex:0 0 auto!important;align-self:center!important;
+ z-index:15!important;
+}
+body.loox-trending-feed #community-root .loox-trending-more>summary{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ list-style:none!important;cursor:pointer!important;
+ min-height:37px!important;padding:8px 15px!important;
+ border:1px solid #554166!important;border-radius:11px!important;
+ background:#281f31!important;color:#ddcce9!important;
+ font:600 12px/1.2 Inter,system-ui,sans-serif!important;
+}
+body.loox-trending-feed #community-root .loox-trending-more>summary::-webkit-details-marker{display:none!important}
+body.loox-trending-feed #community-root .loox-trending-more>summary::after{
+ content:"⌄";margin-left:8px;color:#bf9fd0;
+}
+body.loox-trending-feed #community-root .loox-trending-more[open]>summary::after{transform:rotate(180deg)}
+body.loox-trending-feed #community-root .loox-trending-more .community-tools{
+ display:flex!important;position:absolute!important;
+ top:calc(100% + 7px)!important;right:0!important;z-index:25!important;
+ width:192px!important;max-width:calc(100vw - 32px)!important;
+ flex-direction:column!important;align-items:stretch!important;
+ box-sizing:border-box!important;gap:3px!important;
+ padding:8px!important;margin:0!important;
+ border:1px solid #675076!important;border-radius:13px!important;
+ background:#241c2df7!important;box-shadow:0 16px 34px #0009!important;
+ backdrop-filter:blur(18px)!important;
+}
+body.loox-trending-feed #community-root .loox-trending-more:not([open]) .community-tools{display:none!important}
+body.loox-trending-feed #community-root .loox-trending-more .community-tools button{
+ box-sizing:border-box!important;width:100%!important;
+ min-height:35px!important;text-align:left!important;justify-content:flex-start!important;
+ border:0!important;border-radius:9px!important;background:transparent!important;
+ font:550 12px/1.3 Inter,system-ui,sans-serif!important;
+ color:#f0e5f7!important;padding:8px 10px!important;
+}
+body.loox-trending-feed #community-root .loox-trending-more .community-tools button:hover{background:#51386b!important}
+body.loox-trending-feed #community-root .community-grid{
+ display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ gap:20px!important;min-width:0!important;width:100%!important;
+ column-count:auto!important;columns:auto!important;align-items:start!important;
+}
+body.loox-trending-feed #community-root .loox-community-masonry-column{
+ display:flex!important;flex-direction:column!important;gap:20px!important;
+ min-width:0!important;width:100%!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post{
+ display:block!important;box-sizing:border-box!important;
+ width:100%!important;margin:0!important;min-width:0!important;
+ position:relative!important;overflow:hidden!important;
+ border:1px solid #473750!important;border-radius:17px!important;
+ background:#18121e!important;box-shadow:0 8px 29px #03010632!important;
+ content-visibility:visible!important;
+ transition:border-color .18s ease,transform .18s ease!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post:hover{
+ border-color:#806192!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-card-art{
+ position:relative!important;isolation:isolate!important;
+ overflow:hidden!important;background:#0f0d13!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-media{
+ position:relative!important;display:block!important;
+ box-sizing:border-box!important;width:100%!important;
+ min-height:0!important;max-height:min(74svh,820px)!important;
+ margin:0!important;padding:0!important;
+ border:0!important;border-radius:0!important;
+ background:#14101a!important;overflow:hidden!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-media.loox-media-pending{
+ aspect-ratio:4 / 5!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-media.loox-media-ready img,
+body.loox-trending-feed #community-root .loox-trending-post .community-media.loox-media-ready video{
+ width:100%!important;height:100%!important;max-height:100%!important;
+ object-fit:contain!important;object-position:center center!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-card-hover{
+ position:absolute!important;inset:0!important;display:block!important;
+ z-index:4!important;opacity:1!important;visibility:visible!important;
+ pointer-events:none!important;
+ background:linear-gradient(to bottom,#08050b7a,transparent 28%)!important;
+ transition:none!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-hover-tools{
+ display:none!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-hover-creator{
+ display:inline-flex!important;align-items:center!important;
+ position:absolute!important;left:12px!important;top:12px!important;
+ padding:5px 10px 5px 5px!important;margin:0!important;
+ max-width:calc(100% - 24px)!important;
+ border:1px solid #ffffff47!important;border-radius:99px!important;
+ background:#19101dbd!important;color:#fff!important;
+ pointer-events:auto!important;
+ backdrop-filter:blur(13px)!important;-webkit-backdrop-filter:blur(13px)!important;
+ box-shadow:0 4px 18px #0005!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-hover-creator .community-avatar{
+ flex:0 0 29px!important;width:29px!important;height:29px!important;min-width:29px!important;
+ border-radius:50%!important;overflow:hidden!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-hover-names{
+ display:flex!important;flex-direction:column!important;gap:1px!important;min-width:0!important;
+ max-width:100%!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-hover-names strong{
+ font-size:11px!important;line-height:1.15!important;font-weight:700!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-hover-names small{
+ font-size:9px!important;line-height:1.2!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+ color:#decde9!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-card-body{
+ position:relative!important;inset:auto!important;bottom:auto!important;left:auto!important;right:auto!important;
+ display:flex!important;flex-direction:column!important;
+ box-sizing:border-box!important;min-width:0!important;
+ padding:12px 15px 15px!important;
+ background:#1a1421!important;
+ opacity:1!important;visibility:visible!important;pointer-events:auto!important;
+ transition:none!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action-row{
+ display:flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:6px!important;min-height:38px!important;margin:0 0 6px!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action{
+ display:grid!important;place-items:center!important;flex:0 0 38px!important;
+ width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;
+ padding:8px!important;margin:0!important;border:0!important;border-radius:11px!important;
+ background:transparent!important;color:#eae0f2!important;
+ box-shadow:none!important;cursor:pointer!important;
+ transition:background-color .16s ease,color .16s ease,transform .16s ease!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action:last-child{margin-left:auto!important}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action svg{
+ display:block!important;width:23px!important;height:23px!important;
+ pointer-events:none!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action:hover,
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action:focus-visible{
+ color:#fff!important;background:#412c50!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-like-shortcut[aria-pressed=true]{
+ color:#ff6a91!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-save-shortcut[aria-pressed=true]{
+ color:#c59df5!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-social-count{
+ order:2!important;color:#d2c5dd!important;font:600 11px/1.4 Inter,system-ui,sans-serif!important;
+ margin:0 0 8px!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-caption{
+ order:3!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;
+ -webkit-line-clamp:2!important;overflow:hidden!important;min-height:0!important;
+ margin:0 0 8px!important;color:#f6effb!important;
+ font:600 14px/1.45 Inter,system-ui,sans-serif!important;overflow-wrap:anywhere!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-model{
+ order:4!important;display:block!important;
+ margin:0!important;color:#9f91ad!important;
+ font:500 11px/1.3 Inter,system-ui,sans-serif!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .community-card-line,
+body.loox-trending-feed #community-root .loox-trending-post .community-post-actions{
+ display:none!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action-row{order:1!important}
+body.loox-trending-feed #community-root .community-note[role=status]{
+ margin:8px 0 15px!important;color:#bdaac9!important;font-size:12px!important;
+}
+body.loox-trending-feed #community-root .community-more{
+ display:block!important;max-width:230px!important;width:100%!important;margin:26px auto 0!important;
+ min-height:41px!important;border-radius:12px!important;
+ border:1px solid #8056a0!important;background:#392749!important;
+ color:#f3e8fa!important;font-size:13px!important;
+}
+body.loox-trending-feed #community-root .community-more[hidden]{display:none!important}
+body.loox-trending-feed #community-root :is(button,summary,a,input):focus-visible{
+ outline:2px solid #d5aaf4!important;outline-offset:2px!important;
+}
+@media(min-width:851px) and (max-width:1280px){
+ body.loox-trending-feed #community-root .community-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;
+ }
+ body.loox-trending-feed #community-root .loox-community-masonry-column{gap:16px!important}
+}
+@media(max-width:850px){
+ body.loox-trending-feed #community-root.loox-community{
+  padding:18px 14px max(70px,env(safe-area-inset-bottom))!important;
+ }
+ body.loox-trending-feed .loox-trending-intro{gap:6px!important;margin:0 2px 18px!important}
+ body.loox-trending-feed .loox-trending-intro h1{font-size:30px!important}
+ body.loox-trending-feed .loox-trending-intro p{font-size:12px!important}
+ body.loox-trending-feed #community-root .loox-discovery-toolbar{
+  display:flex!important;flex-wrap:wrap!important;gap:9px!important;
+  margin:0 0 16px!important;
+ }
+ body.loox-trending-feed #community-root .loox-discovery-search-wrap{
+  flex:1 0 100%!important;width:100%!important;max-width:100%!important;
+ }
+ body.loox-trending-feed #community-root .community-search{
+  width:100%!important;height:43px!important;min-height:43px!important;
+  padding-left:43px!important;font-size:16px!important;
+ }
+ body.loox-trending-feed #community-root .community-filters{
+  flex:1 1 auto!important;display:flex!important;flex-wrap:wrap!important;
+  justify-content:flex-start!important;gap:6px!important;
+  order:2!important;overflow:visible!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-more{
+  order:3!important;align-self:center!important;
+ }
+ body.loox-trending-feed #community-root .community-filter,
+ body.loox-trending-feed #community-root .loox-discovery-select-trigger{
+  min-height:34px!important;height:34px!important;font-size:11px!important;padding:6px 10px!important;
+ }
+ body.loox-trending-feed #community-root .community-grid{
+  grid-template-columns:minmax(0,1fr)!important;gap:16px!important;
+  width:100%!important;max-width:680px!important;margin:0 auto!important;
+ }
+ body.loox-trending-feed #community-root .loox-community-masonry-column{gap:16px!important}
+ body.loox-trending-feed #community-root .loox-trending-post{
+  width:100%!important;max-width:100%!important;margin:0!important;
+  border-radius:15px!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-post .community-media{
+  max-height:74svh!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-post .community-hover-creator{
+  top:10px!important;left:10px!important;padding:5px 9px 5px 5px!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-post .community-card-body{
+  padding:9px 12px 13px!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action-row{
+  min-height:37px!important;margin:0 0 3px!important;gap:4px!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action{
+  flex:0 0 38px!important;width:38px!important;height:38px!important;
+ }
+ body.loox-trending-feed #community-root .loox-trending-post .community-caption{
+  font-size:13px!important;margin-bottom:6px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-trending-feed #community-root .loox-trending-post,
+ body.loox-trending-feed #community-root .loox-trending-action{transition:none!important}
+}
