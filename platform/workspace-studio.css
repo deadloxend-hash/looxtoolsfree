@@ -365,3 +365,11 @@ body.loox-studio .loox-generation-actions button{
 @media(prefers-reduced-motion:reduce){
  body.loox-studio .studio-content-tab{transition:none!important}
 }
+
+/* Don't show developer-only test quota text in the finished Image workspace. */
+body.loox-studio.loox-uc-image .lig-daily-quota{display:none!important}
+/* Saved sessions open with a small dock; the input expands on tap or upward scrolling. */
+@media(max-width:900px){
+ body.loox-studio.loox-uc-scroll-compact .lig-compose-card textarea{height:32px!important;min-height:32px!important}
+ body.loox-studio.loox-uc-scroll-compact .lig-compose-wrap{padding-top:3px!important}
+}
