@@ -2628,6 +2628,14 @@ html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-wor
 html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand:focus-visible::after{
  transform:none!important;
 }
+/* Hover and keyboard focus must not move or glow the LETTERS. */
+html body #loox-sitewide-header .loox-sitewide-logo:hover .loox-sitewide-wordmark,
+html body #loox-sitewide-header .loox-sitewide-logo:focus-visible .loox-sitewide-wordmark,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand:hover .loox-workspace-wordmark,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand:focus-visible .loox-workspace-wordmark{
+ transform:none!important;
+ filter:drop-shadow(0 1px 0 #8b69ac33)!important;
+}
 @media(max-width:340px){
  :root{--loox-header-wordmark-size:28px;}
 }
