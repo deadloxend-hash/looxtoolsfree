@@ -1,19 +1,19 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#100e17">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://*.supabase.co https://*.r2.cloudflarestorage.com; media-src 'self' https://*.supabase.co https://*.r2.cloudflarestorage.com; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co https://*.r2.cloudflarestorage.com wss://*.supabase.co; object-src 'none'; base-uri 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: https://loox-profile-api.looxai-studio.workers.dev https://*.supabase.co https://*.r2.cloudflarestorage.com; media-src 'self' blob: https://loox-profile-api.looxai-studio.workers.dev https://*.supabase.co https://*.r2.cloudflarestorage.com; connect-src 'self' https://loox-profile-api.looxai-studio.workers.dev https://looxtoolfree-backend.vercel.app https://*.supabase.co https://*.r2.cloudflarestorage.com wss://*.supabase.co; object-src 'none'; base-uri 'self'">
 <title>LOOX Template Review</title><link rel="stylesheet" href="platform/platform.css?v=15">
 <style>
 body{margin:0;background:#100e17;color:#f4efff;font:15px system-ui,sans-serif}header{display:flex;align-items:center;justify-content:space-between;padding:18px 5%;border-bottom:1px solid #393145}a{color:#caa4ff}
 main{max-width:1100px;margin:auto;padding:26px 5%}h1{font-size:26px}p{color:#c6bed0}
 button{border:1px solid #775a9e;border-radius:12px;background:#44305e;color:#fff;padding:11px 16px;cursor:pointer;font:inherit}
 button:disabled{opacity:.45}button:hover{background:#60417e}
-#queue{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:16px}
+#queue,#cloud-queue{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:16px}
 .card{background:#211c2a;border:1px solid #4c3d5c;border-radius:18px;overflow:hidden}
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover}.card p{padding:0 13px;overflow-wrap:anywhere;max-height:100px;overflow:auto}
 .actions{display:flex;gap:8px;padding:12px}.actions button{flex:1}.reject{background:#482a37}
 </style><link rel="stylesheet" href="loox-sitewide-nav.css?v=105"></head><body>
 <header><strong>LOOX · Template Review</strong><a href="ai-text-to-image.html#templates">Back to Templates</a></header>
 <main><h1>Pending community templates</h1><p id="notice" role="status">Checking administrator access…</p>
-<button id="reload" type="button">Refresh queue</button><section id="queue" aria-label="Pending submissions"></section></main>
-<script type="module" src="platform/loox-template-admin.js?v=5"></script><script defer src="loox-sitewide-nav.js?v=102"></script></body></html>
+<button id="reload" type="button">Refresh queue</button><section id="queue" aria-label="Pending submissions"></section><h2 style="margin-top:38px">Cloudflare Community post approvals</h2><p id="cloud-notice" role="status">Checking Cloudflare review queue…</p><section id="cloud-queue" aria-label="Cloudflare pending Community posts"></section></main>
+<script type="module" src="platform/loox-template-admin.js?v=6"></script><script defer src="loox-sitewide-nav.js?v=102"></script></body></html>
