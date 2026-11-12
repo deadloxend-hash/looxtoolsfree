@@ -323,7 +323,7 @@ function run(){
    new MutationObserver(sync).observe(file,{attributes:true,attributeFilter:['disabled','required']});
    window.addEventListener('pagehide',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);},{once:true});
    sync();
-   const entries=()=>[...(feed?.querySelectorAll('.lig-output[data-entry]')||[])].filter(card=>card.querySelector('video,.lvg-video-stage,.loox-generation-meta'));
+   const entries=()=>[...(feed?.querySelectorAll('.lig-output[data-entry][data-media-type="video"]')||[])];
    const durationFor=card=>{
     const meta=card.querySelector('.loox-generation-meta')?.textContent||'';
     const seconds=meta.match(/(?:^| · )(\d+) seconds(?: · |$)/);
