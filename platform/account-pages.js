@@ -1,4 +1,5 @@
 import {state,config,api,auth,refresh,signOut} from './account.js?v=7';
+import {cloudRequest} from './profile-cloudflare.js?v=1';
 
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{
@@ -154,9 +155,10 @@ if(document.body.hasAttribute('data-settings-page')){
   event.preventDefault();
   const name=byId('lp-display-name').value.trim();
   const btn=byId('lp-profile-save'),status=byId('lp-profile-status');
-  if(!name||name.length>80){setStatus(status,'Enter a display name up to 80 characters.',true);return;}
+  if(!name||name.length>60){setStatus(status,'Enter a display name up to 60 characters.',true);return;}
   btn.disabled=true;setStatus(status,'Saving…');
   try{
+   await cloudRequest(state,'profile',{method:'PATCH',data:{display_name:name}});
    await api('profile',{name});await refresh();
    setStatus(status,'Changes saved.');
   }catch(error){
