@@ -718,13 +718,21 @@
   if(avatarUser===uid&&avatarTask)return;
   avatarUser=uid;avatarLoaded=false;
   avatarTask=(async()=>{
-   const {data,error}=await looxAccountModule.state.client.from('loox_creator_profiles').select('avatar_path').eq('user_id',uid).maybeSingle();
-   if(error||!data?.avatar_path)return;
-   const endpoint=new URL('https://looxtoolfree-backend.vercel.app/api/loox');
-   endpoint.search=new URLSearchParams({action:'public_media',type:'avatar',id:uid,variant:'preview'}).toString();
-   const response=await fetch(endpoint.href,{credentials:'omit',cache:'no-store'});
-   const body=await response.json().catch(()=>({}));
-   if(response.ok&&body.url&&looxAccountModule.state.user?.id===uid){avatarUrl=body.url;paintCreatorAvatar(avatarUrl);}
+   const {data}=await looxAccountModule.state.client.auth.getSession();
+   const token=data?.session?.access_token;
+   if(!token)return;
+   const root='https://loox-profile-api.looxai-studio.workers.dev/v1/';
+   const headers={Authorization:'Bearer '+token};
+   const profileResponse=await fetch(root+'profile?id='+encodeURIComponent(uid),{headers,credentials:'omit',cache:'no-store'});
+   if(!profileResponse.ok)return;
+   const profile=await profileResponse.json();
+   if(!profile?.avatar_key)return;
+   const response=await fetch(root+'media?type=avatar&id='+encodeURIComponent(uid),{headers,credentials:'omit',cache:'no-store'});
+   if(!response.ok||looxAccountModule.state.user?.id!==uid)return;
+   const blob=await response.blob();
+   const next=URL.createObjectURL(blob);
+   if(avatarUrl?.startsWith('blob:'))URL.revokeObjectURL(avatarUrl);
+   avatarUrl=next;paintCreatorAvatar(avatarUrl);
   })().catch(()=>{}).finally(()=>{avatarLoaded=true;avatarTask=null;});
  }
  document.addEventListener('loox-account',()=>{avatarLoaded=false;avatarUrl=null;});
