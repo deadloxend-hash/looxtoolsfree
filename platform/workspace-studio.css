@@ -47,3 +47,68 @@ body.loox-studio.lig-body{padding-bottom:var(--studio-composer-height,220px)!imp
 .studio-model-trigger{max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.studio-credit-cost{font-size:11px;color:#bca5d0;padding:6px 4px 0}.loox-studio .lig-compose-actions{justify-content:space-between}.loox-studio .lig-compose-card textarea{box-sizing:border-box}
 body.loox-studio .lig-compose-card .loox-ref-footer .loox-uc-reference-consent{display:flex!important;align-items:center;gap:8px;font-size:12px;color:#d9cce5}body.loox-studio #lig-reference-permission{display:inline-block!important;width:17px;height:17px;accent-color:#ac78ed}body.loox-studio .loox-chat-header-search{display:grid!important;place-items:center;background:#21192b!important;border:1px solid #ffffff20!important;border-radius:12px!important;color:#d8c8e8!important;width:38px!important;min-width:38px!important;height:38px!important;padding:9px!important;position:static!important;transform:none!important}body.loox-studio .loox-chat-header-search svg{width:18px!important;height:18px!important;display:block!important}
 body.loox-studio .loox-sheet #lvg-ratio{display:block!important;position:static!important;opacity:1!important;height:auto!important;pointer-events:auto!important;clip:auto!important;clip-path:none!important;width:100%!important}body.loox-studio .loox-sheet .lig-setting-block>label,body.loox-studio .loox-sheet .lig-row-label{display:block!important}body.loox-studio .loox-sheet .lig-help{display:block!important;font-size:12px;color:#b1a1bf}
+
+
+/* V5: constrain every studio surface to the visual viewport on iOS.
+   Prevent gallery/filter and composer descendants from expanding layout width. */
+@media (max-width: 900px) {
+  html:has(body.loox-studio) {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  body.loox-studio {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+  }
+  body.loox-studio main.lig-workspace,
+  body.loox-studio .lig-main,
+  body.loox-studio .lig-content-scroll,
+  body.loox-studio .loox-start-templates,
+  body.loox-studio #template-library,
+  body.loox-studio .lig-compose,
+  body.loox-studio .lig-compose-card {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  body.loox-studio .loox-gallery-filters {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  body.loox-studio .loox-gallery-filters > * { flex-shrink: 0 !important; }
+  body.loox-studio .lig-main > .lig-compose-wrap {
+    box-sizing: border-box !important;
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    width: calc(100% - 24px) !important;
+    max-width: calc(100% - 24px) !important;
+    min-width: 0 !important;
+    transform: none !important;
+  }
+  body.loox-studio .lig-compose-actions,
+  body.loox-studio .studio-quick,
+  body.loox-studio .loox-uc-toolbar {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex-wrap: wrap !important;
+  }
+  body.loox-studio .lig-compose-actions > *,
+  body.loox-studio .studio-quick > * { max-width: 100% !important; }
+  body.loox-studio .lig-primary { max-width: 100% !important; white-space: normal !important; }
+  body.loox-studio input,
+  body.loox-studio textarea,
+  body.loox-studio select { font-size: 16px !important; }
+  body.loox-studio .loox-gallery-grid,
+  body.loox-studio .loox-gallery-results { max-width: 100% !important; min-width: 0 !important; }
+}
