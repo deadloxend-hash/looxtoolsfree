@@ -199,86 +199,55 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   },
   async notifications(){
    if(!this.state.user)return this.auth('login');
-   const d=modal('Notifications'),list=e('div','loox-notification-list'),
-    status=e('p','community-note');
-   status.setAttribute('role','status');
+   const d=modal('Notifications'),list=e('div','loox-notification-list'),status=e('p','community-note');
    const markAll=a('Mark all read',async()=>{
-    result(await this.state.client.from('loox_notifications').update({is_read:true})
-      .eq('user_id',this.state.user.id).eq('is_read',false));
-    list.querySelectorAll('.is-unread').forEach(n=>n.classList.remove('is-unread'));
+    await cloudRequest(this.state,'notifications',{method:'PATCH',data:{all:true}});
+    list.querySelectorAll('.is-unread').forEach(el=>el.classList.remove('is-unread'));
    },'community-button loox-notification-markall',err=>status.textContent=err.message);
-   d.append(markAll,list,status);
-   try{
-    const rows=result(await this.state.client.from('loox_notifications')
-     .select('id,kind,actor_id,post_id,comment_id,is_read,created_at')
-     .eq('user_id',this.state.user.id)
-     .order('created_at',{ascending:false}).limit(60));
-    const unique=values=>[...new Set(values.filter(Boolean))];
-    const actorIds=unique(rows.map(n=>n.actor_id));
-    const postIds=unique(rows.map(n=>n.post_id));
-    const commentIds=unique(rows.map(n=>n.comment_id));
-    const [people,posts,comments]=await Promise.all([
-     actorIds.length?this.state.client.from('loox_creator_profiles')
-       .select('user_id,username,display_name,avatar_path').in('user_id',actorIds):Promise.resolve({data:[]}),
-     postIds.length?this.state.client.from('loox_community_posts')
-       .select('id,caption,media_path,media_type').in('id',postIds):Promise.resolve({data:[]}),
-     commentIds.length?this.state.client.from('loox_post_comments')
-       .select('id,body').in('id',commentIds):Promise.resolve({data:[]})
-    ]);
-    // A deleted, private or unavailable actor/post must not prevent other notifications from loading.
-    const actors=new Map((people.data||[]).map(p=>[p.user_id,p]));
-    const postMap=new Map((posts.data||[]).map(p=>[p.id,p]));
-    const commentMap=new Map((comments.data||[]).map(p=>[p.id,p]));
-    const mark=n=>{
-     if(n.is_read)return;
-     void this.state.client.from('loox_notifications').update({is_read:true})
-       .eq('id',n.id).eq('user_id',this.state.user.id);
-    };
-    for(const n of rows){
-     const actor=actors.get(n.actor_id),post=postMap.get(n.post_id);
-     const name=actor?.display_name||actor?.username||'Someone';
-     const row=e('article','community-notification loox-notification'+(!n.is_read?' is-unread':''));
-     const avatarLink=e('a','loox-notification-avatar',(name||'L').slice(0,1).toUpperCase());
-     avatarLink.href=n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
-     if(actor?.avatar_path)mediaURL(this.state,actor.avatar_path,'loox-avatars',{type:'avatar',id:actor.user_id})
-      .then(url=>{
-       if(!avatarLink.isConnected)return;
-       const img=e('img');img.src=url;img.alt='';img.loading='lazy';
-       img.addEventListener('error',()=>img.remove(),{once:true});
-       avatarLink.replaceChildren(img);
+   const more=a('Load more',()=>load(),'community-button',err=>status.textContent=err.message);
+   more.hidden=true;d.append(markAll,list,more,status);
+   let offset=0,busy=false;
+   const load=async()=>{
+    if(busy)return;busy=true;more.disabled=true;
+    try{
+     const data=await cloudRequest(this.state,'notifications',{query:{offset}});
+     const rows=data.items||[];
+     for(const n of rows){
+      const name=n.display_name||n.username||'Someone';
+      const row=e('article','community-notification loox-notification'+(n.is_read?'':' is-unread'));
+      const avatarLink=e('a','loox-notification-avatar',(name||'L').charAt(0).toUpperCase());
+      avatarLink.href=n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
+      if(n.actor_id)mediaURL(this.state,n.avatar_path,'loox-avatars',{type:'avatar',id:n.actor_id}).then(url=>{
+       if(!avatarLink.isConnected)return;const img=e('img');img.src=url;img.alt='';
+       img.onerror=()=>img.remove();avatarLink.replaceChildren(img);
       }).catch(()=>{});
-     avatarLink.addEventListener('click',()=>mark(n));
-     const content=e('a','loox-notification-content');
-     content.href=n.post_id?'community.html?post='+encodeURIComponent(n.post_id):
+      const mark=()=>{if(n.is_read)return;n.is_read=1;row.classList.remove('is-unread');
+       cloudRequest(this.state,'notifications',{method:'PATCH',data:{id:n.id}}).catch(()=>{});
+      };
+      const content=e('a','loox-notification-content');
+      content.href=n.post_id?'community.html?post='+encodeURIComponent(n.post_id):
        n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
-     let heading='';
-     if(n.kind==='comment')heading=name+' commented on your post';
-     else if(n.kind==='reply')heading=name+' replied to your comment';
-     else if(n.kind==='like')heading=name+' liked your post';
-     else if(n.kind==='follow')heading=name+' started following you';
-     else if(n.kind==='approved')heading='Your creation was approved';
-     else if(n.kind==='rejected')heading='Your submission was rejected';
-     else heading='Community notification';
-     content.append(e('strong','loox-notification-heading',heading));
-     const commentText=commentMap.get(n.comment_id)?.body;
-     if(commentText)content.append(e('span','loox-notification-message','“'+commentText+'”'));
-     if(post?.caption)content.append(e('small','loox-notification-post','On: '+post.caption));
-     content.append(e('time','loox-notification-time',new Date(n.created_at).toLocaleString()));
-     content.addEventListener('click',()=>mark(n));
-     row.append(avatarLink,content);
-     if(post?.media_path&&post.media_type!=='video'){
-      const thumb=e('a','loox-notification-thumb');
-      thumb.href=content.href;thumb.setAttribute('aria-label','Open post');
-      const img=e('img');img.alt='Post preview';img.loading='lazy';thumb.append(img);
-      mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id})
-       .then(url=>{if(img.isConnected)img.src=url;}).catch(()=>thumb.remove());
-      thumb.addEventListener('click',()=>mark(n));
-      row.append(thumb);
+      const labels={comment:' commented on your post',reply:' replied to your comment',like:' liked your post',follow:' started following you',approved:'Your creation was approved',rejected:'Your submission was rejected'};
+      const heading=['approved','rejected'].includes(n.kind)?labels[n.kind]:name+(labels[n.kind]||' sent an update');
+      content.append(e('strong','loox-notification-heading',heading));
+      if(n.comment_body)content.append(e('span','loox-notification-message','“'+n.comment_body+'”'));
+      if(n.post_caption)content.append(e('small','loox-notification-post','On: '+n.post_caption));
+      content.append(e('time','loox-notification-time',new Date(n.created_at).toLocaleString()));
+      content.addEventListener('click',mark);avatarLink.addEventListener('click',mark);
+      row.append(avatarLink,content);
+      if(n.post_media_path&&n.post_media_type!=='video'){
+       const thumb=e('a','loox-notification-thumb');thumb.href=content.href;thumb.setAttribute('aria-label','Open post');
+       const img=e('img');img.alt='Post preview';img.loading='lazy';thumb.append(img);
+       mediaURL(this.state,n.post_media_path,'loox-results',{type:'post',id:n.post_id}).then(url=>{if(img.isConnected)img.src=url;}).catch(()=>thumb.remove());
+       thumb.addEventListener('click',mark);row.append(thumb);
+      }
+      list.append(row);
      }
-     list.append(row);
-    }
-    if(!rows.length)status.textContent='No notifications yet. Likes, comments, replies and follows will appear here.';
-   }catch(err){status.textContent=err.message;}
+     offset+=rows.length;more.hidden=!data.has_more;
+     status.textContent=offset?'':'No notifications yet. Likes, comments, replies and follows appear here.';
+    }catch(err){status.textContent=err.message;}finally{busy=false;more.disabled=false;}
+   };
+   await load();
   },
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
