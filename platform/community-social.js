@@ -6,7 +6,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
  Object.assign(Community.prototype,{
   async save(post,button){
    if(!this.state.user)return this.auth('login');if(button.disabled)return;button.disabled=true;
-   try{const q=this.state.client.from('loox_saved_posts');result(post.saved?await q.delete().eq('user_id',this.state.user.id).eq('post_id',post.id):await q.insert({user_id:this.state.user.id,post_id:post.id}));post.saved=!post.saved;
+   try{await cloudRequest(this.state,'save',{method:'POST',data:{post_id:post.id,on:!post.saved}});post.saved=!post.saved;
     const controls=[...document.querySelectorAll('.community-save-shortcut[data-post-id], .loox-viewer-save[data-post-id]')].filter(node=>node.dataset.postId===post.id);
     if(!controls.includes(button))controls.push(button);
     for(const control of controls){
@@ -290,7 +290,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   },
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
-   const fresh=result(await this.state.client.from('loox_community_posts').select('id').eq('id',post.id).maybeSingle());if(!fresh)throw Error('This post is no longer public.');
+   const fresh=await cloudRequest(this.state,'post',{query:{id:post.id}});if(!fresh)throw Error('This post is no longer public.');
    const d=modal('');d.classList.add('community-viewer');d.setAttribute('aria-label','Community post');d.querySelector('.community-dialog-head h2')?.remove();const status=e('p','community-note'),stage=e('div','community-viewer-stage'),panel=e('section','community-viewer-info'),media=e(post.media_type==='video'?'video':'img');media.className='community-detail-media';
    const controls=e('div','community-viewer-controls');const fail=err=>status.textContent=err.message;
    const mobileCommunity=location.pathname.split('/').pop()==='community.html'&&matchMedia('(max-width:700px)').matches&&typeof this.mobileComments==='function'&&typeof this.mobileDetails==='function';
