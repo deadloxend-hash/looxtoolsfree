@@ -314,3 +314,29 @@ body.loox-trending-feed #community-root :is(button,summary,a,input):focus-visibl
  body.loox-trending-feed #community-root .loox-trending-post,
  body.loox-trending-feed #community-root .loox-trending-action{transition:none!important}
 }
+
+
+/* V2: place the real social totals immediately beside their icons. */
+body.loox-trending-feed #community-root .loox-trending-action-row .loox-engagement-group{
+ display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+ gap:3px!important;flex:0 0 auto!important;min-width:0!important;
+}
+body.loox-trending-feed #community-root .loox-trending-action-row .loox-engagement-number{
+ display:inline-block!important;min-width:8px!important;
+ color:#dfd2e9!important;font:700 12px/1.1 Inter,system-ui,sans-serif!important;
+ font-variant-numeric:tabular-nums!important;text-align:left!important;
+ white-space:nowrap!important;
+}
+body.loox-trending-feed #community-root .loox-trending-action-row .loox-engagement-like:has([aria-pressed="true"]) .loox-engagement-number{
+ color:#ff7298!important;
+}
+body.loox-trending-feed #community-root .loox-trending-post .loox-trending-social-count{
+ display:none!important;
+}
+@media(max-width:410px){
+ body.loox-trending-feed #community-root .loox-trending-action-row{gap:3px!important}
+ body.loox-trending-feed #community-root .loox-trending-action-row .loox-engagement-group{gap:2px!important}
+ body.loox-trending-feed #community-root .loox-trending-post .loox-trending-action{
+  flex-basis:36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;
+ }
+}
