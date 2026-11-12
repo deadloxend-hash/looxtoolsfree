@@ -158,3 +158,15 @@ body.loox-studio .lig-content-scroll .lig-history{display:none!important}
  body.loox-studio.ai-chat .ai-actions{align-items:center!important;gap:7px!important;flex-wrap:nowrap!important}
  body.loox-studio.ai-chat .ai-actions .ai-spacer{flex:1!important}
 }
+
+/* AI Assistant history is hosted by the one shared sidebar, not a second rail. */
+body.ai-chat.loox-chat-sessions-in-drawer .ai-chat-body{
+ width:100%!important;max-width:100%!important;margin-left:0!important;
+}
+body.ai-chat.loox-chat-sessions-in-drawer #loox-sitewide-drawer .ai-recent-panel{
+ position:relative!important;inset:auto!important;left:auto!important;top:auto!important;bottom:auto!important;
+ transform:none!important;width:100%!important;max-width:100%!important;height:auto!important;
+ max-height:none!important;z-index:auto!important;visibility:visible!important;pointer-events:auto!important;
+ padding:8px 0!important;background:transparent!important;box-shadow:none!important;border:0!important;
+}
+body.ai-chat.loox-chat-sessions-in-drawer #loox-sitewide-drawer .ai-recent-inner{width:100%;min-width:0}
