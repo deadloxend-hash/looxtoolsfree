@@ -67,7 +67,7 @@ function setupImageFirstCreation(){
  }
  function renderOptions(){
   menu.replaceChildren();
-  for(const option of model.options){
+  for(const option of [...model.options].sort((a,b)=>Number(a.disabled)-Number(b.disabled))){
    const item=document.createElement('button');item.type='button';
    item.className='image-model-option';item.setAttribute('role','option');
    item.disabled=option.disabled;
