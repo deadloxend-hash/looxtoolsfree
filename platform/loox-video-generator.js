@@ -457,7 +457,33 @@ document.body.classList.add('loox-generator-ready');
   });
   // Keep responsive model status and its displayed price in sync.
   modelField.addEventListener('change',()=>picker?.sync());
-  try{const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');if(launch?.kind==='video'){promptField.value=launch.prompt||'';if(launch.model&&[...modelField.options].some(o=>o.value===launch.model)){modelField.value=launch.model;modelField.dispatchEvent(new Event('change'));}else if(launch.model)notice('The original model is unavailable. Choose a compatible model before generating.');sessionStorage.removeItem('loox-creative-launch-v1');}}catch{}
+  try{
+   const launch=JSON.parse(sessionStorage.getItem('loox-creative-launch-v1')||'null');
+   if(launch?.kind==='video'){
+    promptField.value=launch.prompt||'';
+    if(launch.model&&[...modelField.options].some(o=>o.value===launch.model)){
+     modelField.value=launch.model;
+     // Apply model restrictions first; unsupported frame shapes or lengths
+     // must not be carried through to a generation request.
+     modelField.dispatchEvent(new Event('change',{bubbles:true}));
+    }else if(launch.model){
+     notice('The original model is unavailable. Choose a compatible model before generating.');
+    }
+    const ratio=launch.settings?.aspect_ratio;
+    const ratioOption=[...ratioField.options].find(o=>o.value===ratio&&!o.disabled);
+    if(ratioOption){
+     ratioField.value=ratioOption.value;
+     ratioField.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    const seconds=String(launch.settings?.duration||'');
+    const durationOption=[...durationField.options].find(o=>o.value===seconds&&!o.disabled);
+    if(durationOption&&modelField.value!=='wan21'){
+     durationField.value=durationOption.value;
+     durationField.dispatchEvent(new Event('change',{bubbles:true}));
+    }
+    sessionStorage.removeItem('loox-creative-launch-v1');
+   }
+  }catch{}
   await sessions.init().catch(e=>notice(e.message,true));
   await changeUser();accountInfo();await updateQuote();
 
