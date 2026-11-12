@@ -369,14 +369,22 @@ function run(){
  if(balanceSource&&priceSource){
   const bar=node('div','studio-budget');
   bar.setAttribute('role','status');bar.setAttribute('aria-live','polite');
+  const formatSpec=()=>{
+   const ratio=document.getElementById(prefix+'-ratio')?.value||'';
+   const duration=video?(document.getElementById('lvg-model')?.value==='wan21'?'~2s':(document.getElementById('lvg-duration')?.value||'5')+'s'):'';
+   return [duration,ratio].filter(Boolean).join(' · ');
+  };
+  const spec=button(formatSpec(),()=>settingsSheet(prefix),'studio-budget-spec');
+  spec.setAttribute('aria-label','Video or image dimensions; open settings');
   const costText=node('span','studio-budget-cost');
   const balanceText=node('span','studio-budget-balance');
   const remainderText=node('span','studio-budget-after');
   const link=node('a','studio-budget-link','Credits');
   link.href='account.html#credits';
-  bar.append(costText,balanceText,remainderText,link);
+  bar.append(spec,costText,balanceText,remainderText,link);
   card.append(bar);
   const sync=()=>{
+   spec.textContent=formatSpec();
    const costMatch=priceSource.textContent.match(/(\d+)\s+credits on success/);
    const balanceMatch=balanceSource.textContent.match(/^(\d+)\s+credits/);
    const charge=costMatch?Number(costMatch[1]):null;
@@ -388,6 +396,7 @@ function run(){
    remainderText.hidden=balance===null||charge===null;
   };
   for(const source of [balanceSource,priceSource])new MutationObserver(sync).observe(source,{childList:true,subtree:true,characterData:true});
+  for(const id of [prefix+'-ratio',video?'lvg-duration':null,video?'lvg-model':null].filter(Boolean)){document.getElementById(id)?.addEventListener('change',sync);}
   document.addEventListener('loox-account',sync);document.addEventListener('loox-user',sync);
   sync();
  }
