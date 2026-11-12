@@ -127,6 +127,25 @@ function buildPage(){
  if(profile.created_at){const joined=el('span');joined.append(svg('calendar',17),el('span','','Joined '+new Date(profile.created_at).toLocaleDateString(undefined,{month:'long',year:'numeric'})));meta.append(joined);}
  const counts=el('div','cx-counts');counts.id='cx-counts';
  details.append(tools,names,meta,counts);
+ if(isOwn){
+  const accountPanel=el('details','cx-account-panel');
+  const summary=el('summary','','Account & credits');
+  const body=el('div','cx-account-panel-body');
+  const balance=el('span','cx-account-balance','Open to see your available credits');
+  const accountLinks=el('div','cx-account-links');
+  accountLinks.append(link('Account overview','account.html'),link('Settings','settings.html'),link('Upgrade','upgrade.html'));
+  body.append(balance,accountLinks);accountPanel.append(summary,body);
+  accountPanel.addEventListener('toggle',async()=>{
+   if(!accountPanel.open)return;
+   balance.textContent='Loading your account…';
+   try{
+    if(!state.account)await refresh();
+    const credits=state.account?.wallet?.balance;
+    balance.textContent=typeof credits==='number'?compact(credits)+' available credits':'Open Account overview to check your credits.';
+   }catch{balance.textContent='Could not load account details. Try Account overview.';}
+  });
+  details.append(accountPanel);
+ }
  const tabs=el('nav','cx-tabs');tabs.setAttribute('aria-label','Profile sections');
  for(const [value,label] of [['posts','Posts'],['replies','Replies'],['media','Media'],...(isOwn?[['likes','Likes']]:[])]){
   const b=btn(label,()=>switchTab(value),'cx-tab');b.dataset.tab=value;tabs.append(b);
@@ -311,6 +330,24 @@ function postCard(post){
  body.append(actions);article.append(a,body,toolbar);return article;
 }
 function readDataUrl(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Could not read image.'));reader.readAsDataURL(blob);});}
+async function coverDataUrl(file){
+ const src=URL.createObjectURL(file);
+ try{
+  const img=new Image();
+  await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(Error('Could not decode cover photo.'));img.src=src;});
+  if(!img.naturalWidth||!img.naturalHeight)throw Error('Choose another cover photo.');
+  const factor=Math.min(1,1600/img.naturalWidth,1120/img.naturalHeight);
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(img.naturalWidth*factor));
+  canvas.height=Math.max(1,Math.round(img.naturalHeight*factor));
+  const context=canvas.getContext('2d');
+  if(!context)throw Error('Image processing is unavailable.');
+  context.drawImage(img,0,0,canvas.width,canvas.height);
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.84));
+  if(!blob||blob.size>3_000_000)throw Error('This cover photo is too large after processing. Please use a smaller image.');
+  return readDataUrl(blob);
+ }finally{URL.revokeObjectURL(src);}
+}
 function dialog(title){
  const d=el('dialog','cx-edit-dialog'),wrap=el('div','cx-dialog-content'),heading=el('div','cx-dialog-top');
  heading.append(btn('',()=>d.close(),'cx-dialog-close'),el('h2','',title));
@@ -362,7 +399,7 @@ async function editProfile(){
    await rpc(state,'loox_save_creator',{p_username:cleanUser,p_name:cleanName,p_bio:bio.value.trim(),p_avatar:avatarPath});
    await api('community_details',{location:locationField.value.trim(),website:website.value.trim()});
    if(removeCover.dataset.remove==='yes')await api('community_cover',{remove:true});
-   else if(coverInput.files?.[0])await api('community_cover',{image:await readDataUrl(coverInput.files[0])});
+   else if(coverInput.files?.[0])await api('community_cover',{image:await coverDataUrl(coverInput.files[0])});
    try{await api('profile',{name:cleanName});await refresh();}catch(e){console.warn('Profile saved but account display name sync failed',e);}
    d.close();await refreshProfile();buildPage();notice('Profile updated.');
    if(location.search.includes('username='))history.replaceState(null,'',profileURL(profile));
