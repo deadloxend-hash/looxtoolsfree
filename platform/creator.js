@@ -83,6 +83,74 @@ function makeMoreMenu(){
  document.addEventListener('click',e=>{if(!wrap.contains(e.target))menu.hidden=true;},{signal:menuAbort.signal});
  wrap.append(trigger,menu);return wrap;
 }
+
+async function showConnections(id,kind){
+ const {wrap}=dialog(kind==='followers'?'Followers':'Following');
+ const list=el('div','cx-connections'),status=el('p','cx-edit-note');
+ const more=btn('Show more',load,'cx-button');more.hidden=true;
+ wrap.append(list,status,more);let offset=0;
+ async function load(){
+  more.disabled=true;
+  try{
+   const data=await cloudRequest(state,'connections',{query:{id,kind,offset}});
+   if(data.hidden){status.textContent='This creator keeps their connections private.';more.hidden=true;return;}
+   for(const p of data.items||[]){
+    const row=link('','creator.html?id='+encodeURIComponent(p.user_id),'cx-connection');
+    const avatar=fallbackAvatar(p,'cx-avatar cx-connection-avatar');
+    const meta=el('div','cx-connection-info');
+    meta.append(el('strong','',p.display_name||p.username),el('small','','@'+p.username));
+    if(p.bio)meta.append(el('p','',p.bio));
+    row.append(avatar,meta);list.append(row);
+   }
+   offset+=(data.items||[]).length;
+   more.hidden=!data.has_more;
+   status.textContent=offset?'':kind==='followers'?'No followers yet.':'Not following anyone yet.';
+  }catch(e){status.textContent=e.message;}finally{more.disabled=false;}
+ }
+ await load();
+}
+async function showPrivacy(){
+ if(!isOwn)return auth('login');
+ const {d,wrap}=dialog('Profile privacy'),form=el('form','cx-edit-form');
+ const inputs={};
+ for(const [key,label,value] of [
+  ['is_private','Private profile',profile.is_private],
+  ['hide_connections','Hide follower and following lists',profile.hide_connections],
+  ['notifications_enabled','Receive notifications',profile.notifications_enabled!==false]
+ ]){
+  const row=el('label','cx-privacy-option'),input=el('input');
+  input.type='checkbox';input.checked=!!value;row.append(input,el('span','',label));
+  inputs[key]=input;form.append(row);
+ }
+ const note=el('p','cx-edit-error');note.hidden=true;
+ const save=el('button','cx-button cx-button-primary','Save privacy');save.type='submit';
+ form.append(note,save);wrap.append(form);
+ form.addEventListener('submit',async e=>{
+  e.preventDefault();save.disabled=true;
+  try{
+   profile=await cloudRequest(state,'privacy',{method:'PATCH',data:Object.fromEntries(Object.entries(inputs).map(([k,i])=>[k,i.checked]))});
+   d.close();buildPage();
+  }catch(error){note.hidden=false;note.textContent=error.message;save.disabled=false;}
+ });
+}
+async function showNotifications(){
+ if(!isOwn)return auth('login');
+ const {wrap}=dialog('Notifications');
+ const list=el('div','cx-notifications'),note=el('p','cx-edit-note');wrap.append(list,note);
+ try{
+  const data=await cloudRequest(state,'notifications',{query:{offset:0}});
+  for(const n of data.items||[]){
+   const row=el('div','cx-notification');
+   const who=el('strong','',n.display_name||n.username||'LOOX member');
+   const kind=n.kind==='follow'?' followed you':n.kind==='like'?' liked your post':n.kind==='comment'?' commented on your post':' sent an update';
+   row.append(who,el('span','',kind));
+   if(n.post_id)row.append(link('View post','community.html?post='+encodeURIComponent(n.post_id)));
+   list.append(row);
+  }
+  note.textContent=list.childElementCount?'':'No notifications yet.';
+ }catch(e){note.textContent=e.message;}
+}
+
 let menuAbort=new AbortController();
 function buildPage(){
  menuAbort.abort();menuAbort=new AbortController();
