@@ -167,10 +167,133 @@ async function stylesSheet(initialTab='explore'){
  await showTab(initialTab);
 }
 
+// LOOX owns the look and interaction of its settings pickers. Native selects
+// remain connected as the single source of truth for generation and pricing.
+const studioPickers=new Map();
+function studioSettingsSelect(select,kind){
+ if(studioPickers.has(select))return studioPickers.get(select);
+ const wrap=node('div','studio-select-picker'),toggle=button('','', 'studio-select-toggle');
+ toggle.onclick=null;
+ toggle.setAttribute('aria-haspopup','listbox');
+ toggle.setAttribute('aria-expanded','false');
+ const display=node('span','studio-select-value');
+ const chevron=node('span','studio-select-chevron','⌄');
+ chevron.setAttribute('aria-hidden','true');
+ toggle.append(display,chevron);
+ const panel=node('div','studio-select-panel');
+ panel.hidden=true;panel.setAttribute('role','listbox');
+ panel.id='studio-picker-'+select.id;
+ toggle.setAttribute('aria-controls',panel.id);
+ wrap.append(toggle,panel);
+ select.insertAdjacentElement('afterend',wrap);
+ select.classList.add('studio-native-select');
+ const descriptions={
+  '16:9':'Wide landscape','9:16':'Vertical story','1:1':'Square',
+  '4:3':'Classic landscape','3:4':'Portrait'
+ };
+ function close(focus=false){
+  wrap.classList.remove('is-open');panel.hidden=true;
+  toggle.setAttribute('aria-expanded','false');
+  if(focus)toggle.focus({preventScroll:true});
+ }
+ function refresh(){
+  const chosen=select.selectedOptions[0];
+  display.textContent=chosen?.textContent?.trim()||'Select an option';
+  toggle.setAttribute('aria-label',(kind==='ratio'?'Aspect ratio':kind==='duration'?'Video length':'Output setting')+': '+display.textContent);
+  toggle.disabled=select.disabled;
+  if(!panel.hidden)renderOptions();
+ }
+ function renderOptions(){
+  const options=[...select.options].filter(opt=>!opt.hidden);
+  panel.replaceChildren();
+  for(const option of options){
+   const current=option.value===select.value;
+   const item=button('','', 'studio-select-option '+(kind==='ratio'?'studio-ratio-option':'studio-duration-option'));
+   item.onclick=null;item.disabled=option.disabled;
+   item.setAttribute('role','option');item.setAttribute('aria-selected',String(current));
+   item.dataset.value=option.value;
+   if(kind==='ratio'){
+    const shapeWrap=node('span','studio-ratio-icon');
+    const shape=node('span','studio-ratio-shape');
+    shape.style.aspectRatio=option.value.replace(':',' / ');
+    shapeWrap.append(shape);item.append(shapeWrap);
+   }else if(kind==='duration'){
+    const icon=node('span','studio-duration-icon','▶');
+    icon.setAttribute('aria-hidden','true');item.append(icon);
+   }
+   const text=node('span','studio-select-option-text');
+   text.append(node('strong','',option.textContent.trim()));
+   if(kind==='ratio'&&descriptions[option.value])text.append(node('small','',descriptions[option.value]));
+   if(kind==='duration')text.append(node('small','',option.value+' second'+(option.value==='1'?'':'s')+' per clip'));
+   item.append(text);
+   const check=node('span','studio-select-check',current?'✓':'');
+   check.setAttribute('aria-hidden','true');item.append(check);
+   item.addEventListener('click',()=>{
+    if(option.disabled)return;
+    select.value=option.value;
+    select.dispatchEvent(new Event('change',{bubbles:true}));
+    refresh();close(true);
+   });
+   panel.append(item);
+  }
+  if(!panel.children.length)panel.append(node('p','studio-select-none','No options available for this model.'));
+ }
+ function open(){
+  if(!panel.hidden){close();return;}
+  for(const picker of studioPickers.values())picker.close();
+  renderOptions();wrap.classList.add('is-open');
+  panel.hidden=false;toggle.setAttribute('aria-expanded','true');
+ }
+ toggle.addEventListener('click',open);
+ toggle.addEventListener('keydown',event=>{
+  if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+   event.preventDefault();
+   if(panel.hidden)open();
+   const choices=[...panel.querySelectorAll('button:not(:disabled)')];
+   if(choices.length)(event.key==='ArrowDown'?choices[0]:choices[choices.length-1]).focus({preventScroll:true});
+  }
+ });
+ panel.addEventListener('keydown',event=>{
+  const options=[...panel.querySelectorAll('button:not(:disabled)')];
+  if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close(true);return;}
+  if(event.key==='Tab'){close();return;}
+  if(!['ArrowDown','ArrowUp','Home','End'].includes(event.key)||!options.length)return;
+  event.preventDefault();
+  const index=options.indexOf(document.activeElement);
+  const next=event.key==='Home'?0:event.key==='End'?options.length-1:
+   (index+(event.key==='ArrowDown'?1:-1)+options.length)%options.length;
+  options[next].focus({preventScroll:true});
+ });
+ select.addEventListener('change',refresh);
+ new MutationObserver(refresh).observe(select,{attributes:true,attributeFilter:['disabled'],childList:true,subtree:true});
+ const picker={close,refresh};studioPickers.set(select,picker);
+ refresh();return picker;
+}
 function settingsSheet(prefix){
- const controls=$('.loox-uc-controls');if(!controls)return;const ratio=document.getElementById(prefix+'-ratio');if(ratio)ratio.tabIndex=0;
- // Move the actual fields, preserving their values, validation and listeners.
- moveIntoSheet('Prompt settings',controls);
+ const controls=$('.loox-uc-controls');if(!controls)return;
+ const dialog=moveIntoSheet('Prompt settings',controls);
+ const selects=[
+  [prefix+'-ratio','ratio'],
+  ...(prefix==='lvg'?[['lvg-duration','duration']]:
+    [['lig-resolution','generic'],['lig-quality','generic']])
+ ];
+ const active=[];
+ for(const [id,kind] of selects){
+  const select=document.getElementById(id);
+  if(!select)continue;
+  const picker=studioSettingsSelect(select,kind);
+  picker.refresh();active.push(picker);
+ }
+ const closeAll=()=>active.forEach(picker=>picker.close());
+ dialog.addEventListener('pointerdown',event=>{
+  if(!event.target.closest('.studio-select-picker'))closeAll();
+ });
+ dialog.addEventListener('keydown',event=>{
+  if(event.key!=='Escape'||!dialog.querySelector('.studio-select-picker.is-open'))return;
+  event.preventDefault();event.stopPropagation();event.stopImmediatePropagation();
+  for(const picker of active)picker.close();
+ },true);
+ dialog.addEventListener('close',closeAll,{once:true});
 }
 function assetsSheet(prefix){
  const input=document.getElementById(prefix==='lig'?'lig-reference-image':'lvg-image');if(!input)return;
