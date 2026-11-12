@@ -115,7 +115,8 @@ async function captureLastVideoFrame(url){
 async function continueVideoShot(id,button){
  if(busy){notice('Finish the current video before preparing the next shot.',true);return;}
  if(!state.user){auth('login');return;}
- const preferred=[modelField.value,'wan22_i2v_fast','wan25_i2v','wan26_i2v_flash'];
+ const compatible=new Set(['wan22_5b_fast','wan22_i2v_fast','wan25_i2v','wan26_i2v_flash']);
+ const preferred=[modelField.value,'wan22_i2v_fast','wan25_i2v','wan26_i2v_flash'].filter(id=>compatible.has(id));
  const supported=preferred.find(id=>state.config?.videoModels?.some(m=>m.id===id&&m.available));
  if(!supported){notice('No image-to-video model is available for continuing this shot right now.',true);return;}
  button.disabled=true;const original=button.textContent;button.textContent='Extracting frame…';
