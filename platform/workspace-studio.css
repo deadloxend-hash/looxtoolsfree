@@ -614,3 +614,149 @@ body.loox-studio .studio-shot-row button:focus-visible{
 /* V16: remaining daily generations, only when the account supplies a real quota. */
 body.loox-studio .studio-budget-quota{display:inline-flex;align-items:center;color:#baafc5;white-space:nowrap;font:550 10px/1.25 Inter,system-ui,sans-serif}
 body.loox-studio .studio-budget-quota[hidden]{display:none!important}
+
+/* V17 — LOOX Studio branded selection menus.
+   Original native values remain the source of truth for generator submission. */
+body.loox-studio .loox-sheet select.studio-native-select,
+body.loox-studio .loox-sheet #lig-ratio.studio-native-select,
+body.loox-studio .loox-sheet #lvg-ratio.studio-native-select,
+body.loox-studio .loox-sheet #lvg-duration.studio-native-select,
+body.loox-studio .loox-sheet #lig-resolution.studio-native-select,
+body.loox-studio .loox-sheet #lig-quality.studio-native-select{
+ display:none!important;
+ position:absolute!important;width:1px!important;height:1px!important;
+ opacity:0!important;pointer-events:none!important;clip-path:inset(100%)!important;
+}
+body.loox-studio .loox-sheet .studio-select-picker{
+ display:grid!important;min-width:0!important;width:100%!important;
+ position:relative;gap:6px;
+}
+body.loox-studio .loox-sheet .studio-select-toggle{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ width:100%!important;max-width:100%!important;min-height:45px!important;
+ gap:10px!important;padding:10px 13px!important;
+ border-radius:12px!important;border:1px solid #735483!important;
+ background:linear-gradient(100deg,#241b30,#2a2135)!important;
+ color:#f0e7f9!important;text-align:left!important;cursor:pointer;
+ box-shadow:inset 0 1px #ffffff0a!important;
+ font:550 14px/1.4 Inter,system-ui,sans-serif!important;
+ transition:border-color .15s ease,background .15s ease,box-shadow .15s ease;
+}
+body.loox-studio .loox-sheet .studio-select-toggle:hover,
+body.loox-studio .loox-sheet .studio-select-picker.is-open>.studio-select-toggle{
+ border-color:#b487d3!important;background:linear-gradient(105deg,#31213e,#382547)!important;
+ box-shadow:0 0 0 2px #a364d825!important;
+}
+body.loox-studio .loox-sheet .studio-select-toggle:disabled{opacity:.42!important;cursor:not-allowed!important}
+body.loox-studio .loox-sheet .studio-select-value{
+ flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+body.loox-studio .loox-sheet .studio-select-chevron{
+ flex:0 0 auto;display:block;font-size:23px;line-height:.7;
+ color:#b995d0;transition:transform .17s ease;
+}
+body.loox-studio .loox-sheet .studio-select-picker.is-open .studio-select-chevron{transform:rotate(180deg)}
+body.loox-studio .loox-sheet .studio-select-panel{
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;
+ max-height:min(330px,44dvh)!important;overflow-y:auto!important;overflow-x:hidden!important;
+ display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px!important;padding:10px!important;
+ border:1px solid #775489!important;border-radius:14px!important;
+ background:linear-gradient(160deg,#22182c,#19141f)!important;
+ box-shadow:0 12px 32px #0006!important;
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
+ scrollbar-width:thin!important;
+}
+body.loox-studio .loox-sheet .studio-select-panel[hidden]{display:none!important}
+body.loox-studio .loox-sheet .studio-select-option{
+ display:flex!important;align-items:center!important;position:relative!important;
+ gap:10px!important;min-width:0!important;min-height:65px!important;
+ margin:0!important;padding:11px 10px!important;
+ border:1px solid #ffffff1a!important;border-radius:11px!important;
+ background:#2b2234!important;color:#e9e1ee!important;
+ cursor:pointer!important;text-align:left!important;
+ font-family:Inter,system-ui,sans-serif!important;
+ transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+body.loox-studio .loox-sheet .studio-select-option:not(:disabled):hover{
+ background:#3b294b!important;border-color:#9b72bd!important;
+}
+body.loox-studio .loox-sheet .studio-select-option[aria-selected="true"]{
+ background:linear-gradient(130deg,#4f2d69,#69448a)!important;
+ border-color:#c08de0!important;
+ box-shadow:inset 0 0 0 1px #c08de04a!important;color:#fff!important;
+}
+body.loox-studio .loox-sheet .studio-select-option:disabled{
+ opacity:.34!important;cursor:not-allowed!important;
+}
+body.loox-studio .loox-sheet .studio-select-option:active:not(:disabled){transform:scale(.985)}
+body.loox-studio .loox-sheet .studio-select-option-text{
+ display:flex;flex:1 1 auto;flex-direction:column;min-width:0;gap:4px!important;
+}
+body.loox-studio .loox-sheet .studio-select-option-text strong{
+ display:block;font:650 12px/1.3 Inter,system-ui,sans-serif!important;
+ color:inherit!important;overflow-wrap:anywhere;
+}
+body.loox-studio .loox-sheet .studio-select-option-text small{
+ display:block;font:450 10px/1.25 Inter,system-ui,sans-serif!important;
+ color:#b9a6c5!important;
+}
+body.loox-studio .loox-sheet .studio-select-check{
+ display:grid!important;place-items:center!important;flex:0 0 19px;
+ width:19px;height:19px;border-radius:50%;border:1px solid #997ca7;
+ color:#fff!important;font:700 12px/1 system-ui!important;
+}
+body.loox-studio .loox-sheet .studio-select-option[aria-selected="true"] .studio-select-check{
+ background:#bc83ee!important;border-color:#bc83ee!important;
+}
+body.loox-studio .loox-sheet .studio-ratio-icon{
+ display:grid!important;place-items:center!important;flex:0 0 45px;
+ width:45px;height:43px;border-radius:9px;background:#ffffff0b;
+ border:1px solid #ffffff12;
+}
+body.loox-studio .loox-sheet .studio-ratio-shape{
+ display:block!important;width:35px;max-width:35px;max-height:35px;
+ border:2px solid #c4adcf;border-radius:3px;background:#be97e322;
+}
+body.loox-studio .loox-sheet .studio-select-option[aria-selected="true"] .studio-ratio-shape{
+ border-color:#edd7ff;background:#b46bfb45;
+}
+body.loox-studio .loox-sheet .studio-duration-option{min-height:60px!important}
+body.loox-studio .loox-sheet .studio-duration-icon{
+ display:grid!important;place-items:center!important;flex:0 0 28px;
+ width:28px;height:28px;border-radius:8px;background:#ffffff13;
+ color:#d3a8ef;font-size:11px;
+}
+body.loox-studio .loox-sheet .studio-select-none{
+ grid-column:1/-1;font-size:12px;color:#bbaec7;padding:8px 4px;
+}
+body.loox-studio .loox-sheet .studio-select-toggle:focus-visible,
+body.loox-studio .loox-sheet .studio-select-option:focus-visible{
+ outline:2px solid #e0b4fa!important;outline-offset:2px!important;
+}
+@media(max-width:600px){
+ body.loox-studio .loox-sheet .lig-setting-block{
+  padding:12px!important;border-radius:13px!important;gap:7px!important;
+ }
+ body.loox-studio .loox-sheet .studio-select-panel{
+  padding:7px!important;gap:6px!important;max-height:min(300px,40dvh)!important;
+ }
+ body.loox-studio .loox-sheet .studio-select-option{
+  padding:9px 8px!important;min-height:62px!important;gap:7px!important;border-radius:10px!important;
+ }
+ body.loox-studio .loox-sheet .studio-ratio-icon{flex-basis:33px;width:33px;height:35px}
+ body.loox-studio .loox-sheet .studio-ratio-shape{max-width:26px;width:26px;max-height:29px}
+ body.loox-studio .loox-sheet .studio-select-option-text strong{font-size:11px!important}
+ body.loox-studio .loox-sheet .studio-select-option-text small{font-size:9px!important}
+ body.loox-studio .loox-sheet .studio-select-check{flex-basis:16px;width:16px;height:16px;font-size:10px!important}
+ body.loox-studio .loox-sheet .studio-select-toggle{height:43px!important;min-height:43px!important;font-size:14px!important}
+}
+@media(max-width:365px){
+ body.loox-studio .loox-sheet .studio-select-panel{grid-template-columns:minmax(0,1fr)!important}
+ body.loox-studio .loox-sheet .studio-select-option{min-height:54px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.loox-studio .loox-sheet .studio-select-chevron,
+ body.loox-studio .loox-sheet .studio-select-toggle,
+ body.loox-studio .loox-sheet .studio-select-option{transition:none!important;animation:none!important}
+}
