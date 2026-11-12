@@ -1,5 +1,145 @@
 import {config} from './account.js?v=9';
 const root=document.querySelector('[data-image-showcase]');
+
+// Onboarding belongs to the Image landing HERO only. All content below #discover
+// keeps its existing layout and behavior.
+function setupImageFirstCreation(){
+ const form=document.getElementById('creative-landing-form');
+ const prompt=document.getElementById('creative-prompt');
+ const model=document.getElementById('creative-model');
+ const trigger=document.getElementById('image-landing-model-trigger');
+ const menu=document.getElementById('image-landing-model-options');
+ const modelName=document.getElementById('image-landing-model-name');
+ if(!form||!prompt||!model||!trigger||!menu||!modelName)return;
+ const label=form.querySelector('label[for="creative-model"]');
+ if(label)label.htmlFor=trigger.id;
+ model.tabIndex=-1;
+ model.setAttribute('aria-hidden','true');
+ form.classList.add('image-model-ready');
+ const error=document.createElement('span');
+ error.id='image-landing-prompt-error';
+ error.className='image-landing-prompt-error';
+ error.setAttribute('role','alert');
+ error.hidden=true;
+ prompt.after(error);
+ const count=document.createElement('span');
+ count.className='image-prompt-count';
+ count.setAttribute('aria-hidden','true');
+ prompt.after(count);
+ function promptChange(){
+  const length=prompt.value.length;
+  const rows=prompt.value.split('\n').length;
+  prompt.style.height='auto';
+  prompt.style.height=Math.min(Math.max(75,prompt.scrollHeight,rows*22),145)+'px';
+  count.textContent=length>100?length+' / 1200':'';
+  error.hidden=true;
+  prompt.removeAttribute('aria-invalid');
+ }
+ prompt.addEventListener('input',promptChange);
+ for(const b of form.querySelectorAll('[data-example]')){
+  b.addEventListener('click',()=>{
+   requestAnimationFrame(promptChange);
+   for(const btn of form.querySelectorAll('[data-example]'))btn.classList.toggle('is-selected',btn===b);
+  });
+ }
+ const ratioChoices=[...form.querySelectorAll('input[name="creative-ratio"]')];
+ const ratioNote=form.querySelector('.image-format-heading>span');
+ const ratioHints={'1:1':'Great for portraits and everyday creations','16:9':'Great for scenes, banners, and landscapes','9:16':'Great for phone wallpapers and vertical art'};
+ const syncRatio=()=>{
+  const chosen=ratioChoices.find(input=>input.checked)?.value||'1:1';
+  if(ratioNote)ratioNote.textContent=ratioHints[chosen]||'Choose the frame that fits your idea';
+ };
+ ratioChoices.forEach(input=>input.addEventListener('change',syncRatio));syncRatio();
+ let isOpen=false;
+ function close(focus=false){
+  isOpen=false;menu.hidden=true;
+  trigger.setAttribute('aria-expanded','false');
+  if(focus)trigger.focus({preventScroll:true});
+ }
+ function syncModel(){
+  const option=model.selectedOptions[0];
+  const text=(option?.textContent||'Choose in Studio').replace(/\s*· unavailable$/i,'');
+  modelName.textContent=text;
+  const unavailable=option?.disabled||!option;
+  trigger.title=unavailable?'This model is not available yet; you can explore others in Studio.':text;
+  trigger.classList.toggle('image-model-unavailable',!!unavailable);
+  if(isOpen)renderOptions();
+ }
+ function renderOptions(){
+  menu.replaceChildren();
+  for(const option of model.options){
+   const item=document.createElement('button');item.type='button';
+   item.className='image-model-option';item.setAttribute('role','option');
+   item.disabled=option.disabled;
+   const selected=option.value===model.value;
+   item.setAttribute('aria-selected',String(selected));
+   const title=document.createElement('span');
+   title.textContent=(option.textContent||'').replace(/\s*· unavailable$/i,'');
+   const availability=document.createElement('small');
+   availability.textContent=option.disabled?'Unavailable':'Available';
+   const check=document.createElement('span');check.className='image-model-check';
+   check.textContent=selected?'✓':'';
+   item.append(title,availability,check);
+   item.addEventListener('click',()=>{
+    if(option.disabled)return;
+    model.value=option.value;
+    model.dispatchEvent(new Event('change',{bubbles:true}));
+    close(true);
+   });
+   menu.append(item);
+  }
+  if(!menu.children.length){
+   const message=document.createElement('p');
+   message.className='image-model-empty';message.textContent='Models will appear when configuration loads.';
+   menu.append(message);
+  }
+ }
+ trigger.addEventListener('click',()=>{
+  if(isOpen){close();return;}
+  renderOptions();isOpen=true;menu.hidden=false;
+  trigger.setAttribute('aria-expanded','true');
+ });
+ trigger.addEventListener('keydown',event=>{
+  if(event.key==='ArrowDown'){
+   event.preventDefault();
+   if(!isOpen)trigger.click();
+   menu.querySelector('button:not(:disabled)')?.focus();
+  }
+ });
+ menu.addEventListener('keydown',event=>{
+  if(event.key==='Escape'){event.preventDefault();event.stopPropagation();close(true);return;}
+  if(event.key==='Tab'){close();return;}
+  if(!['ArrowDown','ArrowUp','Home','End'].includes(event.key))return;
+  const items=[...menu.querySelectorAll('button:not(:disabled)')];
+  if(!items.length)return;
+  const index=items.indexOf(document.activeElement);
+  const next=event.key==='Home'?0:event.key==='End'?items.length-1:
+   (index+(event.key==='ArrowDown'?1:-1)+items.length)%items.length;
+  event.preventDefault();items[next].focus();
+ });
+ document.addEventListener('pointerdown',event=>{
+  if(isOpen&&!event.target.closest('.image-model-control'))close();
+ });
+ document.addEventListener('keydown',event=>{
+  if(isOpen&&event.key==='Escape'){event.preventDefault();close(true);}
+ });
+ model.addEventListener('change',syncModel);
+ const observer=new MutationObserver(syncModel);
+ observer.observe(model,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','selected']});
+ syncModel();
+ // Prevent submitting an empty prompt. The existing launch handler remains the
+ // only place that stages the real prompt/model/settings and opens the studio.
+ form.addEventListener('submit',event=>{
+  if(prompt.value.trim())return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  error.textContent='Add a short description or choose one of the starter ideas above.';
+  error.hidden=false;
+  prompt.setAttribute('aria-invalid','true');
+  prompt.focus({preventScroll:true});
+ },true);
+}
+if(root)setupImageFirstCreation();
 if(root){
  const expand=document.getElementById('models-expand');
  expand.addEventListener('click',()=>{
