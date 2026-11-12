@@ -44,7 +44,7 @@ body.loox-conversations .lig-compose-card>.lig-compose-actions{grid-column:2;ali
 body.loox-conversations .loox-prompt-toolbar .loox-prompt-controls{margin-left:auto}
 body.loox-conversations .lig-compose-card .lig-spacer{display:none}
 @media(max-width:600px){body.loox-conversations .lig-compose-card{padding:10px!important;gap:4px 6px}body.loox-conversations .lig-compose-card>.loox-prompt-toolbar{grid-column:1 / -1}body.loox-conversations .lig-compose-card>.lig-compose-actions{grid-column:2}body.loox-conversations .loox-prompt-toolbar .loox-prompt-controls{max-width:100%}}
-body.loox-conversations.lig-body.loox-sitewide-active > main.lig-workspace{height:var(--loox-workspace-height,calc(100dvh - 102px))!important;max-height:var(--loox-workspace-height,calc(100dvh - 102px))!important;min-height:0!important;display:block!important}
+body.loox-conversations.lig-body.loox-sitewide-active:not(.loox-studio) > main.lig-workspace{height:var(--loox-workspace-height,calc(100dvh - 102px))!important;max-height:var(--loox-workspace-height,calc(100dvh - 102px))!important;min-height:0!important;display:block!important}
 
 /* LOOX AI: unobtrusive scrollbars for the conversation and session history.
    Scope to the workspaces: keep the sitewide navigation/sidebar untouched. */
@@ -88,17 +88,17 @@ body.loox-conversations.lig-body.loox-sitewide-active > main.lig-workspace{heigh
    The generator's native header is the only visible header. Use normal flex sizing
    immediately instead of waiting for async session initialization to set a height
    variable; the content and bottom composer must never jump vertically. */
-body.loox-conversations.loox-focus-generator.lig-body {
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) {
   display: flex !important;
   flex-direction: column !important;
   height: 100dvh !important;
   min-height: 0 !important;
   overflow: hidden !important;
 }
-body.loox-conversations.loox-focus-generator.lig-body > header.lig-header {
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) > header.lig-header {
   flex: 0 0 auto !important;
 }
-body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace {
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) > main.lig-workspace {
   display: block !important;
   flex: 1 1 auto !important;
   height: auto !important;
@@ -110,7 +110,7 @@ body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace {
 /* Controls are moved into the bottom composer at DOMContentLoaded, and the image
    model dropdown is initialized after fetching config. Do not flash the
    incomplete two-control layout while either script is still hydrating. */
-body.loox-conversations.loox-focus-generator.lig-body:not(.loox-prompt-compact) .lig-compose-wrap {
+body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio):not(.loox-prompt-compact) .lig-compose-wrap {
   visibility: hidden !important;
 }
 /* Shared compact left overlay. It never reserves conversation width. */
@@ -373,34 +373,34 @@ body.loox-conversations .lig-results > .lig-output{content-visibility:visible!im
 /* V23: iOS generator scrolling. This must override the conversation shell's
    viewport locks, including the sitewide-active workspace height override. */
 @media (max-width: 900px) {
-  html:has(body.loox-conversations.loox-focus-generator.lig-body) {
+  html:has(body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio)) {
     height: auto !important;
     min-height: 100% !important;
     overflow-x: clip !important;
     overflow-y: auto !important;
   }
-  body.loox-conversations.loox-focus-generator.lig-body {
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) {
     height: auto !important;
     min-height: 100dvh !important;
     overflow-x: clip !important;
     overflow-y: auto !important;
     touch-action: pan-y !important;
   }
-  body.loox-conversations.loox-focus-generator.lig-body > main.lig-workspace,
-  body.loox-conversations.loox-focus-generator.lig-body.loox-sitewide-active > main.lig-workspace {
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) > main.lig-workspace,
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio).loox-sitewide-active > main.lig-workspace {
     height: auto !important;
     max-height: none !important;
     min-height: calc(100dvh - var(--loox-sitewide-height, 68px)) !important;
     overflow: visible !important;
   }
-  body.loox-conversations.loox-focus-generator.lig-body .lig-main.loox-sessions-layout,
-  body.loox-conversations.loox-focus-generator.lig-body .lig-main.loox-sessions-collapsed {
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) .lig-main.loox-sessions-layout,
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) .lig-main.loox-sessions-collapsed {
     height: auto !important;
     max-height: none !important;
     min-height: 0 !important;
     overflow: visible !important;
   }
-  body.loox-conversations.loox-focus-generator.lig-body .lig-content-scroll {
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) .lig-content-scroll {
     height: auto !important;
     max-height: none !important;
     min-height: 0 !important;
@@ -408,7 +408,7 @@ body.loox-conversations .lig-results > .lig-output{content-visibility:visible!im
     overflow: visible !important;
     overscroll-behavior: auto !important;
   }
-  body.loox-conversations.loox-focus-generator.lig-body .lig-content-scroll[hidden] {
+  body.loox-conversations.loox-focus-generator.lig-body:not(.loox-studio) .lig-content-scroll[hidden] {
     display: none !important;
   }
 }
