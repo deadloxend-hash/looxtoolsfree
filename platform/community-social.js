@@ -19,18 +19,53 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   },
   async collections(post=null){
    if(!this.state.user)return this.auth('login');
-   const d=modal(post?'Add to collection':'My collections'),status=e('p','community-note'),list=e('div','community-collection-list'),form=e('form','community-collection-form');
+   const d=modal(post?'Add to collection':'My collections'),status=e('p','community-note');
+   const list=e('div','community-collection-list'),form=e('form','community-collection-form');
    const name=field(form,'Collection name');name.maxLength=80;name.required=true;
-   const label=e('label','community-check'),pub=e('input');pub.type='checkbox';label.append(pub,'Make collection public');form.append(label);
-   const submit=e('button','community-primary','Create collection');submit.type='submit';form.append(submit);d.append(list,form,status);
-   const load=async()=>{list.replaceChildren();const rows=result(await this.state.client.from('loox_collections').select('id,name,is_public').eq('user_id',this.state.user.id).order('created_at',{ascending:false}).limit(100));
-    for(const c of rows){const row=e('div','community-manage-row'),link=e('a','community-creator',c.name+(c.is_public?' · Public':' · Private'));link.href='collections.html?id='+c.id;row.append(link);
-     const fail=err=>status.textContent=err.message;
-     if(post)row.append(a('Add',async()=>{const r=await this.state.client.from('loox_collection_items').insert({collection_id:c.id,post_id:post.id});if(r.error?.code!=='23505')result(r);status.textContent='Added to '+c.name;},'community-button',fail));
-     row.append(a('Rename',async()=>{const value=prompt('Collection name',c.name);if(!value?.trim())return;result(await this.state.client.from('loox_collections').update({name:value.trim()}).eq('id',c.id).eq('user_id',this.state.user.id));await load();},'community-button',fail),a(c.is_public?'Make private':'Make public',async()=>{result(await this.state.client.from('loox_collections').update({is_public:!c.is_public}).eq('id',c.id).eq('user_id',this.state.user.id));await load();},'community-button',fail),a('Delete',async()=>{if(!confirm('Delete this collection? Original posts stay saved.'))return;result(await this.state.client.from('loox_collections').delete().eq('id',c.id).eq('user_id',this.state.user.id));await load();},'community-button',fail));list.append(row);}
-    if(!rows.length)list.append(e('p','community-note','Create a collection to organize public community posts. Collections are private by default.'));
+   const label=e('label','community-check'),pub=e('input');pub.type='checkbox';
+   label.append(pub,'Make collection public');form.append(label);
+   const submit=e('button','community-primary','Create collection');submit.type='submit';
+   form.append(submit);d.append(list,form,status);
+   const fail=err=>status.textContent=err.message;
+   const load=async()=>{
+    list.replaceChildren();
+    const rows=(await cloudRequest(this.state,'collections')).items||[];
+    for(const c of rows){
+     const row=e('div','community-manage-row');
+     const link=e('a','community-creator',c.name+(c.is_public?' · Public':' · Private'));
+     link.href='collections.html?id='+c.id;row.append(link);
+     if(post)row.append(a('Add',async()=>{
+      await cloudRequest(this.state,'collection-item',{method:'POST',data:{collection_id:c.id,post_id:post.id}});
+      status.textContent='Added to '+c.name;
+     },'community-button',fail));
+     row.append(
+      a('Rename',async()=>{
+       const value=prompt('Collection name',c.name);
+       if(!value?.trim())return;
+       await cloudRequest(this.state,'collections',{method:'PATCH',data:{id:c.id,name:value.trim()}});
+       await load();
+      },'community-button',fail),
+      a(c.is_public?'Make private':'Make public',async()=>{
+       await cloudRequest(this.state,'collections',{method:'PATCH',data:{id:c.id,is_public:!Boolean(c.is_public)}});
+       await load();
+      },'community-button',fail),
+      a('Delete',async()=>{
+       if(!confirm('Delete this collection? Original posts stay saved.'))return;
+       await cloudRequest(this.state,'collections',{method:'DELETE',data:{id:c.id}});
+       await load();
+      },'community-button',fail));
+     list.append(row);
+    }
+    if(!rows.length)list.append(e('p','community-note','Create a collection to organize public posts. Collections are private by default.'));
    };
-   form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{result(await this.state.client.from('loox_collections').insert({user_id:this.state.user.id,name:name.value.trim(),is_public:pub.checked}));name.value='';await load();}catch(error){status.textContent=error.message;}finally{submit.disabled=false;}});await load();
+   form.addEventListener('submit',async event=>{
+    event.preventDefault();submit.disabled=true;
+    try{
+     await cloudRequest(this.state,'collections',{method:'POST',data:{name:name.value.trim(),is_public:pub.checked}});
+     name.value='';await load();
+    }catch(err){status.textContent=err.message;}finally{submit.disabled=false;}
+   });
+   await load();
   },
   async postPermissions(post){
    const d=modal('Post permissions'),form=e('form'),status=e('p','community-note'),controls={};
