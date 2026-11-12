@@ -34,7 +34,11 @@ let profile=null,creatorId=null,isOwn=false,engine=null,tab='posts',offset=0,epo
 function showError(e){if(status){status.textContent=e?.message||'Something went wrong. Please retry.';status.hidden=false;}else root.replaceChildren(el('p','cx-error',e?.message||'Could not load profile.'));}
 function notice(s){if(status){status.textContent=s;status.hidden=!s;}}
 function fallbackAvatar(p,cls='cx-avatar'){const a=el('span',cls,((p?.display_name||p?.username||'L').trim().charAt(0)||'L').toUpperCase());const id=p?.user_id||p?.creator_id;
- if(p?.avatar_path&&id)mediaURL(state,p.avatar_path,'loox-avatars',{type:'avatar',id}).then(url=>{if(!a.isConnected)return;const img=el('img');img.alt='';img.decoding='async';img.loading='lazy';img.src=url;img.onerror=()=>img.remove();a.replaceChildren(img);}).catch(()=>{});
+ if(p?.avatar_path&&id){
+  const ownPrivate=state.user?.id===id&&Boolean(profile?.is_private);
+  const pending=ownPrivate?api('community_profile_media',null,{kind:'avatar'}).then(d=>d.url):mediaURL(state,p.avatar_path,'loox-avatars',{type:'avatar',id});
+  pending.then(url=>{if(!a.isConnected)return;const img=el('img');img.alt='';img.decoding='async';img.loading='lazy';img.src=url;img.onerror=()=>img.remove();a.replaceChildren(img);}).catch(()=>{});
+ }
  return a;
 }
 function profileURL(p){return 'creator.html?username='+encodeURIComponent(p.username);}
@@ -64,6 +68,7 @@ function makeMoreMenu(){
  function item(label,fn){menu.append(btn(label,async()=>{menu.hidden=true;await fn();},'cx-menu-item'));}
  item('Copy profile link',async()=>{await navigator.clipboard.writeText(new URL(profileURL(profile),location.href).href);notice('Profile link copied.');});
  if(isOwn){
+  item('Notifications',()=>engine.notifications());
   item('Manage posts',()=>engine.manage());
   item('Privacy settings',()=>engine.privacy(profile));
   item('Saved collections',()=>{location.assign('collections.html');});
@@ -161,7 +166,8 @@ function renderCounts(){
 function loadCover(target,p){
  target.classList.toggle('cx-cover-has-image',false);
  if(!p.cover_key)return;
- mediaURL(state,p.cover_key,'loox-results',{type:'cover',id:creatorId,variant:'original'}).then(url=>{
+ (isOwn&&p.is_private?api('community_profile_media',null,{kind:'cover'}).then(d=>d.url)
+  :mediaURL(state,p.cover_key,'loox-results',{type:'cover',id:creatorId,variant:'original'})).then(url=>{
   if(!target.isConnected||p!==profile)return;
   target.style.backgroundImage='linear-gradient(0deg,rgba(8,8,14,.1),rgba(8,8,14,.1)),url("'+url.replaceAll('"','%22')+'")';
   target.classList.add('cx-cover-has-image');
