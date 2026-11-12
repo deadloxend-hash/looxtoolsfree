@@ -5,7 +5,20 @@ import {cloudRequest,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1'
 // Shared community UI. Only Supabase publishable credentials enter the browser.
 export const element=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;};
 export const result=r=>{if(r.error)throw Error(r.error.code==='23505'?'That username is already taken. Choose another.':r.error.message);return r.data;};
-export async function rpc(state,name,args={}){if(!state.client)throw Error('The account service is unavailable. Please retry.');return result(await state.client.rpc(name,args));}
+export async function rpc(state,name,args={}){
+ // Cloudflare D1 is authoritative for public creator profiles and social feeds.
+ if(name==='loox_discover')return cloudRequest(state,'discover',{query:{
+  kind:args.p_kind||'all',sort:args.p_sort||'latest',offset:args.p_offset||0,
+  creator:args.p_creator||null,query:args.p_query||'',collection:args.p_collection||null,days:args.p_days||30
+ }});
+ if(name==='loox_public_post')return cloudRequest(state,'post',{query:{id:args.p_id}});
+ if(name==='loox_creator_summary')return cloudRequest(state,'profile',{query:{id:args.p_creator}});
+ if(name==='loox_creator_connections')return cloudRequest(state,'connections',{query:{id:args.p_creator,kind:args.p_kind,offset:args.p_offset||0}});
+ if(name==='loox_save_privacy')return cloudRequest(state,'privacy',{method:'PATCH',data:{is_private:args.p_private,hide_connections:args.p_hide_connections,notifications_enabled:args.p_notifications}});
+ if(name==='loox_save_creator')return cloudRequest(state,'profile',{method:'PATCH',data:{username:args.p_username,display_name:args.p_name,bio:args.p_bio}});
+ if(!state.client)throw Error('The account service is unavailable. Please retry.');
+ return result(await state.client.rpc(name,args));
+}
 const urls=new Map();
 export async function mediaURL(state,path,bucket='loox-results',resource=null){
  if(!path&&!resource)return null;const key=resource?resource.type+'/'+resource.id+'/'+(resource.variant||'preview'):bucket+'/'+path,old=urls.get(key);if(old&&old.until>Date.now())return old.url;
@@ -74,15 +87,7 @@ export class Community {
  try{if(this.creator)await this.loadProfile(seq);if(this.profileOnly){this.grid.replaceChildren();this.more.hidden=true;this.note('');return;}if(['following','saved','liked'].includes(this.sort)&&!this.state.user){this.grid.replaceChildren();this.more.hidden=true;this.note('Sign in to see your '+this.sort+' feed.');return;}const data=await rpc(this.state,'loox_discover',{p_kind:this.kind,p_sort:this.sort,p_offset:offset,p_creator:this.creator,p_query:this.query,p_collection:this.collection,p_days:this.days});
  // Filter public posts against the authoritative Cloudflare privacy record and
  // show current Cloudflare identity, not stale Supabase profile snapshots.
- const ids=[...new Set((data.items||[]).map(p=>p.creator_id).filter(Boolean))];
- if(ids.length){
-  const fresh=await cloudRequest(this.state,'profiles',{query:{ids:ids.join(',')}});
-  const byId=new Map((fresh.profiles||[]).map(p=>[p.user_id,p]));
-  data.items=(data.items||[]).filter(p=>byId.has(p.creator_id)).map(p=>{
-   const creator=byId.get(p.creator_id);
-   return {...p,username:creator.username,display_name:creator.display_name,avatar_path:creator.avatar_path};
-  });
- }
+ // D1 discovery already enforces privacy and joins the current creator record.
  if(seq!==this.epoch||uid!==this.state.user?.id)return;
  if(reset)this.grid.replaceChildren();for(const post of data.items||[]){this.posts.push(post);const card=this.card(post);card.dataset.feedPosition=String(this.posts.length-1);this.grid.append(card);}this.renderDiscoveryMasonry();this.offset=offset+(data.items||[]).length;this.more.hidden=!data.has_more;this.more.textContent='Load more';this.note(this.offset?'':this.sort==='following'?'Follow creators to see their newest public posts here.':'No matching public creations yet. Private generations stay in My Creations.');if(!offset){const postId=new URLSearchParams(location.search).get('post');const target=this.posts.find(p=>p.id===postId);if(target&&!this.openedLink){this.openedLink=true;await this.details(target);}else if(postId&&!this.openedLink){const linked=await rpc(this.state,'loox_public_post',{p_id:postId});this.openedLink=true;if(linked)await this.details(linked);else this.note('This post is unavailable or private.');}}}
  catch(error){if(seq===this.epoch){
@@ -197,7 +202,7 @@ export class Community {
  async like(post,button){if(!this.state.user){this.auth('login');return;}if(this.pendingLikes.has(post.id))return;this.pendingLikes.add(post.id);const uid=this.state.user.id,before={liked:!!post.liked,likes:Number(post.likes)||0};post.liked=!before.liked;post.likes=Math.max(0,before.likes+(post.liked?1:-1));this.renderLike(post,button);
   const syncCard=()=>{document.querySelectorAll('.community-like-shortcut[data-post-id="'+post.id+'"]').forEach(other=>this.renderLike(post,other));};
   syncCard();
- try{const q=this.state.client.from('loox_post_likes');result(post.liked?await q.insert({post_id:post.id,user_id:uid}):await q.delete().eq('post_id',post.id).eq('user_id',uid));}catch(error){Object.assign(post,before);this.renderLike(post,button);syncCard();throw error;}finally{this.pendingLikes.delete(post.id);}}
+ try{await cloudRequest(this.state,'like',{method:'POST',data:{post_id:post.id,on:post.liked}});}catch(error){Object.assign(post,before);this.renderLike(post,button);syncCard();throw error;}finally{this.pendingLikes.delete(post.id);}}
  async details(post){
   const d=modal(post.caption),status=element('p','community-note');
   d.classList.add('loox-post-viewer');
