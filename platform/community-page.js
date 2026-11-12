@@ -347,7 +347,7 @@ if(page==='trending.html'){
  const headline=element('section','loox-trending-intro');
  headline.setAttribute('aria-label','Trending creations');
  const eyebrow=element('span','loox-trending-eyebrow','✦ WHAT’S TRENDING');
- const h=element('h1','','Made to inspire.');
+ const h=element('h1','','Trending now.');
  const p=element('p','','Discover standout images and videos shared by LOOX creators.');
  headline.append(eyebrow,h,p);
  root.insertBefore(headline,root.querySelector('.community-heading'));
@@ -407,7 +407,7 @@ if(discoveryPage){
  }
 }
 if(page==='trending.html'){
- community.sort='trending';root.querySelector('h1').textContent='Trending';root.querySelector('.community-heading p').textContent='Stay ahead with the newest trending templates.';root.querySelector('[aria-label="Sort community"]').value='trending';
+ community.sort='trending';root.querySelector('.community-heading h1').textContent='Trending';root.querySelector('.community-heading p').textContent='Discover popular creations shared by LOOX artists.';root.querySelector('[aria-label="Sort community"]').value='trending';
 }
 // Replace browser-native select menus only on discovery pages. Reuse the
 // original select's change event so all existing backend filters keep working.
