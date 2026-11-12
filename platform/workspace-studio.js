@@ -277,47 +277,119 @@ function run(){
  const add=document.getElementById(video?'loox-uc-video-add':'lig-reference-quick-add');if(add)add.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();assetsSheet(prefix);},true);
  // Compose style for this request only; restore the main prompt immediately afterwards.
  const form=document.getElementById(prefix+'-compose');form.addEventListener('submit',e=>{if(!selectedStyle)return;const original=prompt.value,text=selectedStyle.prompt;const combined=original.includes(text)?original:original.trim()+', '+text;if(combined.length>prompt.maxLength){e.preventDefault();e.stopImmediatePropagation();notify('Prompt and style exceed '+prompt.maxLength+' characters.');return;}prompt.value=combined;queueMicrotask(()=>{prompt.value=original;});},true);
+
  if(video){
-  const upload=document.getElementById('lvg-image-block');
-  const file=document.getElementById('lvg-image');
+  const upload=document.getElementById('lvg-image-block'),file=document.getElementById('lvg-image');
+  const feed=document.getElementById('lvg-results');
   if(upload&&file){
-   // One actual reference file is supported: don't advertise fake Frames/References modes.
-   const area=node('section','studio-video-reference');
-   const heading=node('div','studio-reference-heading');
-   const title=node('strong','','Reference image');
-   const hint=node('small','','Used by compatible image-to-video models.');
-   heading.append(title,hint);
-   const actions=node('div','studio-reference-actions');
-   const add=button('＋ Add reference image',()=>assetsSheet(prefix),'studio-upload');
-   const remove=button('Remove',()=>{
-    file.value='';
-    file.dispatchEvent(new Event('change',{bubbles:true}));
-   },'studio-reference-remove');
-   actions.append(add,remove);
-   const preview=node('img','studio-reference-preview');
-   preview.alt='Selected video reference image';preview.hidden=true;
-   area.append(heading,actions,preview);
-   card.before(area);
+   const area=node('section','studio-frame-strip');
+   area.setAttribute('aria-label','Video frames');
+   const heading=node('div','studio-frame-heading');
+   const title=node('strong','','Frames');
+   const shots=button('Shots',()=>openShots(),'studio-shots-button');
+   heading.append(title,shots);
+   const row=node('div','studio-frame-row');
+   const thumb=button('',()=>assetsSheet('lvg'),'studio-frame-thumb');
+   thumb.setAttribute('aria-label','Choose a start frame');
+   const image=node('img');image.alt='Selected start frame';image.hidden=true;
+   const placeholder=node('span','studio-frame-placeholder','▧');
+   thumb.append(image,placeholder);
+   const description=node('div','studio-frame-text');
+   const label=node('strong','','Start frame');
+   const hint=node('small','','Optional on this model');
+   description.append(label,hint);
+   const choose=button('Add frame',()=>assetsSheet('lvg'),'studio-frame-change');
+   const remove=button('×',()=>{file.value='';file.dispatchEvent(new Event('change',{bubbles:true}));},'studio-frame-clear');
+   remove.setAttribute('aria-label','Remove start frame');
+   row.append(thumb,description,choose,remove);
+   area.append(heading,row);
+   card.insertBefore(area,prompt);
    let objectUrl=null;
-   const syncReference=()=>{
-    const supported=!upload.hidden&&!file.disabled;
-    const selected=file.files?.[0]||null;
-    area.classList.toggle('studio-reference-unavailable',!supported);
-    add.disabled=!supported;
-    add.textContent=!supported?'Reference unavailable for this model':selected?'Change reference image':'＋ Add reference image';
-    hint.textContent=!supported?'Select an image-to-video model to enable references.':file.required?'Reference image required for the selected model.':'Reference image optional for this model.';
+   const sync=()=>{
+    const supported=!upload.hidden&&!file.disabled,selected=file.files?.[0]||null;
+    area.classList.toggle('studio-frame-unavailable',!supported);
+    thumb.disabled=choose.disabled=!supported;
+    choose.textContent=!supported?'Unavailable':selected?'Replace':'Add frame';
+    hint.textContent=!supported?'Use an image-to-video model':file.required?'Required by selected model':selected?'Ready for the next shot':'Optional on this model';
+    label.textContent='Start frame';
     remove.hidden=!selected;
     if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=null;}
-    if(selected){objectUrl=URL.createObjectURL(selected);preview.src=objectUrl;}
-    else preview.removeAttribute('src');
-    preview.hidden=!selected;
+    if(selected){objectUrl=URL.createObjectURL(selected);image.src=objectUrl;}
+    else image.removeAttribute('src');
+    image.hidden=!selected;placeholder.hidden=!!selected;
    };
-   file.addEventListener('change',syncReference);
-   new MutationObserver(syncReference).observe(upload,{attributes:true,attributeFilter:['hidden']});
-   new MutationObserver(syncReference).observe(file,{attributes:true,attributeFilter:['disabled','required']});
+   file.addEventListener('change',sync);
+   new MutationObserver(sync).observe(upload,{attributes:true,attributeFilter:['hidden']});
+   new MutationObserver(sync).observe(file,{attributes:true,attributeFilter:['disabled','required']});
    window.addEventListener('pagehide',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);},{once:true});
-   syncReference();
+   sync();
+   const entries=()=>[...(feed?.querySelectorAll('.lig-output[data-entry]')||[])].filter(card=>card.querySelector('video,.lvg-video-stage,.loox-generation-meta'));
+   const durationFor=card=>{
+    const meta=card.querySelector('.loox-generation-meta')?.textContent||'';
+    const seconds=meta.match(/(?:^| · )(\d+) seconds(?: · |$)/);
+    return seconds?Number(seconds[1]):meta.includes('33 frames')?2:0;
+   };
+   const filmSummary=()=>{
+    const cards=entries();
+    const total=cards.reduce((sum,entry)=>sum+durationFor(entry),0);
+    shots.textContent='Shots '+cards.length;
+    shots.setAttribute('aria-label',cards.length+' video shots in this session');
+    return {cards,total};
+   };
+   const watcher=new MutationObserver(filmSummary);
+   if(feed)watcher.observe(feed,{childList:true,subtree:true});
+   filmSummary();
+   function openShots(){
+    const {cards,total}=filmSummary();
+    const box=node('div','studio-shots-sheet');
+    box.append(node('p','studio-shots-note',cards.length?
+     cards.length+' clip'+(cards.length===1?'':'s')+(total?' · approximately '+total+' seconds':'')+' in this session. Each generation is billed separately. Clips are not automatically stitched together.':
+     'Create your first video to build a sequence of shots.'));
+    for(let index=0;index<cards.length;index++){
+     const clip=cards[index];
+     const r=node('div','studio-shot-row');
+     const pic=node('div','studio-shot-number',String(index+1));
+     const text=node('div','studio-shot-copy');
+     const prompt=clip.querySelector('.lig-output-name')?.textContent||'Video shot';
+     text.append(node('strong','',prompt.slice(0,80)),node('small','',durationFor(clip)?durationFor(clip)+'s video':'Saved shot'));
+     const jump=button('View',()=>{d.close();document.body.classList.remove('loox-uc-scroll-compact');clip.scrollIntoView({behavior:'smooth',block:'center'});},'studio-button');
+     const continueBtn=clip.querySelector('.studio-continue-shot');
+     if(continueBtn)r.append(pic,text,jump,button('Continue',()=>{d.close();continueBtn.click();},'studio-button'));
+     else r.append(pic,text,jump);
+     box.append(r);
+    }
+    const d=openSheet('Video shots',box);
+   }
   }
+ }
+ // The true wallet and per-generation quote remain in the original account
+ // elements. Mirror them in a compact, live budget row with no guessed prices.
+ const balanceSource=document.getElementById(prefix+'-credits');
+ const priceSource=document.getElementById(prefix+'-credit-cost');
+ if(balanceSource&&priceSource){
+  const bar=node('div','studio-budget');
+  bar.setAttribute('role','status');bar.setAttribute('aria-live','polite');
+  const costText=node('span','studio-budget-cost');
+  const balanceText=node('span','studio-budget-balance');
+  const remainderText=node('span','studio-budget-after');
+  const link=node('a','studio-budget-link','Credits');
+  link.href='account.html#credits';
+  bar.append(costText,balanceText,remainderText,link);
+  card.append(bar);
+  const sync=()=>{
+   const costMatch=priceSource.textContent.match(/(\d+)\s+credits on success/);
+   const balanceMatch=balanceSource.textContent.match(/^(\d+)\s+credits/);
+   const charge=costMatch?Number(costMatch[1]):null;
+   const balance=balanceMatch?Number(balanceMatch[1]):null;
+   const estimated=video&&/refreshes before generation/i.test(priceSource.textContent);
+   costText.textContent=charge===null?'Checking cost…':(estimated?'Est. ':'')+charge+' credit'+(charge===1?'':'s')+' / shot';
+   balanceText.textContent=balance===null?'Balance: '+(state.user?'Loading…':'Sign in'):'Balance: '+balance;
+   remainderText.textContent=balance===null||charge===null?'':'After: '+Math.max(0,balance-charge);
+   remainderText.hidden=balance===null||charge===null;
+  };
+  for(const source of [balanceSource,priceSource])new MutationObserver(sync).observe(source,{childList:true,subtree:true,characterData:true});
+  document.addEventListener('loox-account',sync);document.addEventListener('loox-user',sync);
+  sync();
  }
 
 }
