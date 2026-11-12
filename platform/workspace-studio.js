@@ -173,6 +173,7 @@ const studioPickers=new Map();
 function studioSettingsSelect(select,kind){
  if(studioPickers.has(select))return studioPickers.get(select);
  const wrap=node('div','studio-select-picker'),toggle=button('',()=>{},'studio-select-toggle');
+ toggle.id='studio-select-toggle-'+select.id;
  toggle.setAttribute('aria-haspopup','listbox');
  toggle.setAttribute('aria-expanded','false');
  const display=node('span','studio-select-value');
@@ -186,6 +187,10 @@ function studioSettingsSelect(select,kind){
  wrap.append(toggle,panel);
  select.insertAdjacentElement('afterend',wrap);
  select.classList.add('studio-native-select');
+ select.tabIndex=-1;
+ select.setAttribute('aria-hidden','true');
+ const fieldLabel=select.closest('.lig-setting-block')?.querySelector('label[for="'+select.id+'"]');
+ if(fieldLabel)fieldLabel.htmlFor=toggle.id;
  const descriptions={
   '16:9':'Wide landscape','9:16':'Vertical story','1:1':'Square',
   '4:3':'Classic landscape','3:4':'Portrait'
