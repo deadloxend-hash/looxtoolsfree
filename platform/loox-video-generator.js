@@ -66,6 +66,89 @@ const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.l
  if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
 }});
 const community=new Community({state,auth,initialize,root:$('lvg-public-templates')});
+
+/* Frame-to-frame filmmaking: take the actual last frame of a completed clip
+   and prepare it as the START image for the next shot in this same session.
+   Models currently accept one reference image; do not advertise end-frame
+   conditioning or automatic stitching where the backend has neither. */
+async function captureLastVideoFrame(url){
+ const response=await fetch(url,{credentials:'omit'});
+ if(!response.ok)throw Error('Could not retrieve this video for frame extraction.');
+ const blob=await response.blob();
+ if(!blob.type.startsWith('video/'))throw Error('The saved file is not a supported video.');
+ const local=URL.createObjectURL(blob);
+ const video=document.createElement('video');
+ video.preload='auto';video.muted=true;video.playsInline=true;
+ try{
+  video.src=local;
+  await new Promise((resolve,reject)=>{
+   const timer=setTimeout(()=>reject(Error('The video took too long to load.')),16000);
+   video.addEventListener('loadedmetadata',()=>{clearTimeout(timer);resolve();},{once:true});
+   video.addEventListener('error',()=>{clearTimeout(timer);reject(Error('Cannot open this video for frame extraction.'));},{once:true});
+  });
+  if(!video.videoWidth||!video.videoHeight||!Number.isFinite(video.duration))throw Error('The last frame is not accessible.');
+  const at=Math.max(0,video.duration-.12);
+  if(at>0){
+   await new Promise((resolve,reject)=>{
+    const timer=setTimeout(()=>reject(Error('Could not read the ending frame.')),14000);
+    video.addEventListener('seeked',()=>{clearTimeout(timer);resolve();},{once:true});
+    video.addEventListener('error',()=>{clearTimeout(timer);reject(Error('The video frame could not be decoded.'));},{once:true});
+    video.currentTime=at;
+   });
+  }else{
+   await new Promise((resolve,reject)=>{
+    if(video.readyState>=2)return resolve();
+    const timer=setTimeout(()=>reject(Error('The first video frame is unavailable.')),12000);
+    video.addEventListener('loadeddata',()=>{clearTimeout(timer);resolve();},{once:true});
+   });
+  }
+  const max=1152,scale=Math.min(1,max/Math.max(video.videoWidth,video.videoHeight));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(2,Math.round(video.videoWidth*scale));
+  canvas.height=Math.max(2,Math.round(video.videoHeight*scale));
+  canvas.getContext('2d',{alpha:false})?.drawImage(video,0,0,canvas.width,canvas.height);
+  const jpeg=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('Unable to prepare the extracted frame.')),'image/jpeg',.86));
+  if(jpeg.size>2400000)throw Error('The extracted frame exceeds 2.4 MB. Try a shorter source video.');
+  return new File([jpeg],'last-frame.jpg',{type:'image/jpeg'});
+ }finally{video.pause();video.removeAttribute('src');video.load();URL.revokeObjectURL(local);}
+}
+async function continueVideoShot(id,button){
+ if(busy){notice('Finish the current video before preparing the next shot.',true);return;}
+ if(!state.user){auth('login');return;}
+ const preferred=['wan25_i2v','wan22_i2v_fast','wan26_i2v_flash'];
+ const supported=preferred.find(id=>state.config?.videoModels?.some(m=>m.id===id&&m.available));
+ if(!supported){notice('No image-to-video model is available for continuing this shot right now.',true);return;}
+ button.disabled=true;const original=button.textContent;button.textContent='Extracting frame…';
+ try{
+  const status=await api('status',null,{id});
+  if(status.state!=='succeeded'||!status.url)throw Error('This video must finish before it can be continued.');
+  const frame=await captureLastVideoFrame(status.url);
+  const transfer=new DataTransfer();transfer.items.add(frame);
+  imageField.files=transfer.files;
+  modelField.value=supported;
+  modelField.dispatchEvent(new Event('change',{bubbles:true}));
+  imageField.dispatchEvent(new Event('change',{bubbles:true}));
+  if(!promptField.value.trim())promptField.value='Continue this scene naturally from the previous shot. Keep the same subject, setting, lighting and consistent movement.';
+  document.dispatchEvent(new Event('loox:session-open'));
+  document.body.classList.remove('loox-uc-scroll-compact');
+  composer?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth',block:'end'});
+  promptField.focus({preventScroll:true});
+  notice('Last frame added. Describe the next shot, review its credit price, then generate. Each shot is charged separately.');
+ }catch(error){notice(error.message||'Unable to extract the last frame.',true);}
+ finally{button.disabled=false;button.textContent=original;}
+}
+const baseCompleted=sessions.completed.bind(sessions);
+sessions.completed=(view,id)=>{
+ baseCompleted(view,id);
+ if(view.entry?.media_type!=='video'||!view.stage?.querySelector('video'))return;
+ const actions=view.card?.querySelectorAll('.loox-generation-actions');
+ const target=actions?.[actions.length-1];if(!target||target.querySelector('.studio-continue-shot'))return;
+ const button=make('button','studio-continue-shot','Continue from last frame');
+ button.type='button';button.title='Use this video’s final frame as the next shot’s start frame';
+ button.addEventListener('click',()=>continueVideoShot(id,button));
+ target.append(button);
+};
+
 let serverQuote=null,quoteEpoch=0;
 const quoteInputs=()=>({model:modelField.value,duration:isCloud()?Number(durationField.value):2,ratio:ratioField.value});
 async function updateQuote(){const epoch=++quoteEpoch;if(!state.user){serverQuote=null;accountInfo();return null;}const input=quoteInputs();try{const q=await api('video_quote',input);if(epoch!==quoteEpoch||JSON.stringify(input)!==JSON.stringify(quoteInputs()))return null;serverQuote=q;accountInfo();refreshButton();return q;}catch(error){if(epoch===quoteEpoch){serverQuote=null;notice(error.message,true);accountInfo();}return null;}}
@@ -125,7 +208,7 @@ if(window.ResizeObserver){
 syncHeader();
 function refreshButton(){
   generateButton.disabled=busy || Boolean(state.user&&!online);
-  generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Cloud model unavailable':'GPU offline · Generate unavailable'):'✧ Generate video · '+cost()+' credits';
+  generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Model unavailable':'GPU offline'):'Generate video';
 }
 let gpuCheckVersion=0;
 async function checkGPU(){
