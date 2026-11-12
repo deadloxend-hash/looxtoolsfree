@@ -20,9 +20,16 @@ jobs:
       - name: Audit every root and learning page for missing references and duplicate IDs
         run: python3 scripts/site-ui-static-audit.py
       - name: Install ephemeral browser testing dependency
-        run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
-      - name: Install browser (if required by runner)
-        run: npx playwright install chromium
+        run: npm install --no-save --no-package-lock --ignore-scripts playwright@latest
+      - name: Locate a headless browser
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            google-chrome --version
+          elif command -v chromium >/dev/null 2>&1; then
+            chromium --version
+          else
+            npx playwright install chromium
+          fi
       - name: Run responsive overflow and interaction checks
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-ui-audit-server.log 2>&1 &
