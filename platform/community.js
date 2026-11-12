@@ -441,7 +441,46 @@ export class Community {
    this.profile.append(follow);
   }
  }
- async manage(){const d=modal('Manage your public posts'),status=element('p','community-note');d.append(status);let offset=0;const list=element('div','community-manage');d.append(list);const more=action('Load more',load,'community-button',e=>status.textContent=e.message);d.append(more);const self=this;async function load(){more.disabled=true;try{const rows=result(await self.state.client.from('loox_community_posts').select('*').eq('creator_id',self.state.user.id).order('created_at',{ascending:false}).range(offset,offset+23));offset+=rows.length;more.hidden=rows.length<24;for(const p of rows){const row=element('div','community-manage-row');row.append(element('strong','',p.caption),element('small','community-note',p.status+' · '+(p.visible?'visible after approval':'hidden')));for(const [label,act] of [[p.visible?'Hide':'Show',p.visible?'hide':'show'],['Edit','edit'],['Post permissions','permissions'],['Delete post','delete']])row.append(action(label,async()=>{if(act==='permissions'){await self.postPermissions(p);return;}if(act==='delete'&&!confirm('Delete this Community post? Your private original stays saved.'))return;let caption=null,share=null;if(act==='edit'){caption=window.prompt('Caption (changes require approval)',p.caption);if(caption===null)return;share=confirm('Share the generation prompt publicly? OK = share; Cancel = keep private.');}await rpc(self.state,'loox_manage_post',{p_id:p.id,p_action:act,p_caption:caption,p_share_prompt:share});d.close();await self.load(true);},'community-button',e=>status.textContent=e.message));list.append(row);}if(!offset)status.textContent='No submissions yet.';}finally{more.disabled=false;}}await load();}
+ async manage(){
+  if(!this.state.user)return this.auth('login');
+  const d=modal('Manage your Community posts');
+  const status=element('p','community-note'),list=element('div','community-manage');
+  const more=action('Load more',load,'community-button',e=>status.textContent=e.message);
+  d.append(list,more,status);
+  const self=this;let offset=0,busy=false;
+  async function load(){
+   if(busy)return;busy=true;more.disabled=true;
+   try{
+    const data=await cloudRequest(self.state,'manage',{query:{offset}});
+    const rows=data.items||[];
+    for(const p of rows){
+     const row=element('div','community-manage-row');
+     const vis=p.visible?'Visible':'Hidden';
+     row.append(element('strong','',p.caption),element('small','community-note',p.status+' · '+vis));
+     for(const [label,act] of [[p.visible?'Hide':'Show',p.visible?'hide':'show'],['Edit','edit'],['Post permissions','permissions'],['Delete post','delete']]){
+      const button=action(label,async()=>{
+       if(act==='permissions'){await self.postPermissions(p);return;}
+       if(act==='delete'&&!confirm('Delete this Community post? Your private original stays saved.'))return;
+       let caption=null,share=null;
+       if(act==='edit'){
+        caption=window.prompt('Caption (changes require approval)',p.caption);
+        if(caption===null)return;
+        share=confirm('Share the original generation prompt publicly?');
+       }
+       await cloudRequest(self.state,'manage',{method:'POST',data:{id:p.id,action:act,caption,share_prompt:share}});
+       d.close();await self.load(true);
+      },'community-button',e=>status.textContent=e.message);
+      row.append(button);
+     }
+     list.append(row);
+    }
+    offset+=rows.length;more.hidden=!data.has_more;
+    status.textContent=offset?'':'No Community submissions yet.';
+   }catch(e){status.textContent=e.message;}finally{busy=false;more.disabled=false;}
+  }
+  await load();
+ }
+
 }
 
 installSocial(Community,{element,action,rpc,result,mediaURL,modal,field});
