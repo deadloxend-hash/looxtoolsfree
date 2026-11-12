@@ -226,6 +226,8 @@ function dockAgentHistory(){
  if(!host||!recentPanel)return false;
  if(recentPanel.parentElement!==host)host.append(recentPanel);
  document.body.classList.add('loox-chat-sessions-in-drawer');
+ // The common drawer owns history now; do not reserve a second permanent rail.
+ document.body.classList.remove('ai-recent-open','ai-agent-permanent-sessions');
  return true;
 }
 if(!dockAgentHistory()){
@@ -241,7 +243,9 @@ function setRecentOpen(){
  if(!recentPanel)return;
  recentClosed=false;
  recentPanel.classList.remove('is-collapsed');
- document.body.classList.add('ai-recent-open','ai-agent-permanent-sessions');
+ if(!document.body.classList.contains('loox-chat-sessions-in-drawer'))
+  document.body.classList.add('ai-recent-open','ai-agent-permanent-sessions');
+ else document.body.classList.remove('ai-recent-open','ai-agent-permanent-sessions');
  if(recentScrim)recentScrim.hidden=true;
 }
 setRecentOpen();
