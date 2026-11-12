@@ -338,7 +338,8 @@ if(discoveryPage){
     menu.append(item);
    }
    place(button);
-   menu.querySelector('[aria-selected="true"]')?.scrollIntoView({block:'nearest'});
+   const selected=menu.querySelector('[aria-selected="true"]');
+   if(selected)menu.scrollTop=Math.max(0,selected.offsetTop-menu.offsetTop-38);
   };
  }
  document.addEventListener('pointerdown',ev=>{
@@ -395,10 +396,29 @@ if(page==='community.html'){
   arrange();
   query.addEventListener?.('change',arrange);
   sort.addEventListener('change',()=>{details.open=false;});
-  dates.addEventListener('change',()=>{details.open=false;});
+  dates.addEventListener('change',()=>{
+   const sortLabel=sortWrap.querySelector('.loox-discovery-select-trigger');
+   if(sortLabel)sortLabel.textContent=sort.selectedOptions[0]?.textContent||'Trending';
+   details.open=false;
+  });
   document.addEventListener('pointerdown',event=>{
    if(details.open&&!details.contains(event.target)&&!event.target.closest('.loox-discovery-select-menu'))details.open=false;
   });
+ }
+}
+if(page==='community.html'){
+ const overflow=document.querySelector('.loox-community-mobile-menu');
+ if(overflow){
+  document.addEventListener('pointerdown',event=>{
+   if(overflow.open&&!overflow.contains(event.target))overflow.open=false;
+  });
+  document.addEventListener('keydown',event=>{
+   if(event.key==='Escape'&&overflow.open){
+    overflow.open=false;
+    overflow.querySelector('summary')?.focus({preventScroll:true});
+   }
+  });
+  overflow.querySelectorAll('nav a').forEach(link=>link.addEventListener('click',()=>{overflow.open=false;}));
  }
 }
 await community.show();
