@@ -1,0 +1,37 @@
+name: Creator Profile responsive interaction checks
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "creator.html"
+      - "platform/creator.js"
+      - "platform/creator-profile.css"
+      - "scripts/creator-profile-audit.mjs"
+      - ".github/workflows/creator-profile-check.yml"
+permissions:
+  contents: read
+jobs:
+  creator-profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate profile JavaScript
+        run: node --check platform/creator.js && node --check scripts/creator-profile-audit.mjs
+      - name: Install ephemeral Playwright test runner
+        run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
+      - name: Locate Chromium
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            google-chrome --version
+          else
+            npx playwright install --with-deps chromium
+          fi
+      - name: Run profile smoke tests at mobile and desktop widths
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/loox-creator-audit.log 2>&1 &
+          sleep 2
+          node scripts/creator-profile-audit.mjs
