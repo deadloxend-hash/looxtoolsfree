@@ -331,7 +331,7 @@ function run(){
    };
    const filmSummary=()=>{
     const cards=entries();
-    const total=cards.reduce((sum,entry)=>sum+durationFor(entry),0);
+    const total=cards.filter(entry=>!!entry.querySelector('video')).reduce((sum,entry)=>sum+durationFor(entry),0);
     shots.textContent='Shots '+cards.length;
     shots.setAttribute('aria-label',cards.length+' video shots in this session');
     return {cards,total};
@@ -343,7 +343,7 @@ function run(){
     const {cards,total}=filmSummary();
     const box=node('div','studio-shots-sheet');
     box.append(node('p','studio-shots-note',cards.length?
-     cards.length+' clip'+(cards.length===1?'':'s')+(total?' · approximately '+total+' seconds':'')+' in this session. Each generation is billed separately. Clips are not automatically stitched together.':
+     cards.length+' shot'+(cards.length===1?'':'s')+(total?' · approximately '+total+' seconds completed':'')+' in this session. Each generation is billed separately. Clips are not automatically stitched together.':
      'Create your first video to build a sequence of shots.'));
     for(let index=0;index<cards.length;index++){
      const clip=cards[index];
@@ -351,7 +351,7 @@ function run(){
      const pic=node('div','studio-shot-number',String(index+1));
      const text=node('div','studio-shot-copy');
      const prompt=clip.querySelector('.lig-output-name')?.textContent||'Video shot';
-     text.append(node('strong','',prompt.slice(0,80)),node('small','',durationFor(clip)?durationFor(clip)+'s video':'Saved shot'));
+     text.append(node('strong','',prompt.slice(0,80)),node('small','',clip.querySelector('video')?(durationFor(clip)?durationFor(clip)+'s ready':'Video ready'):'Processing / unavailable'));
      const jump=button('View',()=>{d.close();document.body.classList.remove('loox-uc-scroll-compact');clip.scrollIntoView({behavior:'smooth',block:'center'});},'studio-button');
      const continueBtn=clip.querySelector('.studio-continue-shot');
      if(continueBtn)r.append(pic,text,jump,button('Continue',()=>{d.close();continueBtn.click();},'studio-button'));
@@ -384,7 +384,7 @@ function run(){
    const estimated=video&&/refreshes before generation/i.test(priceSource.textContent);
    costText.textContent=charge===null?'Checking cost…':(estimated?'Est. ':'')+charge+' credit'+(charge===1?'':'s')+' / shot';
    balanceText.textContent=balance===null?'Balance: '+(state.user?'Loading…':'Sign in'):'Balance: '+balance;
-   remainderText.textContent=balance===null||charge===null?'':'After: '+Math.max(0,balance-charge);
+   remainderText.textContent=balance===null||charge===null?'':balance>=charge?'After: '+(balance-charge):'Need '+(charge-balance)+' more';
    remainderText.hidden=balance===null||charge===null;
   };
   for(const source of [balanceSource,priceSource])new MutationObserver(sync).observe(source,{childList:true,subtree:true,characterData:true});
