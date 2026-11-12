@@ -8,8 +8,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CSS_VERSION = "104"
-JS_VERSION = "102"
+CSS_VERSION = "105"
+JS_VERSION = "103"
 HOME_PAGES = {"index.html", "ai-home.html", "ai-chat.html"}
 ASSETS = (
     ("loox-sitewide-nav.css", "href", "head",
