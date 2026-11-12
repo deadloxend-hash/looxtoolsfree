@@ -1,3 +1,4 @@
+(()=>{
 /* Guided first-video setup. All credits are confirmed in the real workspace. */
 // Independent of account modules: custom dropdowns must work before API calls.
 async function config(){
@@ -152,3 +153,5 @@ try{
 }
 }
 hydrateVideoModels();
+
+})();
