@@ -223,6 +223,61 @@ if(page==='community.html'){
   }
   info.append(promptBar,promptPanel,feedback);
   card.append(actions,info);
+
+  // On mobile, a single tap still opens the post. A second nearby tap within
+  // 340 ms instead likes the photo and shows a heart burst over that location.
+  // The capture listener runs before the original click-to-open handler.
+  const photo=card.querySelector('.community-card-art .community-media');
+  if(post.media_type==='image'&&photo){
+   let firstAt=0,firstX=0,firstY=0,openTimer=null;
+   const openPhoto=()=>self.details(post).catch(fail);
+   const showHeart=(event)=>{
+    const bounds=photo.getBoundingClientRect();
+    const heart=element('span','loox-community-doubletap-heart');
+    heart.setAttribute('aria-hidden','true');
+    heart.innerHTML='<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/></svg>';
+    heart.style.left=Math.max(44,Math.min(bounds.width-44,event.clientX-bounds.left))+'px';
+    heart.style.top=Math.max(44,Math.min(bounds.height-44,event.clientY-bounds.top))+'px';
+    photo.append(heart);
+    heart.addEventListener('animationend',()=>heart.remove(),{once:true});
+    setTimeout(()=>heart.remove(),900);
+    like.classList.remove('loox-community-like-pop');
+    void like.offsetWidth; // Restart the icon animation on repeated double-taps.
+    like.classList.add('loox-community-like-pop');
+    setTimeout(()=>like.classList.remove('loox-community-like-pop'),550);
+   };
+   photo.addEventListener('click',event=>{
+    // Preserve immediate activation for keyboard/screen-reader clicks, and
+    // preserve the standard desktop image viewer interaction.
+    if(!matchMedia('(max-width:700px)').matches||event.detail===0)return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const now=performance.now();
+    const doubleTap=firstAt>0&&now-firstAt<340&&
+     Math.hypot(event.clientX-firstX,event.clientY-firstY)<75;
+    if(openTimer){clearTimeout(openTimer);openTimer=null;}
+    if(doubleTap){
+     firstAt=0;
+     showHeart(event);
+     if(!self.state.user){self.auth('login');return;}
+     // Double-tapping always likes: never toggle an already-liked post off.
+     if(!post.liked&&!self.pendingLikes.has(post.id)){
+      const result=self.like(post,like);
+      likeCount.textContent=(Number(post.likes)||0).toLocaleString()+' likes';
+      Promise.resolve(result).catch(fail).finally(()=>{
+       if(likeCount.isConnected)
+        likeCount.textContent=(Number(post.likes)||0).toLocaleString()+' likes';
+      });
+     }
+     return;
+    }
+    firstAt=now;firstX=event.clientX;firstY=event.clientY;
+    openTimer=setTimeout(()=>{
+     openTimer=null;firstAt=0;
+     if(photo.isConnected)openPhoto();
+    },340);
+   },true);
+  }
   return card;
  };
  document.addEventListener('pointerdown',event=>{
