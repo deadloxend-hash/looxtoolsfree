@@ -379,9 +379,12 @@ function run(){
   const costText=node('span','studio-budget-cost');
   const balanceText=node('span','studio-budget-balance');
   const remainderText=node('span','studio-budget-after');
+  const quotaSource=document.querySelector('.'+prefix+'-daily-quota');
+  const quotaText=node('span','studio-budget-quota');quotaText.hidden=true;
+  quotaText.title='Daily generation allowance from your LOOX account';
   const link=node('a','studio-budget-link','Credits');
   link.href='account.html#credits';
-  bar.append(spec,costText,balanceText,remainderText,link);
+  bar.append(spec,costText,balanceText,remainderText,quotaText,link);
   card.append(bar);
   const sync=()=>{
    spec.textContent=formatSpec();
@@ -394,8 +397,11 @@ function run(){
    balanceText.textContent=balance===null?'Balance: '+(state.user?'Loading…':'Sign in'):'Balance: '+balance;
    remainderText.textContent=balance===null||charge===null?'':balance>=charge?'After: '+(balance-charge):'Need '+(charge-balance)+' more';
    remainderText.hidden=balance===null||charge===null;
+   const daily=quotaSource?.textContent.match(/(?:Videos|Images) left today:\s*(\d+)\s*\/\s*(\d+)/i);
+   quotaText.hidden=!daily;
+   if(daily)quotaText.textContent='Today: '+daily[1]+'/'+daily[2]+' left';
   };
-  for(const source of [balanceSource,priceSource])new MutationObserver(sync).observe(source,{childList:true,subtree:true,characterData:true});
+  for(const source of [balanceSource,priceSource,quotaSource].filter(Boolean))new MutationObserver(sync).observe(source,{childList:true,subtree:true,characterData:true});
   for(const id of [prefix+'-ratio',video?'lvg-duration':null,video?'lvg-model':null].filter(Boolean)){document.getElementById(id)?.addEventListener('change',sync);}
   document.addEventListener('loox-account',sync);document.addEventListener('loox-user',sync);
   sync();
