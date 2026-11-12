@@ -1,6 +1,7 @@
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {installSocial,installPrivacy} from './community-social.js?v=9';
 import {api,refresh} from './account.js?v=9';
+import {cloudRequest,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
 // Shared community UI. Only Supabase publishable credentials enter the browser.
 export const element=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;};
 export const result=r=>{if(r.error)throw Error(r.error.code==='23505'?'That username is already taken. Choose another.':r.error.message);return r.data;};
@@ -24,14 +25,16 @@ export async function publishCreation({state,auth,id,prompt='',notice=()=>{}}){
 }
 export async function editCreator({state,auth,onSave=()=>{}}){
  if(!state.user){auth('login');return;}
- const current=await rpc(state,'loox_creator_summary',{p_creator:state.user.id});const d=modal('Your creator profile'),form=element('form'),status=element('p','community-note');
+ const current=await cloudRequest(state,'profile',{query:{id:state.user.id}});const d=modal('Your creator profile'),form=element('form'),status=element('p','community-note');
  const username=field(form,'Username',current?.username||'creator_'+state.user.id.replaceAll('-','').slice(0,12));username.required=true;username.pattern='[a-z0-9_]{3,30}';username.maxLength=30;
  const name=field(form,'Display name',current?.display_name||'LOOX creator');name.required=true;name.maxLength=60;
  const bio=field(form,'Bio',current?.bio||'','textarea');bio.maxLength=500;
  const avatar=field(form,'Profile picture (PNG, JPG, WebP · up to 2 MB)');avatar.type='file';avatar.accept='image/png,image/jpeg,image/webp';
  const removeLabel=element('label','community-check'),remove=element('input');remove.type='checkbox';removeLabel.append(remove,'Remove current profile picture');form.append(removeLabel);const submit=element('button','community-primary','Save profile');submit.type='submit';form.append(submit,status);d.append(form);
- form.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;try{let path=remove.checked?null:current?.avatar_path||null;const file=avatar.files[0];if(file){const cropped=await cropAvatar(file),image=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Could not read picture.'));reader.readAsDataURL(cropped);});const {data}=await state.client.auth.getSession();const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?action=community_avatar',{method:'POST',headers:{Authorization:'Bearer '+data.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({image})});const upload=await response.json();if(!response.ok)throw Error(upload.error||'Profile picture upload failed.');path=upload.path;}
- await rpc(state,'loox_save_creator',{p_username:username.value,p_name:name.value.trim(),p_bio:bio.value,p_avatar:path});
+ form.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;try{
+ await cloudRequest(state,'profile',{method:'PATCH',data:{username:username.value.trim().toLowerCase(),display_name:name.value.trim(),bio:bio.value}});
+ if(remove.checked)await cloudDelete(state,'avatar');
+ else if(avatar.files[0])await cloudUpload(state,'avatar',await cropAvatar(avatar.files[0]));
  try{await api('profile',{name:name.value.trim()});await refresh();}
  catch(syncError){status.textContent='Creator profile saved, but the account name did not sync: '+syncError.message;submit.disabled=false;await onSave();return;}
  d.close();await onSave();}catch(error){status.textContent=error.message;submit.disabled=false;}});
@@ -68,7 +71,19 @@ export class Community {
  note(text){this.status.textContent=text;}
  async show(){if(!this.initialized){try{await this.initialize({publicAccess:true,waitForAccount:!this.creator});}catch{}this.initialized=true;}await this.load(true);}
  async load(reset=true){const seq=++this.epoch,uid=this.state.user?.id;this.profileOnly=Boolean(this.creator&&this.creator!==uid);this.root.classList.toggle('loox-profile-only',this.profileOnly);if(this.filters)this.filters.hidden=Boolean(this.creator);if(this.tools)this.tools.hidden=Boolean(this.creator);if(this.grid)this.grid.hidden=this.profileOnly;if(this.status)this.status.hidden=this.profileOnly;if(reset){this.offset=0;this.posts=[];}const offset=this.offset;this.more.disabled=true;this.note('Loading creations…');this.root.querySelectorAll('[data-kind]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.kind===this.kind)));
- try{if(this.creator)await this.loadProfile(seq);if(this.profileOnly){this.grid.replaceChildren();this.more.hidden=true;this.note('');return;}if(['following','saved','liked'].includes(this.sort)&&!this.state.user){this.grid.replaceChildren();this.more.hidden=true;this.note('Sign in to see your '+this.sort+' feed.');return;}const data=await rpc(this.state,'loox_discover',{p_kind:this.kind,p_sort:this.sort,p_offset:offset,p_creator:this.creator,p_query:this.query,p_collection:this.collection,p_days:this.days});if(seq!==this.epoch||uid!==this.state.user?.id)return;
+ try{if(this.creator)await this.loadProfile(seq);if(this.profileOnly){this.grid.replaceChildren();this.more.hidden=true;this.note('');return;}if(['following','saved','liked'].includes(this.sort)&&!this.state.user){this.grid.replaceChildren();this.more.hidden=true;this.note('Sign in to see your '+this.sort+' feed.');return;}const data=await rpc(this.state,'loox_discover',{p_kind:this.kind,p_sort:this.sort,p_offset:offset,p_creator:this.creator,p_query:this.query,p_collection:this.collection,p_days:this.days});
+ // Filter public posts against the authoritative Cloudflare privacy record and
+ // show current Cloudflare identity, not stale Supabase profile snapshots.
+ const ids=[...new Set((data.items||[]).map(p=>p.creator_id).filter(Boolean))];
+ if(ids.length){
+  const fresh=await cloudRequest(this.state,'profiles',{query:{ids:ids.join(',')}});
+  const byId=new Map((fresh.profiles||[]).map(p=>[p.user_id,p]));
+  data.items=(data.items||[]).filter(p=>byId.has(p.creator_id)).map(p=>{
+   const creator=byId.get(p.creator_id);
+   return {...p,username:creator.username,display_name:creator.display_name,avatar_path:creator.avatar_path};
+  });
+ }
+ if(seq!==this.epoch||uid!==this.state.user?.id)return;
  if(reset)this.grid.replaceChildren();for(const post of data.items||[]){this.posts.push(post);const card=this.card(post);card.dataset.feedPosition=String(this.posts.length-1);this.grid.append(card);}this.renderDiscoveryMasonry();this.offset=offset+(data.items||[]).length;this.more.hidden=!data.has_more;this.more.textContent='Load more';this.note(this.offset?'':this.sort==='following'?'Follow creators to see their newest public posts here.':'No matching public creations yet. Private generations stay in My Creations.');if(!offset){const postId=new URLSearchParams(location.search).get('post');const target=this.posts.find(p=>p.id===postId);if(target&&!this.openedLink){this.openedLink=true;await this.details(target);}else if(postId&&!this.openedLink){const linked=await rpc(this.state,'loox_public_post',{p_id:postId});this.openedLink=true;if(linked)await this.details(linked);else this.note('This post is unavailable or private.');}}}
  catch(error){if(seq===this.epoch){
   if(this.creator&&this.profile.getAttribute('aria-busy')==='true'){
@@ -155,7 +170,7 @@ export class Community {
  const hoverAvatar=element('span','community-avatar',post.display_name?.slice(0,1)||'L');
  const hoverNames=element('span','community-hover-names');hoverNames.append(element('strong','',post.display_name||post.username),element('small','','@'+post.username));
  hoverCreator.append(hoverAvatar,hoverNames);
- if(post.avatar_path)mediaURL(this.state,post.avatar_path,'loox-avatars',{type:'avatar',id:post.creator_id}).then(url=>{
+ mediaURL(this.state,post.avatar_path,'loox-avatars',{type:'avatar',id:post.creator_id}).then(url=>{
   for(const holder of [avatar,hoverAvatar]){if(!holder.isConnected)continue;const img=element('img');img.src=url;img.alt='';img.loading='lazy';holder.replaceChildren(img);}
  }).catch(()=>{});
  const hover=element('div','community-card-hover'),hoverTools=element('div','community-hover-tools');
@@ -264,7 +279,7 @@ export class Community {
    element('small','','@'+post.username)
   );
   creator.append(profileAvatar,profileNames);
-  if(post.avatar_path){
+  {
    mediaURL(this.state,post.avatar_path,'loox-avatars',{type:'avatar',id:post.creator_id})
     .then(url=>{
      if(!profileAvatar.isConnected)return;
@@ -321,8 +336,7 @@ export class Community {
   const load=async()=>{
    if(busy)return;busy=true;more.disabled=true;
    try{
-    const data=await rpc(this.state,'loox_creator_connections',
-      {p_creator,p_kind:kind,p_offset:offset});
+    const data=await cloudRequest(this.state,'connections',{query:{id:p_creator,kind,offset}});
     if(data.hidden){
      status.textContent='This creator keeps their connections private.';
      more.hidden=true;return;
@@ -355,7 +369,7 @@ export class Community {
  }
  async loadProfile(seq){
    this.profile.setAttribute('aria-busy','true');
-  const p=await rpc(this.state,'loox_creator_summary',{p_creator:this.creator});
+  const p=await cloudRequest(this.state,'profile',{query:{id:this.creator}});
   if(seq!==this.epoch)return;
   this.profile.replaceChildren();this.profile.setAttribute('aria-busy','false');const own=this.state.user?.id===this.creator;
   if(!p){
@@ -410,9 +424,7 @@ export class Community {
     if(!this.state.user)return this.auth('login');
     follow.disabled=true;
     try{
-     const q=this.state.client.from('loox_creator_follows');
-     result(p.followed?await q.delete().eq('follower_id',this.state.user.id)
-        .eq('creator_id',p.user_id):await q.insert({follower_id:this.state.user.id,creator_id:p.user_id}));
+     await cloudRequest(this.state,'follow',{method:'POST',data:{creator_id:p.user_id,follow:!p.followed}});
      await this.loadProfile(seq);
     }finally{follow.disabled=false;}
    },'community-primary',e=>this.note(e.message));
