@@ -6,7 +6,7 @@ const root=process.env.LOOX_AUDIT_URL||'http://127.0.0.1:8765/';
 const me='11111111-1111-4111-8111-111111111111', other='22222222-2222-4222-8222-222222222222';
 const icon='data:image/svg+xml,%3Csvg%20xmlns="http://www.w3.org/2000/svg"%20width="400"%20height="230"%3E%3Crect%20width="400"%20height="230"%20fill="%235e3972"/%3E%3C/svg%3E';
 const accountModule=[
- "export const state={user:{id:'"+me+"'},client:{from:()=>({insert:async()=>{window.__p.followed=true;return {data:{},error:null};},delete:()=>({eq:()=>({eq:async()=>{window.__p.followed=false;return {data:{},error:null};}})})})}};",
+ "export const state={user:{id:'"+me+"'},client:{from:()=>({insert:async()=>{window.__p.followed=true;return {data:{},error:null};},delete:()=>({eq:()=>({eq:async()=>{window.__p.followed=false;return {data:{},error:null};}})}),select:()=>({eq:()=>({order:()=>({range:async()=>({data:window.__replies,error:null})})})})})}};",
  "export function auth(){}",
  "export async function initialize(){}",
  "export async function refresh(){}",
@@ -31,7 +31,7 @@ async function profilePage(width,path){
  await page.addInitScript(({user,post})=>{
   window.__calls=[];window.__details=0;window.__connections=0;
   window.__p={user_id:user,username:'test_creator',display_name:'Test Creator',bio:'Creating a little magic with AI.',avatar_path:'test.webp',created_at:'2026-11-01T00:00:00Z',is_private:false,hide_connections:false,cover_key:'public/avatars/'+user+'/banner-test.webp',posts:1,followers:3,following:2,profile_location:'Somewhere creative',profile_website:'https://example.com',plan_badge:'Basic',pinned_post_id:null,followed:false};
-  window.__posts=[{id:post,creator_id:user,username:'test_creator',display_name:'Test Creator',avatar_path:'test.webp',caption:'A new AI landscape',created_at:'2026-11-09T00:00:00Z',media_type:'image',media_path:'test.webp',likes:3,comments:2,saved:false,liked:false}];
+  window.__posts=[{id:post,creator_id:user,username:'test_creator',display_name:'Test Creator',avatar_path:'test.webp',caption:'A new AI landscape',created_at:'2026-11-09T00:00:00Z',media_type:'image',media_path:'test.webp',likes:3,comments:2,saved:false,liked:false}];window.__replies=[{id:'44444444-4444-4444-8444-444444444444',post_id:post,body:'Great work!',created_at:'2026-11-10T00:00:00Z'}];
  },{user:path?'22222222-2222-4222-8222-222222222222':me,post:'33333333-3333-4333-8333-333333333333'});
  await page.route('**/platform/account.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:accountModule}));
  await page.route('**/platform/community.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:communityModule}));
@@ -41,7 +41,9 @@ async function profilePage(width,path){
  assert.equal(await page.locator('.cx-name-line h2').innerText(),'Test Creator');checks++;
  assert.equal(await page.locator('.cx-post').count(),1);checks++;
  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+6,'Horizontal overflow at '+width);checks++;
- assert.equal(await page.locator('.cx-tab').count(),path?2:3);checks++;
+ assert.equal(await page.locator('.cx-tab').count(),path?3:4);checks++;
+ await page.getByRole('button',{name:'Replies',exact:true}).click();
+ assert.equal(await page.locator('.cx-reply').count(),1);checks++;
  await page.getByRole('button',{name:'Media',exact:true}).click();
  assert.equal(await page.locator('.cx-media-tile').count(),1);checks++;
  await page.getByRole('button',{name:'Posts',exact:true}).click();
@@ -65,5 +67,5 @@ async function profilePage(width,path){
 try{
  await profilePage(393,false);
  await profilePage(1350,true);
- console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile editing/pinning, public follow, post/media tabs, layout.');
+ console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile editing/pinning, public follow, post/replies/media tabs, layout.');
 }catch(e){console.error('PROFILE AUDIT FAILED:',e);process.exitCode=1;}finally{await browser.close();}
