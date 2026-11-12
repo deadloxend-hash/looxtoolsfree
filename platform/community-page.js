@@ -376,6 +376,8 @@ if(page==='community.html'){
   const filters=dateWrap.parentNode;
   const sortMarker=document.createComment('Original sort position');
   filters.insertBefore(sortMarker,sortWrap);
+  const dateMarker=document.createComment('Original date position');
+  filters.insertBefore(dateMarker,dateWrap);
   const details=element('details','loox-community-date-filter');
   const summary=element('summary','loox-community-filter-trigger','Filter');
   summary.setAttribute('aria-label','Open community sorting and filtering');
@@ -390,8 +392,13 @@ if(page==='community.html'){
   // On larger screens retain the previous separate sorting pill.
   const query=window.matchMedia('(max-width:700px)');
   const arrange=()=>{
-   if(query.matches){sortRow.append(sortWrap);}
-   else{filters.insertBefore(sortWrap,sortMarker);details.open=false;}
+   if(query.matches){
+    sortRow.append(sortWrap);dateRow.append(dateWrap);details.hidden=false;
+   }else{
+    filters.insertBefore(sortWrap,sortMarker);
+    filters.insertBefore(dateWrap,dateMarker);
+    details.open=false;details.hidden=true;
+   }
   };
   arrange();
   query.addEventListener?.('change',arrange);
