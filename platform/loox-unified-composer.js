@@ -148,7 +148,7 @@
   browse.append(el('h2','','Start with a template'));
   const library=el('div');library.id='template-library';library.dataset.generatorKind=video?'video':'image';browse.append(library);wrap.after(browse);
   const style=el('link');style.rel='stylesheet';style.href='platform/template-gallery.css?v=1';document.head.append(style);
-  import('./template-library.js?v=2').catch(()=>{library.textContent='Templates are unavailable. Please try again later.'});
+  import('./template-library.js?v=3').catch(()=>{library.textContent='Templates are unavailable. Please try again later.'});
   document.body.classList.add('loox-has-start-templates');
   if(new URLSearchParams(location.search).has('template'))requestAnimationFrame(()=>{wrap.scrollIntoView({block:'start'});textarea.focus({preventScroll:true});});
 

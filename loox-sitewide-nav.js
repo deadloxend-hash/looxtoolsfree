@@ -309,9 +309,9 @@
  fallback.href=url('ai-image-landing.html');sideContent.append(fallback);
  sidebar.append(sideContent);
  const navStyle=el('link');navStyle.rel='stylesheet';
- navStyle.href=url('platform/workspace-navigation.css?v=10');
+ navStyle.href=url('platform/workspace-navigation.css?v=14');
  document.head.append(navStyle);
- import(url('platform/workspace-navigation.js?v=9')).then(({mountWorkspaceNavigation})=>{
+ import(url('platform/workspace-navigation.js?v=10')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
@@ -682,7 +682,7 @@
  const dialog=el('dialog','loox-sitewide-finder');
  dialog.innerHTML='<div class="loox-sitewide-finder-head"><div><small>LOOX WORKSPACES</small><h2>Find a tool</h2></div><button type="button" aria-label="Close tool search" class="loox-sitewide-finder-close">×</button></div><div class="loox-sitewide-finder-input">'+icons.search+'<input type="search" placeholder="Search every tool…" aria-label="Search every LOOX tool"></div><div class="loox-sitewide-finder-tabs" role="group" aria-label="Filter tools"><button type="button" data-filter="all" aria-pressed="true">All tools</button><button type="button" data-filter="image">Image</button><button type="button" data-filter="video">Video</button><button type="button" data-filter="text">Text</button><button type="button" data-filter="ai">AI</button></div><p class="loox-sitewide-finder-status" role="status"></p><div class="loox-sitewide-finder-results"></div>';
  document.body.append(dialog);
- const mobileFix=document.createElement('link');mobileFix.rel='stylesheet';mobileFix.href=url('platform/loox-mobile-refinements.css?v=1');document.head.append(mobileFix);
+ const mobileFix=document.createElement('link');mobileFix.rel='stylesheet';mobileFix.href=url('platform/loox-mobile-refinements.css?v=2');document.head.append(mobileFix);
  const fitFinder=()=>{const v=window.visualViewport;dialog.style.setProperty('--finder-height',(v?.height||innerHeight)+'px');dialog.style.setProperty('--finder-top',(v?.offsetTop||0)+'px');};
  window.visualViewport?.addEventListener('resize',fitFinder);window.visualViewport?.addEventListener('scroll',fitFinder);fitFinder();
  dialog.addEventListener('close',()=>document.body.classList.remove('loox-finder-open'));
