@@ -70,6 +70,48 @@ function run(){
  const add=document.getElementById(video?'loox-uc-video-add':'lig-reference-quick-add');if(add)add.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();assetsSheet(prefix);},true);
  // Compose style for this request only; restore the main prompt immediately afterwards.
  const form=document.getElementById(prefix+'-compose');form.addEventListener('submit',e=>{if(!selectedStyle)return;const original=prompt.value,text=selectedStyle.prompt;const combined=original.includes(text)?original:original.trim()+', '+text;if(combined.length>prompt.maxLength){e.preventDefault();e.stopImmediatePropagation();notify('Prompt and style exceed '+prompt.maxLength+' characters.');return;}prompt.value=combined;queueMicrotask(()=>{prompt.value=original;});},true);
- if(video){const upload=document.getElementById('lvg-image-block');if(upload){const area=node('section','studio-video-reference');const title=node('h2','','Start frame');const modes=node('nav','studio-tabs');for(const [label,key] of [['Frames','frames'],['References','references']]){const tab=button(label,()=>{title.textContent=key==='frames'?'Start frame':'Image reference';for(const entry of modes.children)entry.setAttribute('aria-pressed',String(entry===tab));});tab.setAttribute('aria-pressed',String(key==='frames'));modes.append(tab);}area.append(modes,title);const b=button('＋ Choose a reference image',()=>assetsSheet(prefix),'studio-upload');area.append(b);card.before(area);const syncReference=()=>{const unavailable=upload.hidden||document.getElementById('lvg-image').disabled;area.hidden=false;area.classList.toggle('studio-reference-unavailable',unavailable);b.disabled=unavailable;b.textContent=unavailable?'Reference images unavailable for this model':'＋ Choose a reference image';area.setAttribute('aria-label',unavailable?'Reference images are not supported by the selected model':'Video reference image');};new MutationObserver(syncReference).observe(upload,{attributes:true,subtree:true,attributeFilter:['hidden','disabled']});syncReference();const preview=node('img');preview.hidden=true;area.append(preview);let url;document.getElementById('lvg-image').addEventListener('change',e=>{if(url)URL.revokeObjectURL(url);const file=e.target.files[0];preview.hidden=!file;if(file){url=URL.createObjectURL(file);preview.src=url;preview.alt='Selected video reference';}});area.append(button('Remove reference',()=>{const f=document.getElementById('lvg-image');f.value='';f.dispatchEvent(new Event('change',{bubbles:true}));}));}}
+ if(video){
+  const upload=document.getElementById('lvg-image-block');
+  const file=document.getElementById('lvg-image');
+  if(upload&&file){
+   // One actual reference file is supported: don't advertise fake Frames/References modes.
+   const area=node('section','studio-video-reference');
+   const heading=node('div','studio-reference-heading');
+   const title=node('strong','','Reference image');
+   const hint=node('small','','Used by compatible image-to-video models.');
+   heading.append(title,hint);
+   const actions=node('div','studio-reference-actions');
+   const add=button('＋ Add reference image',()=>assetsSheet(prefix),'studio-upload');
+   const remove=button('Remove',()=>{
+    file.value='';
+    file.dispatchEvent(new Event('change',{bubbles:true}));
+   },'studio-reference-remove');
+   actions.append(add,remove);
+   const preview=node('img','studio-reference-preview');
+   preview.alt='Selected video reference image';preview.hidden=true;
+   area.append(heading,actions,preview);
+   card.before(area);
+   let objectUrl=null;
+   const syncReference=()=>{
+    const supported=!upload.hidden&&!file.disabled;
+    const selected=file.files?.[0]||null;
+    area.classList.toggle('studio-reference-unavailable',!supported);
+    add.disabled=!supported;
+    add.textContent=!supported?'Reference unavailable for this model':selected?'Change reference image':'＋ Add reference image';
+    hint.textContent=!supported?'Select an image-to-video model to enable references.':file.required?'Reference image required for the selected model.':'Reference image optional for this model.';
+    remove.hidden=!selected;
+    if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl=null;}
+    if(selected){objectUrl=URL.createObjectURL(selected);preview.src=objectUrl;}
+    else preview.removeAttribute('src');
+    preview.hidden=!selected;
+   };
+   file.addEventListener('change',syncReference);
+   new MutationObserver(syncReference).observe(upload,{attributes:true,attributeFilter:['hidden']});
+   new MutationObserver(syncReference).observe(file,{attributes:true,attributeFilter:['disabled','required']});
+   window.addEventListener('pagehide',()=>{if(objectUrl)URL.revokeObjectURL(objectUrl);},{once:true});
+   syncReference();
+  }
+ }
+
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(run,0),{once:true});else setTimeout(run,0);
