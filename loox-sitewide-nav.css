@@ -2545,3 +2545,98 @@ body.loox-apps-open{overflow:hidden!important}
   transition:none!important;
  }
 }
+
+
+/* V105 — one LOOX header wordmark scale on every page.
+   The legacy sitewide header and the native Image/Video/Assistant/Community
+   headers share this size, weight and tracking. Footer branding is untouched.
+   Only the small signature UNDERLINE breathes, never the text itself. */
+:root{
+ --loox-header-wordmark-size:30px;
+}
+html body #loox-sitewide-header .loox-sitewide-logo{
+ display:inline-flex!important;
+ flex:0 0 auto!important;
+ min-width:max-content!important;
+ overflow:visible!important;
+ height:43px!important;
+}
+html body #loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark,
+html body #loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark.loox-workspace-wordmark,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand .loox-workspace-wordmark,
+html body.loox-gallery-workspace.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand .loox-workspace-wordmark,
+html body.ai-chat.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand .loox-workspace-wordmark{
+ font-family:Inter,"Arial Black",system-ui,-apple-system,"Segoe UI",sans-serif!important;
+ font-size:var(--loox-header-wordmark-size)!important;
+ font-weight:900!important;
+ line-height:1!important;
+ letter-spacing:-.065em!important;
+ display:inline-block!important;
+ box-sizing:content-box!important;
+ white-space:nowrap!important;
+ padding-right:7px!important;
+ overflow:visible!important;
+ min-width:max-content!important;
+ max-width:none!important;
+ transform:none!important;
+}
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand,
+html body.loox-gallery-workspace.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand{
+ display:inline-flex!important;
+ position:relative!important;
+ flex:0 0 auto!important;
+ align-items:center!important;
+ width:auto!important;
+ min-width:max-content!important;
+ height:43px!important;
+ max-height:43px!important;
+ padding:3px 2px!important;
+ overflow:visible!important;
+}
+/* No text movement or additional text glow. */
+html body #loox-sitewide-header .loox-sitewide-logo .loox-sitewide-wordmark,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand .loox-workspace-wordmark{
+ transition:none!important;
+ animation:none!important;
+}
+/* Preserve the small violet line as the only animated element. */
+@keyframes loox-logo-underline-breathe{
+ 0%,100%{opacity:.30;filter:brightness(.88);box-shadow:0 0 2px #b78aec27;}
+ 50%{opacity:.70;filter:brightness(1.12);box-shadow:0 0 8px #b78aec58;}
+}
+html body #loox-sitewide-header .loox-sitewide-logo::after,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand::after,
+html body.loox-gallery-workspace.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand::after{
+ content:""!important;
+ position:absolute!important;
+ left:2px!important;
+ right:auto!important;
+ bottom:1px!important;
+ width:72px!important;
+ height:2px!important;
+ border-radius:999px!important;
+ background:linear-gradient(90deg,#9a65de 0%,#b987f7 60%,transparent 100%)!important;
+ transform:none!important;
+ transform-origin:left center!important;
+ pointer-events:none!important;
+ transition:none!important;
+ animation:loox-logo-underline-breathe 5.2s ease-in-out infinite!important;
+}
+html body #loox-sitewide-header .loox-sitewide-logo:hover::after,
+html body #loox-sitewide-header .loox-sitewide-logo:focus-visible::after,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand:hover::after,
+html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand:focus-visible::after{
+ transform:none!important;
+}
+@media(max-width:340px){
+ :root{--loox-header-wordmark-size:28px;}
+}
+@media(prefers-reduced-motion:reduce){
+ html body #loox-sitewide-header .loox-sitewide-logo::after,
+ html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-workspace-brand::after{
+  animation:none!important;
+  opacity:.48!important;
+  filter:none!important;
+  box-shadow:none!important;
+ }
+}
