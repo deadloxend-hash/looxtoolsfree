@@ -1,4 +1,4 @@
-import {Community} from './community.js?v=4';
+import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=6';
 import {MediaSessions} from './loox-image-sessions.js?v=25';
 
