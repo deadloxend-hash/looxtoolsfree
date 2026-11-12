@@ -10,8 +10,16 @@
  const page=location.pathname.split('/').pop();
  const ids=targets[page]||[];
  const instances=[];
+ // The two landing pages already have dedicated, model-aware LOOX pickers.
+ // Both generators have custom Workspace Studio fields and model pickers.
+ // Wrapping those native source fields a second time causes duplicate UI
+ // and breaks the original form-control listeners.
+ const ownedByExistingPickers=new Set([
+  'creative-model','lvg-duration','lvg-ratio','lig-resolution','lig-quality',
+  'lvg-model','lig-model','lig-ratio'
+ ]);
  function enhance(select){
-  if(!select||select.dataset.looxDropdown==='true')return;
+  if(!select||ownedByExistingPickers.has(select.id)||select.dataset.looxDropdown==='true')return;
   const wrapper=document.createElement('div');wrapper.className='loox-dropdown';
   select.parentNode.insertBefore(wrapper,select);
   wrapper.append(select);
