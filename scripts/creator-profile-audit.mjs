@@ -6,7 +6,7 @@ const root=process.env.LOOX_AUDIT_URL||'http://127.0.0.1:8765/';
 const me='11111111-1111-4111-8111-111111111111', other='22222222-2222-4222-8222-222222222222';
 const icon='data:image/svg+xml,%3Csvg%20xmlns="http://www.w3.org/2000/svg"%20width="400"%20height="230"%3E%3Crect%20width="400"%20height="230"%20fill="%235e3972"/%3E%3C/svg%3E';
 const accountModule=[
- "export const state={user:{id:'"+me+"'},client:{from:()=>({insert:async()=>({data:{},error:null}),delete:()=>({eq:()=>({eq:async()=>({data:{},error:null})})})})}};",
+ "export const state={user:{id:'"+me+"'},client:{from:()=>({insert:async()=>{window.__p.followed=true;return {data:{},error:null};},delete:()=>({eq:()=>({eq:async()=>{window.__p.followed=false;return {data:{},error:null};}})})})}};",
  "export function auth(){}",
  "export async function initialize(){}",
  "export async function refresh(){}",
