@@ -415,3 +415,21 @@ body[data-image-showcase] #image-hero>.creative-scroll{
  body[data-image-showcase] #image-hero .image-ratio-choice,
  body[data-image-showcase] #image-hero .creative-examples button{transition:none!important}
 }
+
+/* Always show the original LOOX picker, never Android's native select menu. */
+body[data-image-showcase] #image-hero #creative-model{
+ display:block!important;position:absolute!important;width:1px!important;height:1px!important;
+ padding:0!important;margin:0!important;border:0!important;
+ opacity:0!important;visibility:hidden!important;pointer-events:none!important;
+ clip-path:inset(100%)!important;overflow:hidden!important;
+}
+body[data-image-showcase] #image-hero #image-landing-model-trigger{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ width:100%!important;box-sizing:border-box!important;
+ min-height:41px!important;
+ gap:8px!important;padding:9px 12px!important;
+ background:#2a2133!important;color:#ede0f6!important;
+ border:1px solid #846298!important;border-radius:11px!important;
+ font:600 12px/1.2 Inter,system-ui,sans-serif!important;text-align:left!important;cursor:pointer!important;
+}
+body[data-image-showcase] #image-hero #image-landing-model-options[hidden]{display:none!important}
