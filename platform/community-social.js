@@ -70,7 +70,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   async postPermissions(post){
    const d=modal('Post permissions'),form=e('form'),status=e('p','community-note'),controls={};
    for(const [key,label,value] of [['comments','Allow comments',post.comments_enabled],['remix','Allow recreation with my public prompt',post.allow_remix],['download','Show download action',post.allow_download]]){const l=e('label','community-check'),i=e('input');i.type='checkbox';i.checked=value!==false;controls[key]=i;l.append(i,label);form.append(l);}
-   form.append(e('p','community-note','Public media can be viewed by anyone. Hiding the download action does not make a public file private.'));const submit=e('button','community-primary','Save permissions');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{await rpc(this.state,'loox_post_permissions',{p_id:post.id,p_comments:controls.comments.checked,p_remix:controls.remix.checked,p_download:controls.download.checked});d.close();await this.load(true);}catch(error){status.textContent=error.message;submit.disabled=false;}});
+   form.append(e('p','community-note','Public media can be viewed by anyone. Hiding the download action does not make a public file private.'));const submit=e('button','community-primary','Save permissions');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{await cloudRequest(this.state,'manage',{method:'POST',data:{id:post.id,action:'permissions',comments:controls.comments.checked,remix:controls.remix.checked,download:controls.download.checked}});d.close();await this.load(true);}catch(error){status.textContent=error.message;submit.disabled=false;}});
   },
   async report(post,comment=null){
    if(!this.state.user)return this.auth('login');const d=modal(comment?'Report comment':'Report post'),form=e('form'),reason=field(form,'Tell us what is wrong','','textarea'),status=e('p','community-note');reason.required=true;reason.minLength=5;reason.maxLength=1000;
@@ -373,7 +373,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     const caption=window.prompt('Edit caption (changes require approval)',post.caption);
     if(caption===null)return;
     const share=window.confirm('Make the generation prompt public? OK = share, Cancel = private.');
-    await rpc(this.state,'loox_manage_post',{p_id:post.id,p_action:'edit',p_caption:caption.trim(),p_share_prompt:share});
+    await cloudRequest(this.state,'manage',{method:'POST',data:{id:post.id,action:'edit',caption:caption.trim(),share_prompt:share}});
     d.close();await this.load(true);
    },'loox-social-edit'));
    else actions.append(icon('report','Report post',()=>this.report(post)));
