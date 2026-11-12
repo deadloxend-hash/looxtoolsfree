@@ -25,10 +25,14 @@ const results=[];
 let browser;
 try{
  browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
-}catch(error){
- fs.writeFileSync(path.join(outDir,'browser-error.txt'),String(error));
- console.log('BROWSER ERROR',String(error));
- process.exit(2);
+}catch(firstError){
+ try{
+  browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
+ }catch(error){
+  fs.writeFileSync(path.join(outDir,'browser-error.txt'),String(firstError)+'\n'+String(error));
+  console.log('BROWSER ERROR',String(firstError),String(error));
+  process.exit(2);
+ }
 }
 for(const viewport of widths){
  const context=await browser.newContext({
