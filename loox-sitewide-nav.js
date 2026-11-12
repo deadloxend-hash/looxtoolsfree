@@ -184,6 +184,59 @@
   if(accountSlot)native.insertBefore(nativeAppTrigger,accountSlot);
   else native.append(nativeAppTrigger);
  }
+ // Lock the DOCUMENT scroll root as well as body. On mobile, setting only
+ // body overflow:hidden allows scroll chaining and visual viewport drift.
+ // Preserve exact pre-existing inline styles and the page's scroll position.
+ let appsScrollLock=null;
+ const lockAppsScroll=()=>{
+  if(appsScrollLock)return;
+  const html=document.documentElement,body=document.body;
+  const props=['position','top','left','right','width','overflow','overscroll-behavior'];
+  const save=(element,keys)=>keys.map(name=>({
+   name,value:element.style.getPropertyValue(name),priority:element.style.getPropertyPriority(name)
+  }));
+  const y=window.scrollY||html.scrollTop||body.scrollTop||0;
+  const x=window.scrollX||html.scrollLeft||body.scrollLeft||0;
+  appsScrollLock={
+   x,y,
+   htmlStyles:save(html,['overflow','overscroll-behavior']),
+   bodyStyles:save(body,props)
+  };
+  // A fixed body prevents Android Chrome and iOS Safari from dragging the
+  // background while the top-layer modal is shown. The sheet still scrolls.
+  html.style.setProperty('overflow','hidden','important');
+  html.style.setProperty('overscroll-behavior','none','important');
+  body.style.setProperty('position','fixed','important');
+  body.style.setProperty('top',(-y)+'px','important');
+  body.style.setProperty('left',(-x)+'px','important');
+  body.style.setProperty('right','0','important');
+  body.style.setProperty('width','100%','important');
+  body.style.setProperty('overflow','hidden','important');
+  body.style.setProperty('overscroll-behavior','none','important');
+  html.classList.add('loox-apps-scroll-locked');
+ };
+ const unlockAppsScroll=()=>{
+  if(!appsScrollLock)return;
+  const {x,y,htmlStyles,bodyStyles}=appsScrollLock;
+  appsScrollLock=null;
+  const restore=(element,styles)=>{
+   for(const {name,value,priority} of styles){
+    if(value)element.style.setProperty(name,value,priority);
+    else element.style.removeProperty(name);
+   }
+  };
+  restore(document.body,bodyStyles);
+  restore(document.documentElement,htmlStyles);
+  document.documentElement.classList.remove('loox-apps-scroll-locked');
+  // Restore the exact spot, even after an animated close or a swipe-dismiss.
+  const root=document.documentElement;
+  const scrollBehavior=root.style.getPropertyValue('scroll-behavior');
+  const scrollPriority=root.style.getPropertyPriority('scroll-behavior');
+  root.style.setProperty('scroll-behavior','auto','important');
+  window.scrollTo(x,y);
+  if(scrollBehavior)root.style.setProperty('scroll-behavior',scrollBehavior,scrollPriority);
+  else root.style.removeProperty('scroll-behavior');
+ };
  let appLastFocus=null;
  const appSheet=appLayer.querySelector('.loox-mobile-app-sheet');
  const appScrim=appLayer.querySelector('[data-close-apps]');
@@ -200,7 +253,8 @@
    appSheet.style.removeProperty('--loox-sheet-drag');
    appScrim.style.removeProperty('opacity');
    document.body.classList.remove('loox-apps-open');
-   if(appLastFocus?.isConnected)appLastFocus.focus();
+   unlockAppsScroll();
+   if(appLastFocus?.isConnected)appLastFocus.focus({preventScroll:true});
   };
   if(matchMedia('(prefers-reduced-motion: reduce)').matches)finish();
   else closeTimer=setTimeout(finish,320);
@@ -212,6 +266,7 @@
   appSheet.style.removeProperty('--loox-sheet-drag');
   appScrim.style.removeProperty('opacity');
   appLastFocus=trigger;appLayer.hidden=false;if(!appLayer.open)appLayer.showModal();document.body.classList.add('loox-apps-open');
+  lockAppsScroll();
   // Measure the offscreen starting position before animating upward.
   void appSheet.offsetHeight;
   requestAnimationFrame(()=>appLayer.classList.remove('is-opening'));
@@ -222,6 +277,18 @@
  appLayer.querySelector('.loox-mobile-app-close').addEventListener('click',closeApps);
  appScrim.addEventListener('click',closeApps);
  appLayer.addEventListener('cancel',event=>{event.preventDefault();closeApps();});
+ // Covers unexpected native dialog closure, page navigation and history changes.
+ appLayer.addEventListener('close',()=>{
+  if(appLayer.open||appClosing)return;
+  appLayer.hidden=true;
+  document.body.classList.remove('loox-apps-open');
+  unlockAppsScroll();
+ });
+ window.addEventListener('pagehide',unlockAppsScroll);
+ // Background swipes must not bubble through the modal to the page.
+ appScrim.addEventListener('touchmove',event=>{
+  if(!appLayer.hidden&&event.cancelable)event.preventDefault();
+ },{passive:false});
  // Native touch dragging: swipe the sheet downward to dismiss, without
  // blocking taps on links or normal scrolling through its content.
  let swipeStart=null,swipeDistance=0;
