@@ -6,6 +6,16 @@ on:
       - ".github/workflows/site-ui-audit.yml"
       - "scripts/site-ui-static-audit.py"
       - "scripts/site-responsive-audit.mjs"
+      - "loox-sitewide-nav.css"
+      - "loox-sitewide-nav.js"
+      - "platform/template-gallery.css"
+      - "platform/community.css"
+      - "platform/trending-feed.css"
+      - "design-studio-pro-v2.css"
+      - "loox-photo-editor.css"
+      - "templates.html"
+      - "design-studio.html"
+      - "photo-editor.html"
 permissions:
   contents: read
 jobs:
