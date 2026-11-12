@@ -571,3 +571,33 @@ body.loox-studio .studio-creations-empty p{font-size:11px!important}
  body.loox-studio .studio-frame-strip,body.loox-studio .studio-budget,
  body.loox-studio .studio-frame-thumb{transition:none!important;animation:none!important}
 }
+
+/* V14 — compact duration/ratio chip and non-redundant submit row. */
+body.loox-studio .studio-budget-spec{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ min-height:25px!important;height:25px!important;
+ flex:none!important;padding:4px 8px!important;margin:0!important;
+ border:1px solid #644d73!important;border-radius:8px!important;
+ background:#30213b!important;color:#dfc3f5!important;
+ font:650 10.5px/1 Inter,system-ui,sans-serif!important;
+ cursor:pointer!important;white-space:nowrap!important;
+}
+body.loox-studio .lig-compose-card .lig-compose-actions .lig-image-pill{display:none!important}
+body.loox-studio .studio-continue-shot:hover,
+body.loox-studio .studio-frame-change:hover,
+body.loox-studio .studio-budget-spec:hover,
+body.loox-studio .studio-shots-button:hover{background:#51336b!important;color:#fff!important}
+body.loox-studio .studio-frame-thumb:focus-visible,
+body.loox-studio .studio-frame-change:focus-visible,
+body.loox-studio .studio-budget-spec:focus-visible,
+body.loox-studio .studio-shots-button:focus-visible,
+body.loox-studio .studio-shot-row button:focus-visible{
+ outline:2px solid #c593e6!important;outline-offset:2px!important;
+}
+@media(max-width:600px){
+ body.loox-studio .studio-budget-spec{height:24px!important;min-height:24px!important;font-size:10px!important}
+ body.loox-studio .lig-compose-card .lig-compose-actions .lig-primary{
+  min-width:112px!important;height:35px!important;min-height:35px!important;
+ }
+ body.loox-studio .studio-budget-link{margin-left:auto!important}
+}
