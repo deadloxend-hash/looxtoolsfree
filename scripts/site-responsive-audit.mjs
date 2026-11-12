@@ -17,6 +17,8 @@ const pages=[
 const widths=[
  {name:'android-small',width:360,height:800},
  {name:'android',width:393,height:873},
+ {name:'android-landscape',width:873,height:393},
+ {name:'tablet',width:768,height:1024},
  {name:'desktop',width:1365,height:900}
 ];
 const outDir=path.resolve('audit-artifacts');
@@ -67,11 +69,11 @@ for(const viewport of widths){
    });
    if(item.metrics.horizontal>viewport.width+8)item.problems.push('Horizontal page overflow: '+item.metrics.horizontal+'px');
    if(item.metrics.clippedButtons.length)item.problems.push('Visible controls clipped: '+JSON.stringify(item.metrics.clippedButtons));
-   if(viewport.name==='android'&&['index.html','community.html','trending.html','ai-text-to-image.html','templates.html'].includes(file)){
+   if(['android','android-small','tablet'].includes(viewport.name)){
     const toggle=page.locator('.loox-mobile-app-trigger:visible').first();
     if(await toggle.count()){
      await toggle.click();
-     await page.waitForTimeout(180);
+     await page.waitForTimeout(400);
      const bounds=await page.locator('.loox-mobile-app-sheet').first().evaluate(el=>{
       const r=el.getBoundingClientRect();
       return {top:r.top,bottom:r.bottom,viewport:window.innerHeight,fixed:getComputedStyle(document.body).position==='fixed'};
@@ -79,6 +81,8 @@ for(const viewport of widths){
      item.menu=bounds;
      if(Math.abs(bounds.bottom-bounds.viewport)>4)item.problems.push('Web apps sheet not bottom-aligned: '+JSON.stringify(bounds));
      if(!bounds.fixed)item.problems.push('Web apps background not scroll-locked');
+     if(bounds.top< -4)item.problems.push('Web apps sheet starts above viewport: '+JSON.stringify(bounds));
+     if(bounds.bottom<bounds.viewport-4)item.problems.push('Web apps sheet floats above bottom: '+JSON.stringify(bounds));
      await page.locator('.loox-mobile-app-close').first().click();
      await page.waitForTimeout(250);
      const closed=await page.evaluate(()=>getComputedStyle(document.body).position);
