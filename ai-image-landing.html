@@ -15,7 +15,7 @@
 </script>
 <script defer src="loox-sitewide-nav.js?v=100">
 </script>
-<script type="module" src="platform/creative-landing.js?v=4">
+<script type="module" src="platform/creative-landing.js?v=5">
 </script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="Free AI Image Generator Online | LOOX AI">
@@ -24,8 +24,8 @@
 <meta property="og:image" content="https://deadloxend-hash.github.io/looxtoolsfree/assets/image-landing/starry-mountain-poster.webp">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" as="image" href="assets/image-landing/starry-mountain-poster.webp">
-<link rel="stylesheet" href="platform/image-landing.css?v=3">
-<script type="module" src="platform/image-landing.js?v=1">
+<link rel="stylesheet" href="platform/image-landing.css?v=4">
+<script type="module" src="platform/image-landing.js?v=2">
 </script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Free AI Image Generator Online | LOOX AI","url":"https://deadloxend-hash.github.io/looxtoolsfree/ai-image-landing.html","description":"Explore text to image AI, image generation models, and creative styles in the LOOX AI studio.","inLanguage":"en"}</script>
 <!-- AI Image landing: right-aligned search, credits hidden in header only. -->
@@ -81,29 +81,48 @@ body.loox-creative-landing[data-creative-mode="image"] #loox-sitewide-header .lo
 <div class="creative-hero-shade">
 </div>
 <section class="creative-hero-content">
-<span class="creative-eyebrow">LOOX CREATIVE STUDIO / AI IMAGE</span>
-<h1>Free AI Image Generator Online – Create Art from Text &amp; Photos</h1>
-<p>Customize your vision with LOOX’s AI creative studio. Explore models including FLUX, Stable Diffusion, Ideogram, and Nano Banana in one workspace. Describe your idea, choose a supported model, and make it your own. Availability and settings vary by model.</p>
-<form id="creative-landing-form" class="creative-prompt" autocomplete="off">
-<label for="creative-prompt">Describe your next creation</label>
-<textarea id="creative-prompt" autocomplete="off" maxlength="1200" rows="2" placeholder="An editorial portrait in violet light, intricate paper collage">
-</textarea>
-<div class="creative-prompt-actions">
-<span>▧ AI Image</span>
-<label class="creative-model-label" for="creative-model">Model</label>
-<select id="creative-model" aria-label="Choose image model">
-<option value="flux">FLUX.1 Schnell</option>
-</select>
-<button type="submit">Generate <span aria-hidden="true">↑</span>
-</button>
-</div>
-</form>
-<div class="creative-examples" aria-label="Example prompts">
-<button type="button" data-example="An editorial portrait in violet light, intricate paper collage">Cinematic scene</button>
-<button type="button" data-example="A futuristic Japanese city at blue hour, cinematic detail">Explore a new world</button>
-<button type="button" data-example="A vintage sports car under a neon sunset, photorealistic">Make it extraordinary</button>
-</div>
-<small id="creative-landing-status" role="status">Choose your settings in the workspace. Visiting never uses credits.</small>
+  <span class="creative-eyebrow"><span class="image-hero-live-dot" aria-hidden="true"></span>LOOX AI IMAGE STUDIO</span>
+  <h1>Imagine it. <span>Make it real.</span></h1>
+  <p>Bring your first idea to life with AI. Describe a scene, pick a format, then create it in your LOOX studio.</p>
+  <div class="image-first-steps" aria-label="Three steps to create your first image">
+    <span><b>01</b> Describe your idea</span><span aria-hidden="true" class="image-step-arrow">›</span>
+    <span><b>02</b> Pick a format</span><span aria-hidden="true" class="image-step-arrow">›</span>
+    <span><b>03</b> Create in Studio</span>
+  </div>
+  <form id="creative-landing-form" class="creative-prompt image-first-composer" autocomplete="off">
+    <div class="image-composer-heading">
+      <div><span class="image-composer-kicker">YOUR FIRST CREATION</span><strong>What will you create today?</strong></div>
+      <span class="image-composer-starter"><span aria-hidden="true">✦</span> Start here</span>
+    </div>
+    <label for="creative-prompt">Describe your image</label>
+    <textarea id="creative-prompt" autocomplete="off" maxlength="1200" rows="3" placeholder="A cozy cabin beside a mountain lake at sunrise, soft golden light..."></textarea>
+    <div class="image-idea-row">
+      <span class="image-idea-label">Try an idea</span>
+      <div class="creative-examples" aria-label="Choose a starting prompt">
+        <button type="button" data-example="A cinematic portrait of a traveler at golden hour, natural skin texture, warm light and soft mountains in the background">✧ Portrait</button>
+        <button type="button" data-example="A futuristic Tokyo street on a rainy evening, glowing cyan and pink signs, cinematic reflections, wide-angle photography">✧ Cinematic</button>
+        <button type="button" data-example="A tiny magical cottage built inside a giant mushroom, storybook illustration, soft colors and whimsical details">✧ Fantasy</button>
+        <button type="button" data-example="A retro 1970s sports car beside a desert motel at sunset, vintage film grain, warm orange tones">✧ Retro</button>
+      </div>
+    </div>
+    <div class="image-format-heading"><strong>Image shape</strong><span>Choose how your first image is framed</span></div>
+    <div class="image-ratio-options" role="group" aria-label="Choose image aspect ratio">
+      <label class="image-ratio-choice"><input type="radio" name="creative-ratio" value="1:1" checked><span class="image-ratio-mark image-ratio-square" aria-hidden="true"></span><span>Square <small>1:1</small></span></label>
+      <label class="image-ratio-choice"><input type="radio" name="creative-ratio" value="16:9"><span class="image-ratio-mark image-ratio-wide" aria-hidden="true"></span><span>Landscape <small>16:9</small></span></label>
+      <label class="image-ratio-choice"><input type="radio" name="creative-ratio" value="9:16"><span class="image-ratio-mark image-ratio-tall" aria-hidden="true"></span><span>Portrait <small>9:16</small></span></label>
+    </div>
+    <div class="image-composer-footer">
+      <div class="image-model-control">
+        <label for="creative-model">AI model <span>· Optional</span></label>
+        <select id="creative-model" aria-label="Choose an image model"><option value="flux">FLUX.1 Schnell</option></select>
+        <button type="button" class="image-model-trigger" id="image-landing-model-trigger" aria-haspopup="listbox" aria-expanded="false" aria-controls="image-landing-model-options"><span id="image-landing-model-name">Checking available models…</span><span aria-hidden="true">⌄</span></button>
+        <div id="image-landing-model-options" class="image-model-options" role="listbox" aria-label="Available image models" hidden></div>
+      </div>
+      <button type="submit" class="image-landing-submit">Create my image <span aria-hidden="true">↗</span></button>
+    </div>
+    <div class="image-landing-hint"><span aria-hidden="true">✓</span> Your prompt and format carry into Studio. You confirm the generation and credit cost there.</div>
+  </form>
+  <small id="creative-landing-status" role="status" aria-live="polite">Checking models… Your first draft won't use credits until you generate in Studio.</small>
 </section>
 <a class="creative-scroll" href="#discover">Explore the possibilities <span aria-hidden="true">↓</span>
 </a>
