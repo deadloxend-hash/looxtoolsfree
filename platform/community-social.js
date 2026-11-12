@@ -110,7 +110,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     if(self.state.user?.id===c.user_id||self.state.user?.id===post.creator_id)
       controls.append(a('Delete',async()=>{
        if(!confirm('Delete this comment?'))return;
-       result(await self.state.client.from('loox_post_comments').delete().eq('id',c.id));
+       await cloudRequest(self.state,'comments',{method:'DELETE',query:{id:c.id}});
        post.comments=Math.max(0,(Number(post.comments)||0)-1);
        document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
        await reload();
@@ -125,11 +125,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     let replyOffset=0;
     const holders=new Map(parents.map(c=>[c.id,list.querySelector('[data-replies-for="'+c.id+'"]')]));
     const loadBatch=async()=>{
-     const rows=result(await self.state.client.from('loox_post_comments')
-      .select('id,post_id,parent_id,user_id,body,created_at')
-      .eq('post_id',post.id).in('parent_id',ids)
-      .order('created_at',{ascending:true}).order('id',{ascending:true})
-      .range(replyOffset,replyOffset+199));
+     const rows=(await cloudRequest(self.state,'comments',{query:{post_id:post.id,kind:'replies',parent_ids:ids.join(','),offset:replyOffset}})).items||[];
      replyOffset+=rows.length;
      await fetchPeople(rows.map(c=>c.user_id));
      for(const c of rows)holders.get(c.parent_id)?.append(render(c,true));
@@ -150,11 +146,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     if(loading)return;
     loading=true;more.disabled=true;
     try{
-     const rows=result(await self.state.client.from('loox_post_comments')
-      .select('id,post_id,parent_id,user_id,body,created_at')
-      .eq('post_id',post.id).is('parent_id',null)
-      .order('created_at',{ascending:true}).order('id',{ascending:true})
-      .range(offset,offset+pageSize-1));
+     const rows=(await cloudRequest(self.state,'comments',{query:{post_id:post.id,kind:'parents',offset}})).items||[];
      offset+=rows.length;
      more.hidden=rows.length<pageSize;
      await fetchPeople(rows.map(c=>c.user_id));
@@ -194,7 +186,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
      try{
       const data={post_id:post.id,user_id:self.state.user.id,body};
       if(replyTo)data.parent_id=replyTo.id;
-      result(await self.state.client.from('loox_post_comments').insert(data));
+      await cloudRequest(self.state,'comments',{method:'POST',data});
       post.comments=Math.max(0,(Number(post.comments)||0)+1);
       document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
       input.value='';cancelReply();
