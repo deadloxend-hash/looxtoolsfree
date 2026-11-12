@@ -27,6 +27,15 @@ for page in pages:
     content = page.read_text(encoding="utf-8")
     result = content
     prefix = "../" * (len(page.relative_to(ROOT).parts) - 1)
+    # Translated learn/* pages declare <base href="../../">. All URLs on
+    # those pages resolve from the repository root, NOT from /learn/<lang>/.
+    # Adding another ../../ makes the shared CSS/JS load outside the site.
+    base_root = re.search(
+        r'<base\\b[^>]*\\bhref\\s*=\\s*["\\\']\\.\\./\\.\\./["\\\']',
+        content, re.IGNORECASE,
+    )
+    if base_root:
+        prefix = ""
     for filename, attr, section, markup in ASSETS:
         version = CSS_VERSION if filename.endswith(".css") else JS_VERSION
         new_url = f"{prefix}{filename}?v={version}"
