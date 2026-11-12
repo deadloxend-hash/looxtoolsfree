@@ -153,7 +153,7 @@ async function stylesSheet(initialTab='explore'){
   const version=++request;
   for(const [key,btn] of tabButtons)btn.setAttribute('aria-pressed',String(key===next));
   // Keep the same open sheet and cached results: tab switches must not reopen dialogs.
-  if(next==='explore'&&styleCatalog){render(styleCatalog,next);return;}
+  if(next==='explore'&&styleCatalog&&savedOwner===state.user?.id){render(styleCatalog,next);return;}
   if(next!=='explore'&&savedOwner===state.user?.id){render(next==='favorites'?saved().filter(s=>s.favorite):saved(),next);return;}
   list.replaceChildren(node('div','studio-style-loading','Loading styles…'));
   notice.textContent='';
@@ -184,8 +184,39 @@ function assetsSheet(prefix){
  const creations=async()=>{const version=++epoch;tab='creations';updateTabs();list.replaceChildren();notice.textContent='Loading your creations…';try{const {items}=await api('gallery',null,{operation:'generate'});if(version!==epoch||!d.open)return;notice.textContent=items.length?'Choose an image, then tap Select image.':'No generated images yet.';for(const item of items){if(!item.url)continue;const b=button('',()=>{selected=item;select.disabled=false;for(const other of list.children)other.setAttribute('aria-pressed',String(other===b));});b.dataset.name=(item.prompt||'Your creation').toLowerCase();b.setAttribute('aria-label',item.prompt||'Your creation');b.setAttribute('aria-pressed','false');const img=node('img');img.src=item.url;img.alt=item.prompt||'Your creation';img.loading='lazy';b.append(img);list.append(b);}filter();}catch(e){notice.textContent=e.message;}};
  const uploadedButton=button('Uploaded Assets',upload);uploadedButton.dataset.tab='uploads';const creationsButton=button('My Creations',creations);creationsButton.dataset.tab='creations';tabs.append(uploadedButton,creationsButton);upload();
 }
+function enableCompactComposerOnScroll(){
+ const composer=document.querySelector('.lig-compose-wrap, .ai-composer-wrap');
+ if(!composer)return;
+ const body=document.body,targets=[window,...document.querySelectorAll('.lig-content-scroll,.ai-thread')];
+ const positions=new WeakMap();
+ let lastWindowY=window.scrollY,travel=0,settleUntil=0;
+ const setCompact=next=>{
+  if(body.classList.contains('loox-uc-scroll-compact')===next)return;
+  body.classList.toggle('loox-uc-scroll-compact',next);
+  settleUntil=performance.now()+230;
+ };
+ const hasInputFocus=()=>!!document.activeElement?.matches('textarea,input:not([type=file]),select');
+ const onScroll=target=>{
+  if(performance.now()<settleUntil)return;
+  const y=target===window?window.scrollY:target.scrollTop;
+  const last=target===window?lastWindowY:(positions.get(target)??y);
+  if(target===window)lastWindowY=y;else positions.set(target,y);
+  if(y<65||hasInputFocus()||document.querySelector('dialog.loox-sheet[open]')){
+   travel=0;setCompact(false);return;
+  }
+  const delta=y-last;
+  if(Math.abs(delta)<1||Math.abs(delta)>180)return;
+  if(Math.sign(delta)!==Math.sign(travel))travel=delta;else travel+=delta;
+  if(travel>24){setCompact(true);travel=0;}
+  else if(travel< -20){setCompact(false);travel=0;}
+ };
+ for(const target of targets)target.addEventListener('scroll',()=>onScroll(target),{passive:true});
+ document.addEventListener('focusin',e=>{if(e.target.closest('.lig-compose-wrap,.ai-composer-wrap'))setCompact(false);});
+ composer.addEventListener('pointerdown',()=>setCompact(false),{passive:true});
+}
 function run(){
  document.body.classList.add('loox-studio');
+ enableCompactComposerOnScroll();
  const header=$('header.lig-header');if(header){
  const menuHost=node('div','studio-menu-host'),menu=node('div','studio-menu');menu.hidden=true;menu.setAttribute('role','menu');
  const trigger=button('•••',()=>{menu.hidden=!menu.hidden;trigger.setAttribute('aria-expanded',String(!menu.hidden));},'studio-menu-trigger');trigger.setAttribute('aria-label','More workspace actions');trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');
