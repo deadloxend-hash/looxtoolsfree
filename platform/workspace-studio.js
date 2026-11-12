@@ -306,17 +306,142 @@ function settingsSheet(prefix){
  dialog.addEventListener('close',closeAll,{once:true});
 }
 function assetsSheet(prefix){
- const input=document.getElementById(prefix==='lig'?'lig-reference-image':'lvg-image');if(!input)return;
- const box=node('div','studio-stack'),tabs=node('nav','studio-tabs'),list=node('div','studio-assets'),notice=node('p'),search=node('input');search.type='search';search.placeholder='Search assets';search.setAttribute('aria-label','Search assets');
- let selected=null,epoch=0,tab='uploads';const footer=node('div','studio-tabs'),select=button('Select image',async()=>{if(!selected)return;select.disabled=true;try{const original=await api('status',null,{id:selected.id});if(!original.url)throw Error('Original image is unavailable.');const response=await fetch(original.url,{credentials:'omit'});if(!response.ok)throw Error('Image could not be loaded.');const blob=await response.blob();if(!['image/jpeg','image/png','image/webp'].includes(blob.type)||blob.size>2400000)throw Error('Choose an image under 2.4 MB.');const transfer=new DataTransfer();transfer.items.add(new File([blob],'creation-'+selected.id,{type:blob.type}));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));d.close();}catch(e){notice.textContent=e.message;}finally{select.disabled=!selected;}},'studio-primary');select.disabled=true;
- box.append(tabs,search,list,notice,footer);const d=openSheet('Add a reference',box);footer.append(button('Cancel',()=>d.close()),select);
- const filter=()=>{const query=search.value.trim().toLowerCase();for(const item of list.children)if(item.dataset.name)item.hidden=!item.dataset.name.includes(query);};search.oninput=filter;
- const updateTabs=()=>{[...tabs.children].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===tab)));selected=null;select.disabled=true;};
- const upload=()=>{++epoch;tab='uploads';updateTabs();list.replaceChildren(button('＋ Upload image',()=>{d.close();input.click();},'studio-upload'));notice.textContent='JPG, PNG or WebP · up to 2.4 MB. References are uploaded when you generate.';
- const files=prefix==='lig'?(window.__looxFluxReferences?.()||[]):[...input.files];for(const [index,file] of files.entries()){const item=node('div','studio-stack'),image=node('img'),url=URL.createObjectURL(file);image.src=url;image.alt=file.name;image.onload=()=>URL.revokeObjectURL(url);item.dataset.name=file.name.toLowerCase();item.append(image,node('small','',file.name),button('Remove',()=>{if(prefix==='lig')document.querySelectorAll('.loox-ref-remove')[index]?.click();else{input.value='';input.dispatchEvent(new Event('change',{bubbles:true}));}upload();}));list.append(item);}filter();};
- const creations=async()=>{const version=++epoch;tab='creations';updateTabs();list.replaceChildren();notice.textContent='Loading your creations…';try{const {items}=await api('gallery',null,{operation:'generate'});if(version!==epoch||!d.open)return;notice.textContent=items.length?'Choose an image, then tap Select image.':'No generated images yet.';for(const item of items){if(!item.url)continue;const b=button('',()=>{selected=item;select.disabled=false;for(const other of list.children)other.setAttribute('aria-pressed',String(other===b));});b.dataset.name=(item.prompt||'Your creation').toLowerCase();b.setAttribute('aria-label',item.prompt||'Your creation');b.setAttribute('aria-pressed','false');const img=node('img');img.src=item.url;img.alt=item.prompt||'Your creation';img.loading='lazy';b.append(img);list.append(b);}filter();}catch(e){notice.textContent=e.message;}};
- const uploadedButton=button('Uploaded Assets',upload);uploadedButton.dataset.tab='uploads';const creationsButton=button('My Creations',creations);creationsButton.dataset.tab='creations';tabs.append(uploadedButton,creationsButton);upload();
+ const input=document.getElementById(prefix==='lig'?'lig-reference-image':'lvg-image');
+ if(!input)return;
+ const box=node('div','studio-stack studio-asset-browser');
+ const tabs=node('nav','studio-tabs studio-asset-tabs');
+ tabs.setAttribute('aria-label','Reference image sources');
+ const list=node('div','studio-assets');
+ const notice=node('p','studio-asset-notice');
+ notice.setAttribute('role','status');notice.setAttribute('aria-live','polite');
+ const search=node('input');
+ search.type='search';search.placeholder='Search your creations';
+ search.setAttribute('aria-label','Search your creations');
+ let epoch=0,tab='uploads',busy=false;
+ box.append(tabs,search,notice,list);
+ const d=openSheet('Add a reference',box);
+ const uploadButton=button('Uploaded Assets',()=>showUploads(),'studio-asset-tab');
+ const creationsButton=button('My Creations',()=>showCreations(),'studio-asset-tab');
+ uploadButton.dataset.tab='uploads';creationsButton.dataset.tab='creations';
+ tabs.append(uploadButton,creationsButton);
+ const setTab=next=>{
+  tab=next;search.hidden=next!=='creations';search.value='';
+  for(const b of tabs.children)b.setAttribute('aria-pressed',String(b.dataset.tab===next));
+  notice.textContent='';
+ };
+ const filter=()=>{
+  const query=search.value.trim().toLowerCase();
+  for(const item of list.children){
+   if(item.dataset.name)item.hidden=!item.dataset.name.includes(query);
+  }
+ };
+ search.addEventListener('input',filter);
+ const insertFile=file=>{
+  if(!d.open)return;
+  const transfer=new DataTransfer();transfer.items.add(file);
+  input.files=transfer.files;
+  input.dispatchEvent(new Event('change',{bubbles:true}));
+  d.close();
+  notify('Reference image added. Ready to generate.');
+ };
+ const showUploads=()=>{
+  ++epoch;setTab('uploads');list.replaceChildren();
+  const add=button('＋ Upload image',()=>{
+   if(busy)return;
+   d.close();input.click();
+  },'studio-upload');
+  list.append(add);
+  notice.textContent='JPG, PNG or WebP · up to 2.4 MB. Images are uploaded only when you generate.';
+  const files=prefix==='lig'?(window.__looxFluxReferences?.()||[]):[...input.files];
+  files.forEach((file,index)=>{
+   const item=node('div','studio-asset-uploaded'),image=node('img'),url=URL.createObjectURL(file);
+   image.src=url;image.alt=file.name;
+   image.addEventListener('load',()=>URL.revokeObjectURL(url),{once:true});
+   image.addEventListener('error',()=>URL.revokeObjectURL(url),{once:true});
+   item.append(image,node('span','studio-asset-filename',file.name));
+   item.append(button('Remove',()=>{
+    if(prefix==='lig')document.querySelectorAll('.loox-ref-remove')[index]?.click();
+    else{input.value='';input.dispatchEvent(new Event('change',{bubbles:true}));}
+    showUploads();
+   },'studio-button'));
+   list.append(item);
+  });
+ };
+ // Tapping the thumbnail attaches it immediately: no hidden footer confirmation.
+ const attachCreation=async(item,card,version)=>{
+  if(busy||!d.open)return;
+  busy=true;
+  card.classList.add('studio-asset-attaching');
+  card.setAttribute('aria-busy','true');
+  card.disabled=true;
+  tabs.querySelectorAll('button').forEach(b=>b.disabled=true);
+  notice.textContent='Adding your reference image…';
+  try{
+   const original=await api('status',null,{id:item.id});
+   if(original?.state&&original.state!=='succeeded')throw Error('This creation is not ready yet.');
+   if(!original?.url)throw Error('Original image is unavailable. Try another creation.');
+   const response=await fetch(original.url,{credentials:'omit'});
+   if(!response.ok)throw Error('Could not load this image. Please try again.');
+   const blob=await response.blob();
+   // The private-media API may return generic octet-stream metadata; use
+   // the file's image signature rather than trusting the preview extension.
+   let type=blob.type.toLowerCase();
+   if(!['image/png','image/jpeg','image/webp'].includes(type)){
+    const header=new Uint8Array(await blob.slice(0,16).arrayBuffer());
+    if(header[0]===0xff&&header[1]===0xd8&&header[2]===0xff)type='image/jpeg';
+    else if(header[0]===0x89&&header[1]===0x50&&header[2]===0x4e&&header[3]===0x47)type='image/png';
+    else if(String.fromCharCode(...header.slice(0,4))==='RIFF'&&String.fromCharCode(...header.slice(8,12))==='WEBP')type='image/webp';
+   }
+   if(!['image/png','image/jpeg','image/webp'].includes(type))throw Error('Choose an image creation (JPG, PNG, or WebP).');
+   if(blob.size>2400000)throw Error('This original exceeds the 2.4 MB reference limit. Choose a smaller image.');
+   if(version!==epoch||!d.open)return;
+   const extension=type==='image/jpeg'?'jpg':type==='image/png'?'png':'webp';
+   const file=new File([blob],'LOOX-reference.'+extension,{type});
+   insertFile(file);
+  }catch(error){
+   if(version===epoch&&d.open){
+    notice.textContent=error.message||'Could not add this reference. Tap again to retry.';
+   }
+  }finally{
+   busy=false;
+   card.classList.remove('studio-asset-attaching');
+   card.removeAttribute('aria-busy');
+   card.disabled=false;
+   tabs.querySelectorAll('button').forEach(b=>b.disabled=false);
+  }
+ };
+ const showCreations=async()=>{
+  const version=++epoch;setTab('creations');
+  list.replaceChildren(node('p','studio-asset-loading','Loading your creations…'));
+  try{
+   const response=await api('gallery',null,{operation:'generate'});
+   if(version!==epoch||!d.open)return;
+   const items=Array.isArray(response?.items)?response.items:[];
+   list.replaceChildren();
+   notice.textContent=items.length?'Tap any image to add it instantly as a reference.':'You have no saved image creations yet.';
+   for(const item of items){
+    if(!item.url)continue;
+    const card=button('',()=>attachCreation(item,card,version),'studio-asset-choice');
+    card.dataset.name=(item.prompt||'Your creation').toLowerCase();
+    card.setAttribute('aria-label','Use image as reference: '+(item.prompt||'Your creation'));
+    card.title='Tap to use as reference';
+    const img=node('img');
+    img.src=item.url;img.alt=item.prompt||'Your creation';
+    img.loading='lazy';img.decoding='async';
+    const badge=node('span','studio-asset-check','✓');
+    badge.setAttribute('aria-hidden','true');
+    card.append(img,badge);
+    list.append(card);
+   }
+   if(!list.children.length)notice.textContent='No reference-ready images found.';
+   filter();
+  }catch(error){
+   if(version===epoch&&d.open){list.replaceChildren();notice.textContent=error.message||'Could not load your creations.';}
+  }
+ };
+ showUploads();
 }
+
 function enableCompactComposerOnScroll(){
  const composer=document.querySelector('.lig-compose-wrap, .ai-composer-wrap');
  if(!composer)return;
