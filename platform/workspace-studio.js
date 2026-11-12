@@ -367,6 +367,25 @@ function assetsSheet(prefix){
    list.append(item);
   });
  };
+ // Large original PNGs are common. Shrink only when necessary to fit the
+ // same 2.4 MB server reference limit rather than rejecting a saved creation.
+ const fitReference=async(blob)=>{
+  if(blob.size<=2400000)return blob;
+  let bitmap;
+  try{
+   bitmap=await createImageBitmap(blob);
+   const maxSide=1280,scale=Math.min(1,maxSide/Math.max(bitmap.width,bitmap.height));
+   const canvas=document.createElement('canvas');
+   canvas.width=Math.max(1,Math.round(bitmap.width*scale));
+   canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+   canvas.getContext('2d',{alpha:false})?.drawImage(bitmap,0,0,canvas.width,canvas.height);
+   for(const quality of [.86,.74,.62,.5]){
+    const smaller=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',quality));
+    if(smaller&&smaller.size<=2400000)return smaller;
+   }
+   throw Error('This image is too large even after resizing. Please use a smaller image.');
+  }finally{bitmap?.close?.();}
+ };
  // Tapping the thumbnail attaches it immediately: no hidden footer confirmation.
  const attachCreation=async(item,card,version)=>{
   if(busy||!d.open)return;
@@ -393,10 +412,11 @@ function assetsSheet(prefix){
     else if(String.fromCharCode(...header.slice(0,4))==='RIFF'&&String.fromCharCode(...header.slice(8,12))==='WEBP')type='image/webp';
    }
    if(!['image/png','image/jpeg','image/webp'].includes(type))throw Error('Choose an image creation (JPG, PNG, or WebP).');
-   if(blob.size>2400000)throw Error('This original exceeds the 2.4 MB reference limit. Choose a smaller image.');
+   const reference=await fitReference(blob);
+   if(reference!==blob)type='image/jpeg';
    if(version!==epoch||!d.open)return;
    const extension=type==='image/jpeg'?'jpg':type==='image/png'?'png':'webp';
-   const file=new File([blob],'LOOX-reference.'+extension,{type});
+   const file=new File([reference],'LOOX-reference.'+extension,{type});
    insertFile(file);
   }catch(error){
    if(version===epoch&&d.open){
