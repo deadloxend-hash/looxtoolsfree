@@ -75,7 +75,7 @@ async function captureLastVideoFrame(url){
  const response=await fetch(url,{credentials:'omit'});
  if(!response.ok)throw Error('Could not retrieve this video for frame extraction.');
  const blob=await response.blob();
- if(!blob.type.startsWith('video/'))throw Error('The saved file is not a supported video.');
+ // Some signed MP4 downloads use application/octet-stream; let the decoder validate the file.
  const local=URL.createObjectURL(blob);
  const video=document.createElement('video');
  video.preload='auto';video.muted=true;video.playsInline=true;
@@ -115,7 +115,7 @@ async function captureLastVideoFrame(url){
 async function continueVideoShot(id,button){
  if(busy){notice('Finish the current video before preparing the next shot.',true);return;}
  if(!state.user){auth('login');return;}
- const preferred=['wan25_i2v','wan22_i2v_fast','wan26_i2v_flash'];
+ const preferred=[modelField.value,'wan22_i2v_fast','wan25_i2v','wan26_i2v_flash'];
  const supported=preferred.find(id=>state.config?.videoModels?.some(m=>m.id===id&&m.available));
  if(!supported){notice('No image-to-video model is available for continuing this shot right now.',true);return;}
  button.disabled=true;const original=button.textContent;button.textContent='Extracting frame…';
