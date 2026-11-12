@@ -610,3 +610,7 @@ body.loox-studio .studio-shot-row button:focus-visible{
  body.loox-studio .loox-sheet textarea,
  body.loox-studio .loox-sheet select{font-size:16px!important}
 }
+
+/* V16: remaining daily generations, only when the account supplies a real quota. */
+body.loox-studio .studio-budget-quota{display:inline-flex;align-items:center;color:#baafc5;white-space:nowrap;font:550 10px/1.25 Inter,system-ui,sans-serif}
+body.loox-studio .studio-budget-quota[hidden]{display:none!important}
