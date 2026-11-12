@@ -340,3 +340,48 @@ body.loox-trending-feed #community-root .loox-trending-post .loox-trending-socia
   flex-basis:36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;
  }
 }
+
+
+/* V3 — Same tight engagement alignment for every Trending photo/video.
+   Icon touch targets stay tall, but excessive left/right padding is gone. */
+body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group{
+ display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;
+ flex:0 0 auto!important;width:max-content!important;min-width:0!important;
+ gap:2px!important;margin:0!important;padding:0!important;white-space:nowrap!important;
+}
+body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group + .loox-engagement-group{
+ margin-left:10px!important;
+}
+body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group > button.loox-trending-action{
+ display:grid!important;place-items:center!important;box-sizing:border-box!important;
+ flex:0 0 33px!important;width:33px!important;min-width:33px!important;
+ max-width:33px!important;height:42px!important;min-height:42px!important;
+ margin:0!important;padding:3px!important;
+}
+body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group > button.loox-trending-action svg{
+ width:24px!important;height:24px!important;display:block!important;
+}
+body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group > .loox-engagement-number{
+ display:inline-block!important;flex:0 0 auto!important;
+ width:auto!important;min-width:0!important;margin:0!important;padding:0!important;
+ color:#dfd2e9!important;font:650 12px/1 Inter,system-ui,sans-serif!important;
+ font-variant-numeric:tabular-nums!important;white-space:nowrap!important;
+ vertical-align:middle!important;
+}
+body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-like:has([aria-pressed="true"]) > .loox-engagement-number{
+ color:#ff7298!important;
+}
+@media(max-width:370px){
+ body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group + .loox-engagement-group{margin-left:6px!important;}
+ body.loox-trending-feed #community-root
+ .loox-trending-action-row > .loox-engagement-group > button.loox-trending-action{
+  flex-basis:30px!important;width:30px!important;min-width:30px!important;max-width:30px!important;
+ }
+}
