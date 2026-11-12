@@ -16,6 +16,7 @@ class Inspect(HTMLParser):
         self.ids = []
         self.references = []
         self.viewport = False
+        self.basehref = None
         self.bad_buttons = []
         self.links_without_names = []
 
@@ -25,15 +26,17 @@ class Inspect(HTMLParser):
             self.ids.append(pairs["id"])
         if tag == "meta" and (pairs.get("name") or "").lower() == "viewport":
             self.viewport = True
+        if tag == 'base' and pairs.get('href'):
+            self.basehref = pairs['href']
         for key, value in attrs:
-            if key in ATTRIBUTES and value:
+            if key in ATTRIBUTES and value and not (tag == 'base' and key == 'href'):
                 self.references.append(value)
         if tag == "a" and pairs.get("href") in ("#", "") and not pairs.get("role"):
             self.bad_buttons.append(pairs.get("id") or pairs.get("class") or "(unnamed)")
         if tag == "button" and pairs.get("type") == "submit" and pairs.get("disabled") is not None:
             self.bad_buttons.append("disabled submit: " + str(pairs.get("id", "(unnamed)")))
 
-def target_path(page, raw):
+def target_path(page, raw, basehref=None):
     if not raw or raw.startswith(("#", "//", "{")):
         return None
     split = urlsplit(raw.strip())
@@ -45,7 +48,11 @@ def target_path(page, raw):
     elif path.startswith("/"):
         return None
     else:
-        resolved = page.parent / path
+        # Resolve relative URLs against <base href>, if the document has one.
+        base = page.parent
+        if basehref and not urlsplit(basehref).scheme and not basehref.startswith('/'):
+            base = (base / unquote(urlsplit(basehref).path)).resolve()
+        resolved = base / path
     try:
         clean = resolved.resolve().relative_to(ROOT.resolve())
     except ValueError:
@@ -70,7 +77,7 @@ for page in PAGES:
     if not parser.viewport:
         problems.append({"page": str(page.relative_to(ROOT)), "type": "missing_viewport", "detail": "meta viewport"})
     for raw in parser.references:
-        path = target_path(page, raw)
+        path = target_path(page, raw, parser.basehref)
         if path is None:
             continue
         if path.is_dir():
