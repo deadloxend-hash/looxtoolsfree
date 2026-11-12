@@ -6,7 +6,21 @@ function notify(text){let n=$('.studio-toast');if(!n){n=node('p','studio-toast')
 async function signedIn(){await initialize();if(!state.user){auth();throw Error('Sign in to save styles.');}}
 let savedCache=[],savedOwner=null;
 const saved=()=>savedOwner===state.user?.id?savedCache:[];
-async function loadSaved(){if(!state.user){savedCache=[];savedOwner=null;return;}const {data,error}=await state.client.from('loox_user_styles').select('id,name,prompt,favorite,preview_job_id').eq('user_id',state.user.id).order('created_at',{ascending:false});if(error)throw error;savedCache=data||[];savedOwner=state.user.id;}
+let savedLoading=null;
+async function loadSaved(){
+ if(!state.user){savedCache=[];savedOwner=null;return;}
+ const owner=state.user.id;
+ if(savedOwner===owner)return;
+ if(savedLoading?.owner===owner)return savedLoading.promise;
+ const promise=(async()=>{
+  const {data,error}=await state.client.from('loox_user_styles').select('id,name,prompt,favorite,preview_job_id').eq('user_id',owner).order('created_at',{ascending:false});
+  if(error)throw error;
+  if(state.user?.id!==owner)return;
+  savedCache=data||[];savedOwner=owner;
+ })();
+ savedLoading={owner,promise};
+ try{await promise;}finally{if(savedLoading?.promise===promise)savedLoading=null;}
+}
 async function persist(styles){await signedIn();if(styles.length>20)throw Error('You can save up to 20 styles.');const ids=new Set(styles.map(x=>x.id));for(const old of saved()){if(!ids.has(old.id)){const {error}=await state.client.from('loox_user_styles').delete().eq('id',old.id).eq('user_id',state.user.id);if(error)throw error;}}
  if(styles.length){const {error}=await state.client.from('loox_user_styles').upsert(styles.map(s=>({id:s.id,user_id:state.user.id,name:s.name,prompt:s.prompt,favorite:!!s.favorite,preview_job_id:s.preview_job_id||null})));if(error)throw error;}savedCache=styles;savedOwner=state.user.id;notify('Styles saved');}
 let selectedStyle=null;
@@ -16,18 +30,143 @@ function editStyle(style){
  const previewList=node('div','studio-assets');box.append(name,prompt,button('Choose preview from My Creations',async()=>{try{await signedIn();const {items}=await api('gallery',null,{operation:'generate'});previewList.replaceChildren();for(const item of items){if(!item.url)continue;const choose=button('',()=>{previewId=item.id;notice.textContent='Preview selected';for(const b of previewList.children)b.setAttribute('aria-pressed',String(b===choose));});const image=node('img');image.src=item.url;image.alt=item.prompt||'Your creation';image.loading='lazy';choose.append(image);previewList.append(choose);}if(!items.length)notice.textContent='Create an image first to use it as a preview.';}catch(e){notice.textContent=e.message;}}),previewList,notice);const save=node('button','studio-primary','Save style');save.type='submit';box.append(save);const d=openSheet(style?'Edit style':'Create a style',box);
  box.onsubmit=async e=>{e.preventDefault();save.disabled=true;try{await signedIn();const entry={id:style?.id||crypto.randomUUID(),name:name.value.trim(),prompt:prompt.value.trim(),favorite:style?.favorite||false,preview_job_id:previewId};if(!entry.name||!entry.prompt)throw Error('Enter a name and style prompt.');await persist([...saved().filter(s=>s.id!==entry.id),entry]);d.close();stylesSheet('saved');}catch(e){notice.textContent=e.message;}finally{save.disabled=false;}};
 }
-async function stylesSheet(tab='explore'){
- const box=node('div','studio-stack'),tabs=node('nav','studio-tabs'),list=node('div','studio-style-grid'),notice=node('p');
- box.append(tabs,list,notice);openSheet('Styles',box);
- for(const [label,key] of [['Explore Styles','explore'],['My Saved Styles','saved'],['Favorites','favorites']]){const b=button(label,()=>stylesSheet(key));b.setAttribute('aria-pressed',String(key===tab));tabs.append(b);}
- box.append(button('＋ Create a style',()=>editStyle()));
- try{await initialize({publicAccess:true});await loadSaved();let records=saved();if(tab==='explore'){if(!state.client){notice.textContent='Styles are unavailable. Please try again.';return;}const {data,error}=await state.client.from('loox_template_styles').select('*').order('name');if(error)throw error;records=data||[];const samples=await state.client.from('loox_template_catalog').select('id,styles,style,media_path').eq('active',true).eq('kind','image').not('media_path','is',null).limit(60);if(!samples.error)records=records.map(s=>({...s,preview_template_id:samples.data.find(t=>t.style===s.name||t.styles?.includes(s.name))?.id}));}if(tab==='favorites')records=records.filter(x=>x.favorite);
- if(!records.length)notice.textContent=tab==='explore'?'No published styles yet.':'No saved styles here yet.';
- for(const s of records){const card=node('article','studio-style-card');if(s.preview_template_id){const image=node('img');image.alt=s.name+' style preview';image.loading='lazy';image.hidden=true;card.append(image);const observer=new IntersectionObserver(entries=>{if(!entries.some(e=>e.isIntersecting))return;observer.disconnect();const params=new URLSearchParams({action:'public_media',type:'template',id:s.preview_template_id,variant:'preview'});fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+params,{credentials:'omit'}).then(r=>r.ok?r.json():null).then(data=>{if(data?.url&&card.isConnected){image.src=data.url;image.hidden=false;}}).catch(()=>{});});observer.observe(card);}if(s.preview_job_id){api('status',null,{id:s.preview_job_id}).then(item=>{if(!item.url||!card.isConnected)return;const image=node('img');image.src=item.url;image.alt=s.name;image.loading='lazy';card.prepend(image);}).catch(()=>{});}const apply=button(s.name,()=>{const text=s.prompt||s.style_prompt||s.description||s.name;if(!text){notify('This style has no reusable prompt. Choose a template with this style.');return;}selectedStyle={id:s.id,name:s.name,prompt:text};const clear=$('.studio-clear-style');if(clear)clear.hidden=false;notify(s.name+' selected');$('.studio-style-trigger')?.replaceChildren(document.createTextNode('✧ '+s.name));document.querySelector('dialog.loox-sheet')?.close();});card.append(apply);
- if(tab!=='explore'){card.append(button('Edit',()=>editStyle(s)),button(s.favorite?'★':'☆',async()=>{try{await persist(saved().map(x=>x.id===s.id?{...x,favorite:!x.favorite}:x));stylesSheet(tab);}catch(e){notify(e.message);}}),button('Duplicate',async()=>{try{await persist([...saved(),{...s,id:crypto.randomUUID(),name:s.name+' copy'}]);stylesSheet(tab);}catch(e){notify(e.message);}}),button('Delete',async()=>{if(!confirm('Delete “'+s.name+'”?'))return;try{await persist(saved().filter(x=>x.id!==s.id));if(selectedStyle?.id===s.id)selectedStyle=null;stylesSheet(tab);}catch(e){notify(e.message);}}));}
- list.append(card);}
- }catch(e){notice.textContent=e.message;}
+
+let styleCatalog=null,styleCatalogLoading=null;
+const styleMediaCache=new Map();
+async function loadStyleCatalog(){
+ if(styleCatalog)return styleCatalog;
+ if(styleCatalogLoading)return styleCatalogLoading;
+ styleCatalogLoading=(async()=>{
+  if(!state.client)throw Error('Styles are temporarily unavailable.');
+  const {data,error}=await state.client.from('loox_template_styles').select('*').order('name');
+  if(error)throw error;
+  const samples=await state.client.from('loox_template_catalog').select('id,styles,style,media_path').eq('active',true).eq('kind','image').not('media_path','is',null).limit(60);
+  const records=(data||[]).map(s=>({
+   ...s,preview_template_id:!samples.error?samples.data?.find(t=>t.style===s.name||t.styles?.includes(s.name))?.id:null
+  }));
+  styleCatalog=records;return records;
+ })();
+ try{return await styleCatalogLoading;}finally{styleCatalogLoading=null;}
 }
+function stylePreview(kind,id){
+ const key=(kind==='saved'?(state.user?.id||'guest')+':':'public:')+kind+':'+id;
+ const cached=styleMediaCache.get(key);
+ if(cached&&cached.until>Date.now())return cached.promise;
+ const promise=kind==='explore'
+  ?fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({action:'public_media',type:'template',id,variant:'preview'}),{credentials:'omit'}).then(r=>r.ok?r.json():null).then(data=>data?.url||null)
+  :api('status',null,{id}).then(result=>result?.url||null);
+ const guarded=promise.catch(()=>null);
+ styleMediaCache.set(key,{promise:guarded,until:Date.now()+180000});
+ return guarded;
+}
+async function stylesSheet(initialTab='explore'){
+ const box=node('div','studio-stack studio-style-browser');
+ const tabs=node('nav','studio-tabs studio-style-tabs');
+ tabs.setAttribute('aria-label','Style collections');
+ const list=node('div','studio-style-grid');
+ const notice=node('p','studio-style-notice');
+ notice.setAttribute('role','status');
+ const create=button('＋ Create style',()=>editStyle(),'studio-button studio-create-style');
+ box.append(tabs,create,list,notice);
+ const dialog=openSheet('Styles',box);
+ let tab=initialTab,request=0;
+ const choices=[['Explore Styles','explore'],['My Saved Styles','saved'],['Favorites','favorites']];
+ const tabButtons=new Map();
+ for(const [label,key] of choices){
+  const trigger=button(label,()=>showTab(key),'studio-button');
+  trigger.dataset.tab=key;trigger.setAttribute('aria-pressed','false');
+  trigger.setAttribute('aria-controls','studio-style-results');
+  tabs.append(trigger);tabButtons.set(key,trigger);
+ }
+ list.id='studio-style-results';
+ const available=()=>dialog.open&&dialog.isConnected;
+ function addPreview(card,style){
+  const kind=style.preview_template_id?'explore':style.preview_job_id?'saved':null;
+  const id=style.preview_template_id||style.preview_job_id;
+  if(!kind||!id)return;
+  const frame=node('div','studio-style-preview');
+  frame.setAttribute('aria-label','Style preview');
+  card.prepend(frame);
+  const observer=new IntersectionObserver(items=>{
+   if(!items.some(item=>item.isIntersecting))return;
+   observer.disconnect();
+   stylePreview(kind,id).then(url=>{
+    if(!url||!frame.isConnected)return;
+    const img=node('img');img.alt=style.name+' style example';img.loading='lazy';img.decoding='async';
+    img.onerror=()=>{img.remove();};
+    img.src=url;frame.append(img);
+   });
+  },{root:dialog.querySelector('.loox-sheet-body')||null,rootMargin:'140px'});
+  observer.observe(frame);
+ }
+ function render(records,active){
+  if(!available())return;
+  list.replaceChildren();
+  notice.textContent=records.length?'':active==='explore'?'No published styles yet.':'No saved styles in this collection yet.';
+  for(const s of records){
+   const card=node('article','studio-style-card');
+   const prompt=s.prompt||s.style_prompt||s.description||s.name;
+   const apply=button(s.name,()=>{
+    if(!prompt){notify('This style has no reusable prompt.');return;}
+    selectedStyle={id:s.id,name:s.name,prompt};
+    const clear=$('.studio-clear-style');if(clear)clear.hidden=false;
+    const trigger=$('.studio-style-trigger');if(trigger)trigger.textContent='✧ '+s.name;
+    notify(s.name+' selected');dialog.close();
+   },'studio-style-apply');
+   card.append(apply);
+   addPreview(card,s);
+   const actions=node('div','studio-style-actions');
+   if(active==='explore'){
+    const savedMatch=saved().find(x=>x.name===s.name&&x.prompt===prompt);
+    const save=button(savedMatch?.favorite?'★ Saved':'☆ Save',async()=>{
+     try{
+      const previous=saved().find(x=>x.name===s.name&&x.prompt===prompt);
+      const next=previous?saved().map(x=>x.id===previous.id?{...x,favorite:!x.favorite}:x):
+       [...saved(),{id:crypto.randomUUID(),name:s.name,prompt,favorite:true,preview_job_id:null}];
+      await persist(next);await showTab('explore');
+     }catch(error){notify(error.message);}
+    },'studio-button');
+    actions.append(save);
+   }else{
+    actions.append(
+     button('Edit',()=>editStyle(s),'studio-button'),
+     button(s.favorite?'★':'☆',async()=>{
+      try{await persist(saved().map(x=>x.id===s.id?{...x,favorite:!x.favorite}:x));await showTab(tab);}
+      catch(error){notify(error.message);}
+     },'studio-button'),
+     button('Duplicate',async()=>{
+      try{await persist([...saved(),{...s,id:crypto.randomUUID(),name:s.name+' copy'}]);await showTab(tab);}
+      catch(error){notify(error.message);}
+     },'studio-button'),
+     button('Delete',async()=>{
+      if(!confirm('Delete “'+s.name+'”?'))return;
+      try{await persist(saved().filter(x=>x.id!==s.id));if(selectedStyle?.id===s.id)selectedStyle=null;await showTab(tab);}
+      catch(error){notify(error.message);}
+     },'studio-button')
+    );
+   }
+   card.append(actions);list.append(card);
+  }
+ }
+ async function showTab(next){
+  tab=next;
+  const version=++request;
+  for(const [key,btn] of tabButtons)btn.setAttribute('aria-pressed',String(key===next));
+  // Keep the same open sheet and cached results: tab switches must not reopen dialogs.
+  if(next==='explore'&&styleCatalog){render(styleCatalog,next);return;}
+  if(next!=='explore'&&savedOwner===state.user?.id){render(next==='favorites'?saved().filter(s=>s.favorite):saved(),next);return;}
+  list.replaceChildren(node('div','studio-style-loading','Loading styles…'));
+  notice.textContent='';
+  try{
+   await initialize({publicAccess:true});
+   const [_,catalog]=await Promise.all([loadSaved(),next==='explore'?loadStyleCatalog():Promise.resolve(null)]);
+   if(version!==request||!available())return;
+   render(next==='explore'?catalog:next==='favorites'?saved().filter(s=>s.favorite):saved(),next);
+  }catch(error){if(version===request&&available()){list.replaceChildren();notice.textContent=error.message||'Styles could not load.';}}
+ }
+ await showTab(initialTab);
+}
+
 function settingsSheet(prefix){
  const controls=$('.loox-uc-controls');if(!controls)return;const ratio=document.getElementById(prefix+'-ratio');if(ratio)ratio.tabIndex=0;
  // Move the actual fields, preserving their values, validation and listeners.
