@@ -333,3 +333,29 @@ body.creator-page.cx-profile-page #creator-community{
 #creator-community .cx-account-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #creator-community .cx-account-links a{padding:7px 11px;border-radius:99px;border:1px solid #6c517a;color:#ebd9fa!important;font-size:11px;font-weight:700}
 #creator-community .cx-account-links a:hover{background:#362640}
+
+/* Cloudflare-backed profile connections, notifications and privacy sheet */
+.cx-edit-dialog .cx-connections{display:flex;flex-direction:column;gap:8px;padding:16px 20px 4px}
+.cx-edit-dialog .cx-connection{
+ display:flex;align-items:center;gap:12px;text-decoration:none;color:#f5eaff;
+ padding:11px;border:1px solid #4b3b57;border-radius:12px;background:#211a28;
+}
+.cx-edit-dialog .cx-connection:hover{background:#32233d}
+.cx-edit-dialog .cx-connection-avatar{flex:0 0 42px;width:42px;height:42px;font-size:16px}
+.cx-edit-dialog .cx-connection-info{display:flex;flex-direction:column;min-width:0;gap:2px}
+.cx-edit-dialog .cx-connection-info strong{font-size:13px}
+.cx-edit-dialog .cx-connection-info small{font-size:11px;color:#bfa9c8}
+.cx-edit-dialog .cx-connection-info p{font-size:11px;line-height:1.4;color:#aa91b9;margin:3px 0 0}
+.cx-edit-dialog .cx-edit-note{padding-inline:18px}
+.cx-edit-dialog .cx-dialog-content>.cx-button{display:block;margin:14px auto}
+.cx-edit-dialog .cx-privacy-option{
+ display:flex;gap:12px;align-items:center;cursor:pointer;
+ border-bottom:1px solid #403148;padding:10px 0;color:#ebe0f4;font-size:13px;
+}
+.cx-edit-dialog .cx-privacy-option input{width:17px;height:17px;accent-color:#b78ce7}
+.cx-edit-dialog .cx-notifications{display:flex;flex-direction:column;gap:8px;padding:18px 20px 0}
+.cx-edit-dialog .cx-notification{
+ display:flex;flex-wrap:wrap;align-items:center;gap:4px 7px;
+ padding:12px;border:1px solid #43384b;border-radius:10px;font-size:12px;
+}
+.cx-edit-dialog .cx-notification a{color:#d2a9f2;text-decoration:underline;margin-left:auto}
