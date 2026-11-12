@@ -38,7 +38,7 @@ export class MediaSessions {
   const main=this.root.closest('main');
   const layout=()=>{const v=window.visualViewport,h=document.querySelector('body > header');const top=Math.max(main.getBoundingClientRect().top,h?.getBoundingClientRect().bottom||0);document.documentElement.style.setProperty('--loox-workspace-height',Math.max(180,(v?.height||innerHeight)+(v?.offsetTop||0)-top)+'px');};
   if(window.ResizeObserver)new ResizeObserver(layout).observe(document.querySelector('body > header')||this.root);
-  window.addEventListener('resize',layout);window.visualViewport?.addEventListener('resize',layout);layout();
+  window.addEventListener('loox:sidebar-layout',layout);window.addEventListener('resize',layout);window.visualViewport?.addEventListener('resize',layout);layout();
   this.prompt.addEventListener('input',()=>{this.prompt.style.height='auto';this.prompt.style.height=Math.min(132,this.prompt.scrollHeight)+'px';});
   document.addEventListener('click',event=>{const a=event.target.closest('a');if(!a)return;const u=new URL(a.href,location.href);if(u.origin===location.origin&&/\/(ai-text-to-image|ai-image-workspace|ai-video-generator)\.html$/.test(u.pathname)&&u.hash!=='#templates'){if(this.id)u.searchParams.set('session',this.id);else u.searchParams.delete('session');a.href=u.href;}},true);
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&matchMedia('(max-width:900px)').matches)this.collapse(true);});

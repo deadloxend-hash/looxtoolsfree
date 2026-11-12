@@ -208,9 +208,13 @@
  const openApps=trigger=>{
   if(closeTimer)clearTimeout(closeTimer);
   appClosing=false;appLayer.classList.remove('is-closing','is-dragging');
+  appLayer.classList.add('is-opening');
   appSheet.style.removeProperty('--loox-sheet-drag');
   appScrim.style.removeProperty('opacity');
   appLastFocus=trigger;appLayer.hidden=false;if(!appLayer.open)appLayer.showModal();document.body.classList.add('loox-apps-open');
+  // Measure the offscreen starting position before animating upward.
+  void appSheet.offsetHeight;
+  requestAnimationFrame(()=>appLayer.classList.remove('is-opening'));
   appTriggers.forEach(b=>b.setAttribute('aria-expanded','true'));
   appLayer.querySelector('.loox-mobile-app-close').focus();
  };
@@ -336,6 +340,9 @@
  document.body.append(scrim,sidebar,dockToggle);
  const desktop=matchMedia('(min-width:901px)');
  const setDrawer=open=>{
+  const generationScroll=document.querySelector('body.loox-conversations .lig-content-scroll');
+  const savedScroll=generationScroll?.scrollTop;
+  const atBottom=generationScroll&&generationScroll.scrollHeight-generationScroll.clientHeight-savedScroll<160;
   // Workspace sidebars default to open, but the edge tab always lets users hide or restore them.
   if(open){sidebar.scrollTop=0;sideContent.scrollTop=0;}
   sidebar.classList.toggle('is-open',open);
@@ -347,6 +354,10 @@
   dockToggle.querySelector('.loox-dock-arrow').textContent=open?'‹':'›';
   burger.setAttribute('aria-expanded',String(open));
   burger.setAttribute('aria-label',open?'Hide LOOX navigation':'Show LOOX navigation');
+  if(generationScroll)requestAnimationFrame(()=>{
+   generationScroll.scrollTop=atBottom?generationScroll.scrollHeight:savedScroll;
+   window.dispatchEvent(new Event('loox:sidebar-layout'));
+  });
  };
  const closeDrawer=()=>setDrawer(false);
  burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));

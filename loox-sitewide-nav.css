@@ -2465,3 +2465,17 @@ body.loox-apps-open{overflow:hidden!important}
  .loox-mobile-app-icon{width:76px!important;height:76px!important}
  .loox-mobile-app-label{font-size:14px!important}
 }
+
+/* Mobile launcher enters from the bottom, below a visible backdrop. */
+@media(max-width:790px){
+ .loox-mobile-app-layer .loox-mobile-app-sheet{
+  top:auto!important;bottom:0!important;height:auto!important;
+  max-height:90dvh!important;min-height:0!important;
+  padding:22px 20px calc(24px + env(safe-area-inset-bottom,0px))!important;
+  border-radius:24px 24px 0 0!important;
+  background:#19141f!important;color:#f6f1ff!important;
+ }
+ .loox-mobile-app-layer .loox-mobile-app-heading h2,
+ .loox-mobile-app-layer .loox-mobile-app-label{color:#f6f1ff!important}
+ .loox-mobile-app-layer.is-opening .loox-mobile-app-sheet{transform:translate3d(0,105%,0)!important}
+}

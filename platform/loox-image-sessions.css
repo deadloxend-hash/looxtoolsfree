@@ -365,3 +365,6 @@ body.loox-conversations .lig-main > .loox-session-scrim{
 .loox-session-rail .loox-session-new-compact:hover{
  background:#41324d!important;color:#fff!important;
 }
+
+/* Safari must keep restored media painted when the sidebar changes layout. */
+body.loox-conversations .lig-results > .lig-output{content-visibility:visible!important;contain-intrinsic-size:none!important}
