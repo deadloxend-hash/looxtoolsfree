@@ -266,8 +266,8 @@ function run(){
    exploreButton.setAttribute('aria-pressed',String(explore));
    if(scroll)switcher.scrollIntoView({block:'start',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
   }
-  document.addEventListener('loox:session-open',()=>showContent('create'));
-  document.addEventListener('loox:session-new',()=>showContent('create'));
+  document.addEventListener('loox:session-open',()=>{showContent('create');if(matchMedia('(max-width:900px)').matches)document.body.classList.add('loox-uc-scroll-compact');});
+  document.addEventListener('loox:session-new',()=>{showContent('create');document.body.classList.remove('loox-uc-scroll-compact');});
   showContent('create');
  }
  const toolbar=$('.loox-uc-toolbar');if(toolbar)card.prepend(toolbar);
