@@ -127,29 +127,25 @@ export class MediaSessions {
   this.feed.replaceChildren(el('div','loox-session-loading','Opening saved creations…'));
   try {
   const s=checked(await this.state.client.from('loox_media_sessions').select('id').eq('id',id).single());
-  const entries=[];for(let offset=0;;offset+=200){const batch=checked(await this.state.client.from('loox_media_entries').select('*').eq('session_id',s.id).order('created_at').order('id').range(offset,offset+199));if(seq!==this.epoch||uid!==this.state.user?.id)return;entries.push(...batch);if(batch.length<200)break;}
+  const entries=[];for(let offset=0;;offset+=200){const batch=checked(await this.state.client.from('loox_media_entries').select('*').eq('session_id',s.id).order('created_at',{ascending:false}).order('id',{ascending:false}).range(offset,offset+199));if(seq!==this.epoch||uid!==this.state.user?.id)return;entries.push(...batch);if(batch.length<200)break;}
   if(seq!==this.epoch||uid!==this.state.user?.id)return;this.id=id;this.url();this.feed.replaceChildren();this.feed.removeAttribute('aria-busy');this.loadList().catch(error=>this.notice(error.message,true));if(matchMedia('(max-width:900px)').matches)this.collapse(true);
   this.observer?.disconnect();this.observer=new IntersectionObserver(items=>{for(const item of items)if(item.isIntersecting){this.observer.unobserve(item.target);const e=entries.find(e=>e.id===item.target.dataset.entry);if(e)this.restore(e,item.target,seq).catch(error=>{if(seq===this.epoch){const stage=item.target.querySelector('.lig-output-stage');if(stage)stage.textContent=error.status===429?'Preview temporarily busy. Reopen this chat in a minute. Your saved image is safe.':error.message;}});}},{root:(['auto','scroll','hidden','clip'].includes(getComputedStyle(this.scroll).overflowY)?this.scroll:null),rootMargin:'350px'});
   for(const e of entries){const card=el('article','lig-output'),top=el('div','lig-output-top');top.append(el('span','lig-output-name',e.prompt));const stage=el('div','lig-output-stage','Loading generation…');stage.classList.add('loox-preview-loading');stage.style.setProperty('--lig-ratio',(e.ratio||'1:1').replace(':',' / '));card.append(top,stage);this.feed.append(card);this.attach({card,stage},e);this.observer.observe(card);}
-  // Open saved conversations at their newest generation, not the oldest one.
-  // Keep chronological order and allow normal scrolling upward through history.
-  // Delay until layout has measured the cards so the last item triggers its
-  // existing lazy-restoration observer even when far down a long conversation.
-  if(entries.length){
-   const latest=this.feed.lastElementChild;
-   requestAnimationFrame(()=>{
-    if(seq!==this.epoch||this.id!==id||!latest?.isConnected)return;
-    if(this.hasOwnScroller())this.scroll.scrollTop=this.scroll.scrollHeight;
-    else latest.scrollIntoView({block:'end',behavior:'instant'});
-    requestAnimationFrame(()=>{
-     if(seq===this.epoch&&this.id===id&&latest.isConnected){
-      if(this.hasOwnScroller())this.scroll.scrollTop=this.scroll.scrollHeight;
-      else latest.scrollIntoView({block:'end',behavior:'instant'});
-     }
-    });
-   });
-  }else if(this.hasOwnScroller())this.scroll.scrollTop=0;
-  else this.feed.scrollIntoView({block:'start',behavior:'instant'});
+  // Recent creations open newest-first, with the newest card in view.
+  // Never jump to the bottom of a saved session: older results are below.
+  const first=this.feed.firstElementChild;
+  const showNewest=()=>{
+   if(seq!==this.epoch||this.id!==id||!first?.isConnected)return;
+   if(this.hasOwnScroller()){
+    this.scroll.scrollTop=0;
+   }else{
+    const header=document.querySelector('body > header');
+    const headerBottom=Math.max(0,header?.getBoundingClientRect().bottom||0);
+    const y=Math.max(0,window.scrollY+first.getBoundingClientRect().top-headerBottom-12);
+    window.scrollTo({top:y,behavior:'instant'});
+   }
+  };
+  requestAnimationFrame(()=>{showNewest();requestAnimationFrame(showNewest);});
   }catch(error){
    if(seq===this.epoch&&uid===this.state.user?.id){
     this.feed.replaceChildren(...priorNodes);
