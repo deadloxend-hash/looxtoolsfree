@@ -29,7 +29,7 @@ async function stylesSheet(tab='explore'){
  }catch(e){notice.textContent=e.message;}
 }
 function settingsSheet(prefix){
- const controls=$('.loox-uc-controls');if(!controls)return;
+ const controls=$('.loox-uc-controls');if(!controls)return;const ratio=document.getElementById(prefix+'-ratio');if(ratio)ratio.tabIndex=0;
  // Move the actual fields, preserving their values, validation and listeners.
  moveIntoSheet('Prompt settings',controls);
 }
