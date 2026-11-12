@@ -55,27 +55,10 @@
   controls.classList.add('loox-uc-controls');
   const left=el('div','loox-uc-left');
   if(video){
-   const uploadBlock=document.getElementById('lvg-image-block');
-   const file=document.getElementById('lvg-image');
-   if(uploadBlock&&file){
-    const button=el('button','loox-uc-add','+');
-    button.type='button';button.title='Add a reference image';button.setAttribute('aria-label','Upload reference image');
-    button.addEventListener('click',()=>{if(!uploadBlock.hidden&&!file.disabled)file.click()});
-    button.id='loox-uc-video-add';
-    const filename=el('span','loox-uc-filename','');
-    const update=()=>{
-     button.hidden=uploadBlock.hidden;
-     filename.hidden=uploadBlock.hidden||!file.files?.length;
-     filename.textContent=file.files?.[0]?.name||'';
-     button.disabled=file.disabled;
-    };
-    file.addEventListener('change',update);
-    const observer=new MutationObserver(update);
-    observer.observe(uploadBlock,{attributes:true,attributeFilter:['hidden']});
-    uploadBlock.classList.add('loox-uc-file-host');
-    left.append(button,filename,uploadBlock);
-    update();
-   }
+   // Video references live in the single compact Start Frame strip.
+   // Never duplicate a + button or print raw filenames across the submit row.
+   const nativeUpload=document.getElementById('lvg-image-block');
+   if(nativeUpload)nativeUpload.classList.add('loox-uc-file-host');
   }else{
    // FLUX Schnell uses a native img2img latent. Multiple selected images are
    // combined visibly into one tiled reference (no unsupported multi-IP-adapter claims).
@@ -141,7 +124,7 @@
    left.append(quickAdd);
    render();
   }
-  actions.prepend(left);
+  if(!video)actions.prepend(left);
   // Keep all existing form submit buttons exactly where they were.
   wrap.prepend(links(video?'video':'image'));
   const browse=el('section','loox-start-templates');browse.setAttribute('aria-label','Start with a template');
