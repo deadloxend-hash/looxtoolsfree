@@ -21,6 +21,10 @@ export async function rpc(state,name,args={}){
 }
 const urls=new Map();
 export async function mediaURL(state,path,bucket='loox-results',resource=null){
+ if(resource?.type==='post'){
+  const variant=resource.variant==='original'?'original':'preview';
+  return 'https://loox-profile-api.looxai-studio.workers.dev/v1/media?type=post&id='+encodeURIComponent(resource.id)+'&variant='+variant;
+ }
  if(!path&&!resource)return null;const key=resource?resource.type+'/'+resource.id+'/'+(resource.variant||'preview'):bucket+'/'+path,old=urls.get(key);if(old&&old.until>Date.now())return old.url;
  if(resource){const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({action:'public_media',type:resource.type,id:resource.id,variant:resource.variant||'preview'}),{credentials:'omit'}),data=await response.json().catch(()=>({}));if(!response.ok||!data.url)throw Error(data.error||'Media is unavailable.');urls.set(key,{url:data.url,until:Date.now()+240000});return data.url;}
  const uid=state.user?.id;const data=result(await state.client.storage.from(bucket).createSignedUrl(path,300));if(uid!==state.user?.id)throw Error('Account changed. Open this media again.');urls.set(key,{url:data.signedUrl,until:Date.now()+240000});return data.signedUrl;
@@ -34,7 +38,7 @@ export async function publishCreation({state,auth,id,prompt='',notice=()=>{}}){
  const caption=field(form,'Caption');caption.required=true;caption.placeholder='Give your creation a public caption';caption.maxLength=300;
  const label=element('label','community-check'),share=element('input');share.type='checkbox';label.append(share,'Share my generation prompt');form.append(label,element('p','community-note','Your creation stays private until an administrator approves it. Public posts show your creator profile, never your email.'));
  const submit=element('button','community-primary','Submit for review');submit.type='submit';form.append(submit,status);d.append(form);
- form.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;status.textContent='Submitting…';try{await rpc(state,'loox_publish_creation',{p_job:id,p_caption:caption.value.trim(),p_share_prompt:share.checked});status.textContent='Submitted for approval. Manage your post from your creator profile.';notice('Submitted to Community for review.');submit.remove();}catch(error){status.textContent=error.message;submit.disabled=false;}});
+ form.addEventListener('submit',async e=>{e.preventDefault();submit.disabled=true;status.textContent='Submitting…';try{await cloudRequest(state,'publish',{method:'POST',data:{job_id:id,caption:caption.value.trim(),share_prompt:share.checked}});status.textContent='Submitted for approval. Manage your post from your creator profile.';notice('Submitted to Community for review.');submit.remove();}catch(error){status.textContent=error.message;submit.disabled=false;}});
 }
 export async function editCreator({state,auth,onSave=()=>{}}){
  if(!state.user){auth('login');return;}
