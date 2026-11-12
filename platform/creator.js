@@ -128,7 +128,7 @@ function buildPage(){
  const counts=el('div','cx-counts');counts.id='cx-counts';
  details.append(tools,names,meta,counts);
  const tabs=el('nav','cx-tabs');tabs.setAttribute('aria-label','Profile sections');
- for(const [value,label] of [['posts','Posts'],['media','Media'],...(isOwn?[['likes','Likes']]:[])]){
+ for(const [value,label] of [['posts','Posts'],['replies','Replies'],['media','Media'],...(isOwn?[['likes','Likes']]:[])]){
   const b=btn(label,()=>switchTab(value),'cx-tab');b.dataset.tab=value;tabs.append(b);
  }
  feed=el('div','cx-feed');
@@ -182,7 +182,22 @@ async function loadFeed(reset){
  if(reset){const skel=el('div','cx-feed-loading');for(let i=0;i<3;i++)skel.append(el('div','cx-post-placeholder cx-skeleton'));feed.append(skel);}
  notice('');
  try{
-  const kind=tab==='media'?'all':'all',sort=tab==='likes'?'liked':'latest',creator=tab==='likes'?null:creatorId;
+  if(tab==='replies'){
+   const response=await state.client.from('loox_post_comments')
+    .select('id,post_id,body,created_at,parent_id')
+    .eq('user_id',creatorId)
+    .order('created_at',{ascending:false})
+    .range(start,start+19);
+   const replies=result(response);
+   if(run!==epoch)return;
+   if(reset)feed.replaceChildren();
+   for(const reply of replies)feed.append(replyCard(reply));
+   offset=start+replies.length;
+   more.hidden=replies.length<20;
+   if(!offset)feed.append(emptyContent('No replies yet','Replies to public Community posts will appear here.'));
+   return;
+  }
+  const kind='all',sort=tab==='likes'?'liked':'latest',creator=tab==='likes'?null:creatorId;
   const data=await rpc(state,'loox_discover',{p_kind:kind,p_sort:sort,p_offset:start,p_creator:creator,p_query:'',p_collection:null,p_days:30});
   if(run!==epoch)return;
   if(reset)feed.replaceChildren();
@@ -224,6 +239,27 @@ function preview(post,wrap,asTile=false){
   io.observe(frame);
  }else load();
  return frame;
+}
+function emptyContent(heading,description){
+ const empty=el('div','cx-empty-feed');
+ empty.append(svg('comment',30),el('h3','',heading),el('p','',description));
+ return empty;
+}
+function replyCard(reply){
+ const article=el('article','cx-post cx-reply');article.dataset.id=reply.id;
+ const avatar=fallbackAvatar(profile,'cx-avatar cx-post-avatar');
+ const body=el('div','cx-post-body');
+ const heading=el('div','cx-post-heading');
+ const person=link('',profileURL(profile),'cx-post-person');
+ person.append(el('strong','',profile.display_name||profile.username),el('span','','@'+profile.username));
+ const time=el('time','cx-post-time',dateLabel(reply.created_at));time.dateTime=reply.created_at||'';
+ heading.append(person,time);
+ const caption=el('p','cx-post-caption',reply.body||'');
+ const origin=link('View conversation','community.html?post='+encodeURIComponent(reply.post_id),'cx-reply-origin');
+ origin.prepend(svg('comment',16));
+ body.append(el('div','cx-reply-label','Replied to a Community post'),heading,caption,origin);
+ article.append(avatar,body);
+ return article;
 }
 function mediaTile(post){const tile=el('article','cx-media-tile');preview(post,tile,true);return tile;}
 function postCard(post){
