@@ -348,12 +348,14 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    toggle.innerHTML='<svg width="23" height="23" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>';
    menu.setAttribute('role','group');menu.setAttribute('aria-label','Post actions');
    options.append(toggle,menu);stage.append(options);
-   const addAction=(key,label,fn,extra='')=>{
-    const b=a('',async()=>{options.open=false;await fn();},'loox-viewer-options-item '+extra,fail);
+   const paintAction=(b,key,label)=>{
     const icon=e('span','loox-viewer-options-icon');
     icon.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+icons[key]+'</svg>';
-    b.append(icon,e('span','loox-viewer-options-label',label));
-    menu.append(b);return b;
+    b.replaceChildren(icon,e('span','loox-viewer-options-label',label));
+   };
+   const addAction=(key,label,fn,extra='')=>{
+    const b=a('',async()=>{options.open=false;await fn();},'loox-viewer-options-item '+extra,fail);
+    paintAction(b,key,label);menu.append(b);return b;
    };
    let commentHost=null;
    const showComments=async()=>{
@@ -371,12 +373,12 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    addAction('comment','View comments',showComments);
    const likeAction=addAction('heart',post.liked?'Unlike post':'Like post',async()=>{
     try{await this.like(post,likeAction);}
-    finally{likeAction.querySelector('.loox-viewer-options-label')?.replaceWith(e('span','loox-viewer-options-label',post.liked?'Unlike post':'Like post'));}
+    finally{paintAction(likeAction,'heart',post.liked?'Unlike post':'Like post');likeAction.setAttribute('aria-pressed',String(!!post.liked));}
    });
    likeAction.setAttribute('aria-pressed',String(!!post.liked));
    const saveAction=addAction('save',post.saved?'Remove saved post':'Save post',async()=>{
     try{await this.save(post,saveAction);}
-    finally{saveAction.querySelector('.loox-viewer-options-label')?.replaceWith(e('span','loox-viewer-options-label',post.saved?'Remove saved post':'Save post'));}
+    finally{paintAction(saveAction,'save',post.saved?'Remove saved post':'Save post');saveAction.setAttribute('aria-pressed',String(!!post.saved));}
    });
    saveAction.setAttribute('aria-pressed',String(!!post.saved));
    addAction('collection','Add to collection',()=>this.collections(post));
