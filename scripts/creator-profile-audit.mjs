@@ -73,9 +73,22 @@ async function profilePage(width,path,portrait=false){
  assert.equal(await page.locator('.cx-post').count(),1);checks++;
  if(!path){
   await page.getByRole('button',{name:'View comments'}).click();
-  await page.getByRole('dialog').getByText('Mock Community comments').waitFor({timeout:10000});
+  const sheet=page.locator('dialog.cx-comments-dialog');
+  await sheet.getByText('Mock Community comments').waitFor({timeout:10000});
   assert.equal(await page.evaluate(()=>window.__commentOpens),1);checks++;
-  await page.getByRole('button',{name:'Close editor'}).click();
+  assert.equal(await sheet.getByRole('button',{name:'Close comments'}).count(),1,'Comments must have an accessible close button');checks++;
+  if(width<800){
+   const bounds=await sheet.boundingBox();
+   assert.ok(bounds.y>85,'The comment sheet should leave a tappable backdrop area above it');checks++;
+   await sheet.getByText('Mock Community comments').click();
+   assert.equal(await sheet.isVisible(),true,'Tapping inside the comments must not dismiss it');checks++;
+   await page.mouse.click(10,30);
+   await sheet.waitFor({state:'detached',timeout:5000});checks++;
+   await page.getByRole('button',{name:'View comments'}).click();
+   await sheet.getByText('Mock Community comments').waitFor({timeout:10000});checks++;
+  }
+  await sheet.getByRole('button',{name:'Close comments'}).click();
+  await sheet.waitFor({state:'detached',timeout:5000});checks++;
   await page.getByRole('button',{name:'Like post, 3 likes'}).click();
   assert.equal(await page.locator('.cx-post-like').getAttribute('aria-pressed'),'true');checks++;
   assert.equal(await page.locator('.cx-post-like svg').getAttribute('fill'),'currentColor');checks++;
