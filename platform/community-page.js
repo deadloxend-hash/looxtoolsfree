@@ -1,6 +1,6 @@
 import {state,auth,initialize} from './account.js?v=9';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
-import {Community,element,action,result,mediaURL} from './community.js?v=26';
+import {Community,element,action,result,mediaURL} from './community.js?v=27';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
 if(discoveryPage)document.body.classList.add('loox-discovery-gallery');
