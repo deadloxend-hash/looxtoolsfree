@@ -1,4 +1,4 @@
-import {state,auth,initialize,api,refresh} from './account.js?v=9';
+import {state,auth,initialize,refresh} from './account.js?v=9';
 import {Community,rpc,mediaURL,result} from './community.js?v=27';
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
@@ -459,7 +459,7 @@ async function editProfile(){
    else if(avatarInput.files?.[0])await cloudUpload(state,'avatar',await cropAvatar(avatarInput.files[0]));
    if(removeCover.dataset.remove==='yes')await cloudDelete(state,'cover');
    else if(coverInput.files?.[0])await cloudUpload(state,'cover',await coverBlob(coverInput.files[0]));
-   try{await api('profile',{name:cleanName});await refresh();}catch(e){console.warn('Profile saved but account display name sync failed',e);}
+   // Creator display names are stored exclusively in Cloudflare D1. Supabase remains the login identity provider.
    d.close();await refreshProfile();buildPage();notice('Profile updated.');
    if(location.search.includes('username='))history.replaceState(null,'',profileURL(profile));
   }catch(e){error.textContent=e.message||'Could not save your profile.';error.hidden=false;save.disabled=false;save.textContent='Save';}
