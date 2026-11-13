@@ -376,3 +376,5 @@ body .loox-template-detail>.loox-gallery-media.loox-media-pending{
   text-overflow:ellipsis!important;
  }
 }
+
+/* Obsidian Blue rollout: responsive layout regression audit trigger. */
