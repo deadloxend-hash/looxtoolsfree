@@ -1,7 +1,7 @@
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {installSocial,installPrivacy} from './community-social.js?v=11';
 import {api,refresh} from './account.js?v=9';
-import {cloudRequest,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
+import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
 // Shared community UI. Only Supabase publishable credentials enter the browser.
 export const element=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;};
 export const result=r=>{if(r.error)throw Error(r.error.code==='23505'?'That username is already taken. Choose another.':r.error.message);return r.data;};
@@ -21,6 +21,8 @@ export async function rpc(state,name,args={}){
 }
 const urls=new Map();
 export async function mediaURL(state,path,bucket='loox-results',resource=null){
+ if(resource?.type==='avatar')return cloudImage(state,resource.id,'avatar');
+ if(resource?.type==='cover')return cloudImage(state,resource.id,'cover');
  if(resource?.type==='post'){
   const variant=resource.variant==='original'?'original':'preview';
   return 'https://loox-profile-api.looxai-studio.workers.dev/v1/media?type=post&id='+encodeURIComponent(resource.id)+'&variant='+variant;
