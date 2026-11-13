@@ -623,3 +623,21 @@ body.creator-page.cx-profile-page #creator-community{
  #creator-community .cx-feed.cx-media-feed .cx-media-tile{margin-bottom:6px!important;border-radius:6px!important}
  #creator-community .cx-feed.cx-media-feed .cx-media-tile .cx-media-frame{border-radius:6px!important}
 }
+
+/* V10: keep reaction counts directly beside their icons on creator posts. */
+#creator-community .cx-post:not(.cx-reply) .cx-engagement-group{
+ display:inline-flex!important;
+ align-items:center!important;
+ gap:0!important;
+}
+#creator-community .cx-post:not(.cx-reply) .cx-engagement-group .cx-post-action{
+ width:30px!important;
+ min-width:30px!important;
+ padding:0!important;
+ margin:0!important;
+}
+#creator-community .cx-post:not(.cx-reply) .cx-engagement-group .cx-engagement-number{
+ margin-left:-3px!important;
+ padding:0!important;
+ line-height:1!important;
+}
