@@ -1,5 +1,5 @@
 import {state,auth,initialize,refresh} from './account.js?v=9';
-import {Community,rpc,mediaURL,result} from './community.js?v=31';
+import {Community,rpc,mediaURL,result} from './community.js?v=32';
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
 
