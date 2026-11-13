@@ -53,7 +53,7 @@ async function initWorkspace(){
  const availableModels=new Map([...allModels].filter(([,m])=>m.available));
  const modelNote=document.querySelector('.lig-model-note');
  function modelStatus(id){
-  if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'The private LOOX GPU worker is online.'}:{label:'Temporarily Unavailable',reason:'The private GPU worker is offline. Try again when it reconnects.'};
+  if(id==='flux')return state.config?.local?.available?{label:'Available',reason:state.config?.local?.source==='cloudflare'?'Your PC GPU is offline. Cloudflare FLUX Schnell is ready for text-to-image; reference images still require your PC.':'Your private LOOX GPU is online and will generate this image.'}:{label:'Temporarily Unavailable',reason:'Your GPU is offline and the Cloudflare fallback is not configured.'};
   const m=allModels.get(id);
   return {label:m?.status==='available'?'Available':m?.status==='temporarily_unavailable'?'Temporarily Unavailable':'Coming Soon',
    reason:m?.reason||'Requires rotated credentials, provider billing and a verified generation.'};
@@ -106,7 +106,7 @@ async function initWorkspace(){
    const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
    if(isModel){
     const m=allModels.get(option.value);
-    const detail=create('small','lig-model-choice-detail',m?.description||(id==='flux'?'Fast image generation on your private GPU':'Model details unavailable'));
+    const detail=create('small','lig-model-choice-detail',m?.description||(id==='flux'?'Fast image generation on your PC GPU, with Cloudflare fallback when offline':'Model details unavailable'));
     const status=modelStatus(option.value);
     const meta=create('small','lig-model-choice-meta',status.label+' · '+(m?.cost||3)+' credits');
     const body=create('span','lig-model-choice-body');body.append(label,detail,meta);
@@ -170,7 +170,7 @@ async function initWorkspace(){
   native:modelField,root:document.querySelector('[data-custom-select="lig-model"]'),
   mode:'image',getInfo:id=>{
    const m=allModels.get(id),status=modelStatus(id);
-   return {...m,description:m?.description||(id==='flux'?'Fast image generation on your private GPU':'Model details unavailable'),
+   return {...m,description:m?.description||(id==='flux'?'Fast image generation on your PC GPU, with Cloudflare fallback when offline':'Model details unavailable'),
     cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??'—'),
     status:m?.status||status.label.toLowerCase().replaceAll(' ','_')};
   }
