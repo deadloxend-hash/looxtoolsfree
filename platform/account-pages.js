@@ -3,7 +3,7 @@ import {cloudRequest} from './profile-cloudflare.js?v=1';
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
 const proposedPlans=[{id:'free',price_cents:0,credits:10,cadence:'signup'},{id:'creator',price_cents:1200,credits:100,cadence:'month'},{id:'creator_yearly',price_cents:12000,credits:1200,cadence:'year'},{id:'pro',price_cents:2900,credits:250,cadence:'month'},{id:'pro_yearly',price_cents:29000,credits:3000,cadence:'year'}];
-const presentation={free:{name:'LOOX Basic',icon:'◇',eyebrow:'YOUR FIRST IDEAS',description:'Explore the studio and start creating for free.'},creator:{name:'LOOX Creator',icon:'✦',eyebrow:'FOR YOUR CREATIVE ROUTINE',description:'A flexible balance for images, motion and everyday ideas.'},pro:{name:'LOOX Pro',icon:'♛',eyebrow:'FOR YOUR BIGGEST IDEAS',description:'Premium video models and more room to experiment.'}};
+const presentation={business:{name:'LOOX Business',icon:'◆',eyebrow:'FOR TEAMS & HIGHER VOLUME',description:'A larger shared credit balance for your business projects.'},free:{name:'LOOX Basic',icon:'◇',eyebrow:'YOUR FIRST IDEAS',description:'Explore the studio and start creating for free.'},creator:{name:'LOOX Creator',icon:'✦',eyebrow:'FOR YOUR CREATIVE ROUTINE',description:'A flexible balance for images, motion and everyday ideas.'},pro:{name:'LOOX Pro',icon:'♛',eyebrow:'FOR YOUR BIGGEST IDEAS',description:'Premium video models and more room to experiment.'}};
 let cadence='month',plansConfig=null,plansError=false;
 const money=c=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(c/100);
 function sameSiteReturn(){try{const raw=new URLSearchParams(location.search).get('from')||document.referrer;const target=new URL(raw,location.href);if(target.origin===location.origin&&target.pathname!==location.pathname)return target.pathname+target.search+target.hash;}catch{}return 'ai-home.html';}
@@ -16,7 +16,7 @@ function renderPlans(cfg,failed=false){
  const plans=cfg?.plans?.length?cfg.plans:proposedPlans,live=cfg?.billing===true;
  const current=state.account?.plan||'basic';host.replaceChildren();
  addNotice(failed?'Plan service is unavailable. Displayed prices are previews.':!live?'Plans are ready to explore. Secure checkout is awaiting merchant setup.':cfg?.testBilling?'Test checkout · No real payments.':'Secure checkout · USD prices. Applicable taxes are shown before payment.',live?'live':'preview');
- for(const id of ['free','creator','pro']){
+ for(const id of ['free','creator','pro','business']){
   const key=id==='free'?id:id+(cadence==='year'?'_yearly':'');
   const p=plans.find(p=>p.id===key)||proposedPlans.find(p=>p.id===key),copy=presentation[id],featured=id==='creator';
   const card=elem('article','lp-plan'+(featured?' lp-plan-featured':''));card.dataset.plan=id;
@@ -25,7 +25,7 @@ function renderPlans(cfg,failed=false){
   const price=elem('div','lp-plan-price-row');price.append(elem('span','lp-plan-price',money(p.price_cents)),elem('span','lp-plan-period',id==='free'?'always free':cadence==='year'?'/ year':'/ month'));card.append(price);
   card.append(elem('p','lp-price-detail',id==='free'?'Automatically assigned after verified signup':cadence==='year'?money(p.price_cents/12)+' / month equivalent · billed yearly':'Billed monthly · cancel renewal anytime'));
   card.append(elem('div','lp-credit-allowance',p.credits.toLocaleString()+' credits'+(id==='free'?' to start':cadence==='year'?' per year':' per month')));
-  const features=id==='free'?['10 signup credits after email verification','1 return credit every 12 hours; balance cap 10','Local image and video generation when online','Free browser tools, private creations and Basic badge']:id==='creator'?['Standard cloud video models + image models','Kling 4.0 Flash, Grok, MiniMax H3 and more','100 daily image / video submissions per category','Creator profile badge + local queue priority']:['All Creator features + premium video access','Kling 4.0, Seedance 2.5 and Veo 3.1','250 daily image / video submissions per category','Pro profile badge + highest local queue priority'];
+  const features=id==='free'?['10 signup credits after email verification','5 return credits every 12 hours; balance cap 50','Local image and video generation when online','Free browser tools, private creations and Basic badge']:id==='creator'?['Standard cloud video models + image models','Kling 4.0 Flash, Grok, MiniMax H3 and more','100 daily image / video submissions per category','Creator profile badge + local queue priority']:['All Creator features + premium video access','Kling 4.0, Seedance 2.5 and Veo 3.1','250 daily image / video submissions per category','Pro profile badge + highest local queue priority'];
   const list=elem('ul','lp-plan-features');for(const text of features)list.append(elem('li','',text));
   card.append(list,elem('p','lp-plan-small',id==='free'?'Rewards require a manual claim. First reward unlocks 12 hours after your first signed-in visit.':cadence==='year'?'All annual credits arrive after a successful annual payment.':'Credits arrive after each successful monthly payment.'));
   const examples=elem('div','lp-plan-estimates');examples.dataset.credits=p.credits;examples.dataset.tier=id==='free'?'basic':id;card.append(examples);
@@ -45,7 +45,7 @@ function renderEstimates(cfg){
  const model=models.find(m=>m.id===selector.value),previous=duration.value;duration.replaceChildren();
  for(const d of model?.durationOptions||[5]){const o=elem('option','',d+' seconds');o.value=d;duration.append(o);}if([...duration.options].some(o=>o.value===previous))duration.value=previous;
  const op=cfg?.operations?.find(o=>o.id==='generate')?.cost||3,cloudImage=cfg?.models?.find(m=>m.available),premiumImage=cloudImage?.cost||25;
- const videoCost=model?.creditCosts?.[duration.value],rank={basic:0,creator:1,pro:2};
+ const videoCost=model?.creditCosts?.[duration.value],rank={basic:0,creator:1,pro:2,business:2};
  for(const target of document.querySelectorAll('.lp-plan-estimates')){
   const credits=Number(target.dataset.credits),tier=target.dataset.tier,allowed=rank[tier]>=rank[model?.minimumPlan||'creator'];target.replaceChildren();
   target.append(elem('strong','','Spend the whole balance on one option:'),elem('p','',Math.floor(credits/op).toLocaleString()+' local images · '+op+' credits each'));

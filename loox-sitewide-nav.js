@@ -726,7 +726,7 @@
    const profileResponse=await fetch(root+'profile?id='+encodeURIComponent(uid),{headers,credentials:'omit',cache:'no-store'});
    if(!profileResponse.ok)return;
    const profile=await profileResponse.json();
-   if(!profile?.avatar_key)return;
+   if(!profile?.avatar_path&&!profile?.avatar_key)return;
    const response=await fetch(root+'media?type=avatar&id='+encodeURIComponent(uid),{headers,credentials:'omit',cache:'no-store'});
    if(!response.ok||looxAccountModule.state.user?.id!==uid)return;
    const blob=await response.blob();

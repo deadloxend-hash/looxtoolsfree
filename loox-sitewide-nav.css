@@ -2658,3 +2658,16 @@ html body button[aria-label^="Close"] svg{display:block;flex:none;margin:auto}
  html body.loox-studio>header.lig-header .studio-menu-host{margin-left:0!important}
  html body.loox-studio>header.lig-header :is(.lig-header-user,.loox-chat-header-search){margin:0!important}
 }
+
+@media(min-width:901px){
+html body.loox-generator-no-topnav.loox-gallery-workspace>header.lig-header{display:flex!important;align-items:center!important;gap:16px!important;height:72px!important;padding:12px 30px!important}
+html body.loox-generator-no-topnav.loox-gallery-workspace>header.lig-header .lig-head-start{flex:1!important;margin:0!important}
+html body.loox-gallery-workspace>header.lig-header .loox-ai-workspace-tabs{display:none!important}
+html body.loox-gallery-workspace>header.lig-header .lig-header-user{position:static!important;transform:none!important;margin:0!important;flex:none!important}
+html body.loox-gallery-workspace>header.lig-header .loox-chat-header-search{display:grid!important;place-items:center!important;position:static!important;width:42px!important;height:42px!important;padding:10px!important;border:1px solid #78618b88!important;background:#241c30!important;color:#eee!important;border-radius:12px!important}
+html body.loox-gallery-workspace>header.lig-header .loox-chat-header-search svg{display:block!important;width:20px!important;height:20px!important}
+html body .loox-sitewide-nav a{font-size:14px!important;padding:10px 14px!important}
+html body .loox-sitewide-sidebar a{font-size:14px!important;min-height:42px!important}
+html body .lx-profile-menu{font-size:14px!important;min-width:260px!important}
+html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!important}
+}

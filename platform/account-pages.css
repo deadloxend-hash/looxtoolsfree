@@ -166,3 +166,5 @@ button,input,select{font:inherit}
 .lp-estimator>#lp-estimate-note{flex-basis:100%;line-height:1.6}.lp-plan{transition:transform .2s,border-color .2s}.lp-plan:hover{transform:translateY(-3px);border-color:#b587dd88}
 @media(max-width:700px){.lp-estimator label{width:100%}.lp-billing-toggle button{padding:10px 16px}.lp-upgrade-hero{padding:30px 16px!important}}
 @media(prefers-reduced-motion:reduce){.lp-plan,.lp-billing-toggle button{transition:none}.lp-plan:hover{transform:none}}
+
+@media(min-width:1200px){.lp-plan-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
