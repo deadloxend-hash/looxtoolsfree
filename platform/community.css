@@ -2964,3 +2964,32 @@ body .community-viewer.loox-viewer-media-first .loox-viewer-toast{
  pointer-events:none!important;
 }
 body .community-viewer.loox-viewer-media-first .loox-viewer-toast[hidden]{display:none!important}
+
+/* V43: truly center the artwork-only post dialog */
+/* The old top:4px / top:8px rules pinned short images to the top of the
+   viewport. Center the dialog itself; a tall portrait still scrolls within
+   the available device height without distorting its natural proportions. */
+body .community-dialog.community-viewer.loox-viewer-media-first[open]{
+ position:fixed!important;
+ top:50%!important;
+ left:50%!important;
+ right:auto!important;
+ bottom:auto!important;
+ inset:auto!important;
+ transform:translate(-50%,-50%)!important;
+ margin:0!important;
+ max-height:calc(100dvh - 16px)!important;
+ overscroll-behavior:contain!important;
+}
+@media(max-width:780px){
+ body .community-dialog.community-viewer.loox-viewer-media-first[open]{
+  top:50%!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:auto!important;
+  inset:auto!important;
+  transform:translate(-50%,-50%)!important;
+  margin:0!important;
+  max-height:calc(100dvh - 12px)!important;
+ }
+}
