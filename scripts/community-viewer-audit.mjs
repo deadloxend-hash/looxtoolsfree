@@ -41,7 +41,7 @@ async function test(pageName,width,owner){
    created_at:'2026-11-09T00:00:00.000Z',username:'test_creator',display_name:'Test Creator',
    avatar_path:null,allow_download:true,allow_remix:true,comments:2,likes:3,liked:false,saved:false};
   class Community {
-   constructor(){this.state={user:{id:owner?ownerId:visitorId},config:{models:[]}};this.posts=[post];this.pendingLikes=new Set();}
+   constructor(){this.state={user:{id:owner?ownerId:visitorId},config:{models:[]}};this.posts=[{...post,id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'},post,{...post,id:'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}];this.pendingLikes=new Set();}
    auth(){window.__authCalled=true;}
    modelName(){return 'Test model';}
    async like(p,b){p.liked=!p.liked;p.likes+=p.liked?1:-1;b.textContent=p.liked?'♥ 4':'♡ 3';b.setAttribute('aria-pressed',String(p.liked));}
@@ -65,11 +65,15 @@ async function test(pageName,width,owner){
  assert.equal(await viewer.locator('.loox-social-photo-actions').count(),0,'Old icon toolbar must be absent');checks++;
  assert.equal(await viewer.locator('.community-viewer-controls button').count(),0,'Old Full screen and Next controls must be in menu');checks++;
  assert.equal(await viewer.locator('.loox-viewer-options-list').isVisible(),false);checks++;
+ assert.equal(await viewer.locator('.community-detail-media').getAttribute('src')!==null,true,'Post media missing');checks++;
+ assert.equal(await viewer.locator('.community-viewer-stage').isVisible(),true,'Backdrop must not cover an empty modal');checks++;
  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+8),true,'Page horizontal overflow');checks++;
  await viewer.locator('.loox-viewer-options-trigger').click();
  assert.equal(await viewer.locator('.loox-viewer-options-list').isVisible(),true);checks++;
  assert.equal(await viewer.getByRole('button',{name:'Edit title'}).count(),owner?1:0,'Owner-only edit title');checks++;
  assert.equal(await viewer.getByRole('button',{name:'Delete post'}).count(),owner?1:0,'Owner-only delete post');checks++;
+ assert.equal(await viewer.getByRole('button',{name:'Previous post'}).count(),1,'Middle post should expose Previous');checks++;
+ assert.equal(await viewer.getByRole('button',{name:'Next post'}).count(),1,'Middle post should expose Next');checks++;
  const like=viewer.getByRole('button',{name:'Like post',exact:true});
  await like.click();
  await viewer.locator('.loox-viewer-options-trigger').click();
