@@ -9,6 +9,7 @@ on:
       - "platform/community.js"
       - "platform/community-social.js"
       - "platform/community-page.js"
+      - "platform/community.css"
       - "community.html"
       - "trending.html"
       - "scripts/creator-profile-audit.mjs"
@@ -40,6 +41,9 @@ jobs:
           assert.ok(community.includes("if(this.state.user?.id===post.creator_id){"),'Community owner check missing');
           assert.ok(community.includes("action:'delete'"),'Community delete action missing');
           assert.ok(community.includes("action:'edit'"),'Community edit action missing');
+          assert.ok(community.includes("loox-viewer-options"),'Artwork-only viewer options menu missing');
+          assert.ok(community.includes("panel.hidden=true"),'Post viewer must initially hide details');
+          assert.ok(!community.includes("loox-social-viewer-toolbar"),'Old visible post toolbar must not return');
           assert.ok(creator.includes("function ownerPostMenu(post)"),'Creator post menu missing');
           assert.ok(creator.includes("function deletePostDialog(post)"),'Creator delete confirmation missing');
           console.log('Community post ownership action regression checks passed');
