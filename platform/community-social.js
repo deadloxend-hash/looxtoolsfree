@@ -336,7 +336,8 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.6 6.6-4m-6.6 8.8 6.6 3.1"/>',
     download:'<path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 17v3h16v-3"/>',
     report:'<path d="M5 21V4m0 1c6-4 9 4 16 0v11c-7 4-10-4-16 0"/>',
-    edit:'<path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/>'
+    edit:'<path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/>',
+    trash:'<path d="M3 6h18M8 6V4h8v2m-11 0 1 15h12l1-15M10 10v7m4-7v7"/>'
    };
    const actions=e('div','loox-social-photo-actions');
    const icon=(name,label,fn,cls='')=>{
@@ -369,14 +370,25 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
      setTimeout(()=>URL.revokeObjectURL(link.href),60000);
     }catch{window.open(url,'_blank','noopener,noreferrer');status.textContent='Original opened in a new tab.';}
    }));
-   if(this.state.user?.id===post.creator_id)actions.append(icon('edit','Edit post',async()=>{
-    const caption=window.prompt('Edit caption (changes require approval)',post.caption);
-    if(caption===null)return;
-    const share=window.confirm('Make the generation prompt public? OK = share, Cancel = private.');
-    await cloudRequest(this.state,'manage',{method:'POST',data:{id:post.id,action:'edit',caption:caption.trim(),share_prompt:share}});
-    d.close();await this.load(true);
-   },'loox-social-edit'));
-   else actions.append(icon('report','Report post',()=>this.report(post)));
+   if(this.state.user?.id===post.creator_id){
+    actions.append(icon('edit','Edit title',async()=>{
+     const caption=window.prompt('Edit post title (1–300 characters). Changes require approval.',post.caption);
+     if(caption===null)return;
+     const title=caption.trim();
+     if(!title||title.length>300){status.textContent='Enter a title between 1 and 300 characters.';return;}
+     if(title===post.caption)return;
+     await cloudRequest(this.state,'manage',{method:'POST',data:{id:post.id,action:'edit',caption:title,share_prompt:Boolean(post.shared_prompt)}});
+     d.close();await this.load(true);this.note('Title saved. Your post is awaiting review.');
+    },'loox-social-edit'));
+    actions.append(icon('trash','Delete post',async()=>{
+     if(!window.confirm('Delete this Community post? Comments, likes and saves will be deleted. Your original AI generation stays private in your library.'))return;
+     await cloudRequest(this.state,'manage',{method:'POST',data:{id:post.id,action:'delete'}});
+     d.close();
+     const params=new URLSearchParams(location.search);
+     if(params.get('post')===post.id){params.delete('post');history.replaceState(null,'',location.pathname+(params.size?'?'+params.toString():''));}
+     await this.load(true);this.note('Community post deleted.');
+    },'loox-social-delete'));
+   }else actions.append(icon('report','Report post',()=>this.report(post)));
    const viewerToolbar=e('div','loox-social-viewer-toolbar');viewerToolbar.append(actions,controls);stage.append(viewerToolbar);
    if(post.shared_prompt){
     const promptText=e('p','community-shared-prompt loox-social-prompt-text',post.shared_prompt);
