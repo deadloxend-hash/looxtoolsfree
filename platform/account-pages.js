@@ -33,7 +33,7 @@ function renderPlans(cfg,failed=false){
   if(state.user&&current===(id==='free'?'basic':id)){button.textContent='Your current plan';button.disabled=true;}
   else if(id==='free'){button.textContent=state.user?'Basic included':'Start creating free';button.disabled=Boolean(state.user);button.onclick=()=>auth('register');}
   else{const configured=live&&(!Array.isArray(cfg.checkoutPlans)||cfg.checkoutPlans.includes(key));button.textContent=configured?'Choose '+copy.name:'Checkout pending';button.disabled=!configured;planAction(button,note,key);}
-  card.append(button,note);host.append(card);
+  card.append(elem('div','lp-plan-grow'),button,note);host.append(card);
  }
  renderEstimates(cfg);
 }
