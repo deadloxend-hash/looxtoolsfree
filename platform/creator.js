@@ -12,6 +12,7 @@ const icons={
  link:'<path d="M10 13a5 5 0 0 0 7.6.5l3-3a5 5 0 0 0-7.1-7.1l-1.7 1.7M14 11a5 5 0 0 0-7.6-.5l-3 3a5 5 0 0 0 7.1 7.1l1.7-1.7"/>',
  location:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',
  edit:'<path d="m16 4 4 4L9 19H5v-4L16 4ZM14 6l4 4"/>',
+ trash:'<path d="M3 6h18M8 6V4h8v2m-11 0 1 15h12l1-15M10 10v7m4-7v7"/>',
  camera:'<path d="M4 7h4l2-3h4l2 3h4v13H4V7Z"/><circle cx="12" cy="13" r="3"/>',
  more:'<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>',
  heart:'<path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21l8.8-8.5a5.6 5.6 0 0 0 0-7.9Z"/>',
@@ -268,7 +269,7 @@ function setTabStyles(){root.querySelectorAll('.cx-tab').forEach(b=>{const activ
 function switchTab(value){if(tab===value)return;tab=value;setTabStyles();history.replaceState(null,'',location.pathname+location.search+(value==='posts'?'':'#'+value));loadFeed(true);}
 async function loadFeed(reset){
  if(loading&&!reset)return;
- if(reset){offset=0;feed.replaceChildren();engine.posts=[];}
+ if(reset){postMenuAbort.abort();postMenuAbort=new AbortController();offset=0;feed.replaceChildren();engine.posts=[];}
  const run=++epoch,start=offset;loading=true;more.disabled=true;more.hidden=true;
  if(reset){const skel=el('div','cx-feed-loading');for(let i=0;i<3;i++)skel.append(el('div','cx-post-placeholder cx-skeleton'));feed.append(skel);}
  notice('');
@@ -348,6 +349,75 @@ function replyCard(reply){
  return article;
 }
 function mediaTile(post){const tile=el('article','cx-media-tile');preview(post,tile,true);return tile;}
+async function editPostTitle(post){
+ if(!isOwn||state.user?.id!==post.creator_id)return auth('login');
+ const {d,wrap}=dialog('Edit post title'),form=el('form','cx-edit-form');
+ form.noValidate=true;
+ const titleField=labeled(form,'Post title',post.caption||'','input',300);
+ titleField.required=true;titleField.autocomplete='off';
+ const explanation=el('p','cx-edit-note','Changing a published title sends the Community post back for administrator review. Your original AI generation stays private in your library.');
+ const error=el('p','cx-edit-error');error.hidden=true;error.setAttribute('role','alert');
+ const actions=el('div','cx-dialog-actions'),cancel=btn('Cancel',()=>d.close(),'cx-button cx-button-outline');
+ const save=el('button','cx-button cx-button-primary','Save title');save.type='submit';
+ actions.append(cancel,save);form.append(explanation,error,actions);wrap.append(form);
+ titleField.focus();titleField.select();
+ form.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const caption=titleField.value.trim();
+  if(!caption||caption.length>300){error.textContent='Enter a title between 1 and 300 characters.';error.hidden=false;return;}
+  if(caption===post.caption){d.close();return;}
+  save.disabled=true;error.hidden=true;
+  try{
+   await cloudRequest(state,'manage',{method:'POST',data:{id:post.id,action:'edit',caption,share_prompt:Boolean(post.shared_prompt)}});
+   d.close();await refreshProfile();await loadFeed(true);
+   notice('Title saved. Your post is awaiting review.');
+  }catch(e){error.textContent=e.message||'Could not update the title.';error.hidden=false;save.disabled=false;}
+ });
+}
+function deletePostDialog(post){
+ if(!isOwn||state.user?.id!==post.creator_id)return auth('login');
+ const {d,wrap}=dialog('Delete Community post?');
+ const body=el('div','cx-delete-post-body'),warning=el('p','','Deleting this post removes it from Community and deletes its comments, likes and saves. Your original AI generation will remain in your private library.');
+ const error=el('p','cx-edit-error');error.hidden=true;error.setAttribute('role','alert');
+ const actions=el('div','cx-dialog-actions'),cancel=btn('Cancel',()=>d.close(),'cx-button cx-button-outline');
+ const del=btn('Delete post',async()=>{
+  del.disabled=true;cancel.disabled=true;error.hidden=true;
+  try{
+   await cloudRequest(state,'manage',{method:'POST',data:{id:post.id,action:'delete'}});
+   d.close();await refreshProfile();await loadFeed(true);notice('Community post deleted.');
+  }catch(e){error.textContent=e.message||'Could not delete the post.';error.hidden=false;del.disabled=false;cancel.disabled=false;}
+ },'cx-button cx-button-danger');
+ actions.append(cancel,del);body.append(warning,error,actions);wrap.append(body);
+}
+let postMenuAbort=new AbortController();
+function ownerPostMenu(post){
+ const wrap=el('div','cx-post-dropdown'),menu=el('div','cx-post-options'),toggle=btn('',()=>setOpen(menu.hidden),'cx-post-more');
+ menu.hidden=true;menu.setAttribute('role','menu');
+ toggle.append(svg('more',19));toggle.setAttribute('aria-label','Post options');toggle.title='Post options';
+ toggle.setAttribute('aria-haspopup','menu');toggle.setAttribute('aria-expanded','false');
+ function setOpen(open){
+  for(const node of document.querySelectorAll('#creator-community .cx-post-options:not([hidden])'))if(node!==menu){node.hidden=true;node.parentElement?.querySelector('[aria-haspopup="menu"]')?.setAttribute('aria-expanded','false');}
+  menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));
+ }
+ function option(label,iconName,handler,danger=false){
+  const b=btn('',async()=>{
+   setOpen(false);
+   try{await handler();}catch(e){notice(e.message||'Could not update the post.');}
+  },'cx-post-option'+(danger?' cx-post-option-danger':''));
+  b.setAttribute('role','menuitem');b.append(svg(iconName,16),el('span','',label));menu.append(b);
+ }
+ const pinned=post.id===profile.pinned_post_id;
+ option(pinned?'Unpin post':'Pin post','pin',async()=>{
+  await cloudRequest(state,'pin',{method:'POST',data:{post_id:pinned?null:post.id}});
+  await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');
+ });
+ option('Edit title','edit',()=>editPostTitle(post));
+ option('Delete post','trash',()=>deletePostDialog(post),true);
+ toggle.addEventListener('keydown',event=>{if(event.key==='Escape'){setOpen(false);toggle.focus();}});
+ menu.addEventListener('keydown',event=>{if(event.key==='Escape'){setOpen(false);toggle.focus();}});
+ document.addEventListener('click',event=>{if(!wrap.contains(event.target))setOpen(false);},{signal:postMenuAbort.signal});
+ wrap.append(toggle,menu);return wrap;
+}
 function postCard(post){
  const article=el('article','cx-post');article.dataset.id=post.id;
  const a=fallbackAvatar({user_id:post.creator_id,username:post.username,display_name:post.display_name,avatar_path:post.avatar_path},'cx-avatar cx-post-avatar');
@@ -356,15 +426,7 @@ function postCard(post){
  const timestamp=el('time','cx-post-time',dateLabel(post.created_at));timestamp.dateTime=post.created_at||'';
  const heading=el('div','cx-post-heading');heading.append(person,timestamp);
  const toolbar=el('div','cx-post-menu');
- if(isOwn&&post.creator_id===creatorId){
-  const pinned=post.id===profile.pinned_post_id;
-  const pin=btn('',async()=>{
-   pin.disabled=true;
-   try{await cloudRequest(state,'pin',{method:'POST',data:{post_id:pinned?null:post.id}});await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');}finally{pin.disabled=false;}
-  },'cx-post-more');
-  pin.append(svg('pin',16),el('span','',pinned?'Unpin':'Pin'));
-  pin.title=pinned?'Unpin post':'Pin post';toolbar.append(pin);
- }
+ if(isOwn&&post.creator_id===creatorId)toolbar.append(ownerPostMenu(post));
  const text=el('p','cx-post-caption',post.caption||'');
  const body=el('div','cx-post-body');body.append(heading,text);
  if(post.id===profile.pinned_post_id&&tab==='posts'){
