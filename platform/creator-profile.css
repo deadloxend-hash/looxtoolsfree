@@ -868,3 +868,5 @@ body.creator-page.cx-profile-page #creator-community{
   padding:10px 13px calc(12px + env(safe-area-inset-bottom,0px))!important;
  }
 }
+
+.cx-plan[data-plan=creator]{background:#8554c42b;color:#dcb5ff;border:1px solid #a970df66}.cx-plan[data-plan=pro]{background:#ac832525;color:#f4ce83;border:1px solid #d5ac5b66}

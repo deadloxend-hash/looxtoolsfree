@@ -1,8 +1,8 @@
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
 export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image',generate_video:'Text to video',enhance:'Image enhancer',uncrop:'Generative uncrop',restore:'Old photo restorer',retouch:'Skin retoucher',face_restore:'Face restoration',face_swap:'Face swap'};
-const proposal=[{id:'free',price_cents:0,credits:10},{id:'pro',price_cents:999,credits:100},{id:'lifetime',price_cents:4900,credits:50}];
-const planName={free:'Free',pro:'LOOX Pro',lifetime:'LOOX Lifetime'};
+const proposal=[{id:'free',price_cents:0,credits:10},{id:'creator',price_cents:1200,credits:100},{id:'pro',price_cents:2900,credits:250}];
+const planName={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',creator_yearly:'LOOX Creator',pro:'LOOX Pro',pro_yearly:'LOOX Pro',lifetime:'Legacy Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
 let loading,library,clientReady,modal,refreshTask,accountError='';
 export function el(tag,text,cls){
@@ -134,6 +134,7 @@ export function renderHeader(){
   const upgrade=button('Upgrade',pricing,'lx-button lx-primary lx-upgrade');
   upgrade.setAttribute('aria-label','View LOOX upgrade plans');
   host.append(upgrade);
+  const rewardSlot=el('div',null,'lx-header-reward');rewardSlot.dataset.looxReward='';host.append(rewardSlot);
   const details=el('details',null,'lx-details lx-profile-details');
   const summary=el('summary',null,'lx-profile-trigger');
   summary.setAttribute('aria-label',signedIn?'Open your account menu':'Sign in or create an account');
@@ -148,6 +149,8 @@ export function renderHeader(){
   if(signedIn){
    const identity=el('div',null,'lx-profile-identity');
    identity.append(el('strong',name,'lx-profile-name'));
+   identity.append(el('span',({basic:'◇ Basic',creator:'✦ Creator',pro:'♛ Pro'})[state.account?.plan]||'◇ Basic','lx-plan-badge'));
+   const reward=el('div',null,'lx-return-reward');reward.dataset.looxReward='';identity.append(reward);
    identity.append(el('small',state.user.email||'','lx-profile-email'));
    menu.append(identity);
    const links=el('div',null,'lx-profile-links');
@@ -164,34 +167,17 @@ export function renderHeader(){
   host.append(details);
  }
 }
-document.addEventListener('pointerdown',event=>{
+if(typeof document!=='undefined')document.addEventListener('pointerdown',event=>{
  if(event.target.closest('.lx-profile-details'))return;
  document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
 });
-document.addEventListener('keydown',event=>{
+if(typeof document!=='undefined')document.addEventListener('keydown',event=>{
  if(event.key==='Escape')document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
 });
 export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut();if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
 const sections=[['profile','Account Overview'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);}
-export async function plans(host){
- host.replaceChildren(el('p','Loading plans…'));let cfg;
- try{cfg=await config();}catch{}
- const available=cfg?.plans?.length?cfg.plans:proposal;
- host.replaceChildren();
- if(!cfg?.billing)host.append(el('p','Proposed plans · Checkout opens after merchant setup.','lx-note'));
- if(cfg?.testBilling)host.append(el('p','Test checkout · No real payments.','lx-note'));
- const grid=el('div',null,'lx-plans');host.append(grid);
- for(const id of ['free','pro','lifetime']){
-  const p=available.find(x=>x.id===id);if(!p)continue;
-  const card=el('section',null,'lx-card'),period={free:'',pro:' / month',lifetime:' once'}[id];
-  card.append(el('h3',planName[id]+(state.account?.plan===id?' · Current plan':'')),el('strong',money(p.price_cents)+period,'lx-price'),el('p',{free:p.credits+' signup credits after email verification. Local tools stay free.',pro:p.credits+' AI credits per paid billing cycle. Includes all standard AI tools and credit history.',lifetime:p.credits+' AI credits granted once. Includes ongoing access to eligible premium features. No recurring credit refill.'}[id]));
-  if(id!=='free'){
-   const note=el('p',null,'lx-note'),buy=button(cfg?.billing?'Choose '+planName[id]:'Checkout pending',async()=>{if(!state.user)return auth();buy.disabled=true;try{location.assign((await api('checkout',{plan:id})).url);}catch(e){msg(note,e.message);}finally{buy.disabled=false;}},'lx-button lx-primary');buy.disabled=!cfg?.billing;card.append(buy,note);
-  }else if(!state.user)card.append(button('Create account',()=>auth('register')));
-  grid.append(card);
- }
-}
+export async function plans(host){host.replaceChildren(el('p','Explore LOOX Basic, Creator and Pro with monthly or yearly billing.'),button('Compare plans and generation counts',pricing,'lx-button lx-primary'));}
 export function nextAccountUrl(page){
  const current=(location.pathname.split('/').pop()||'index.html')+location.search+location.hash;
  return page+'?from='+encodeURIComponent(current);
@@ -228,8 +214,12 @@ function drawDashboard(){
  settings.append(link('Open account settings →',nextAccountUrl('settings.html')));
 
 }
+if(typeof document!=='undefined'){
 document.addEventListener('loox-account',drawDashboard);
 document.addEventListener('loox-user',drawDashboard);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user)refresh().catch(()=>{});});
 if(location.search.includes('payment=return')){const note=document.querySelector('[data-account-note]');if(note)msg(note,'Checkout returned. Credits appear once the payment provider confirms payment.');}
 initialize();
+}
+
+import './return-rewards.js?v=1';

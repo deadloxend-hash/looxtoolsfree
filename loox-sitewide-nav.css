@@ -2648,3 +2648,13 @@ html body.loox-generator-no-topnav > header.lig-header .lig-head-start .loox-wor
   box-shadow:none!important;
  }
 }
+
+/* Shared close controls: keep the glyph centered inside its hit target. */
+html body :is(.loox-close-control,.lx-close,.loox-ref-remove,.studio-frame-remove,.loox-sheet>header>button,button[aria-label^="Close"],button[aria-label^="Remove reference"]){display:inline-grid!important;place-items:center!important;align-content:center!important;justify-content:center!important;box-sizing:border-box!important;flex-shrink:0!important;padding:0!important;line-height:1!important;text-align:center!important}
+html body :is(.loox-close-control,.loox-sheet>header>button){width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;font:400 24px/1 system-ui!important;border-radius:50%!important}
+html body button[aria-label^="Close"] svg{display:block;flex:none;margin:auto}
+@media(min-width:901px){
+ html body.loox-studio>header.lig-header .lig-head-start{flex:1 1 auto!important;margin-right:0!important}
+ html body.loox-studio>header.lig-header .studio-menu-host{margin-left:0!important}
+ html body.loox-studio>header.lig-header :is(.lig-header-user,.loox-chat-header-search){margin:0!important}
+}

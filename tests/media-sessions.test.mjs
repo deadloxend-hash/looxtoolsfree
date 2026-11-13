@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const {MediaSessions}=await import('../platform/loox-image-sessions.js');
 function fixture(){
+ globalThis.document={dispatchEvent(){}};globalThis.getComputedStyle=()=>({overflowY:'auto'});
  const tables={loox_media_sessions:[],loox_media_entries:[]};
  const client={from(table){const q={data:null,error:null,insert(row){this.data={id:crypto.randomUUID(),...row};tables[table].push(this.data);return this;},select(){return this;},single(){return Promise.resolve({data:this.data});},update(row){this.patch=row;return this;},eq(key,value){for(const r of tables[table])if(r[key]===value)Object.assign(r,this.patch);return Promise.resolve({data:null});}};return q;}};
  const manager=Object.assign(Object.create(MediaSessions.prototype),{state:{user:{id:'user-a'},client},id:null,epoch:0,feed:{replaceChildren(){this.cleared=true;}},prompt:{focus(){}},isBusy:()=>false,loadList:async()=>{},url(){this.urlId=this.id;},collapse(){}});

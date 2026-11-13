@@ -4,7 +4,7 @@ export function openSheet(title,content,{onClose}={}){
  current?.close();
  const trigger=document.activeElement,d=document.createElement('dialog');d.className='loox-sheet';
  const handle=document.createElement('div');handle.className='loox-sheet-handle';handle.setAttribute('aria-hidden','true');
- const head=document.createElement('header'),h=document.createElement('h2'),close=document.createElement('button');h.textContent=title;h.id='loox-sheet-title';d.setAttribute('aria-labelledby',h.id);close.type='button';close.textContent='×';close.setAttribute('aria-label','Close '+title);head.append(h,close);
+ const head=document.createElement('header'),h=document.createElement('h2'),close=document.createElement('button');h.textContent=title;h.id='loox-sheet-title';d.setAttribute('aria-labelledby',h.id);close.type='button';close.className='loox-close-control';close.textContent='×';close.setAttribute('aria-label','Close '+title);head.append(h,close);
  const body=document.createElement('div');body.className='loox-sheet-body';body.append(content);d.append(handle,head,body);document.body.append(d);
  const before={html:document.documentElement.style.overflow,body:document.body.style.overflow};
  document.documentElement.style.overflow='hidden';document.body.style.overflow='hidden';

@@ -1,6 +1,6 @@
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {installSocial,installPrivacy} from './community-social.js?v=16';
-import {api,refresh} from './account.js?v=9';
+import {api,refresh} from './account.js?v=10';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
 // Shared community UI. Only Supabase publishable credentials enter the browser.
 export const element=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e;};

@@ -1,4 +1,4 @@
-import {state,auth,initialize,refresh} from './account.js?v=9';
+import {state,auth,initialize,refresh} from './account.js?v=10';
 import {Community,rpc,mediaURL,result} from './community.js?v=32';
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
@@ -87,6 +87,7 @@ function setupEngine(){
 }
 async function refreshProfile(){const p=await cloudRequest(state,'profile',{query:{id:creatorId}});
  if(!p){emptyPage('This profile is private or unavailable.',false);throw Error('Profile unavailable.');}
+ try{const r=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?action=public_plan&id='+encodeURIComponent(creatorId),{credentials:'omit',signal:AbortSignal.timeout(8000)});if(r.ok){const data=await r.json();p.plan_badge=({basic:'Basic',creator:'Creator',pro:'Pro'})[data.plan]||'Basic';}}catch{}
  profile=p;isOwn=state.user?.id===creatorId;return p;
 }
 function makeMoreMenu(){
@@ -211,7 +212,7 @@ function buildPage(){
  tools.append(avatar,buttons);
  const names=el('div','cx-names'),line=el('div','cx-name-line');
  line.append(el('h2','',profile.display_name||profile.username));
- const badge=el('span','cx-plan',(profile.plan_badge||'Basic')+' plan');badge.dataset.plan=(profile.plan_badge||'Basic').toLowerCase();line.append(badge);
+ const badge=el('span','cx-plan',({Basic:'◇',Creator:'✦',Pro:'♛'}[profile.plan_badge]||'◇')+' '+(profile.plan_badge||'Basic')+' plan');badge.dataset.plan=(profile.plan_badge||'Basic').toLowerCase();line.append(badge);
  names.append(line,el('p','cx-handle','@'+profile.username));
  if(profile.bio)names.append(el('p','cx-bio',profile.bio));
  const meta=el('div','cx-meta');

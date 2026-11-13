@@ -3,8 +3,10 @@ import assert from 'node:assert/strict';
 import {Community} from '../platform/community.js';
 function fixture({signedIn=true,fail=false}={}){
  let writes=0,logins=0;
- const button={textContent:'',setAttribute(){}};
- const state={user:signedIn?{id:'viewer'}:null,client:{from(){return {insert:async row=>{writes++;assert.equal(row.user_id,'viewer');return fail?{error:{message:'Network unavailable'}}:{data:null};}};}}};
+ globalThis.document={querySelectorAll:()=>[]};
+ globalThis.fetch=async(url,options)=>{assert.ok(url.endsWith('/like'));assert.equal(JSON.parse(options.body).post_id,'post');writes++;return Response.json(fail?{error:'Network unavailable'}:{liked:true},{status:fail?503:200});};
+ const button={textContent:'',classList:{contains:()=>false},setAttribute(){}};
+ const state={user:signedIn?{id:'viewer'}:null,client:{auth:{getSession:async()=>({data:{session:{access_token:'test-token'}}})},from(){return {insert:async row=>{writes++;assert.equal(row.user_id,'viewer');return fail?{error:{message:'Network unavailable'}}:{data:null};}};}}};
  const c=Object.assign(Object.create(Community.prototype),{state,auth:()=>logins++,pendingLikes:new Set()});
  return {c,button,post:{id:'post',liked:false,likes:2},writes:()=>writes,logins:()=>logins};
 }

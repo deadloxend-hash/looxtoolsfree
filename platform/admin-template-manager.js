@@ -1,4 +1,4 @@
-import {state,initialize,auth,api} from './account.js?v=9';
+import {state,initialize,auth,api} from './account.js?v=10';
 const root=document.getElementById('template-manager');
 const E=(tag,cls='',txt='')=>{const x=document.createElement(tag);x.className=cls;x.textContent=txt;return x};
 const note=E('p','community-note'),grid=E('div','loox-preset-grid'),form=E('form','community-admin-editor');

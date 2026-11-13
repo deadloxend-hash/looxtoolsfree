@@ -1,4 +1,4 @@
-import {auth,state,initialize,pricing} from './account.js?v=7';
+import {auth,state,initialize,pricing} from './account.js?v=10';
 const form=document.getElementById('chatForm'),input=document.getElementById('chatPrompt'),send=document.getElementById('chatSend'),log=document.getElementById('chatLog'),notice=document.getElementById('chatStatus');
 const switcher=document.getElementById('chatModels'),heading=document.getElementById('chatModelLabel');
 const transcripts={free:[],premium:[]}, histories={free:[],premium:[]};let model='free',busy=false;

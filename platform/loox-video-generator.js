@@ -1,7 +1,7 @@
 import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=6';
 import {MediaSessions} from './loox-image-sessions.js?v=25';
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=9';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=10';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
 // Vercel queue; the browser never connects to ComfyUI or sees worker credentials.
@@ -34,7 +34,15 @@ const cloudModels=new Map([
 const isCloud=()=>modelField.value!=='wan21';
 const chosen=()=>cloudModels.get(modelField.value);
 const modelInfo=()=>state.config?.videoModels?.find(m=>m.id===modelField.value);
+function syncCloudModels(){
+ for(const m of state.config?.videoModels||[]){
+  cloudModels.set(m.id,{name:m.name,image:m.imageRequired,durations:m.durationOptions});
+  if(![...modelField.options].some(o=>o.value===m.id)){const option=document.createElement('option');option.value=m.id;option.textContent=m.name;modelField.append(option);}
+  for(const d of m.durationOptions)if(![...durationField.options].some(o=>o.value===String(d))){const option=document.createElement('option');option.value=d;option.textContent=d+' seconds';durationField.append(option);}
+ }
+}
 function updateModelUI(){
+ syncCloudModels();
  const m=chosen(),cloud=Boolean(m);
  imageBlock.hidden=!cloud||modelField.value==='wan22_t2v_fast';durationBlock.hidden=!cloud;
  imageRequired.textContent=m?.image?'(required)':'(optional)';
@@ -44,7 +52,7 @@ function updateModelUI(){
  modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
   m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
  const info=modelInfo();
- const supportedRatios=modelField.value==='veo_31_fast'?['16:9','9:16']:modelField.value==='kling_30'?['16:9','9:16','1:1']:['16:9','9:16','1:1','4:3','3:4'];
+ const supportedRatios=info?.capabilities?.ratios||['16:9','9:16','1:1','4:3','3:4'];
  for(const option of ratioField.options){option.disabled=!supportedRatios.includes(option.value);option.hidden=option.disabled;}
  if(!supportedRatios.includes(ratioField.value))ratioField.value=supportedRatios[0];
  if(info&&!info.available)modelNote.textContent+=' Cloud model is not available yet.';
@@ -208,8 +216,9 @@ if(window.ResizeObserver){
 }
 syncHeader();
 function refreshButton(){
-  generateButton.disabled=busy || Boolean(state.user&&!online);
-  generateButton.textContent=busy?'Generating…':state.user&&!online?(isCloud()?'Model unavailable':'GPU offline'):'Generate video';
+  const rank={basic:0,free:0,creator:1,pro:2},required=modelInfo()?.minimumPlan;const locked=Boolean(state.user&&required&&(rank[state.account?.plan]||0)<rank[required]);
+  generateButton.disabled=busy || Boolean(state.user&&!online)||locked;
+  generateButton.textContent=locked?'Requires LOOX '+(required==='pro'?'Pro':'Creator'):busy?'Generating…':state.user&&!online?(isCloud()?'Model unavailable':'GPU offline'):'Generate video';
 }
 let gpuCheckVersion=0;
 async function checkGPU(){
@@ -448,11 +457,12 @@ document.body.classList.add('loox-generator-ready');
   const pickerRoot=make('div','loox-video-model-picker');
   modelField.insertAdjacentElement('afterend',pickerRoot);
   modelField.classList.add('loox-hidden-native-model');
+  syncCloudModels();
   const picker=mountModelPicker({
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
     if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
-    return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:m?.imageRequired?'Image-to-video · reference image required':'Text-to-video · fast cloud generation',status:m?.status};
+    return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:(m?.minimumPlan==='pro'?'Pro · ':'Creator · ')+(m?.capabilities?.resolution||'720p')+' · '+(m?.imageRequired?'Reference image required':'Text or image to video'),status:m?.status};
    }
   });
   // Keep responsive model status and its displayed price in sync.

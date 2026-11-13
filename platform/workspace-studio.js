@@ -1,5 +1,5 @@
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
-import {state,initialize,auth,api} from './account.js?v=9';
+import {state,initialize,auth,api} from './account.js?v=10';
 const $=s=>document.querySelector(s),node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,fn,cls='studio-button')=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b;};
 function notify(text){let n=$('.studio-toast');if(!n){n=node('p','studio-toast');n.setAttribute('role','status');document.body.append(n);}n.textContent=text;clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.remove(),4000);}
@@ -475,7 +475,7 @@ function enableCompactComposerOnScroll(){
  };
  const hasInputFocus=()=>!!document.activeElement?.matches('textarea,input:not([type=file]),select');
  const onScroll=target=>{
-  if(performance.now()<settleUntil)return;
+  if(matchMedia('(min-width:901px)').matches||performance.now()<settleUntil)return;
   const y=target===window?window.scrollY:target.scrollTop;
   const last=target===window?lastWindowY:(positions.get(target)??y);
   if(target===window)lastWindowY=y;else positions.set(target,y);

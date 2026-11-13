@@ -1,4 +1,4 @@
-import {el,button,field,msg,config,api,state,refresh,auth,pricing} from './account.js?v=7';
+import {el,button,field,msg,config,api,state,refresh,auth,pricing} from './account.js?v=10';
 
 const host=document.querySelector('[data-studio]'), tool=host.dataset.studio;
 const isText=tool==='generate'||tool==='generate_video',isMask=['erase','fill'].includes(tool),isUncrop=tool==='uncrop',isSwap=tool==='face_swap';

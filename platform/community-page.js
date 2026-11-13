@@ -1,4 +1,4 @@
-import {state,auth,initialize} from './account.js?v=9';
+import {state,auth,initialize} from './account.js?v=10';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 import {Community,element,action,result,mediaURL} from './community.js?v=32';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();

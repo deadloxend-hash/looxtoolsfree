@@ -1,130 +1,65 @@
-import {state,config,api,auth,refresh,signOut} from './account.js?v=7';
+import {state,config,api,auth,refresh,signOut} from './account.js?v=10';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
-
 const byId=id=>document.getElementById(id);
-const elem=(tag,className,text)=>{
- const node=document.createElement(tag);
- if(className)node.className=className;
- if(text!==undefined)node.textContent=text;
- return node;
-};
-const proposedPlans=[
- {id:'free',price_cents:0,credits:10},
- {id:'pro',price_cents:999,credits:100},
- {id:'lifetime',price_cents:4900,credits:50}
-];
-const presentation={
- free:{
-  name:'Free',eyebrow:'GET STARTED',description:'Create with the essentials and explore LOOX at your own pace.',
-  features:credit=>['Free browser-based creative tools',credit+' signup credits after email verification','Your own account and credit balance','No recurring subscription']
- },
- pro:{
-  name:'LOOX Pro',eyebrow:'FOR MORE CREATING',description:'A recurring plan for creators using eligible AI tools regularly.',
-  features:credit=>[credit+' AI credits per paid billing cycle','Access to eligible paid AI features','Account and credit history','Recurring credit refill with active billing']
- },
- lifetime:{
-  name:'LOOX Lifetime',eyebrow:'ONE-TIME OPTION',description:'A one-time purchase for eligible premium access without a recurring charge.',
-  features:credit=>[credit+' AI credits granted once','Ongoing access to eligible premium features','No monthly subscription','No automatic recurring credit refill']
- }
-};
-function sameSiteReturn(){
- const raw=new URLSearchParams(location.search).get('from');
- const base=new URL('.',location.href).pathname;
- const here=location.pathname;
- const allowed=value=>{
-  if(!value||value.startsWith('//')||value.includes('\\')||value.startsWith('#'))return null;
-  try{
-   const target=new URL(value,location.href);
-   if(target.origin!==location.origin||!target.pathname.startsWith(base)||target.pathname===here)return null;
-   return target.pathname+target.search+target.hash;
-  }catch{return null;}
- };
- return allowed(raw)||allowed(document.referrer)||new URL('ai-home.html',location.href).pathname;
-}
-const back=byId('lp-back');
-if(back)back.href=sameSiteReturn();
-
-function addNotice(text,tone){
- const target=byId('lp-billing-notice');if(!target)return;
- target.textContent=text;target.dataset.tone=tone;
-}
-function setStatus(node,text,error=false){
- if(!node)return;node.textContent=text;node.dataset.error=String(error);
-}
-function planAction(button,notice,id,billing){
- button.addEventListener('click',async()=>{
-  if(!billing)return;
-  if(!state.user){auth('login');return;}
-  button.disabled=true;setStatus(notice,'Opening secure checkout…');
-  try{
-   const response=await api('checkout',{plan:id});
-   const destination=new URL(response.url);
-   if(!['https:','http:'].includes(destination.protocol))throw Error('Invalid checkout URL.');
-   location.assign(destination.href);
-  }catch(error){
-   setStatus(notice,error?.message||'Unable to open checkout.',true);
-   button.disabled=false;
-  }
- });
-}
-function renderPlans(cfg,configFailed=false){
+const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
+const proposedPlans=[{id:'free',price_cents:0,credits:10,cadence:'signup'},{id:'creator',price_cents:1200,credits:100,cadence:'month'},{id:'creator_yearly',price_cents:12000,credits:1200,cadence:'year'},{id:'pro',price_cents:2900,credits:250,cadence:'month'},{id:'pro_yearly',price_cents:29000,credits:3000,cadence:'year'}];
+const presentation={free:{name:'LOOX Basic',icon:'◇',eyebrow:'YOUR FIRST IDEAS',description:'Explore the studio and start creating for free.'},creator:{name:'LOOX Creator',icon:'✦',eyebrow:'FOR YOUR CREATIVE ROUTINE',description:'A flexible balance for images, motion and everyday ideas.'},pro:{name:'LOOX Pro',icon:'♛',eyebrow:'FOR YOUR BIGGEST IDEAS',description:'Premium video models and more room to experiment.'}};
+let cadence='month',plansConfig=null,plansError=false;
+const money=c=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(c/100);
+function sameSiteReturn(){try{const raw=new URLSearchParams(location.search).get('from')||document.referrer;const target=new URL(raw,location.href);if(target.origin===location.origin&&target.pathname!==location.pathname)return target.pathname+target.search+target.hash;}catch{}return 'ai-home.html';}
+const back=byId('lp-back');if(back)back.href=sameSiteReturn();
+function setStatus(node,text,error=false){if(node){node.textContent=text;node.dataset.error=String(error);}}
+function addNotice(text,tone){const n=byId('lp-billing-notice');if(n){n.textContent=text;n.dataset.tone=tone;}}
+function planAction(button,notice,id){button.addEventListener('click',async()=>{if(!state.user){auth('login');return;}button.disabled=true;setStatus(notice,'Opening secure checkout…');try{const r=await api('checkout',{plan:id});const url=new URL(r.url);if(url.protocol!=='https:'||!url.hostname.endsWith('.lemonsqueezy.com'))throw Error('Invalid checkout URL.');location.assign(url.href);}catch(e){setStatus(notice,e.message||'Checkout is unavailable.',true);button.disabled=false;}});}
+function renderPlans(cfg,failed=false){
  const host=byId('lp-plan-grid');if(!host)return;
- const providerPlans=Array.isArray(cfg?.plans)&&cfg.plans.length?cfg.plans:proposedPlans;
- const live=cfg?.billing===true;
- const signedIn=Boolean(state.user);
- const current=state.account?.plan||'';
- host.replaceChildren();
- if(configFailed)addNotice('Unable to confirm live billing. Prices shown are previews; checkout is unavailable.','error');
- else if(!live)addNotice('Plan preview · Checkout is currently unavailable until merchant billing is configured.','preview');
- else if(cfg?.testBilling)addNotice('Test billing is enabled. These are test transactions, not real purchases.','preview');
- else addNotice('Live checkout is enabled. Review plan terms and price before confirming payment.','live');
- for(const id of ['free','pro','lifetime']){
-  const p=providerPlans.find(x=>x.id===id)||proposedPlans.find(x=>x.id===id);
-  const copy=presentation[id];
-  const credits=Number.isFinite(Number(p.credits))?String(p.credits):'0';
-  const price=Number.isFinite(Number(p.price_cents))?Number(p.price_cents):0;
-  const featured=id==='pro';
-  const card=elem('article','lp-plan'+(featured?' lp-plan-featured':''));
+ const plans=cfg?.plans?.length?cfg.plans:proposedPlans,live=cfg?.billing===true;
+ const current=state.account?.plan||'basic';host.replaceChildren();
+ addNotice(failed?'Plan service is unavailable. Displayed prices are previews.':!live?'Plans are ready to explore. Secure checkout is awaiting merchant setup.':cfg?.testBilling?'Test checkout · No real payments.':'Secure checkout · USD prices. Applicable taxes are shown before payment.',live?'live':'preview');
+ for(const id of ['free','creator','pro']){
+  const key=id==='free'?id:id+(cadence==='year'?'_yearly':'');
+  const p=plans.find(p=>p.id===key)||proposedPlans.find(p=>p.id===key),copy=presentation[id],featured=id==='creator';
+  const card=elem('article','lp-plan'+(featured?' lp-plan-featured':''));card.dataset.plan=id;
   if(featured)card.append(elem('span','lp-featured-badge','MOST POPULAR'));
-  card.append(elem('div','lp-plan-label',copy.eyebrow),elem('h3','lp-plan-name',copy.name));
-  card.append(elem('p','lp-plan-description',copy.description));
-  const priceRow=elem('div','lp-plan-price-row');
-  const formatted=new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:2,maximumFractionDigits:2}).format(price/100);
-  priceRow.append(elem('span','lp-plan-price',formatted));
-  priceRow.append(elem('span','lp-plan-period',id==='pro'?'/ month':id==='lifetime'?'one time':'forever'));
-  card.append(priceRow);
-  if(current===id&&signedIn)card.append(elem('div','lp-plan-current','✓ Your current plan'));
-  card.append(elem('div','lp-plan-divider'),elem('p','lp-plan-features-title','What’s included'));
-  const list=elem('ul','lp-plan-features');
-  for(const item of copy.features(credits))list.append(elem('li',null,item));
-  card.append(list,elem('div','lp-plan-grow'));
-  const isCurrent=signedIn&&current===id;
-  const action=elem('button','lp-btn '+(featured?'lp-btn-primary':'lp-btn-secondary'));
-  action.type='button';
-  const small=elem('p','lp-plan-small');
-  small.setAttribute('role','alert');
-  if(isCurrent){
-   action.textContent='Current plan';action.disabled=true;
-  }else if(id==='free'){
-   if(signedIn){action.textContent='Free tools available';action.disabled=true;}
-   else{action.textContent='Get started free';action.addEventListener('click',()=>auth('register'));}
-  }else if(live){
-   action.textContent='Choose '+(id==='pro'?'Pro':'Lifetime');
-   planAction(action,small,id,true);
-  }else{
-   action.textContent='Checkout coming soon';
-   action.disabled=true;
-   small.textContent='No payment is being taken at this time.';
-  }
-  card.append(action,small);host.append(card);
+  card.append(elem('span','lp-tier-icon lp-tier-'+id,copy.icon),elem('div','lp-plan-label',copy.eyebrow),elem('h3','lp-plan-name',copy.name),elem('p','lp-plan-description',copy.description));
+  const price=elem('div','lp-plan-price-row');price.append(elem('span','lp-plan-price',money(p.price_cents)),elem('span','lp-plan-period',id==='free'?'always free':cadence==='year'?'/ year':'/ month'));card.append(price);
+  card.append(elem('p','lp-price-detail',id==='free'?'Automatically assigned after verified signup':cadence==='year'?money(p.price_cents/12)+' / month equivalent · billed yearly':'Billed monthly · cancel renewal anytime'));
+  card.append(elem('div','lp-credit-allowance',p.credits.toLocaleString()+' credits'+(id==='free'?' to start':cadence==='year'?' per year':' per month')));
+  const features=id==='free'?['10 signup credits after email verification','1 return credit every 12 hours; balance cap 10','Local image and video generation when online','Free browser tools, private creations and Basic badge']:id==='creator'?['Standard cloud video models + image models','Kling 4.0 Flash, Grok, MiniMax H3 and more','100 daily image / video submissions per category','Creator profile badge + local queue priority']:['All Creator features + premium video access','Kling 4.0, Seedance 2.5 and Veo 3.1','250 daily image / video submissions per category','Pro profile badge + highest local queue priority'];
+  const list=elem('ul','lp-plan-features');for(const text of features)list.append(elem('li','',text));
+  card.append(list,elem('p','lp-plan-small',id==='free'?'Rewards require a manual claim. First reward unlocks 12 hours after your first signed-in visit.':cadence==='year'?'All annual credits arrive after a successful annual payment.':'Credits arrive after each successful monthly payment.'));
+  const examples=elem('div','lp-plan-estimates');examples.dataset.credits=p.credits;examples.dataset.tier=id==='free'?'basic':id;card.append(examples);
+  const button=elem('button','lp-btn '+(featured?'lp-btn-primary':'lp-btn-secondary')),note=elem('p','lp-plan-small');button.type='button';note.setAttribute('role','status');
+  if(state.user&&current===(id==='free'?'basic':id)){button.textContent='Your current plan';button.disabled=true;}
+  else if(id==='free'){button.textContent=state.user?'Basic included':'Start creating free';button.disabled=Boolean(state.user);button.onclick=()=>auth('register');}
+  else{const configured=live&&(!Array.isArray(cfg.checkoutPlans)||cfg.checkoutPlans.includes(key));button.textContent=configured?'Choose '+copy.name:'Checkout pending';button.disabled=!configured;planAction(button,note,key);}
+  card.append(button,note);host.append(card);
  }
+ renderEstimates(cfg);
 }
-let plansConfig=null,plansError=false;
+function renderEstimates(cfg){
+ const selector=byId('lp-estimate-model'),duration=byId('lp-estimate-duration');if(!selector||!duration)return;
+ const models=cfg?.videoModels||[];
+ if(!selector.options.length){for(const m of models.filter(m=>m.available)){const o=elem('option','',m.name+' · '+m.capabilities.resolution);o.value=m.id;selector.append(o);}if(!selector.options.length){const o=elem('option','','Video pricing unavailable');o.value='';selector.append(o);}}
+ const model=models.find(m=>m.id===selector.value),previous=duration.value;duration.replaceChildren();
+ for(const d of model?.durationOptions||[5]){const o=elem('option','',d+' seconds');o.value=d;duration.append(o);}if([...duration.options].some(o=>o.value===previous))duration.value=previous;
+ const op=cfg?.operations?.find(o=>o.id==='generate')?.cost||3,cloudImage=cfg?.models?.find(m=>m.available),premiumImage=cloudImage?.cost||25;
+ const videoCost=model?.creditCosts?.[duration.value],rank={basic:0,creator:1,pro:2};
+ for(const target of document.querySelectorAll('.lp-plan-estimates')){
+  const credits=Number(target.dataset.credits),tier=target.dataset.tier,allowed=rank[tier]>=rank[model?.minimumPlan||'creator'];target.replaceChildren();
+  target.append(elem('strong','','Spend the whole balance on one option:'),elem('p','',Math.floor(credits/op).toLocaleString()+' local images · '+op+' credits each'));
+  if(cloudImage)target.append(elem('p','',Math.floor(credits/premiumImage)+' '+cloudImage.name+' images · '+premiumImage+' credits each'));
+  target.append(elem('p','',!model?'Video estimates load with live model prices':!allowed?'Selected video requires LOOX '+(model.minimumPlan==='pro'?'Pro':'Creator'):Math.floor(credits/videoCost)+' × '+duration.value+'s videos · '+videoCost+' credits each'));
+ }
+ byId('lp-estimate-note').textContent=model?'Counts are alternatives from the same balance, not combined allowances. '+model.name+': '+videoCost+' credits per '+duration.value+'s clip at '+model.capabilities.resolution+'. Local generation depends on GPU availability.':'Counts use the same shared credit balance. Live video prices could not be loaded.';
+}
 if(document.body.hasAttribute('data-account-upgrade')){
- renderPlans(null,false);
- config().then(c=>{plansConfig=c;renderPlans(c);}).catch(()=>{plansError=true;renderPlans(null,true);});
- document.addEventListener('loox-user',()=>renderPlans(plansConfig,plansError));
- document.addEventListener('loox-account',()=>renderPlans(plansConfig,plansError));
+ const controls=elem('div','lp-billing-toggle');controls.setAttribute('aria-label','Billing period');
+ for(const [value,label] of [['month','Monthly'],['year','Yearly · save ~17%']]){const b=elem('button','',label);b.type='button';b.setAttribute('aria-pressed',String(cadence===value));b.onclick=()=>{cadence=value;for(const item of controls.children)item.setAttribute('aria-pressed',String(item===b));renderPlans(plansConfig,plansError);};controls.append(b);}
+ byId('lp-plan-grid').before(controls);
+ renderPlans(null);config().then(c=>{plansConfig=c;renderPlans(c);}).catch(()=>{plansError=true;renderPlans(null,true);});
+ for(const name of ['loox-user','loox-account'])document.addEventListener(name,()=>renderPlans(plansConfig,plansError));
+ for(const id of ['lp-estimate-model','lp-estimate-duration'])byId(id)?.addEventListener('change',()=>renderEstimates(plansConfig));
 }
 
 function renderSettings(){
@@ -143,7 +78,7 @@ function renderSettings(){
  if(document.activeElement!==name)name.value=state.account.profile?.name||'';
  byId('lp-email').value=state.user.email||'';
  const plan=state.account.plan||'free';
- byId('lp-plan-info').textContent=(plan==='pro'?'LOOX Pro':plan==='lifetime'?'LOOX Lifetime':'Free plan')+
+ byId('lp-plan-info').textContent=(plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
   ' · '+(state.account.wallet?.balance??'…')+' available credits';
 }
 if(document.body.hasAttribute('data-settings-page')){
