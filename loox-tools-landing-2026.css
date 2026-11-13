@@ -169,3 +169,27 @@ body.loox-tools-landing{--lt-purple:#b28aff;--lt-pink:#ed86b8;--lt-muted:#afa7be
 @media(prefers-reduced-motion:reduce){
  .loox-tools-landing .lt-action,.loox-tools-landing .lt-showcase-main img,.loox-tools-landing .loox-featured-card,.loox-tools-landing .loox-featured-art img,.loox-tools-landing .tool-card{transition:none!important;transform:none!important}
 }
+
+/* The existing AI guide enriches card links with 640px intrinsic images.
+   Keep these genuine tool-cover images, but constrain them to their cards. */
+.loox-tools-landing .tool-card .tool-main img.loox-ai-card-art{
+ display:block!important;flex:0 0 auto!important;
+ width:100%!important;max-width:100%!important;min-width:0!important;
+ height:auto!important;aspect-ratio:1.62!important;
+ object-fit:cover!important;object-position:center!important;
+ border-radius:11px!important;margin:0 0 11px!important;
+ background:linear-gradient(140deg,#392b52,#4b345d);
+}
+.loox-tools-landing .personal-card{min-width:0!important;max-width:100%!important;overflow:hidden!important}
+.loox-tools-landing .personal-card img.loox-ai-card-art{
+ display:block!important;width:38px!important;max-width:38px!important;
+ min-width:38px!important;height:38px!important;max-height:38px!important;
+ flex:0 0 38px!important;margin:0!important;object-fit:cover!important;
+ border-radius:10px!important;
+}
+.loox-tools-landing .personal-card:has(> img.loox-ai-card-art)>.personal-icon{display:none!important}
+.loox-tools-landing .personal-card .personal-copy{min-width:0!important;flex:1}
+.loox-tools-landing .tool-grid,.loox-tools-landing .personal-grid{min-width:0!important;max-width:100%!important}
+@media(max-width:760px){
+ .loox-tools-landing .tool-card .tool-main img.loox-ai-card-art{aspect-ratio:1.25!important}
+}
