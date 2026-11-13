@@ -13,7 +13,7 @@
 .loox-cta-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;border-radius:13px;padding:12px 20px;text-decoration:none;font-size:12px;font-weight:850;transition:transform .2s ease,border-color .2s ease,background .2s ease}
 .loox-cta-actions a:hover{transform:translateY(-2px)}
 .loox-cta-primary{background:#a6ccff;color:#101a2b;border:1px solid #a6ccff}
-.loox-cta-secondary{background:#142033;color:#f1f5f9;border:1px solid #364c68}
+.loox-cta-secondary{background:#142033;color:#f1f5f9;border:1px solid #2a405c}
 .loox-site-footer{margin:0!important;padding:0!important;background:#080d16!important;color:#a6ccff;border-top:1px solid #20314a}
 .loox-site-footer>.container{padding-top:42px;padding-bottom:22px}
 .loox-footer-brand{display:flex;align-items:center;gap:12px;margin-bottom:30px}

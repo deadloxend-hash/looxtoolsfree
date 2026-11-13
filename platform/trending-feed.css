@@ -40,7 +40,7 @@ body.loox-trending-feed #community-root .loox-discovery-search-wrap{
 }
 body.loox-trending-feed #community-root .community-search{
  box-sizing:border-box!important;min-height:44px!important;height:44px!important;
- background:#142033!important;border:1px solid #364c68!important;
+ background:#142033!important;border:1px solid #2a405c!important;
  border-radius:14px!important;font-size:13px!important;
 }
 body.loox-trending-feed #community-root .community-filters{
@@ -59,7 +59,7 @@ body.loox-trending-feed #community-root .loox-discovery-select-trigger{
  background:#142033!important;color:#d9eaff!important;
 }
 body.loox-trending-feed #community-root .community-filter[aria-pressed=true]{
- background:#344b69!important;color:#fff!important;border-color:#60a5fa!important;
+ background:#2a405c!important;color:#fff!important;border-color:#60a5fa!important;
 }
 body.loox-trending-feed #community-root .loox-trending-more{
  position:relative!important;flex:0 0 auto!important;align-self:center!important;
@@ -69,7 +69,7 @@ body.loox-trending-feed #community-root .loox-trending-more>summary{
  display:flex!important;align-items:center!important;justify-content:center!important;
  list-style:none!important;cursor:pointer!important;
  min-height:37px!important;padding:8px 15px!important;
- border:1px solid #364c68!important;border-radius:11px!important;
+ border:1px solid #2a405c!important;border-radius:11px!important;
  background:#142033!important;color:#d9eaff!important;
  font:600 12px/1.2 Inter,system-ui,sans-serif!important;
 }
@@ -85,7 +85,7 @@ body.loox-trending-feed #community-root .loox-trending-more .community-tools{
  flex-direction:column!important;align-items:stretch!important;
  box-sizing:border-box!important;gap:3px!important;
  padding:8px!important;margin:0!important;
- border:1px solid #344b69!important;border-radius:13px!important;
+ border:1px solid #2a405c!important;border-radius:13px!important;
  background:#142033f7!important;box-shadow:0 16px 34px #0009!important;
  backdrop-filter:blur(18px)!important;
 }

@@ -19,9 +19,9 @@
 .lvg-body .loox-video-extra-setting{display:flex;align-items:center;gap:8px;min-width:0;margin:0!important;padding:0!important}
 .lvg-body .loox-video-extra-setting[hidden]{display:none!important}
 .lvg-body .loox-video-extra-setting>label{font-size:11px!important;color:#d9eaff;white-space:nowrap}
-.lvg-body .loox-video-extra-setting select{max-width:130px;min-height:31px;padding:4px 8px;background:#142033;color:#fff;border:1px solid #344b69;border-radius:7px;font-size:11px}
+.lvg-body .loox-video-extra-setting select{max-width:130px;min-height:31px;padding:4px 8px;background:#142033;color:#fff;border:1px solid #2a405c;border-radius:7px;font-size:11px}
 .lvg-body .loox-video-extra-setting input[type=file]{max-width:min(260px,60vw);font-size:10px;color:#a6ccff}
-.lvg-body .loox-video-extra-setting input[type=file]::file-selector-button{padding:6px 10px;margin-right:8px;background:#20314a;color:#e5edf7;border:1px solid #344b69;border-radius:7px;cursor:pointer}
+.lvg-body .loox-video-extra-setting input[type=file]::file-selector-button{padding:6px 10px;margin-right:8px;background:#20314a;color:#e5edf7;border:1px solid #2a405c;border-radius:7px;cursor:pointer}
 .lvg-body .loox-video-extra-setting p.lig-help{display:none!important}
 @media(max-width:600px){
  .lvg-body .loox-video-extra-controls{gap:6px 9px}
@@ -51,9 +51,9 @@
 .lvg-body .loox-video-extra-controls{grid-column:1/-1;grid-row:2;margin-top:0!important;padding:9px 2px 0!important;display:flex!important;align-items:center!important;justify-content:flex-start;flex-wrap:wrap;gap:10px 17px!important}
 .lvg-body .loox-video-extra-controls .loox-video-extra-setting{height:34px;gap:8px;flex:0 0 auto!important}
 .lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{font-size:11px!important;font-weight:650;color:#d9eaff!important}
-.lvg-body .loox-video-extra-controls .loox-video-extra-setting select{height:33px!important;min-height:33px!important;width:112px!important;max-width:112px!important;padding:4px 8px!important;border:1px solid #344b69!important;background:#20314a!important;color:#f1f5f9!important;border-radius:9px!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting select{height:33px!important;min-height:33px!important;width:112px!important;max-width:112px!important;padding:4px 8px!important;border:1px solid #2a405c!important;background:#20314a!important;color:#f1f5f9!important;border-radius:9px!important}
 .lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]{font-size:11px!important;color:#a6ccff!important;max-width:300px}
-.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]::file-selector-button{background:#20314a!important;border:1px solid #344b69!important;color:#f1f5f9!important;font-size:11px}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]::file-selector-button{background:#20314a!important;border:1px solid #2a405c!important;color:#f1f5f9!important;font-size:11px}
 .lvg-body .lig-compose-actions{align-items:center!important}
 .lvg-body .lig-compose-actions .lig-primary{min-width:150px!important}
 @media(max-width:750px){

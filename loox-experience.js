@@ -40,7 +40,7 @@
   const theme=p.theme||(read('loox-theme-v1','dark')==='white'?'light':'dark');
   const light=theme==='light'||theme==='system'&&matchMedia('(prefers-color-scheme:light)').matches;
   document.documentElement.dataset.lxTheme=light?'light':'dark';
-  const accent=/^#[0-9a-f]{6}$/i.test(p.accent||'')?p.accent:'#a791ff';
+  const accent=/^#[0-9a-f]{6}$/i.test(p.accent||'')?p.accent:'#3b82f6';
   document.documentElement.style.setProperty('--lx-accent',accent);
   const channels=accent.slice(1).match(/../g).map(s=>parseInt(s,16));document.documentElement.style.setProperty('--lx-on-accent',channels[0]*.299+channels[1]*.587+channels[2]*.114>160?'#141727':'#ffffff');
   if(p.theme&&window.LOOXApplyTheme)window.LOOXApplyTheme(light?'white':'dark');

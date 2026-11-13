@@ -10,7 +10,7 @@
 :root{
   color-scheme:light;
   --ink:#142033;
-  --ink-soft:#344b69;
+  --ink-soft:#2a405c;
   --muted:#827d96;
   --paper:#f1f5f9;
   --white:#fff;
@@ -38,7 +38,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 .brand-name span{color:var(--purple)}
 .brand-tag{display:block;color:#9a95a9;font-size:9px;letter-spacing:2px;font-weight:800;margin-top:-2px}
 .main-nav{display:flex;align-items:center;gap:30px;margin-left:auto}
-.main-nav a{font-size:13px;font-weight:700;text-decoration:none;color:#344b69;transition:color .2s}
+.main-nav a{font-size:13px;font-weight:700;text-decoration:none;color:#2a405c;transition:color .2s}
 .main-nav a:hover{color:var(--purple)}
 .nav-cta{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:white;text-decoration:none;padding:12px 17px;border-radius:12px;font-size:12px;font-weight:800;transition:transform .2s,background .2s}
 .nav-cta:hover{background:#2a405c;transform:translateY(-1px)}
@@ -64,7 +64,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 .note-check{color:#60a5fa;font-size:14px}
 .hero-art{position:relative;min-height:340px;display:grid;place-items:center}
 .art-glow{position:absolute;width:290px;height:290px;border-radius:50%;background:linear-gradient(140deg,#d9eaff,#d7f2f7 70%,#c6e9fa);filter:blur(2px);opacity:.85}
-.art-window{position:relative;width:min(100%,390px);padding:18px;background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.95);border-radius:23px;box-shadow:0 24px 65px rgba(54,76,104,.16);transform:rotate(-2deg)}
+.art-window{position:relative;width:min(100%,390px);padding:18px;background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.95);border-radius:23px;box-shadow:0 24px 65px rgba(42,64,92,.16);transform:rotate(-2deg)}
 .art-window-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}
 .art-window-title{font-size:12px;font-weight:850;letter-spacing:-.2px}
 .art-dots{display:flex;gap:5px}
@@ -85,8 +85,8 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 .art-mini:nth-child(3){background:linear-gradient(135deg,#86c8dc,#a6ccff)}
 .art-mini:after{content:"";position:absolute;width:48px;height:48px;border-radius:15px;border:1px solid #ffffff7d;right:12px;top:10px;transform:rotate(25deg)}
 .art-caption{display:flex;align-items:center;justify-content:space-between;margin-top:14px;font-size:10px;color:#7d9bbd}
-.art-caption strong{color:#344b69}
-.float-tag{position:absolute;display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid #fff;border-radius:13px;background:#fff;box-shadow:0 12px 28px rgba(42,64,92,.13);font-size:10px;font-weight:850;color:#344b69}
+.art-caption strong{color:#2a405c}
+.float-tag{position:absolute;display:flex;align-items:center;gap:8px;padding:10px 13px;border:1px solid #fff;border-radius:13px;background:#fff;box-shadow:0 12px 28px rgba(42,64,92,.13);font-size:10px;font-weight:850;color:#2a405c}
 .float-tag span{width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:#f1f5f9;font-size:14px}
 .float-one{left:-8px;top:54px;transform:rotate(5deg)}
 .float-two{right:-17px;bottom:40px;transform:rotate(4deg)}
@@ -248,7 +248,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 
 /* Appearance selector */
 .theme-control{position:relative;flex:0 0 auto}
-.theme-trigger{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#344b69;font-size:12px;font-weight:800;cursor:pointer;transition:border .2s,background .2s,color .2s}
+.theme-trigger{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 13px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#2a405c;font-size:12px;font-weight:800;cursor:pointer;transition:border .2s,background .2s,color .2s}
 .theme-trigger:hover,.theme-trigger[aria-expanded="true"]{border-color:#d9eaff;color:var(--purple);background:#f1f5f9}
 .theme-trigger-icon{font-size:17px;line-height:1}
 .theme-chevron{font-size:14px;color:#9a94a9}
@@ -316,7 +316,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 :root[data-tone="dark"] .main-nav a:hover{color:#d9eaff}
 :root[data-tone="dark"] .nav-cta{background:#f1f5f9;color:#142033}
 :root[data-tone="dark"] .menu-toggle{background:#142033;color:#f1f5f9;border-color:#2a405c}
-:root[data-tone="dark"] .hero{background:radial-gradient(ellipse at 83% 20%,rgba(59,130,246,.27),transparent 33%),radial-gradient(ellipse at 10% 85%,rgba(52,75,105,.18),transparent 32%),linear-gradient(135deg,#142033,#101a2b 48%,#101a2b);border-color:#20314a}
+:root[data-tone="dark"] .hero{background:radial-gradient(ellipse at 83% 20%,rgba(59,130,246,.27),transparent 33%),radial-gradient(ellipse at 10% 85%,rgba(42,64,92,.18),transparent 32%),linear-gradient(135deg,#142033,#101a2b 48%,#101a2b);border-color:#20314a}
 :root[data-tone="dark"] .hero:before{border-color:rgba(166,204,255,.1);box-shadow:0 0 0 42px rgba(166,204,255,.025),0 0 0 88px rgba(166,204,255,.018)}
 :root[data-tone="dark"] .eyebrow{background:#142033;border-color:#2a405c;color:#d9eaff}
 :root[data-tone="dark"] .hero-copy,:root[data-tone="dark"] .hero-note{color:#a6ccff}
@@ -334,7 +334,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 :root[data-tone="dark"] .trust-strip{background:#101a2b;border-color:#20314a}
 :root[data-tone="dark"] .trust-inner{color:#a6ccff}
 :root[data-tone="dark"] .quick-card,:root[data-tone="dark"] .personal-card,:root[data-tone="dark"] .explore-panel,:root[data-tone="dark"] .tool-card{background:#142033;border-color:#20314a}
-:root[data-tone="dark"] .quick-card:hover,:root[data-tone="dark"] .personal-card:hover,:root[data-tone="dark"] .tool-card:hover{border-color:#344b69}
+:root[data-tone="dark"] .quick-card:hover,:root[data-tone="dark"] .personal-card:hover,:root[data-tone="dark"] .tool-card:hover{border-color:#2a405c}
 :root[data-tone="dark"] .quick-card small,:root[data-tone="dark"] .personal-copy small,:root[data-tone="dark"] .tool-copy p,:root[data-tone="dark"] .explore-title-row p,:root[data-tone="dark"] .section-head p{color:#a6ccff}
 :root[data-tone="dark"] .personal-icon,:root[data-tone="dark"] .tool-icon{background:#20314a}
 :root[data-tone="dark"] .filters .filter{background:#142033;border-color:#2a405c;color:#a6ccff}
@@ -343,14 +343,14 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #a6cc
 :root[data-tone="dark"] .mode-tag{background:#20314a;color:#a8dfca}
 :root[data-tone="dark"] .mode-tag.cloud{background:#20314a;color:#d7f2f7}
 :root[data-tone="dark"] .favorite-btn{background:#142033;border-color:#2a405c;color:#a6ccff}
-:root[data-tone="dark"] .favorite-btn:hover,:root[data-tone="dark"] .favorite-btn.on{background:#20314a;border-color:#344b69;color:#8fe6ee}
+:root[data-tone="dark"] .favorite-btn:hover,:root[data-tone="dark"] .favorite-btn.on{background:#20314a;border-color:#2a405c;color:#8fe6ee}
 :root[data-tone="dark"] .empty-note,:root[data-tone="dark"] .empty-results{background:#142033;border-color:#2a405c;color:#a6ccff}
 :root[data-tone="dark"] .privacy-card{background:linear-gradient(110deg,#20314a,#142033);border-color:#2a405c}
 :root[data-tone="dark"] .privacy-icon{background:#2a405c;color:#d9eaff}
 :root[data-tone="dark"] .privacy-copy p{color:#a6ccff}
 :root[data-tone="dark"] .footer{background:#080d16;border-top:1px solid #20314a}
 :root[data-tone="dark"] .theme-trigger{background:#142033;border-color:#2a405c;color:#f1f5f9}
-:root[data-tone="dark"] .theme-trigger:hover,:root[data-tone="dark"] .theme-trigger[aria-expanded="true"]{background:#20314a;border-color:#344b69;color:#d9eaff}
+:root[data-tone="dark"] .theme-trigger:hover,:root[data-tone="dark"] .theme-trigger[aria-expanded="true"]{background:#20314a;border-color:#2a405c;color:#d9eaff}
 /* Theme picker stays readable in every page theme */
 :root[data-tone="dark"] .theme-popover,:root[data-theme="grey"] .theme-popover{background:#fff;color:#142033;border-color:#f1f5f9}
 :root[data-tone="dark"] .theme-option,:root[data-theme="grey"] .theme-option{color:#20314a;background:#fff}

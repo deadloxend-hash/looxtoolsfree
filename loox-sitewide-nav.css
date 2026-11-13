@@ -52,10 +52,10 @@ body.loox-sitewide-active{--loox-sitewide-height:64px}
  display:flex;align-items:center;justify-content:flex-end;gap:7px;flex:0 0 auto;min-width:0
 }
 #loox-sitewide-header [data-loox-account] .lx-controls{margin:0}
-#loox-sitewide-header .loox-sitewide-signin{display:inline-block;color:#fff;text-decoration:none;padding:8px 12px;border:1px solid #344b69;border-radius:9px}
+#loox-sitewide-header .loox-sitewide-signin{display:inline-block;color:#fff;text-decoration:none;padding:8px 12px;border:1px solid #2a405c;border-radius:9px}
 #loox-sitewide-header .loox-sitewide-logo-menu{
  position:absolute;top:calc(100% + 8px);left:0;display:grid;gap:3px;width:235px;max-height:70vh;overflow:auto;
- padding:10px;border:1px solid #364c68;border-radius:13px;background:#101a2b;box-shadow:0 18px 48px #000a;z-index:18
+ padding:10px;border:1px solid #2a405c;border-radius:13px;background:#101a2b;box-shadow:0 18px 48px #000a;z-index:18
 }
 #loox-sitewide-header .loox-sitewide-logo-menu[hidden]{display:none!important}
 #loox-sitewide-header .loox-sitewide-logo-menu a{
@@ -121,7 +121,7 @@ body.loox-sitewide-active > header.loox-sitewide-workspacebar .lig-page-name{fon
 .loox-sitewide-more-links a:hover{color:#fff;background:#20314a}
 /* Modal full directory finder, across all pages. */
 .loox-sitewide-finder{
- width:min(94vw,960px);max-height:86dvh;padding:20px;border:1px solid #364c68;border-radius:20px;
+ width:min(94vw,960px);max-height:86dvh;padding:20px;border:1px solid #2a405c;border-radius:20px;
  background:#101a2b;color:#f1f5f9;box-shadow:0 30px 70px #0009;
  font:14px/1.5 system-ui;overflow-y:auto;overscroll-behavior:contain
 }
@@ -456,7 +456,7 @@ body.loox-sitewide-active .loox-sitewide-secondary{
 #loox-sitewide-header .loox-sitewide-links a{font-size:12px;font-weight:680;color:#d9eaff}
 #loox-sitewide-header .loox-sitewide-links a[aria-current=page]{background:linear-gradient(135deg,#2a405c,#20314a);box-shadow:inset 0 0 0 1px #3b82f644}
 #loox-sitewide-header .loox-sitewide-search{min-width:210px;background:#142033;border-color:#2a405c;border-radius:12px}
-#loox-sitewide-header .loox-sitewide-more-button{background:#142033;border-color:#364c68}
+#loox-sitewide-header .loox-sitewide-more-button{background:#142033;border-color:#2a405c}
 body.loox-sitewide-active > aside#loox-sitewide-drawer{
  width:252px!important;max-width:min(252px,88vw)!important;
  background:linear-gradient(180deg,#101a2b 0%,#080d16 100%)!important;
@@ -693,7 +693,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-explore-li
  height:40px!important;flex:0 0 40px!important;
  padding:0!important;gap:0!important;border-radius:12px!important;
  color:#f1f5f9!important;background:#142033!important;
- border:1px solid #364c68!important;cursor:pointer!important;
+ border:1px solid #2a405c!important;cursor:pointer!important;
  transform:scale(1);
  transition:transform .19s cubic-bezier(.2,.8,.2,1),
             background-color .19s ease,border-color .19s ease,
@@ -914,7 +914,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row
 }
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row:hover,
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row:focus-visible{
- background:#2a405c!important;border-color:#344b69!important
+ background:#2a405c!important;border-color:#2a405c!important
 }
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-avatar{
  display:grid!important;place-items:center!important;flex:0 0 25px!important;
@@ -954,7 +954,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-utility-pan
  position:absolute!important;bottom:calc(100% + 10px)!important;
  left:0!important;right:0!important;z-index:12!important;
  display:flex!important;flex-direction:column!important;gap:8px!important;
- background:#142033!important;border:1px solid #344b69!important;border-radius:11px!important;
+ background:#142033!important;border:1px solid #2a405c!important;border-radius:11px!important;
  padding:13px!important;box-shadow:0 12px 28px #0009!important
 }
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-utility-panel[hidden]{display:none!important}
@@ -972,7 +972,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-gr
  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important
 }
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-grid button{
- padding:7px 5px!important;border:1px solid #364c68!important;border-radius:7px!important;
+ padding:7px 5px!important;border:1px solid #2a405c!important;border-radius:7px!important;
  background:#20314a!important;color:#fff!important;font:11px/1.3 system-ui!important;cursor:pointer!important
 }
 body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-grid button:hover{background:#2a405c!important}
@@ -1036,7 +1036,7 @@ body.loox-generator-no-topnav.loox-sitewide-active
  min-height:36px!important;
  min-width:47px!important;
  padding:0 9px!important;
- border:1px solid #364c68!important;
+ border:1px solid #2a405c!important;
  border-right:0!important;
  border-radius:11px 0 0 11px!important;
  background:#142033!important;
@@ -1067,7 +1067,7 @@ body.loox-generator-no-topnav.loox-sitewide-active
  min-height:36px!important;height:36px!important;
  padding:0 11px!important;
  margin:0!important;
- border:1px solid #364c68!important;
+ border:1px solid #2a405c!important;
  border-left:0!important;
  border-radius:0 11px 11px 0!important;
  background:linear-gradient(110deg,#60a5fa,#3b82f6)!important;
@@ -1182,7 +1182,7 @@ body.loox-generator-no-topnav.ai-chat .lx-header .lx-credit-chip{
  display:inline-flex!important;align-items:center!important;justify-content:center!important;
  gap:3px!important;height:35px!important;min-height:35px!important;
  padding:0 9px!important;background:#142033!important;
- border:1px solid #344b69!important;border-right:0!important;
+ border:1px solid #2a405c!important;border-right:0!important;
  border-radius:11px 0 0 11px!important;color:#fff!important;
  font:750 12px/1 system-ui!important
 }
@@ -1194,7 +1194,7 @@ body.loox-generator-no-topnav.ai-chat .lx-header .lx-credit-divider{display:none
 body.loox-generator-no-topnav.ai-chat .lx-header .lx-upgrade{
  display:inline-flex!important;align-items:center!important;justify-content:center!important;
  height:35px!important;min-height:35px!important;margin:0!important;
- padding:0 11px!important;border:1px solid #344b69!important;border-left:0!important;
+ padding:0 11px!important;border:1px solid #2a405c!important;border-left:0!important;
  border-radius:0 11px 11px 0!important;
  background:linear-gradient(110deg,#60a5fa,#3b82f6)!important;
  color:#fff!important;box-shadow:none!important;font:750 11px/1 system-ui!important
@@ -1711,7 +1711,7 @@ body.loox-sitewide-active .lx-avatar{overflow:hidden;flex-shrink:0}
  }
  body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:hover,
  body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:focus-visible{
-  background:#2a405c!important;color:#fff!important;border-color:#344b69!important;
+  background:#2a405c!important;color:#fff!important;border-color:#2a405c!important;
  }
  body.loox-sitewide-active.loox-workspace-sidebar > .loox-sitewide-scrim{display:none!important}
 }
@@ -1958,7 +1958,7 @@ body.loox-generator-no-topnav > header.lig-header .loox-workspace-brand:focus-vi
 body.loox-generator-no-topnav > header.lig-header .lig-page-name{
  font-size:11px!important;font-weight:600!important;letter-spacing:.02em!important;
  color:#a6ccff!important;white-space:nowrap!important;
- padding-left:12px!important;border-left:1px solid #344b6958!important;
+ padding-left:12px!important;border-left:1px solid #2a405c58!important;
 }
 @media(max-width:650px){
  body.loox-generator-no-topnav > header.lig-header .lig-head-start{gap:7px!important}
@@ -2114,15 +2114,15 @@ body.loox-gallery-workspace .loox-ai-workspace-tab.is-active{
 .loox-mobile-app-layer[hidden]{display:none!important}
 .loox-mobile-app-layer{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:flex-end;justify-content:center}
 .loox-mobile-app-scrim{position:absolute;inset:0;background:rgba(5,8,15,.67);backdrop-filter:blur(6px)}
-.loox-mobile-app-sheet{position:relative;z-index:1;width:min(560px,100%);max-height:min(84dvh,680px);overflow-y:auto;padding:12px 20px calc(22px + env(safe-area-inset-bottom,0px));background:linear-gradient(150deg,#101a2b,#080d16 72%);border:1px solid #344b69;border-bottom:0;border-radius:26px 26px 0 0;box-shadow:0 -16px 65px #000b;color:#f1f5f9;font-family:Inter,system-ui,sans-serif}
+.loox-mobile-app-sheet{position:relative;z-index:1;width:min(560px,100%);max-height:min(84dvh,680px);overflow-y:auto;padding:12px 20px calc(22px + env(safe-area-inset-bottom,0px));background:linear-gradient(150deg,#101a2b,#080d16 72%);border:1px solid #2a405c;border-bottom:0;border-radius:26px 26px 0 0;box-shadow:0 -16px 65px #000b;color:#f1f5f9;font-family:Inter,system-ui,sans-serif}
 .loox-mobile-app-handle{width:43px;height:5px;border-radius:999px;background:#665a70;margin:0 auto 17px}
 .loox-mobile-app-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 22px}
 .loox-mobile-app-heading small{color:#a6ccff;font:700 10px/1.4 Inter,system-ui,sans-serif;letter-spacing:.14em}
 .loox-mobile-app-heading h2{color:#fff;font:750 22px/1.4 Inter,system-ui,sans-serif;letter-spacing:-.03em;margin:2px 0 0}
-.loox-mobile-app-close{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;color:#d9eaff;background:#20314a;border:1px solid #344b69;border-radius:11px;font:400 25px/1 system-ui;cursor:pointer}
+.loox-mobile-app-close{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center;color:#d9eaff;background:#20314a;border:1px solid #2a405c;border-radius:11px;font:400 25px/1 system-ui;cursor:pointer}
 .loox-mobile-app-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:19px 12px;padding:0 0 8px}
 .loox-mobile-app-tile{display:flex;flex-direction:column;align-items:center;gap:9px;color:#f1f5f9;text-decoration:none;min-width:0;font:600 12px/1.4 Inter,system-ui,sans-serif}
-.loox-mobile-app-icon{width:clamp(66px,20vw,86px);height:clamp(66px,20vw,86px);border:1px solid #344b69;border-radius:20px;display:grid;place-items:center;box-shadow:inset 0 1px #fff1,0 7px 15px #0006;transition:transform .15s ease;background:#142033}
+.loox-mobile-app-icon{width:clamp(66px,20vw,86px);height:clamp(66px,20vw,86px);border:1px solid #2a405c;border-radius:20px;display:grid;place-items:center;box-shadow:inset 0 1px #fff1,0 7px 15px #0006;transition:transform .15s ease;background:#142033}
 .loox-mobile-app-icon svg{height:40%;width:40%;display:block}
 .loox-mobile-app-label{text-align:center;white-space:nowrap}
 .loox-mobile-app-tile:hover .loox-mobile-app-icon,.loox-mobile-app-tile:focus-visible .loox-mobile-app-icon{transform:translateY(-3px);border-color:#a6ccff}
@@ -2146,7 +2146,7 @@ body.loox-apps-open{overflow:hidden!important}
  #loox-sitewide-header .loox-sitewide-search{order:3!important;margin-left:0!important}
  #loox-sitewide-header .loox-mobile-app-trigger{order:4!important}
  #loox-sitewide-header .loox-sitewide-account{order:5!important;margin-left:0!important}
- .loox-mobile-app-trigger{display:grid!important;place-items:center!important;width:39px!important;height:39px!important;min-width:39px!important;flex:0 0 39px!important;padding:0!important;background:linear-gradient(145deg,#20314a,#101a2b)!important;border:1px solid #344b69!important;border-radius:12px!important;color:#d9eaff!important;cursor:pointer!important}
+ .loox-mobile-app-trigger{display:grid!important;place-items:center!important;width:39px!important;height:39px!important;min-width:39px!important;flex:0 0 39px!important;padding:0!important;background:linear-gradient(145deg,#20314a,#101a2b)!important;border:1px solid #2a405c!important;border-radius:12px!important;color:#d9eaff!important;cursor:pointer!important}
  .loox-mobile-app-trigger svg{width:19px!important;height:19px!important;display:block!important}
  .loox-mobile-app-trigger[aria-expanded=true]{background:#2a405c!important;border-color:#a6ccff!important}
  body.loox-sitewide-active .loox-ai-workspace-tabs{display:none!important}
@@ -2186,7 +2186,7 @@ body.loox-apps-open{overflow:hidden!important}
   width:min(355px,calc(100vw - 30px))!important;
   max-height:min(480px,70dvh)!important;
   margin-bottom:calc(13px + env(safe-area-inset-bottom,0px))!important;
-  border:1px solid #344b69!important;
+  border:1px solid #2a405c!important;
   border-radius:20px!important;
   padding:10px 15px 18px!important;
  }
@@ -2304,7 +2304,7 @@ body.loox-apps-open{overflow:hidden!important}
   display:grid!important;place-items:center!important;
   flex:0 0 38px!important;width:38px!important;min-width:38px!important;
   height:38px!important;min-height:38px!important;
-  padding:0!important;margin:0!important;border:1px solid #344b69!important;
+  padding:0!important;margin:0!important;border:1px solid #2a405c!important;
   border-radius:12px!important;background:#142033!important;color:#d9eaff!important;
   cursor:pointer!important;
  }
@@ -2357,7 +2357,7 @@ body.loox-apps-open{overflow:hidden!important}
   order:1!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important;
   height:38px!important;min-height:38px!important;
   margin:0!important;padding:0!important;
-  border:1px solid #344b69!important;border-radius:12px!important;
+  border:1px solid #2a405c!important;border-radius:12px!important;
   background:#142033!important;color:#d9eaff!important;
   transform:none!important;cursor:pointer!important;
  }
@@ -2517,7 +2517,7 @@ body.loox-apps-open{overflow:hidden!important}
   margin-inline:0!important;
   flex:none!important;
   padding:18px 20px calc(20px + env(safe-area-inset-bottom,0px))!important;
-  border:1px solid #344b69!important;
+  border:1px solid #2a405c!important;
   border-bottom:0!important;
   border-radius:24px 24px 0 0!important;
   background:#101a2b!important;
@@ -2673,6 +2673,6 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
 }
 
 /* LOOX Obsidian Blue: shared navigation without changing dimensions. */
-#loox-sitewide-header{background:#080d16f5!important;border-bottom-color:#233750!important}
+#loox-sitewide-header{background:#080d16f5!important;border-bottom-color:#20314a!important}
 #loox-sitewide-header .loox-sitewide-links a[aria-current=page]{background:#132b4a!important;color:#eaf4ff!important}
 #loox-sitewide-header .loox-sitewide-links a:focus-visible,#loox-sitewide-header button:focus-visible{outline-color:#22d3ee!important}

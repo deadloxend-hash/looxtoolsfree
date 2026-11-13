@@ -25,7 +25,7 @@
 .lig-body .loox-prompt-mode.is-active{background:#c6f1f8!important;color:#007ea2!important}
 .lig-body .loox-prompt-setting .lig-select-trigger,
 .lig-body .loox-prompt-setting select:not(.lig-native-select){background:rgba(241,245,249,.85)!important;color:#20314a!important;border:0!important;border-radius:10px!important}
-.lig-body .loox-prompt-setting .lig-select-chevron{color:#364c68!important}
+.lig-body .loox-prompt-setting .lig-select-chevron{color:#2a405c!important}
 .lig-body .lig-compose label{display:none!important}
 @media(max-width:680px){
  .lig-body .lig-compose-card{padding:12px!important;border-radius:17px!important}

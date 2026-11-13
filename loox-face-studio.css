@@ -29,19 +29,19 @@
 .loox-face-section h3{font-size:12px;letter-spacing:.25px;font-weight:780;color:#f1f5f9;margin:0}
 .loox-face-primary{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:12px 14px;border:0;border-radius:11px;color:#fff;background:linear-gradient(110deg,#60a5fa,#60a5fa);font-size:13px;font-weight:780;cursor:pointer;box-shadow:0 6px 20px #3b82f644}
 .loox-face-primary:disabled,.loox-face-tools button:disabled,.loox-face-mobile-bar button:disabled{opacity:.4;cursor:not-allowed}
-.loox-face-secondary{border:1px solid #364c68;border-radius:9px;background:#20314a;color:#f1f5f9;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.loox-face-secondary{border:1px solid #2a405c;border-radius:9px;background:#20314a;color:#f1f5f9;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer}
 .loox-face-secondary.active{border-color:#a6ccff;background:#2a405c}
 .loox-face-form-label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:680;color:#d9eaff}
 .loox-face-form-label output{color:#d9eaff;font-variant-numeric:tabular-nums}
 .loox-face-range{display:block;width:100%;height:28px;accent-color:#a6ccff;cursor:pointer}
 .loox-face-brush-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.loox-face-brush-presets button{border:1px solid #364c68;border-radius:10px;min-height:47px;background:#20314a;color:#d9eaff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;cursor:pointer}
+.loox-face-brush-presets button{border:1px solid #2a405c;border-radius:10px;min-height:47px;background:#20314a;color:#d9eaff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;cursor:pointer}
 .loox-face-brush-presets button[aria-pressed=true]{border-color:#a6ccff;color:#fff;background:#2a405c}
 .loox-face-brush-presets i{background:#f1f5f9;border-radius:50%;display:block}
 .loox-face-action-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .loox-face-save{grid-column:1/-1}
 .loox-face-status{font:600 12px/1.5 system-ui;padding:10px 13px;background:#142033;color:#c4d6ff;border:1px solid #2a405c;border-radius:9px;overflow-wrap:anywhere}
-.loox-face-status.error{color:#d7f2f7;background:#142033;border-color:#364c68}
+.loox-face-status.error{color:#d7f2f7;background:#142033;border-color:#2a405c}
 .loox-face-status.success{color:#bdf8e7;background:#142033;border-color:#2a405c}
 .loox-face-mobile-bar{display:none}
 .loox-face-sheet-backdrop{display:none}
@@ -68,7 +68,7 @@
  .loox-face-mobile-bar button.active{background:#2a405c;color:#fff}
  .loox-face-mobile-bar button.loox-face-auto-mobile{background:linear-gradient(130deg,#3b82f6,#60a5fa);color:#fff}
  .loox-face-mobile-bar button.loox-face-save-mobile{background:#2a405c;color:#fff}
- body.loox-face-ready .loox-face-tools{display:none!important;position:absolute!important;bottom:71px!important;left:4px!important;right:4px!important;top:auto!important;width:auto!important;max-width:none!important;max-height:min(55dvh,400px)!important;min-width:0!important;overflow:auto!important;z-index:85!important;box-shadow:0 -15px 40px #000c!important;border:1px solid #344b69!important;border-radius:18px!important;background:#142033!important;padding:13px!important}
+ body.loox-face-ready .loox-face-tools{display:none!important;position:absolute!important;bottom:71px!important;left:4px!important;right:4px!important;top:auto!important;width:auto!important;max-width:none!important;max-height:min(55dvh,400px)!important;min-width:0!important;overflow:auto!important;z-index:85!important;box-shadow:0 -15px 40px #000c!important;border:1px solid #2a405c!important;border-radius:18px!important;background:#142033!important;padding:13px!important}
  body.loox-face-ready .loox-face-tools.open{display:flex!important}
  body.loox-face-ready .loox-face-tools[data-active=brush] .loox-face-adjust-controls,
  body.loox-face-ready .loox-face-tools[data-active=adjust] .loox-face-brush-controls,

@@ -14,13 +14,13 @@ body.loox-creative-landing{background:#080d16;color:#fff;overflow-x:hidden}
 .creative-prompt-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:12px}
 .creative-prompt-actions>span{color:#9deaf3;white-space:nowrap}
 .creative-model-label{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-.creative-prompt select{min-width:0;max-width:250px;background:#20314a;color:#e5edf7;border:1px solid #344b69;border-radius:9px;padding:9px 11px;font:inherit;font-size:12px}
+.creative-prompt select{min-width:0;max-width:250px;background:#20314a;color:#e5edf7;border:1px solid #2a405c;border-radius:9px;padding:9px 11px;font:inherit;font-size:12px}
 .creative-prompt-actions button{margin-left:auto;display:flex;gap:22px;align-items:center;border:0;background:#c6eff5;color:#142033;border-radius:11px;padding:10px 16px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
 .creative-examples{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .creative-examples button{font:inherit;font-size:11px;border:1px solid #d9eaff40;border-radius:30px;background:#101a2b90;color:#d9eaff;padding:8px 13px;cursor:pointer}
 #creative-landing-status{color:#a6ccff;font-size:10px}
 .creative-art-credit{position:absolute;bottom:18px;left:24px;color:#a6ccff;font-size:8px;letter-spacing:.14em}
-.creative-motion{position:absolute;bottom:15px;right:20px;font:inherit;font-size:10px;background:#101a2bb8;color:#e5edf7;border:1px solid #344b69;border-radius:20px;padding:7px 12px;cursor:pointer}
+.creative-motion{position:absolute;bottom:15px;right:20px;font:inherit;font-size:10px;background:#101a2bb8;color:#e5edf7;border:1px solid #2a405c;border-radius:20px;padding:7px 12px;cursor:pointer}
 @media(max-width:650px){.loox-creative-landing .creative-landing{height:auto;min-height:calc(100dvh - var(--loox-sitewide-height,104px))}.creative-hero-content{padding:40px 0 60px;width:calc(100% - 28px)}.creative-hero-content h1{font-size:40px}.creative-prompt{padding:14px;margin-top:24px}.creative-prompt-actions{gap:9px}.creative-prompt select{max-width:170px}.creative-examples{gap:5px}.creative-examples button{font-size:10px}.creative-hero-art{object-position:65% center}.creative-art-credit{left:14px;font-size:7px}}
 
 @media(min-width:651px){body.loox-creative-landing{height:100dvh;overflow:hidden!important}.loox-creative-landing .creative-landing{height:calc(100dvh - var(--loox-sitewide-height,64px))!important;min-height:0}}

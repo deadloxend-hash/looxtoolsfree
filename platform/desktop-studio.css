@@ -11,7 +11,7 @@
  body.loox-studio.lig-body.loox-sitewide-active>main.lig-workspace{height:calc(100dvh - 64px)!important;min-height:0!important;max-height:calc(100dvh - 64px)!important;overflow:hidden!important}
  body.loox-studio.lig-body .lig-main.loox-sessions-layout,
  body.loox-studio.lig-body .lig-main.loox-sessions-collapsed{display:flex!important;flex-direction:column!important;height:100%!important;min-height:0!important;max-height:100%!important;overflow:hidden!important;padding:0 clamp(20px,4vw,64px)!important}
- body.loox-studio.lig-body .lig-main>.lig-content-scroll{flex:1 1 0!important;min-height:0!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px 12px!important;scroll-padding:16px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#344b69 transparent}
+ body.loox-studio.lig-body .lig-main>.lig-content-scroll{flex:1 1 0!important;min-height:0!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;padding:14px 12px!important;scroll-padding:16px;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#2a405c transparent}
  body.loox-studio.lig-body .lig-main>.lig-compose-wrap{position:relative!important;inset:auto!important;transform:none!important;flex:0 0 auto!important;order:3!important;width:100%!important;max-width:1000px!important;max-height:min(42dvh,370px)!important;margin:0 auto!important;padding:10px 0 16px!important;overflow:auto!important;background:transparent!important}
  body.loox-studio .loox-start-templates{flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain}
  body.loox-studio .loox-uc-links{flex:none!important;margin-top:14px!important;margin-bottom:0!important}

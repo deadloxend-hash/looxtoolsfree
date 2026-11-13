@@ -29,7 +29,7 @@ body.loox-new-navigation .loox-nav-logo-wrap{position:relative;z-index:105;flex:
 .loox-nav-logo-menu{
  position:absolute;top:calc(100% + 9px);left:0;min-width:240px;width:255px;
  max-height:min(76vh,580px);overflow:auto;display:grid;gap:2px;padding:10px;
- border:1px solid #364c68;border-radius:15px;
+ border:1px solid #2a405c;border-radius:15px;
  background:#101a2b;color:#f1f5f9;box-shadow:0 22px 70px #000c;z-index:150
 }
 .loox-nav-logo-menu[hidden]{display:none!important}

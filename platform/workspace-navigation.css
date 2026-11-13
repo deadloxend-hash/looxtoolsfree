@@ -112,7 +112,7 @@ body:not(.loox-studio).loox-uc.loox-conversations.lig-body .lig-compose-wrap .lo
 
 /* V6: Shared, readable LOOX workspace navigation and scalable line icons. */
 :root{--loox-ai-sidebar-width:252px}
-.loox-workspace-navigation{width:100%;min-width:0;gap:3px;padding:3px 0 12px;max-height:min(55dvh,480px);overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#344b69 transparent;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
+.loox-workspace-navigation{width:100%;min-width:0;gap:3px;padding:3px 0 12px;max-height:min(55dvh,480px);overflow-x:hidden;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#2a405c transparent;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif}
 .loox-workspace-navigation a.loox-workspace-link{display:flex;gap:11px;align-items:center;min-height:37px;padding:7px 11px;font:500 13px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;letter-spacing:-.012em;color:#d9eaff}
 .loox-workspace-navigation a.loox-workspace-link:hover,.loox-workspace-navigation a.loox-workspace-link[aria-current="page"]{color:#fff;background:#20314a}
 .loox-workspace-navigation .loox-workspace-icon{display:grid;flex:none;place-items:center;width:19px;height:19px;color:#a6ccff}
@@ -302,7 +302,7 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loo
  background:#142033!important;color:#fff!important;
 }
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:focus-visible:not([aria-current="page"]){
- background:#142033!important;outline:1px solid #344b69!important;outline-offset:-1px!important;
+ background:#142033!important;outline:1px solid #2a405c!important;outline-offset:-1px!important;
 }
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link[aria-current="page"],
 body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link[aria-current="page"]:hover{

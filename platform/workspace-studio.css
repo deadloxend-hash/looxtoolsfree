@@ -278,7 +278,7 @@ body.loox-studio .studio-content-tab{
  padding:9px 12px;cursor:pointer;transition:background .18s ease,color .18s ease;
 }
 body.loox-studio .studio-content-tab[aria-pressed=true]{
- background:linear-gradient(120deg,#364c68,#3b82f6);
+ background:linear-gradient(120deg,#2a405c,#3b82f6);
  color:#fff;box-shadow:0 2px 12px #0004;
 }
 body.loox-studio.studio-create-view .loox-start-templates{display:none!important}
@@ -302,14 +302,14 @@ body.loox-studio .studio-generation-intro h2{
 body.loox-studio .studio-explore-shortcut,
 body.loox-studio .studio-empty-explore{
  flex:none;min-height:32px;padding:7px 11px;border-radius:11px;
- background:#142033;color:#d9eaff;border:1px solid #344b69;
+ background:#142033;color:#d9eaff;border:1px solid #2a405c;
  font:600 11px/1.2 Inter,system-ui,sans-serif;cursor:pointer;
 }
 body.loox-studio .studio-creations-empty{
  display:grid;place-items:center;text-align:center;gap:10px;
  width:min(100%,540px);margin:20px auto;
  padding:30px 18px;border-radius:18px;
- border:1px dashed #344b69;background:#101a2b;
+ border:1px dashed #2a405c;background:#101a2b;
 }
 body.loox-studio .studio-creations-empty strong{font-size:16px;color:#f1f5f9}
 body.loox-studio .studio-creations-empty p{margin:0;font-size:12px;color:#60a5fa}
@@ -401,7 +401,7 @@ body.loox-studio .studio-frame-row{
 }
 body.loox-studio .studio-frame-thumb{
  display:grid;place-items:center;flex:0 0 50px;width:50px;height:50px;
- overflow:hidden;border:1px dashed #344b69;border-radius:10px;
+ overflow:hidden;border:1px dashed #2a405c;border-radius:10px;
  background:#142033;color:#a6ccff;cursor:pointer;padding:0;
 }
 body.loox-studio .studio-frame-thumb img{
@@ -425,7 +425,7 @@ body.loox-studio .studio-frame-text small{
 }
 body.loox-studio .studio-frame-change{
  flex:none;max-width:112px;min-height:31px;padding:6px 10px;
- border:1px solid #364c68;border-radius:9px;background:#142033;
+ border:1px solid #2a405c;border-radius:9px;background:#142033;
  color:#d9eaff;font:600 11px/1.2 Inter,system-ui,sans-serif;
  cursor:pointer;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;
 }
@@ -577,7 +577,7 @@ body.loox-studio .studio-budget-spec{
  display:inline-flex!important;align-items:center!important;justify-content:center!important;
  min-height:25px!important;height:25px!important;
  flex:none!important;padding:4px 8px!important;margin:0!important;
- border:1px solid #344b69!important;border-radius:8px!important;
+ border:1px solid #2a405c!important;border-radius:8px!important;
  background:#20314a!important;color:#d9eaff!important;
  font:650 10.5px/1 Inter,system-ui,sans-serif!important;
  cursor:pointer!important;white-space:nowrap!important;
@@ -635,7 +635,7 @@ body.loox-studio .loox-sheet .studio-select-toggle{
  display:flex!important;align-items:center!important;justify-content:space-between!important;
  width:100%!important;max-width:100%!important;min-height:45px!important;
  gap:10px!important;padding:10px 13px!important;
- border-radius:12px!important;border:1px solid #344b69!important;
+ border-radius:12px!important;border:1px solid #2a405c!important;
  background:linear-gradient(100deg,#142033,#142033)!important;
  color:#f1f5f9!important;text-align:left!important;cursor:pointer;
  box-shadow:inset 0 1px #ffffff0a!important;
@@ -661,7 +661,7 @@ body.loox-studio .loox-sheet .studio-select-panel{
  max-height:min(330px,44dvh)!important;overflow-y:auto!important;overflow-x:hidden!important;
  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));
  gap:8px!important;padding:10px!important;
- border:1px solid #344b69!important;border-radius:14px!important;
+ border:1px solid #2a405c!important;border-radius:14px!important;
  background:linear-gradient(160deg,#142033,#101a2b)!important;
  box-shadow:0 12px 32px #0006!important;
  overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;
@@ -682,7 +682,7 @@ body.loox-studio .loox-sheet .studio-select-option:not(:disabled):hover{
  background:#20314a!important;border-color:#60a5fa!important;
 }
 body.loox-studio .loox-sheet .studio-select-option[aria-selected="true"]{
- background:linear-gradient(130deg,#2a405c,#344b69)!important;
+ background:linear-gradient(130deg,#2a405c,#2a405c)!important;
  border-color:#a6ccff!important;
  box-shadow:inset 0 0 0 1px #a6ccff4a!important;color:#fff!important;
 }
@@ -789,7 +789,7 @@ body.loox-studio .loox-sheet .studio-asset-tabs{
 body.loox-studio .loox-sheet .studio-asset-tab{
  display:inline-flex!important;align-items:center!important;justify-content:center!important;
  flex:0 1 auto!important;min-height:39px!important;min-width:0!important;
- border:1px solid #364c68!important;border-radius:12px!important;
+ border:1px solid #2a405c!important;border-radius:12px!important;
  background:#142033!important;color:#d9eaff!important;
  padding:8px 13px!important;font:600 12px/1.2 Inter,system-ui,sans-serif!important;
  white-space:nowrap!important;
