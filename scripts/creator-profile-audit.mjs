@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 const root=process.env.LOOX_AUDIT_URL||'http://127.0.0.1:8765/';
 const me='11111111-1111-4111-8111-111111111111', other='22222222-2222-4222-8222-222222222222';
 const icon='data:image/svg+xml,%3Csvg%20xmlns="http://www.w3.org/2000/svg"%20width="400"%20height="230"%3E%3Crect%20width="400"%20height="230"%20fill="%235e3972"/%3E%3C/svg%3E';
+const portraitIcon='data:image/svg+xml,%3Csvg%20xmlns="http://www.w3.org/2000/svg"%20width="230"%20height="400"%3E%3Crect%20width="230"%20height="400"%20fill="%235e3972"/%3E%3C/svg%3E';
 const accountModule=[
  "export const state={user:{id:'"+me+"'},client:{from:()=>({insert:async()=>{window.__p.followed=true;return {data:{},error:null};},delete:()=>({eq:()=>({eq:async()=>{window.__p.followed=false;return {data:{},error:null};}})}),select:()=>({eq:()=>({order:()=>({range:async()=>({data:window.__replies,error:null})})})})})}};",
  "export function auth(){}",
@@ -31,28 +32,43 @@ try{
  browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 }
 let checks=0;
-async function profilePage(width,path){
+async function profilePage(width,path,portrait=false){
  const context=await browser.newContext({viewport:{width,height:850},reducedMotion:'reduce'});
  const page=await context.newPage();
  await page.addInitScript(({user,post})=>{
   window.__calls=[];window.__details=0;window.__connections=0;
   window.__p={user_id:user,username:'test_creator',display_name:'Test Creator',bio:'Creating a little magic with AI.',avatar_path:'test.webp',created_at:'2026-11-01T00:00:00Z',is_private:false,hide_connections:false,cover_key:'public/avatars/'+user+'/banner-test.webp',posts:1,followers:3,following:2,profile_location:'Somewhere creative',profile_website:'https://example.com',plan_badge:'Basic',pinned_post_id:null,followed:false};
-  window.__posts=[{id:post,creator_id:user,username:'test_creator',display_name:'Test Creator',avatar_path:'test.webp',caption:'A new AI landscape',created_at:'2026-11-09T00:00:00Z',media_type:'image',media_path:'test.webp',likes:3,comments:2,saved:false,liked:false}];window.__replies=[{id:'44444444-4444-4444-8444-444444444444',post_id:post,body:'Great work!',created_at:'2026-11-10T00:00:00Z'}];
+  window.__posts=[{id:post,creator_id:user,username:'test_creator',display_name:'Test Creator',avatar_path:'test.webp',caption:'A new AI landscape',shared_prompt:'A sample generation prompt',created_at:'2026-11-09T00:00:00Z',media_type:'image',media_path:'test.webp',likes:3,comments:2,saved:false,liked:false}];window.__replies=[{id:'44444444-4444-4444-8444-444444444444',post_id:post,body:'Great work!',created_at:'2026-11-10T00:00:00Z'}];
  },{user:path?'22222222-2222-4222-8222-222222222222':me,post:'33333333-3333-4333-8333-333333333333'});
  await page.route('**/platform/account.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:accountModule}));
- await page.route('**/platform/community.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:communityModule}));
+ await page.route('**/platform/community.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:portrait?communityModule.replace(icon,portraitIcon):communityModule}));
  await page.route('**/platform/profile-cloudflare.js?v=*',r=>r.fulfill({status:200,contentType:'text/javascript',body:cloudModule}));
  await page.route(/\/(loox-experience|loox-sitewide-nav)\.js\?/,r=>r.fulfill({status:200,contentType:'text/javascript',body:''}));
  await page.goto(root+'creator.html'+(path?'?id='+other:''),{waitUntil:'load'});
  await page.locator('.cx-name-line h2').waitFor({timeout:12000});
  assert.equal(await page.locator('.cx-name-line h2').innerText(),'Test Creator');checks++;
  assert.equal(await page.locator('.cx-post').count(),1);checks++;
+ const mediaFrame=page.locator('.cx-post .cx-media-frame').first();
+ await page.locator('.cx-post .cx-media-frame.cx-media-ready').waitFor({timeout:12000});
+ const bounds=await mediaFrame.boundingBox();
+ const targetRatio=portrait?230/400:400/230;
+ assert.ok(Math.abs(bounds.width/bounds.height-targetRatio)<.035,
+  'Image frame must preserve '+(portrait?'portrait':'landscape')+' dimensions, got '+(bounds.width/bounds.height));checks++;
+ const centerBounds=await page.locator('.cx-center').boundingBox();
+ assert.ok(bounds.width>=centerBounds.width*.94,'Artwork should fill the feed without a permanent avatar gutter');checks++;
+ assert.equal(await mediaFrame.evaluate(el=>getComputedStyle(el).borderTopWidth),'0px','No background frame border around artwork');checks++;
+ const smallPrompt=page.locator('.cx-post .cx-prompt');
+ assert.equal(await smallPrompt.evaluate(el=>getComputedStyle(el).borderTopWidth),'0px','Prompt should be an inline link without a large outlined box');checks++;
+ assert.ok((await smallPrompt.boundingBox()).height<38,'Collapsed prompt control too tall');checks++;
  assert.ok((await page.evaluate(()=>document.documentElement.scrollWidth))<=width+6,'Horizontal overflow at '+width);checks++;
  assert.equal(await page.locator('.cx-tab').count(),path?3:4);checks++;
  await page.getByRole('button',{name:'Replies',exact:true}).click();
  assert.equal(await page.locator('.cx-reply').count(),1);checks++;
  await page.getByRole('button',{name:'Media',exact:true}).click();
  assert.equal(await page.locator('.cx-media-tile').count(),1);checks++;
+ await page.locator('.cx-media-tile .cx-media-frame.cx-media-ready').waitFor({timeout:12000});
+ const mediaTile=await page.locator('.cx-media-tile .cx-media-frame').boundingBox();
+ assert.ok(Math.abs(mediaTile.width/mediaTile.height-targetRatio)<.035,'Media tab crops natural image orientation');checks++;
  await page.getByRole('button',{name:'Posts',exact:true}).click();
  assert.equal(await page.locator('.cx-post').count(),1);checks++;
  if(!path){
@@ -105,7 +121,8 @@ async function profilePage(width,path){
  await context.close();
 }
 try{
- await profilePage(393,false);
- await profilePage(1350,true);
- console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile double-tap likes, filled heart, comments, post dialogs, editing, deletion, pinning, privacy, desktop and mobile layout.');
+ await profilePage(393,false,true);
+ await profilePage(393,true,false);
+ await profilePage(1350,true,false);
+ console.log('PROFILE AUDIT PASS: '+checks+' checks: natural portrait/landscape image ratios, edge-to-edge feed, compact prompt, double-tap likes, post menus, desktop and mobile layout.');
 }catch(e){console.error('PROFILE AUDIT FAILED:',e);process.exitCode=1;}finally{await browser.close();}
