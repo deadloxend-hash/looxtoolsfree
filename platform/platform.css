@@ -327,3 +327,39 @@
 
 .lx-return-reward,.lx-header-reward{display:grid;gap:5px}.lx-return-reward>small,.lx-header-reward>small{font-size:10px;color:#a6ccff}.lx-reward-button{border:1px solid #60a5fa58;border-radius:10px;padding:8px 11px;background:#20314a;color:#f1f5f9;font-size:11px;line-height:1.3;cursor:pointer;white-space:nowrap}.lx-reward-button:disabled{opacity:.65;cursor:default}.lx-plan-badge{display:inline-flex;width:fit-content;align-items:center;padding:4px 9px;border:1px solid #60a5fa64;border-radius:20px;background:#60a5fa1a;color:#d9eaff;font-size:11px}.lx-profile-identity .lx-return-reward{margin-top:12px}.lx-header-reward>small{display:none}.lx-header-reward[hidden],.lx-return-reward[hidden]{display:none!important}
 @media(max-width:900px){.lx-header-reward{display:none!important}}
+
+/* Obsidian Blue polish: accessible shared interaction states */
+:root{
+  --loox-obsidian-bg:#080d16;
+  --loox-obsidian-surface:#101a2b;
+  --loox-obsidian-card:#142033;
+  --loox-obsidian-raised:#20314a;
+  --loox-obsidian-border:#2a405c;
+  --loox-obsidian-primary:#3b82f6;
+  --loox-obsidian-sky:#60a5fa;
+  --loox-obsidian-cyan:#22d3ee;
+  --loox-obsidian-text:#f1f5f9;
+  --loox-obsidian-muted:#9bb3d1;
+}
+.lx-shell{color-scheme:dark}
+.lx-shell :is(button,a,input,textarea,select,summary,[role="button"]):focus-visible,
+.lx-modal :is(button,a,input,textarea,select):focus-visible{
+  outline:2px solid var(--loox-obsidian-cyan);
+  outline-offset:3px;
+}
+.lx-shell :is(input,textarea,select):not([type="checkbox"]):not([type="radio"]){
+  accent-color:var(--loox-obsidian-sky);
+}
+.lx-shell :is(input,textarea,select):not([type="checkbox"]):not([type="radio"]):focus-visible{
+  border-color:var(--loox-obsidian-sky);
+}
+.lx-shell :is(.lx-button,.lx-close):not(:disabled){
+  transition:background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.lx-shell .lx-primary:not(:disabled):hover{
+  box-shadow:0 5px 22px rgba(59,130,246,.25);
+}
+.lx-shell ::selection{background:rgba(59,130,246,.42);color:#fff}
+@media (prefers-reduced-motion:reduce){
+  .lx-shell :is(.lx-button,.lx-close){transition:none!important}
+}
