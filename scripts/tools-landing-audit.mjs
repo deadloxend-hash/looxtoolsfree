@@ -39,7 +39,19 @@ async function test(width,height,screenName){
  assert.equal(cardCount,15,'All category should initially show 15 tools, got '+cardCount);checks++;
  assert.ok(await page.locator('#toolGrid .loox-card-cover').count()>=6,'Tool catalog should preserve artwork previews');checks++;
  // Browse from a category tile; there should be no dead navigation or filter.
+ console.log('LANDING NAV BEFORE QUICK',JSON.stringify(await page.evaluate(()=>({
+ width:innerWidth,drawer:document.querySelector('#loox-sitewide-drawer')?.className,
+ burger:document.querySelector('.loox-sitewide-burger')?.getAttribute('aria-expanded'),
+ matchesDesktop:matchMedia('(min-width:901px)').matches,
+ bodyClasses:document.body.className
+}))));
  await page.locator('.quick-card[data-quick-cat="Video"]').click();
+ console.log('LANDING NAV AFTER QUICK',JSON.stringify(await page.evaluate(()=>({
+ width:innerWidth,drawer:document.querySelector('#loox-sitewide-drawer')?.className,
+ burger:document.querySelector('.loox-sitewide-burger')?.getAttribute('aria-expanded'),
+ matchesDesktop:matchMedia('(min-width:901px)').matches,
+ bodyClasses:document.body.className
+}))));
  await page.locator('#filters [data-cat="Video"].active').waitFor({timeout:7000});
  assert.ok((await page.locator('#toolGrid .tool-card').count())>0,'Video category is empty');checks++;
  assert.match(page.url(),/category=Video/);checks++;
