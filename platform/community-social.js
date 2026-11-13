@@ -287,13 +287,14 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
    const fresh=await cloudRequest(this.state,'post',{query:{id:post.id}});if(!fresh)throw Error('This post is no longer public.');
-   const d=modal('');d.classList.add('community-viewer','loox-viewer-media-first');d.setAttribute('aria-label','Community post');d.querySelector('.community-dialog-head h2')?.remove();const status=e('p','community-note'),stage=e('div','community-viewer-stage'),panel=e('section','community-viewer-info'),media=e(post.media_type==='video'?'video':'img');media.className='community-detail-media';
+   const d=modal('');try{d.classList.add('community-viewer','loox-viewer-media-first');d.setAttribute('aria-label','Community post');d.querySelector('.community-dialog-head h2')?.remove();const status=e('p','community-note'),stage=e('div','community-viewer-stage'),panel=e('section','community-viewer-info'),media=e(post.media_type==='video'?'video':'img');media.className='community-detail-media';
    const fail=err=>status.textContent=err.message;
    const mobileCommunity=location.pathname.split('/').pop()==='community.html'&&matchMedia('(max-width:700px)').matches&&typeof this.mobileComments==='function'&&typeof this.mobileDetails==='function';
    media.src=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});if(post.media_type==='video'){media.controls=true;media.playsInline=true;media.preload='metadata';trackMeaningfulView(media,post,this.state,count=>status.textContent=count+' views');}else{media.alt=post.caption;media.tabIndex=0;media.title='Click to zoom';const zoom=()=>media.classList.toggle('is-zoomed');media.addEventListener('click',zoom);media.addEventListener('keydown',event=>{if(event.key==='Enter')zoom();});}
    const index=this.posts?.findIndex(p=>p.id===post.id)??-1;
    const next=delta=>{const p=this.posts?.[index+delta];if(p){d.close();return this.details(p);}};
-   if(index>0)controls.append(a('← Previous',()=>next(-1),'community-button',fail));if(index>=0&&index<this.posts.length-1)controls.append(a('Next →',()=>next(1),'community-button',fail));
+   // Previous and next are available inside the three-dot menu below. Do not
+   // reference the removed viewer toolbar; doing so leaves an empty modal.
    let touchX;stage.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});stage.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>80&&!media.classList.contains('is-zoomed'))Promise.resolve(next(delta<0?1:-1)).catch(fail);},{passive:true});
    d.addEventListener('close',()=>{if(post.media_type==='video'){media.pause();media.removeAttribute('src');media.load();}});stage.append(media);
    const toast=e('p','loox-viewer-toast');toast.setAttribute('role','status');toast.hidden=true;stage.append(toast);
@@ -316,7 +317,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    const creatorRow=e('div','loox-social-creator-row');
    creatorRow.append(creator);
    if(this.state.user?.id!==post.creator_id){
-    const summary=await cloudRequest(this.state,'profile',{query:{id:post.creator_id}});
+    const summary=await cloudRequest(this.state,'profile',{query:{id:post.creator_id}}).catch(()=>null);
     let followed=!!summary?.followed;
     const follow=a(followed?'Following':'Follow',async()=>{
      if(!this.state.user)return this.auth('login');follow.disabled=true;
@@ -473,7 +474,11 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    // from the three-dot menu, rather than filling the initial post viewer.
    d.scrollTop=0;
    requestAnimationFrame(()=>{if(d.open){d.scrollTop=0;stage.scrollTop=0;}});
-   
+   }catch(error){
+    // A failed media/profile request must never strand an empty modal/backdrop.
+    if(d.open)d.close();
+    throw error;
+   }
   },
   modelName(operation){const model=this.state.config?.models?.find(m=>m.operation===operation)||this.state.config?.videoModels?.find(m=>operation===m.operation||operation?.startsWith(m.operation+'_'));return model?.name||(operation==='generate'?'FLUX.1 Schnell':operation==='generate_video'?'Wan 2.1 Local':operation?.replace(/^(generate_|video_)/,'').replaceAll('_',' ')||'Model metadata unavailable');}
  });
