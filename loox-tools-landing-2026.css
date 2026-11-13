@@ -1,0 +1,171 @@
+/* LOOX Tools landing page — editorial discovery redesign.
+   Scoped to index.html; do not change editor pages or their existing artwork. */
+body.loox-tools-landing{--lt-purple:#b28aff;--lt-pink:#ed86b8;--lt-muted:#afa7be;--lt-border:color-mix(in srgb,var(--line) 80%,transparent)}
+.loox-tools-landing [hidden]{display:none!important}
+.loox-tools-landing .hero{padding:clamp(54px,7vw,100px) 0 clamp(42px,6vw,80px)!important;background:
+ radial-gradient(ellipse at 80% 26%,rgba(137,82,236,.28),transparent 40%),
+ radial-gradient(ellipse at 10% 95%,rgba(196,75,157,.14),transparent 36%),
+ linear-gradient(125deg,#0d0c17,#171123 58%,#130f21)!important;
+ color:#f8f4ff;isolation:isolate;overflow:hidden;min-height:0}
+.loox-tools-landing .hero:before{width:690px;height:690px;right:-290px;top:-340px;border-color:#bc9fff21;box-shadow:0 0 0 60px #bc9fff07,0 0 0 120px #bc9fff05}
+.loox-tools-landing .hero:after{content:"";position:absolute;left:5%;right:5%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,#d6b8ff59,transparent);pointer-events:none}
+.loox-tools-landing .hero-layout{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr);align-items:center;gap:clamp(28px,5vw,80px)}
+.loox-tools-landing .hero-content{position:relative;z-index:2;min-width:0}
+.loox-tools-landing .eyebrow{background:#ffffff0e!important;border:1px solid #cdb6ff3b!important;color:#dac4ff!important;min-height:32px;padding:7px 12px;font-size:10px;font-weight:800;letter-spacing:.13em}
+.loox-tools-landing .eyebrow-dot{background:#ca93ff;box-shadow:0 0 0 5px #a25fff20,0 0 13px #b184ff}
+.loox-tools-landing .hero h1{max-width:700px;margin:20px 0 18px;font-size:clamp(44px,5.9vw,83px);letter-spacing:-.066em;line-height:1.02;font-weight:850;text-wrap:balance;color:#fff!important}
+.loox-tools-landing .hero h1 .accent{display:inline;background:linear-gradient(105deg,#d9a4ff 0%,#b88dff 50%,#f18bc0 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.loox-tools-landing .hero-copy{max-width:530px;margin:0 0 26px;font-size:clamp(14px,1.4vw,17px);line-height:1.65;color:#beb6ce!important}
+.loox-tools-landing .lt-hero-actions{display:flex;gap:11px;flex-wrap:wrap;align-items:center}
+.loox-tools-landing .lt-action{display:inline-flex;align-items:center;justify-content:center;gap:13px;min-height:50px;padding:13px 21px;border-radius:13px;text-decoration:none;font-size:13px;font-weight:800;letter-spacing:-.01em;border:1px solid transparent;transition:transform .2s,box-shadow .2s,border-color .2s}
+.loox-tools-landing .lt-action:hover{transform:translateY(-2px)}
+.loox-tools-landing .lt-action-primary{background:linear-gradient(110deg,#b27cf5,#da83e9);color:#1a1023;border-color:#d89bfc;box-shadow:0 9px 27px #a664f22d}
+.loox-tools-landing .lt-action-primary:hover{box-shadow:0 12px 32px #be79fa58}
+.loox-tools-landing .lt-action-secondary{background:#ffffff10;border-color:#ab91cf52;color:#f1e9ff}
+.loox-tools-landing .lt-action-secondary:hover{border-color:#e2bdff;background:#ffffff19}
+.loox-tools-landing .lt-hero-picks{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:24px;max-width:610px}
+.loox-tools-landing .lt-picks-label{color:#aaa0bb;font-size:11px;font-weight:700;margin-right:4px}
+.loox-tools-landing .lt-hero-picks a{display:inline-flex;align-items:center;gap:5px;text-decoration:none;color:#e4d9f3;font-size:10.5px;line-height:1.2;font-weight:650;background:#ffffff0b;border:1px solid #ffffff1c;border-radius:30px;padding:8px 10px;transition:background .18s,border-color .18s}
+.loox-tools-landing .lt-hero-picks a:hover{background:#ffffff1e;border-color:#b187ed88}
+.loox-tools-landing .hero-note{gap:13px 18px;margin-top:23px;color:#a69db6!important;font-size:10.5px}
+.loox-tools-landing .note-check{color:#cba0ff}
+.loox-tools-landing .lt-showcase{position:relative;display:flex;align-items:center;justify-content:center;min-height:425px;width:100%;padding:14px 22px 28px 8px}
+.loox-tools-landing .lt-showcase:before{content:"";position:absolute;inset:4% 3% 10% 8%;background:radial-gradient(ellipse,#bd65f43a,transparent 69%);filter:blur(36px);pointer-events:none}
+.loox-tools-landing .lt-showcase-main{position:relative;display:block;width:min(100%,490px);aspect-ratio:1.17;overflow:hidden;border:1px solid #d7c0ff61;border-radius:24px;box-shadow:0 22px 72px #0009,0 0 0 7px #ffffff07;text-decoration:none;background:linear-gradient(135deg,#241931,#39224a)}
+.loox-tools-landing .lt-showcase-main img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .45s ease}
+.loox-tools-landing .lt-showcase-main:hover img{transform:scale(1.045)}
+.loox-tools-landing .lt-showcase-main:after{content:"";position:absolute;inset:20% 0 0;background:linear-gradient(0deg,#100b1eea,transparent 72%);pointer-events:none}
+.loox-tools-landing .lt-showcase-copy{position:absolute;inset:auto 22px 23px;z-index:2;display:grid;gap:6px}
+.loox-tools-landing .lt-showcase-copy small{font-size:10px;font-weight:800;letter-spacing:.12em;color:#e3c7ff;text-transform:uppercase}
+.loox-tools-landing .lt-showcase-copy strong{font-size:clamp(25px,2.9vw,38px);font-weight:850;letter-spacing:-.045em;line-height:1.05;color:#fff}
+.loox-tools-landing .lt-showcase-copy span{font-size:11px;color:#e8dbf4}
+.loox-tools-landing .lt-showcase-float{position:absolute;z-index:3;bottom:3px;right:0;display:flex;align-items:center;gap:9px;width:min(56%,242px);padding:9px;background:#20162aec;border:1px solid #b697d578;border-radius:16px;text-decoration:none;color:#fff;box-shadow:0 12px 36px #0007;backdrop-filter:blur(14px)}
+.loox-tools-landing .lt-showcase-float img{width:63px;height:65px;flex:0 0 63px;border-radius:9px;object-fit:cover}
+.loox-tools-landing .lt-showcase-float span{display:grid;gap:4px;min-width:0}
+.loox-tools-landing .lt-showcase-float strong{font-size:12px;line-height:1.2}
+.loox-tools-landing .lt-showcase-float small{color:#cfbedc;font-size:10px;line-height:1.25}
+.loox-tools-landing .lt-showcase-badge{position:absolute;z-index:3;right:5px;top:0;background:#271936e8;border:1px solid #b995e076;border-radius:999px;padding:10px 14px;color:#e5d2fa;font-size:10px;font-weight:800;box-shadow:0 8px 24px #0005}
+.loox-tools-landing .trust-strip{background:var(--paper);border-bottom:1px solid var(--line)}
+.loox-tools-landing .trust-inner{display:flex;justify-content:space-between;gap:12px 20px;min-height:65px;padding-block:15px;color:var(--muted);font-weight:750;font-size:11px}
+.loox-tools-landing .trust-inner span{gap:7px}
+.loox-tools-landing .trust-inner b{font-size:14px;color:var(--purple)}
+.loox-tools-landing .lx-ai-dashboard-home{margin-top:0!important}
+.loox-tools-landing .loox-featured{padding:clamp(38px,5vw,66px) 0 12px}
+.loox-tools-landing .loox-featured-head{max-width:690px;margin:0 0 22px}
+.loox-tools-landing .loox-featured-head span,.loox-tools-landing .kicker{font-size:10px;letter-spacing:.14em;font-weight:850;color:var(--purple)}
+.loox-tools-landing .loox-featured-head h2{font-size:clamp(28px,3.8vw,42px);line-height:1.1;letter-spacing:-.045em;margin:7px 0 9px}
+.loox-tools-landing .loox-featured-head p{font-size:13px;line-height:1.6;color:var(--muted);margin:0}
+.loox-tools-landing .loox-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.loox-tools-landing .loox-featured-card{display:flex;min-width:0;min-height:0;flex-direction:column;padding:10px 10px 16px;border-radius:20px;border:1px solid var(--line);background:var(--white);overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s}
+.loox-tools-landing .loox-featured-card:hover{border-color:var(--purple);box-shadow:var(--shadow)}
+.loox-tools-landing .loox-featured-art{display:block;width:100%;height:auto;aspect-ratio:1.7;overflow:hidden;border-radius:13px;background:#251c31}
+.loox-tools-landing .loox-featured-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center;transition:transform .35s ease}
+.loox-tools-landing .loox-featured-card:hover .loox-featured-art img{transform:scale(1.045)}
+.loox-tools-landing .loox-featured-card strong{font-size:16px;margin:14px 7px 5px;font-weight:800;letter-spacing:-.025em}
+.loox-tools-landing .loox-featured-card small{font-size:11px;line-height:1.5;margin:0 7px 12px;color:var(--muted)}
+.loox-tools-landing .loox-featured-card b{font-size:11px;margin:auto 7px 0;color:var(--purple);font-weight:800}
+.loox-tools-landing .section{padding:clamp(30px,4.5vw,54px) 0}
+.loox-tools-landing .section-head{margin-bottom:20px}
+.loox-tools-landing .section-head h2{font-size:clamp(25px,3.2vw,35px);line-height:1.18;letter-spacing:-.035em}
+.loox-tools-landing .section-head p{font-size:12px}
+.loox-tools-landing .quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.loox-tools-landing .quick-card{display:flex;min-height:142px;flex-direction:column;justify-content:space-between;gap:16px;padding:17px;border-radius:17px;border:1px solid var(--line);background:var(--white);box-shadow:none}
+.loox-tools-landing .quick-card:after{width:140px;height:140px;top:-80px;right:-80px;background:var(--wash,#be9cff33);opacity:.26}
+.loox-tools-landing .quick-card strong{font-size:15px;font-weight:800;letter-spacing:-.025em}
+.loox-tools-landing .quick-card small{display:block;margin-top:5px;color:var(--muted);font-size:11px;line-height:1.4}
+.loox-tools-landing .quick-icon{width:42px;height:42px;border-radius:13px;background:var(--icon-bg,#ac82ef20);color:var(--icon-color,var(--purple));font-size:20px}
+.loox-tools-landing .quick-arrow{font-size:19px;right:17px;bottom:14px}
+.loox-tools-landing .quick-card:hover{transform:translateY(-3px);border-color:var(--purple);box-shadow:var(--shadow)}
+.loox-tools-landing .personal-section{padding:8px 0 22px}
+.loox-tools-landing .personal-section .section-head h2{font-size:20px}
+.loox-tools-landing .explore-section{padding-top:36px}
+.loox-tools-landing .explore-panel{padding:clamp(20px,3vw,36px);border-radius:22px;background:var(--white);border-color:var(--line)}
+.loox-tools-landing .explore-title-row{margin-bottom:15px}
+.loox-tools-landing .explore-title-row h2{font-size:clamp(28px,3.6vw,40px);line-height:1.12;letter-spacing:-.04em}
+.loox-tools-landing .explore-title-row p{font-size:12px;line-height:1.6}
+.loox-tools-landing .loox-home-hubs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 18px}
+.loox-tools-landing .loox-home-hubs a{font-size:11px;min-height:36px;padding:8px 12px;border:1px solid var(--line);color:var(--ink);border-radius:30px;background:var(--paper);font-weight:750}
+.loox-tools-landing .loox-home-hubs a:hover{border-color:var(--purple)}
+.loox-tools-landing .filters{display:flex;gap:7px;flex-wrap:nowrap;overflow-x:auto;padding:5px 1px 12px;margin:0 0 13px;scrollbar-width:none}
+.loox-tools-landing .filters::-webkit-scrollbar{display:none}
+.loox-tools-landing .filter{flex:0 0 auto;min-height:38px;padding:8px 13px;font-size:11px;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:30px}
+.loox-tools-landing .filter.active{background:var(--purple);border-color:var(--purple);color:#170d26;box-shadow:0 5px 14px #ac7af137}
+.loox-tools-landing .tool-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.loox-tools-landing .tool-card{display:flex;flex-direction:column;padding:9px 9px 13px!important;min-height:0;border-radius:16px;background:var(--paper);border:1px solid var(--line);transition:transform .22s,border-color .22s,box-shadow .22s}
+.loox-tools-landing .tool-card:hover{transform:translateY(-3px);border-color:var(--purple);box-shadow:var(--shadow)}
+.loox-tools-landing .tool-card .tool-main{display:flex;flex-direction:column;align-items:stretch;flex:1;gap:0;min-width:0}
+.loox-tools-landing .tool-card .loox-card-cover{display:block!important;flex:0 0 auto;width:100%!important;height:auto!important;aspect-ratio:1.62!important;object-fit:cover!important;border-radius:11px!important;margin:0 0 11px!important;background:linear-gradient(140deg,#392b52,#4b345d)}
+.loox-tools-landing .tool-card .tool-icon{width:37px;height:37px;flex:none;margin:0 0 8px;border-radius:11px}
+.loox-tools-landing .tool-copy{display:flex;flex:1;align-items:flex-start;flex-direction:column;padding:0 3px 25px!important}
+.loox-tools-landing .tool-copy h3{font-size:13px;line-height:1.3;letter-spacing:-.01em;margin:0 0 6px}
+.loox-tools-landing .tool-copy p{font-size:10.5px;line-height:1.5;margin:0 0 10px;color:var(--muted)}
+.loox-tools-landing .tool-meta{margin:auto 0 0}
+.loox-tools-landing .category-tag,.loox-tools-landing .mode-tag{font-size:9px;padding:4px 7px}
+.loox-tools-landing .favorite-btn{right:11px;bottom:10px}
+.loox-tools-landing .result-count{font-size:11px;color:var(--muted)}
+.loox-tools-landing .privacy-card{margin-top:25px;border-radius:19px}
+.loox-tools-landing .loox-cta-section{padding:30px 0 58px}
+.loox-tools-landing .loox-cta-card{border-radius:25px}
+.loox-tools-landing .loox-cta-card h2{font-size:clamp(27px,4.2vw,43px)}
+.loox-tools-landing .footer{margin-top:0}
+.loox-tools-landing a:focus-visible,.loox-tools-landing button:focus-visible{outline:3px solid #bb94fc;outline-offset:3px}
+@media(max-width:960px){
+ .loox-tools-landing .hero-layout{grid-template-columns:1fr 1fr;gap:24px}
+ .loox-tools-landing .hero h1{font-size:clamp(40px,5vw,60px)}
+ .loox-tools-landing .lt-showcase{min-height:340px}
+ .loox-tools-landing .quick-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .loox-tools-landing .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .loox-tools-landing .hero{padding:40px 0 35px!important}
+ .loox-tools-landing .hero-layout{grid-template-columns:1fr;gap:26px}
+ .loox-tools-landing .hero h1{max-width:610px;font-size:clamp(39px,8.2vw,60px);margin:17px 0 14px;letter-spacing:-.055em}
+ .loox-tools-landing .hero-copy{max-width:580px;font-size:14px;line-height:1.6;margin-bottom:20px}
+ .loox-tools-landing .lt-showcase{max-width:570px;margin:auto;padding:8px 18px 18px 0;min-height:0}
+ .loox-tools-landing .lt-showcase-main{aspect-ratio:1.55;border-radius:19px}
+ .loox-tools-landing .lt-showcase-copy{inset:auto 17px 18px}
+ .loox-tools-landing .lt-showcase-copy strong{font-size:28px}
+ .loox-tools-landing .lt-showcase-float{right:0;bottom:0;width:52%;padding:7px;border-radius:12px}
+ .loox-tools-landing .lt-showcase-float img{width:47px;height:48px;flex-basis:47px}
+ .loox-tools-landing .lt-showcase-float strong{font-size:11px}
+ .loox-tools-landing .lt-showcase-badge{padding:7px 10px;font-size:9px}
+ .loox-tools-landing .trust-inner{justify-content:flex-start;gap:11px 22px;font-size:10px}
+ .loox-tools-landing .loox-featured-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;padding:2px 2px 13px;scrollbar-width:none}
+ .loox-tools-landing .loox-featured-grid::-webkit-scrollbar{display:none}
+ .loox-tools-landing .loox-featured-card{scroll-snap-align:start;flex:0 0 min(78vw,320px)}
+ .loox-tools-landing .loox-featured-art{aspect-ratio:1.58}
+ .loox-tools-landing .loox-featured{padding-top:34px}
+ .loox-tools-landing .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .loox-tools-landing .quick-card{min-height:134px;padding:14px}
+ .loox-tools-landing .quick-card strong{font-size:13px}
+ .loox-tools-landing .quick-card small{font-size:10px}
+ .loox-tools-landing .tool-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .loox-tools-landing .explore-panel{padding:15px}
+ .loox-tools-landing .tool-card .loox-card-cover{aspect-ratio:1.25!important}
+ .loox-tools-landing .loox-cta-section{padding-bottom:40px}
+}
+@media(max-width:430px){
+ .loox-tools-landing .hero h1{font-size:clamp(36px,9.25vw,43px);line-height:1.07}
+ .loox-tools-landing .lt-hero-actions{gap:8px}
+ .loox-tools-landing .lt-action{min-height:45px;padding:11px 15px;font-size:11.5px;gap:7px;border-radius:11px}
+ .loox-tools-landing .lt-hero-picks{gap:6px;margin-top:17px}
+ .loox-tools-landing .lt-picks-label{width:100%}
+ .loox-tools-landing .lt-hero-picks a{font-size:10px;padding:7px 9px}
+ .loox-tools-landing .hero-note{gap:8px 13px;font-size:9.5px;margin-top:16px}
+ .loox-tools-landing .lt-showcase-main{aspect-ratio:1.45}
+ .loox-tools-landing .lt-showcase-copy strong{font-size:24px}
+ .loox-tools-landing .lt-showcase-float{width:53%}
+ .loox-tools-landing .quick-grid{gap:9px}
+ .loox-tools-landing .quick-card{min-height:120px}
+ .loox-tools-landing .quick-icon{width:36px;height:36px;border-radius:10px;font-size:18px}
+ .loox-tools-landing .tool-grid{gap:9px}
+ .loox-tools-landing .tool-card{padding:8px!important;border-radius:13px}
+ .loox-tools-landing .tool-copy h3{font-size:12px}
+ .loox-tools-landing .tool-copy p{font-size:10px}
+ .loox-tools-landing .tool-card .tool-icon{width:32px;height:32px;font-size:16px}
+ .loox-tools-landing .category-tag,.loox-tools-landing .mode-tag{font-size:8px}
+ .loox-tools-landing .explore-title-row h2{font-size:27px}
+}
+@media(prefers-reduced-motion:reduce){
+ .loox-tools-landing .lt-action,.loox-tools-landing .lt-showcase-main img,.loox-tools-landing .loox-featured-card,.loox-tools-landing .loox-featured-art img,.loox-tools-landing .tool-card{transition:none!important;transform:none!important}
+}
