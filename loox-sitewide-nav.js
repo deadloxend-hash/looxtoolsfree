@@ -10,9 +10,9 @@
  // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.
  // AI Audio currently links to the Audio-filtered tools listing, not an audio generator.
  const hasSessionHistory=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page);
- // Six AI navigation tabs must start with a closed sidebar on every visit,
+ // Marketing All Tools landing and creator tabs start with a closed sidebar;
  // whether opened by refresh, a tab switch, or a desktop breakpoint change.
- const closedByDefaultTabs=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html','community.html','trending.html','templates.html'].includes(page);
+ const closedByDefaultTabs=['index.html','ai-chat.html','ai-text-to-image.html','ai-video-generator.html','community.html','trending.html','templates.html'].includes(page);
  if(hasSessionHistory)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
