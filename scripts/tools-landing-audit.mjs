@@ -52,6 +52,13 @@ async function test(width,height,screenName){
  assert.ok(await page.locator('#favGrid .personal-card').count()>0,'Saved favorite not shown');checks++;
  assert.equal(await page.locator('a.loox-featured-card[href="photo-editor.html"]').count(),1,'Editor cover card missing');checks++;
  const overflow=await page.evaluate(()=>({page:document.documentElement.scrollWidth,body:document.body.scrollWidth,viewport:window.innerWidth}));
+ if(Math.max(overflow.page,overflow.body)>overflow.viewport+7){
+ const offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>{
+  const r=el.getBoundingClientRect(),css=getComputedStyle(el);
+  return r.right>innerWidth+10&&r.width>30&&css.display!=='none'&&css.visibility!=='hidden';
+ }).slice(0,25).map(el=>({tag:el.tagName,class:el.className?.toString().slice(0,100),width:Math.round(el.getBoundingClientRect().width),right:Math.round(el.getBoundingClientRect().right),position:getComputedStyle(el).position})));
+ console.log('OVERFLOW DEBUG',JSON.stringify({width,overflow,offenders}));
+}
  assert.ok(Math.max(overflow.page,overflow.body)<=overflow.viewport+7,'Horizontal page overflow: '+JSON.stringify(overflow));checks++;
  assert.deepEqual(errors,[],'Page JS errors');checks++;
  await page.goto(ROOT+'index.html?category=PDF#tools',{waitUntil:'domcontentloaded'});
