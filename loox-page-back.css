@@ -4,19 +4,19 @@
  justify-content:center!important;gap:6px!important;flex:0 0 auto!important;
  min-width:34px!important;height:35px!important;min-height:35px!important;
  margin:0 9px 0 0!important;padding:0 10px!important;
- border:1px solid #494153!important;border-radius:10px!important;
- background:#211e29!important;color:#ece6f5!important;
+ border:1px solid #2a405c!important;border-radius:10px!important;
+ background:#142033!important;color:#f1f5f9!important;
  box-shadow:none!important;font:700 12px/1 system-ui,sans-serif!important;
  white-space:nowrap!important;text-decoration:none!important;
  cursor:pointer!important;z-index:30!important;
 }
-#loox-page-back.loox-page-back:hover{border-color:#8b70b4!important;background:#31283d!important;color:#fff!important}
-#loox-page-back.loox-page-back:focus-visible{outline:2px solid #c5a1ff!important;outline-offset:2px!important}
+#loox-page-back.loox-page-back:hover{border-color:#7d9bbd!important;background:#20314a!important;color:#fff!important}
+#loox-page-back.loox-page-back:focus-visible{outline:2px solid #a6ccff!important;outline-offset:2px!important}
 #loox-page-back .loox-page-back-arrow{font:400 27px/1 system-ui,sans-serif!important;transform:translateY(-1px)}
 #loox-page-back .loox-page-back-label{font:700 12px/1 system-ui,sans-serif!important}
 #loox-page-back.loox-page-back-floating{
  position:fixed!important;left:12px!important;top:calc(env(safe-area-inset-top,0px) + 12px)!important;
- z-index:999!important;box-shadow:0 5px 16px #0503078c!important;
+ z-index:999!important;box-shadow:0 5px 16px #05080f8c!important;
 }
 /* Do not change existing editor header sizes, flex wrapping, or scroll behavior. */
 header:has(> #loox-page-back),header .lig-head-start:has(> #loox-page-back),

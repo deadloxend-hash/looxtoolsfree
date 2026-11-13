@@ -3,11 +3,11 @@
 .loox-face-main .hero{margin:0}
 .loox-face-main .hero h1{font-size:clamp(23px,3vw,39px);margin:0 0 6px}
 .loox-face-main .hero p{color:#aeb6cb;max-width:800px}
-.loox-face-workspace{flex:1;min-height:420px;margin:0!important;padding:clamp(12px,1.4vw,22px)!important;display:flex;flex-direction:column;gap:12px;position:relative;overflow:visible;background:#121521;border:1px solid #30344a;border-radius:20px;box-shadow:0 22px 65px #0004}
-.loox-face-upload{min-height:390px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;cursor:pointer;border:2px dashed #6b52b7;border-radius:15px;background:radial-gradient(circle at 50% 32%,#4a306d66,transparent 55%),#0c101a;padding:35px 20px}
-.loox-face-upload:focus-visible{outline:3px solid #b6a0ff;outline-offset:3px}
-.loox-face-upload.is-dragging{border-color:#e48aff;background:#392145}
-.loox-face-upload .loox-face-upload-icon{display:grid;place-items:center;background:linear-gradient(130deg,#c055f7,#6457e8);color:#fff;width:70px;height:70px;border-radius:23px;font-size:32px;box-shadow:0 14px 32px #6c36bb66}
+.loox-face-workspace{flex:1;min-height:420px;margin:0!important;padding:clamp(12px,1.4vw,22px)!important;display:flex;flex-direction:column;gap:12px;position:relative;overflow:visible;background:#101a2b;border:1px solid #2a405c;border-radius:20px;box-shadow:0 22px 65px #0004}
+.loox-face-upload{min-height:390px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;text-align:center;cursor:pointer;border:2px dashed #3b82f6;border-radius:15px;background:radial-gradient(circle at 50% 32%,#2a405c66,transparent 55%),#080d16;padding:35px 20px}
+.loox-face-upload:focus-visible{outline:3px solid #a6ccff;outline-offset:3px}
+.loox-face-upload.is-dragging{border-color:#a6ccff;background:#20314a}
+.loox-face-upload .loox-face-upload-icon{display:grid;place-items:center;background:linear-gradient(130deg,#60a5fa,#60a5fa);color:#fff;width:70px;height:70px;border-radius:23px;font-size:32px;box-shadow:0 14px 32px #3b82f666}
 .loox-face-upload strong{font-size:clamp(17px,2.1vw,24px);color:#fff}
 .loox-face-upload p{color:#acb3ca;font-size:13px;line-height:1.6}
 .loox-face-upload input{display:none}
@@ -15,34 +15,34 @@
 .loox-face-editor{display:flex;flex-direction:column;flex:1;min-height:0;gap:10px}
 .loox-face-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:38px}
 .loox-face-topbar>span{font-size:12px;font-weight:760;color:#cfd4e6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.loox-face-topbar button{border:1px solid #3e4660;border-radius:9px;color:#fff;background:#24293c;padding:9px 12px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
+.loox-face-topbar button{border:1px solid #2a405c;border-radius:9px;color:#fff;background:#20314a;padding:9px 12px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer}
 .loox-face-body{display:flex;flex:1;min-height:0;gap:14px}
-.loox-face-stage{background:#080b13;border:1px solid #292e40;border-radius:15px;position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:380px;overflow:hidden;padding:13px}
-.loox-face-stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.2;background-image:linear-gradient(45deg,#34384a 25%,transparent 25%),linear-gradient(-45deg,#34384a 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#34384a 75%),linear-gradient(-45deg,transparent 75%,#34384a 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
+.loox-face-stage{background:#080d16;border:1px solid #20314a;border-radius:15px;position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-width:0;min-height:380px;overflow:hidden;padding:13px}
+.loox-face-stage::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.2;background-image:linear-gradient(45deg,#2a405c 25%,transparent 25%),linear-gradient(-45deg,#2a405c 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#2a405c 75%),linear-gradient(-45deg,transparent 75%,#2a405c 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0}
 #faceCanvas{display:block;position:relative;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:5px;box-shadow:0 10px 30px #0009;touch-action:none;cursor:crosshair}
 .loox-face-brush-preview{position:absolute;pointer-events:none;transform:translate(-50%,-50%);border:2px solid #fff;box-shadow:0 0 0 1px #000,0 0 0 2px #0005;border-radius:50%;z-index:3}
-.loox-face-tools{width:300px;max-width:300px;min-width:260px;flex-shrink:0;border:1px solid #32354b;background:linear-gradient(160deg,#202133,#151821);border-radius:15px;padding:15px;display:flex;flex-direction:column;gap:15px;overflow:auto;max-height:calc(66dvh + 38px)}
+.loox-face-tools{width:300px;max-width:300px;min-width:260px;flex-shrink:0;border:1px solid #2a405c;background:linear-gradient(160deg,#142033,#101a2b);border-radius:15px;padding:15px;display:flex;flex-direction:column;gap:15px;overflow:auto;max-height:calc(66dvh + 38px)}
 .loox-face-tools h2{font-size:16px;margin:0;color:#fff}
 .loox-face-tools p{font-size:11px;line-height:1.55;color:#abb1c7;margin:0}
-.loox-face-section{display:flex;flex-direction:column;gap:10px;padding-bottom:15px;border-bottom:1px solid #34394b}
+.loox-face-section{display:flex;flex-direction:column;gap:10px;padding-bottom:15px;border-bottom:1px solid #2a405c}
 .loox-face-section:last-child{padding:0;border:0}
-.loox-face-section h3{font-size:12px;letter-spacing:.25px;font-weight:780;color:#eee9ff;margin:0}
-.loox-face-primary{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:12px 14px;border:0;border-radius:11px;color:#fff;background:linear-gradient(110deg,#c33dec,#795af1);font-size:13px;font-weight:780;cursor:pointer;box-shadow:0 6px 20px #7837c144}
+.loox-face-section h3{font-size:12px;letter-spacing:.25px;font-weight:780;color:#f1f5f9;margin:0}
+.loox-face-primary{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;padding:12px 14px;border:0;border-radius:11px;color:#fff;background:linear-gradient(110deg,#60a5fa,#60a5fa);font-size:13px;font-weight:780;cursor:pointer;box-shadow:0 6px 20px #3b82f644}
 .loox-face-primary:disabled,.loox-face-tools button:disabled,.loox-face-mobile-bar button:disabled{opacity:.4;cursor:not-allowed}
-.loox-face-secondary{border:1px solid #454967;border-radius:9px;background:#272b3b;color:#f9f6ff;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer}
-.loox-face-secondary.active{border-color:#bb8cff;background:#392a55}
-.loox-face-form-label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:680;color:#d5d1e5}
-.loox-face-form-label output{color:#d5a9ff;font-variant-numeric:tabular-nums}
-.loox-face-range{display:block;width:100%;height:28px;accent-color:#b66df0;cursor:pointer}
+.loox-face-secondary{border:1px solid #364c68;border-radius:9px;background:#20314a;color:#f1f5f9;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.loox-face-secondary.active{border-color:#a6ccff;background:#2a405c}
+.loox-face-form-label{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:680;color:#d9eaff}
+.loox-face-form-label output{color:#d9eaff;font-variant-numeric:tabular-nums}
+.loox-face-range{display:block;width:100%;height:28px;accent-color:#a6ccff;cursor:pointer}
 .loox-face-brush-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.loox-face-brush-presets button{border:1px solid #4b4760;border-radius:10px;min-height:47px;background:#232638;color:#ddd9ed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;cursor:pointer}
-.loox-face-brush-presets button[aria-pressed=true]{border-color:#ce90ff;color:#fff;background:#4b315f}
-.loox-face-brush-presets i{background:#eee7ff;border-radius:50%;display:block}
+.loox-face-brush-presets button{border:1px solid #364c68;border-radius:10px;min-height:47px;background:#20314a;color:#d9eaff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;font-weight:700;cursor:pointer}
+.loox-face-brush-presets button[aria-pressed=true]{border-color:#a6ccff;color:#fff;background:#2a405c}
+.loox-face-brush-presets i{background:#f1f5f9;border-radius:50%;display:block}
 .loox-face-action-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .loox-face-save{grid-column:1/-1}
-.loox-face-status{font:600 12px/1.5 system-ui;padding:10px 13px;background:#171b30;color:#c4d6ff;border:1px solid #323b63;border-radius:9px;overflow-wrap:anywhere}
-.loox-face-status.error{color:#ffd1da;background:#2e1726;border-color:#74334c}
-.loox-face-status.success{color:#bdf8e7;background:#133429;border-color:#296950}
+.loox-face-status{font:600 12px/1.5 system-ui;padding:10px 13px;background:#142033;color:#c4d6ff;border:1px solid #2a405c;border-radius:9px;overflow-wrap:anywhere}
+.loox-face-status.error{color:#d7f2f7;background:#142033;border-color:#364c68}
+.loox-face-status.success{color:#bdf8e7;background:#142033;border-color:#2a405c}
 .loox-face-mobile-bar{display:none}
 .loox-face-sheet-backdrop{display:none}
 .loox-face-sheet-close{display:none}
@@ -62,13 +62,13 @@
  body.loox-face-ready .loox-face-body{display:flex!important;flex:1 1 0!important;min-height:0!important;padding-bottom:70px!important}
  body.loox-face-ready .loox-face-stage{height:100%!important;min-height:0!important;border-radius:10px;padding:7px!important;overflow:hidden!important}
  body.loox-face-ready #faceCanvas{max-width:100%!important;max-height:100%!important;object-fit:contain!important;touch-action:none!important}
- body.loox-face-ready .loox-face-mobile-bar{position:absolute!important;bottom:0!important;left:0!important;right:0!important;z-index:60!important;display:flex!important;align-items:stretch!important;justify-content:space-around!important;gap:4px!important;height:67px!important;padding:6px 3px 3px!important;background:#181a29!important;border:1px solid #303248!important;border-radius:12px!important;box-shadow:0 -9px 24px #0008!important}
+ body.loox-face-ready .loox-face-mobile-bar{position:absolute!important;bottom:0!important;left:0!important;right:0!important;z-index:60!important;display:flex!important;align-items:stretch!important;justify-content:space-around!important;gap:4px!important;height:67px!important;padding:6px 3px 3px!important;background:#142033!important;border:1px solid #2a405c!important;border-radius:12px!important;box-shadow:0 -9px 24px #0008!important}
  .loox-face-mobile-bar button{min-width:0;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:0;background:transparent;color:#d1d2e8;padding:6px 3px;border-radius:9px;font-size:10px;font-weight:750;cursor:pointer}
  .loox-face-mobile-bar button b{font-size:21px;line-height:1.1;font-weight:550}
- .loox-face-mobile-bar button.active{background:#373053;color:#fff}
- .loox-face-mobile-bar button.loox-face-auto-mobile{background:linear-gradient(130deg,#6d3ec5,#bb48df);color:#fff}
- .loox-face-mobile-bar button.loox-face-save-mobile{background:#2c355d;color:#fff}
- body.loox-face-ready .loox-face-tools{display:none!important;position:absolute!important;bottom:71px!important;left:4px!important;right:4px!important;top:auto!important;width:auto!important;max-width:none!important;max-height:min(55dvh,400px)!important;min-width:0!important;overflow:auto!important;z-index:85!important;box-shadow:0 -15px 40px #000c!important;border:1px solid #5d5080!important;border-radius:18px!important;background:#201e2d!important;padding:13px!important}
+ .loox-face-mobile-bar button.active{background:#2a405c;color:#fff}
+ .loox-face-mobile-bar button.loox-face-auto-mobile{background:linear-gradient(130deg,#3b82f6,#60a5fa);color:#fff}
+ .loox-face-mobile-bar button.loox-face-save-mobile{background:#2a405c;color:#fff}
+ body.loox-face-ready .loox-face-tools{display:none!important;position:absolute!important;bottom:71px!important;left:4px!important;right:4px!important;top:auto!important;width:auto!important;max-width:none!important;max-height:min(55dvh,400px)!important;min-width:0!important;overflow:auto!important;z-index:85!important;box-shadow:0 -15px 40px #000c!important;border:1px solid #344b69!important;border-radius:18px!important;background:#142033!important;padding:13px!important}
  body.loox-face-ready .loox-face-tools.open{display:flex!important}
  body.loox-face-ready .loox-face-tools[data-active=brush] .loox-face-adjust-controls,
  body.loox-face-ready .loox-face-tools[data-active=adjust] .loox-face-brush-controls,
@@ -76,7 +76,7 @@
  body.loox-face-ready .loox-face-tools .loox-face-auto-section{display:none!important}
  body.loox-face-ready .loox-face-sheet-backdrop:not([hidden]){display:block!important;position:absolute!important;inset:0!important;z-index:80!important;background:rgba(3,4,12,.46)}
  body.loox-face-ready .loox-face-sheet-close{display:flex!important;align-items:center;justify-content:space-between;gap:8px;min-height:26px}
- body.loox-face-ready .loox-face-sheet-close button{border:0;background:#36334b;color:#fff;border-radius:7px;padding:5px 12px;cursor:pointer}
+ body.loox-face-ready .loox-face-sheet-close button{border:0;background:#2a405c;color:#fff;border-radius:7px;padding:5px 12px;cursor:pointer}
  body.loox-face-ready .loox-face-status{position:absolute!important;z-index:61!important;left:4px!important;right:4px!important;top:36px!important;max-height:70px!important;overflow:auto!important;margin:0!important;padding:7px 10px!important;font-size:10px!important;box-shadow:0 3px 18px #0008!important}
  body.loox-face-ready .loox-face-main .loox-face-workspace~*{display:none!important}
 }
@@ -100,9 +100,9 @@
 }
 
 /* Finger-friendly crop selection anchored exactly to image pixels */
-.loox-face-crop-frame{position:absolute;z-index:7;border:2px solid #fff;box-shadow:0 0 0 9999px #0007,0 0 0 1px #111;cursor:move;touch-action:none;user-select:none}
+.loox-face-crop-frame{position:absolute;z-index:7;border:2px solid #fff;box-shadow:0 0 0 9999px #0007,0 0 0 1px #080d16;cursor:move;touch-action:none;user-select:none}
 .loox-face-crop-frame[hidden],#faceCropActions[hidden]{display:none!important}
-.loox-face-crop-frame i{position:absolute;display:block;width:19px;height:19px;background:#fff;border:2px solid #815ee1;border-radius:5px;touch-action:none}
+.loox-face-crop-frame i{position:absolute;display:block;width:19px;height:19px;background:#fff;border:2px solid #60a5fa;border-radius:5px;touch-action:none}
 .loox-face-crop-frame [data-edge="nw"]{top:-10px;left:-10px;cursor:nwse-resize}
 .loox-face-crop-frame [data-edge="ne"]{top:-10px;right:-10px;cursor:nesw-resize}
 .loox-face-crop-frame [data-edge="sw"]{bottom:-10px;left:-10px;cursor:nesw-resize}

@@ -1,14 +1,14 @@
 /* Minimal LOOX AI home • inspired by the selected customer mockup • no changes to editor internals */
 body.ai-home{
- --loox-page-bg:#0b0a13;--loox-ink:#f7f5fc;--loox-subtle:#aea8bd;
- --loox-violet:#a35be2;
- margin:0!important;background:#0b0a13!important;color:var(--loox-ink)!important;overflow-x:clip!important
+ --loox-page-bg:#080d16;--loox-ink:#f1f5f9;--loox-subtle:#a6ccff;
+ --loox-violet:#60a5fa;
+ margin:0!important;background:#080d16!important;color:var(--loox-ink)!important;overflow-x:clip!important
 }
 body.ai-home.loox-sitewide-home main.ai-stage.loox-dashboard-main{
  display:block!important;overflow:visible!important;height:auto!important;
  min-height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
  margin:0!important;padding:0!important;max-width:none!important;width:100%!important;
- background:radial-gradient(ellipse at 74% 1%,#24133b5e,transparent 35%),#0b0a13!important
+ background:radial-gradient(ellipse at 74% 1%,#1420335e,transparent 35%),#080d16!important
 }
 body.ai-home .loox-simple-dashboard{
  width:100%;max-width:1510px;margin-inline:auto;
@@ -19,16 +19,16 @@ body.ai-home .loox-simple-hero{
  align-items:center;gap:18px;min-height:270px
 }
 body.ai-home .loox-simple-hero-copy{position:relative;z-index:2;min-width:0}
-body.ai-home .loox-simple-eyebrow{margin:0 0 13px;color:#c58cd8;font:800 10px/1.4 system-ui;letter-spacing:.19em}
+body.ai-home .loox-simple-eyebrow{margin:0 0 13px;color:#a6ccff;font:800 10px/1.4 system-ui;letter-spacing:.19em}
 body.ai-home .loox-simple-hero h1{
  margin:0 0 12px;font:850 clamp(32px,3vw,45px)/1.1 system-ui,-apple-system,sans-serif;
- letter-spacing:-.042em;color:#fafaff
+ letter-spacing:-.042em;color:#f1f5f9
 }
 body.ai-home .loox-simple-hero h1 span{
- background:linear-gradient(92deg,#cb60e4,#ec6ac3);
+ background:linear-gradient(92deg,#60a5fa,#22d3ee);
  -webkit-background-clip:text;background-clip:text;color:transparent
 }
-body.ai-home .loox-simple-intro{color:#b8b3c4;font:400 clamp(12px,1.1vw,15px)/1.6 system-ui;max-width:630px;margin:0 0 18px}
+body.ai-home .loox-simple-intro{color:#a6ccff;font:400 clamp(12px,1.1vw,15px)/1.6 system-ui;max-width:630px;margin:0 0 18px}
 body.ai-home .loox-simple-hero-art{
  width:100%;min-width:0;height:285px;position:relative;display:grid;place-items:center;
  pointer-events:none;overflow:visible
@@ -42,76 +42,76 @@ body.ai-home .loox-simple-hero .ai-composer{
  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
  align-items:center!important;column-gap:6px!important;min-height:53px!important;
  padding:5px 6px 5px 12px!important;margin:0!important;
- background:linear-gradient(110deg,#1d192a,#211c2d)!important;
- border:1px solid #645375!important;border-radius:14px!important;
+ background:linear-gradient(110deg,#142033,#142033)!important;
+ border:1px solid #344b69!important;border-radius:14px!important;
  box-shadow:0 3px 13px #0004!important
 }
-body.ai-home .loox-simple-hero .ai-composer:focus-within{border-color:#b184d8!important;box-shadow:0 0 0 2px #975fdb33!important}
+body.ai-home .loox-simple-hero .ai-composer:focus-within{border-color:#a6ccff!important;box-shadow:0 0 0 2px #60a5fa33!important}
 body.ai-home .loox-simple-hero .ai-composer textarea{
  grid-column:1!important;grid-row:1!important;
  min-width:0!important;width:100%!important;height:39px;
  min-height:39px!important;max-height:120px!important;
  border:0!important;resize:none!important;margin:0!important;
- background:transparent!important;color:#f7f2ff!important;
+ background:transparent!important;color:#f1f5f9!important;
  font:400 13px/1.5 system-ui!important;padding:9px 5px!important;
  box-shadow:none!important;outline:none!important
 }
-body.ai-home .loox-simple-hero .ai-composer textarea::placeholder{color:#c2b8cc!important}
+body.ai-home .loox-simple-hero .ai-composer textarea::placeholder{color:#a6ccff!important}
 body.ai-home .loox-simple-hero .ai-actions{
  grid-column:2!important;grid-row:1!important;display:flex!important;align-items:center!important;
  gap:6px!important;margin:0!important;padding:0!important;min-width:0!important
 }
 body.ai-home .loox-simple-hero .ai-actions .ai-spacer{display:none!important}
-body.ai-home .loox-simple-hero .ai-round{display:grid!important;place-items:center!important;flex:none;width:29px!important;height:29px!important;min-height:29px!important;border-radius:9px!important;background:#2b2538!important;color:#d2c0df!important;border:1px solid #574568!important;font-size:16px!important}
-body.ai-home .loox-simple-hero .ai-model{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-height:29px!important;height:29px!important;min-width:0!important;font-size:10px!important;padding:5px 9px!important;background:#282135!important;border:1px solid #514466!important;border-radius:9px!important;color:#eee5f4!important}
+body.ai-home .loox-simple-hero .ai-round{display:grid!important;place-items:center!important;flex:none;width:29px!important;height:29px!important;min-height:29px!important;border-radius:9px!important;background:#20314a!important;color:#a6ccff!important;border:1px solid #364c68!important;font-size:16px!important}
+body.ai-home .loox-simple-hero .ai-model{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;min-height:29px!important;height:29px!important;min-width:0!important;font-size:10px!important;padding:5px 9px!important;background:#142033!important;border:1px solid #364c68!important;border-radius:9px!important;color:#f1f5f9!important}
 body.ai-home .loox-simple-hero .ai-send{
  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;
  width:auto!important;height:35px!important;min-width:100px!important;min-height:35px!important;padding:5px 12px!important;
- border-radius:9px!important;border:1px solid #ae58df!important;
- background:linear-gradient(105deg,#aa4ddb,#8849d1)!important;
+ border-radius:9px!important;border:1px solid #60a5fa!important;
+ background:linear-gradient(105deg,#60a5fa,#60a5fa)!important;
  color:white!important;font:700 11px/1 system-ui!important;
- box-shadow:0 2px 12px #a457d733!important
+ box-shadow:0 2px 12px #60a5fa33!important
 }
 body.ai-home .loox-simple-hero .ai-send:hover{filter:brightness(1.11)}
 body.ai-home .loox-simple-hero .ai-foot{
- color:#978ca9!important;font:400 10px/1.4 system-ui!important;
+ color:#7d9bbd!important;font:400 10px/1.4 system-ui!important;
  text-align:left!important;padding:5px 6px 0!important;margin:0!important
 }
 body.ai-home .loox-simple-shortcuts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 body.ai-home .loox-simple-shortcuts a{
  display:inline-flex;align-items:center;justify-content:center;gap:7px;
  min-height:30px;padding:7px 11px;
- border:1px solid #3e3550;border-radius:22px;text-decoration:none;
- background:#14121f;color:#ece8f2;font:600 10px/1.15 system-ui;
+ border:1px solid #2a405c;border-radius:22px;text-decoration:none;
+ background:#101a2b;color:#f1f5f9;font:600 10px/1.15 system-ui;
  transition:background .16s,border-color .16s
 }
-body.ai-home .loox-simple-shortcuts a span{color:#d8c0f3;font-size:15px;line-height:1}
-body.ai-home .loox-simple-shortcuts a:hover{background:#292039;border-color:#8268a0}
+body.ai-home .loox-simple-shortcuts a span{color:#d9eaff;font-size:15px;line-height:1}
+body.ai-home .loox-simple-shortcuts a:hover{background:#142033;border-color:#7d9bbd}
 body.ai-home .loox-simple-section{margin-top:20px}
 body.ai-home .loox-simple-section-header{
  display:flex;justify-content:space-between;align-items:center;
  gap:16px;margin-bottom:11px
 }
 body.ai-home .loox-simple-section-header h2{
- margin:0 0 3px;color:#f8f7fc;
+ margin:0 0 3px;color:#f1f5f9;
  font:800 clamp(19px,1.9vw,24px)/1.2 system-ui;letter-spacing:-.035em
 }
 body.ai-home .loox-simple-section-header p{color:#aea9bb;font:400 11px/1.4 system-ui;margin:0}
-body.ai-home .loox-simple-section-header>a{color:#c99ddb;text-decoration:none;white-space:nowrap;font:700 11px/1.4 system-ui}
+body.ai-home .loox-simple-section-header>a{color:#a6ccff;text-decoration:none;white-space:nowrap;font:700 11px/1.4 system-ui}
 body.ai-home .loox-simple-section-header>a:hover{text-decoration:underline}
 body.ai-home .loox-simple-card-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
 body.ai-home .loox-simple-tool-card{
  position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;
  min-width:0;min-height:163px;padding:16px 15px;
- color:#faf8fe;text-decoration:none;
- border:1px solid #483959;border-radius:12px;
- background:linear-gradient(145deg,#252031 0%,#1c1928 60%,#181323 100%);
+ color:#f1f5f9;text-decoration:none;
+ border:1px solid #2a405c;border-radius:12px;
+ background:linear-gradient(145deg,#142033 0%,#142033 60%,#101a2b 100%);
  transition:transform .18s,border-color .18s,box-shadow .18s
 }
-body.ai-home .loox-simple-tool-card:hover{transform:translateY(-3px);border-color:#8a5db1;box-shadow:0 8px 22px #0006}
-body.ai-home .loox-card-icon{display:block;margin:0 0 8px;font:500 21px/1.1 system-ui;color:#d0a5e8}
+body.ai-home .loox-simple-tool-card:hover{transform:translateY(-3px);border-color:#60a5fa;box-shadow:0 8px 22px #0006}
+body.ai-home .loox-card-icon{display:block;margin:0 0 8px;font:500 21px/1.1 system-ui;color:#a6ccff}
 body.ai-home .loox-simple-tool-card strong{z-index:2;display:block;color:#fff;font:750 13px/1.35 system-ui;margin-bottom:7px}
-body.ai-home .loox-simple-tool-card small{z-index:2;display:block;max-width:92%;color:#bdb5ca;font:400 10px/1.45 system-ui}
+body.ai-home .loox-simple-tool-card small{z-index:2;display:block;max-width:92%;color:#a6ccff;font:400 10px/1.45 system-ui}
 body.ai-home .loox-card-art{position:absolute;right:-10px;bottom:-15px;width:80%;max-width:168px;height:auto;opacity:.84;z-index:0;pointer-events:none}
 body.ai-home .loox-art-mountain{width:100%;bottom:-5px;right:-24px;opacity:.85}
 body.ai-home .loox-art-clapper{width:70%;right:-7px;bottom:-12px}
@@ -122,13 +122,13 @@ body.ai-home .loox-simple-categories{margin-top:27px}
 body.ai-home .loox-simple-category-row{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:12px}
 body.ai-home .loox-category-pill{
  display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;
- background:#171523;border:1px solid #2e273e;border-radius:15px;
- color:#f2edf6;min-height:46px;padding:8px 10px;font:650 11px/1.1 system-ui;
+ background:#101a2b;border:1px solid #20314a;border-radius:15px;
+ color:#f1f5f9;min-height:46px;padding:8px 10px;font:650 11px/1.1 system-ui;
  transition:border-color .17s,background .17s,transform .17s
 }
-body.ai-home .loox-category-pill>span{font-size:18px;color:#cbb3e2;line-height:1}
-body.ai-home .loox-category-pill:hover{background:#292039;border-color:#785aa0;transform:translateY(-1px)}
-body.ai-home .loox-category-primary{background:linear-gradient(115deg,#a344c6,#332367)!important;border-color:#a05ac8!important;box-shadow:0 0 13px #9243d465!important}
+body.ai-home .loox-category-pill>span{font-size:18px;color:#a6ccff;line-height:1}
+body.ai-home .loox-category-pill:hover{background:#142033;border-color:#7d9bbd;transform:translateY(-1px)}
+body.ai-home .loox-category-primary{background:linear-gradient(115deg,#60a5fa,#2a405c)!important;border-color:#60a5fa!important;box-shadow:0 0 13px #60a5fa65!important}
 body.ai-home .loox-category-primary>span{color:#fff}
 @media(max-width:1180px){
  body.ai-home .loox-simple-dashboard{padding-inline:22px}

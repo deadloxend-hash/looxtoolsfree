@@ -1,15 +1,15 @@
 /* Focused AI image landing page. The global header and shared sidebar are unchanged. */
-body.loox-image-landing{background:#0c0c10!important;color:#fff!important;overflow-x:hidden!important}
+body.loox-image-landing{background:#080d16!important;color:#fff!important;overflow-x:hidden!important}
 body.loox-image-landing.loox-sitewide-home main.loox-image-landing-main{
  display:block!important;position:relative!important;width:100%!important;max-width:none!important;
  margin:0!important;padding:0!important;overflow:visible!important;
  min-height:calc(100dvh - var(--loox-sitewide-height,64px))!important;height:auto!important;
- background:#101014!important;
+ background:#080d16!important;
 }
 body.loox-image-landing .loox-landing-hero{
  position:relative;isolation:isolate;min-height:min(790px,calc(100dvh - 64px));
  display:flex;align-items:flex-start;justify-content:center;padding:clamp(64px,11vh,135px) 24px 90px;
- background:radial-gradient(ellipse 70% 56% at 50% 0%,#302a2c 0%,transparent 76%),linear-gradient(180deg,#151417 0%,#101014 72%);
+ background:radial-gradient(ellipse 70% 56% at 50% 0%,#142033 0%,transparent 76%),linear-gradient(180deg,#101a2b 0%,#080d16 72%);
 }
 body.loox-image-landing .loox-landing-hero:before{
  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
@@ -34,14 +34,14 @@ body.loox-image-landing .loox-landing-heading-pill{
 }
 body.loox-image-landing .loox-landing-form{
  display:block!important;width:100%;max-width:750px;margin:0 auto!important;
- padding:16px!important;background:#fff!important;color:#17191c!important;
- border:1px solid #e5e5e5!important;border-radius:17px!important;
+ padding:16px!important;background:#fff!important;color:#101a2b!important;
+ border:1px solid #e5edf7!important;border-radius:17px!important;
  box-shadow:0 20px 55px #0006!important;text-align:left!important
 }
 body.loox-image-landing .loox-landing-input-row{display:flex;align-items:flex-start;gap:13px;min-height:98px}
 body.loox-image-landing .loox-landing-add{
- flex:0 0 46px;width:46px;height:56px;border:1px solid #e0e3e6;
- border-radius:5px;background:#f3f5f7;color:#91a0aa;font-size:27px;cursor:pointer;
+ flex:0 0 46px;width:46px;height:56px;border:1px solid #e5edf7;
+ border-radius:5px;background:#e5edf7;color:#91a0aa;font-size:27px;cursor:pointer;
  transform:rotate(-7deg);transition:background .2s,transform .2s
 }
 body.loox-image-landing .loox-landing-add:hover{background:#e7f6f8;transform:rotate(0)}
@@ -49,7 +49,7 @@ body.loox-image-landing #loox-landing-prompt{
  flex:1;display:block!important;width:100%;min-width:0;min-height:94px!important;
  resize:vertical!important;max-height:280px;padding:7px 2px!important;
  border:0!important;outline:0!important;box-shadow:none!important;
- background:transparent!important;color:#1d242a!important;
+ background:transparent!important;color:#142033!important;
  font:400 15px/1.55 system-ui!important
 }
 body.loox-image-landing #loox-landing-prompt::placeholder{color:#687783!important;opacity:1}
@@ -58,20 +58,20 @@ body.loox-image-landing .loox-landing-pills{display:flex;flex-wrap:wrap;align-it
 body.loox-image-landing .loox-landing-type,
 body.loox-image-landing .loox-landing-model{
  display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:7px 12px;
- border-radius:10px;background:#f1f1f1;color:#282b30;font:650 12px/1.2 system-ui
+ border-radius:10px;background:#e5edf7;color:#142033;font:650 12px/1.2 system-ui
 }
 body.loox-image-landing .loox-landing-type{background:#dcf7fb;color:#008caa}
 body.loox-image-landing .loox-landing-generate{
  min-width:103px;min-height:38px;padding:9px 15px;border:0;border-radius:10px;
- background:#080808;color:#fff;font:750 13px/1 system-ui;cursor:pointer;
+ background:#05080f;color:#fff;font:750 13px/1 system-ui;cursor:pointer;
  transition:transform .16s,background .16s
 }
-body.loox-image-landing .loox-landing-generate:hover{background:#26262a;transform:translateY(-1px)}
+body.loox-image-landing .loox-landing-generate:hover{background:#142033;transform:translateY(-1px)}
 body.loox-image-landing .loox-landing-ideas{
  display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:25px
 }
 body.loox-image-landing .loox-landing-ideas button{
- border:1px solid #747477;background:#3a3a3dcc;color:#f5f5f5;
+ border:1px solid #747477;background:#20314acc;color:#e5edf7;
  border-radius:30px;padding:11px 16px;font:600 12px/1.3 system-ui;
  cursor:pointer;transition:background .16s,border-color .16s,transform .16s
 }
@@ -103,12 +103,12 @@ body.loox-image-landing .loox-visually-hidden{
 
 /* Decorative rotating artwork on the AI home hero; keep all interactions above it. */
 body.loox-image-landing .loox-landing-hero {
- background:#110b19!important;
+ background:#080d16!important;
  overflow:hidden;
 }
 body.loox-image-landing .loox-landing-art {
  position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;
- background:#110b19;
+ background:#080d16;
 }
 body.loox-image-landing .loox-landing-slide {
  position:absolute;inset:0;width:100%;height:100%;display:block;
@@ -120,8 +120,8 @@ body.loox-image-landing .loox-landing-slide.is-current {opacity:1}
 body.loox-image-landing .loox-landing-hero::before {
  z-index:1;
  background:
-  linear-gradient(90deg,rgba(9,6,16,.86) 0%,rgba(9,6,16,.69) 38%,rgba(9,6,16,.20) 88%),
-  linear-gradient(180deg,rgba(11,7,17,.25),rgba(11,7,17,.22) 60%,rgba(11,7,17,.65));
+  linear-gradient(90deg,rgba(8,13,22,.86) 0%,rgba(8,13,22,.69) 38%,rgba(8,13,22,.20) 88%),
+  linear-gradient(180deg,rgba(8,13,22,.25),rgba(8,13,22,.22) 60%,rgba(8,13,22,.65));
 }
 body.loox-image-landing .loox-landing-inner {
  position:relative;z-index:2;
@@ -134,7 +134,7 @@ body.loox-image-landing .loox-landing-subtitle {
 @media(max-width:600px) {
  body.loox-image-landing .loox-landing-slide {object-position:74% center}
  body.loox-image-landing .loox-landing-hero::before {
-  background:linear-gradient(180deg,rgba(9,6,16,.86),rgba(9,6,16,.66) 48%,rgba(9,6,16,.79));
+  background:linear-gradient(180deg,rgba(8,13,22,.86),rgba(8,13,22,.66) 48%,rgba(8,13,22,.79));
  }
 }
 @media(prefers-reduced-motion:reduce) {
@@ -157,10 +157,10 @@ body.loox-image-landing .loox-landing-subtitle {
    Preserve the established mobile layout; the desktop sidebar overlays the artwork
    rather than forcing the hero into a narrow column. */
 body.loox-image-landing.loox-sitewide-active #loox-sitewide-header {
- background:rgba(16,10,27,.56)!important;
+ background:rgba(8,13,22,.56)!important;
  -webkit-backdrop-filter:blur(20px) saturate(145%)!important;
  backdrop-filter:blur(20px) saturate(145%)!important;
- border-bottom:1px solid rgba(224,188,255,.20)!important;
+ border-bottom:1px solid rgba(217,234,255,.20)!important;
  box-shadow:0 8px 26px rgba(0,0,0,.14)!important;
 }
 @media(min-width:901px){
@@ -188,7 +188,7 @@ body.loox-image-landing.loox-sitewide-active #loox-sitewide-header {
 /* Transparent frosted-glass prompt composer over the rotating hero artwork.
    Scope strictly to the AI homepage; leave generators and other tools untouched. */
 body.loox-image-landing .loox-landing-form {
- background:rgba(233,218,248,.16)!important;
+ background:rgba(241,245,249,.16)!important;
  color:#fff!important;
  border:1px solid rgba(255,255,255,.43)!important;
  -webkit-backdrop-filter:blur(20px) saturate(135%)!important;
@@ -217,10 +217,10 @@ body.loox-image-landing .loox-landing-type {
 }
 body.loox-image-landing .loox-landing-model {
  background:rgba(255,255,255,.72)!important;
- color:#2b2735!important;
+ color:#20314a!important;
 }
 body.loox-image-landing .loox-landing-generate {
- background:#080808!important;
+ background:#05080f!important;
  color:#fff!important;
 }
 body.loox-image-landing #loox-landing-prompt:focus-visible {

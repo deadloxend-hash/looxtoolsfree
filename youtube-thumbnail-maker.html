@@ -4,77 +4,77 @@
 <meta name="description" content="Make a 1280 × 720 YouTube thumbnail with editable text layers, layouts, outline, shadows and a live canvas. Download your design free.">
 <title>YouTube Thumbnail Maker Online – Text & Layouts | LOOX Tools</title>
 <style>
-:root{--bg:#090b12;--panel:#111522;--panel2:#171c2b;--line:#293147;--pink:#f04b9b;--purple:#8b5cf6;--blue:#438bff;--text:#f5f6fb;--muted:#a3acc0;--green:#37d6a0}
+:root{--bg:#080d16;--panel:#101a2b;--panel2:#142033;--line:#20314a;--pink:#22d3ee;--purple:#60a5fa;--blue:#438bff;--text:#f5f6fb;--muted:#a3acc0;--green:#37d6a0}
 *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-body{background:radial-gradient(ellipse at 75% -10%,rgba(111,69,202,.2),transparent 38%),var(--bg);color:var(--text);min-height:100vh;display:flex}
-body>aside{width:250px;position:fixed;inset:0 auto 0 0;background:#080a10;border-right:1px solid var(--line);padding:20px 16px;overflow:auto;z-index:20}
+body{background:radial-gradient(ellipse at 75% -10%,rgba(96,165,250,.2),transparent 38%),var(--bg);color:var(--text);min-height:100vh;display:flex}
+body>aside{width:250px;position:fixed;inset:0 auto 0 0;background:#080d16;border-right:1px solid var(--line);padding:20px 16px;overflow:auto;z-index:20}
 .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:#fff;font-weight:900;font-size:1.12rem;margin:0 0 32px;white-space:nowrap}
-.brand-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--pink),var(--purple));display:grid;place-items:center;box-shadow:0 5px 22px #8b5cf644}
+.brand-icon{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,var(--pink),var(--purple));display:grid;place-items:center;box-shadow:0 5px 22px #60a5fa44}
 .brand span{color:#fff!important;background:none!important;-webkit-text-fill-color:#fff!important}
 .nav-section-title{font-size:.7rem;color:#78839b;letter-spacing:1.3px;font-weight:800;margin:8px 0 12px}
 .nav-links{display:flex;flex-direction:column;gap:5px}
 .nav-item{display:flex;align-items:center;gap:11px;padding:10px 11px;border:1px solid transparent;border-radius:10px;text-decoration:none;color:#a8b0c2;font-size:.84rem;font-weight:650;transition:.2s}
-.nav-item:hover{color:#fff;background:#171b29;transform:translateX(3px)}
-.nav-item.active{color:#fff;border-color:#8b5cf655;background:linear-gradient(100deg,#ec48991c,#8b5cf61b)}
+.nav-item:hover{color:#fff;background:#142033;transform:translateX(3px)}
+.nav-item.active{color:#fff;border-color:#60a5fa55;background:linear-gradient(100deg,#22d3ee1c,#60a5fa1b)}
 main{margin-left:250px;width:calc(100% - 250px);padding:32px;min-width:0}
 .topline{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
-.eyebrow{font-size:.72rem;letter-spacing:1.8px;text-transform:uppercase;color:#c084fc;font-weight:850;margin-bottom:9px}
+.eyebrow{font-size:.72rem;letter-spacing:1.8px;text-transform:uppercase;color:#a6ccff;font-weight:850;margin-bottom:9px}
 h1{font-size:clamp(1.7rem,3vw,2.55rem);font-weight:900;letter-spacing:-1.2px;line-height:1.08}
-.gradient{background:linear-gradient(100deg,#ff72b6,#a78bfa 55%,#65a8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gradient{background:linear-gradient(100deg,#8fe6ee,#a6ccff 55%,#65a8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 .intro{color:var(--muted);margin-top:10px;line-height:1.6;font-size:.94rem;max-width:780px}
 .pill{border:1px solid #37d6a044;background:#37d6a012;color:#86f0c9;border-radius:999px;padding:8px 12px;font-size:.76rem;font-weight:750;white-space:nowrap}
 .studio{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
-.stage-panel,.editor-panel,.guide{background:linear-gradient(150deg,#141a29,#0f1320);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 55px #0005}
+.stage-panel,.editor-panel,.guide{background:linear-gradient(150deg,#101a2b,#101a2b);border:1px solid var(--line);border-radius:18px;box-shadow:0 18px 55px #0005}
 .stage-panel{padding:17px;min-width:0}
 .stage-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
 .stage-head strong{font-size:.9rem}.stage-head small{color:var(--muted);font-size:.76rem}
-.canvas-shell{background-color:#0a0d15;background-image:linear-gradient(45deg,#171c29 25%,transparent 25%),linear-gradient(-45deg,#171c29 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#171c29 75%),linear-gradient(-45deg,transparent 75%,#171c29 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;border:1px solid #303950;border-radius:13px;padding:10px;overflow:hidden}
+.canvas-shell{background-color:#080d16;background-image:linear-gradient(45deg,#142033 25%,transparent 25%),linear-gradient(-45deg,#142033 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#142033 75%),linear-gradient(-45deg,transparent 75%,#142033 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;border:1px solid #2a405c;border-radius:13px;padding:10px;overflow:hidden}
 canvas{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:7px;touch-action:none;cursor:grab}
 canvas:active{cursor:grabbing}
 .toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
-button,.btn{border:1px solid #343e56;background:#20283a;color:#f4f5fb;border-radius:9px;padding:10px 13px;font-weight:750;font-size:.79rem;cursor:pointer;transition:.2s}
-button:hover,.btn:hover{border-color:#b06bfa;transform:translateY(-1px);filter:brightness(1.1)}
-button.primary{background:linear-gradient(110deg,var(--pink),var(--purple));border:0;box-shadow:0 5px 18px #a347c544}
+button,.btn{border:1px solid #2a405c;background:#142033;color:#f4f5fb;border-radius:9px;padding:10px 13px;font-weight:750;font-size:.79rem;cursor:pointer;transition:.2s}
+button:hover,.btn:hover{border-color:#a6ccff;transform:translateY(-1px);filter:brightness(1.1)}
+button.primary{background:linear-gradient(110deg,var(--pink),var(--purple));border:0;box-shadow:0 5px 18px #60a5fa44}
 button:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .editor-panel{padding:17px;position:sticky;top:18px;max-height:calc(100vh - 36px);overflow:auto}
 .panel-title{font-size:.96rem;font-weight:850;margin-bottom:4px}
 .panel-sub{font-size:.75rem;color:var(--muted);line-height:1.5;margin-bottom:15px}
-.tabs{display:flex;gap:5px;padding:4px;background:#090d17;border:1px solid var(--line);border-radius:10px;margin-bottom:15px}
+.tabs{display:flex;gap:5px;padding:4px;background:#080d16;border:1px solid var(--line);border-radius:10px;margin-bottom:15px}
 .tab{flex:1;padding:8px 4px;border:0;background:transparent;color:#aab3c7;font-size:.74rem}
-.tab.active{background:#272c40;color:#fff;border:1px solid #8b5cf655}
+.tab.active{background:#20314a;color:#fff;border:1px solid #60a5fa55}
 .tab-pane{display:none}.tab-pane.active{display:block}
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
 .field label,.field-label{font-size:.75rem;color:#cbd2e1;font-weight:750}
-input[type=text],select,textarea{width:100%;background:#0a0f1b;border:1px solid #303a51;color:#fff;border-radius:8px;padding:10px 11px;outline:none;font-size:.82rem}
-input:focus,select:focus,textarea:focus{border-color:#bd6aff;box-shadow:0 0 0 3px #8b5cf622}
-input[type=range]{width:100%;accent-color:#c05aff}
-input[type=color]{width:100%;height:38px;border:1px solid #303a51;border-radius:8px;background:#0a0f1b;padding:3px}
+input[type=text],select,textarea{width:100%;background:#080d16;border:1px solid #2a405c;color:#fff;border-radius:8px;padding:10px 11px;outline:none;font-size:.82rem}
+input:focus,select:focus,textarea:focus{border-color:#a6ccff;box-shadow:0 0 0 3px #60a5fa22}
+input[type=range]{width:100%;accent-color:#60a5fa}
+input[type=color]{width:100%;height:38px;border:1px solid #2a405c;border-radius:8px;background:#080d16;padding:3px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .range-line{display:flex;justify-content:space-between;gap:10px;font-size:.72rem;color:var(--muted)}
 .layer-list{display:flex;flex-direction:column;gap:7px;margin-bottom:13px}
-.layer-row{display:flex;align-items:center;gap:8px;padding:9px;background:#0b101b;border:1px solid #283148;border-radius:9px;cursor:pointer;font-size:.76rem}
-.layer-row.active{border-color:#bc65ff;background:#281a38}
+.layer-row{display:flex;align-items:center;gap:8px;padding:9px;background:#080d16;border:1px solid #20314a;border-radius:9px;cursor:pointer;font-size:.76rem}
+.layer-row.active{border-color:#a6ccff;background:#142033}
 .layer-row span:first-child{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .layer-row button{padding:5px 8px;font-size:.7rem}
 .template-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.template{border:1px solid #303950;border-radius:10px;background:#0c111d;padding:0;overflow:hidden;text-align:left}
+.template{border:1px solid #2a405c;border-radius:10px;background:#080d16;padding:0;overflow:hidden;text-align:left}
 .template-art{height:65px;display:flex;align-items:center;justify-content:center;font-weight:1000;font-size:1rem;letter-spacing:-.5px;text-shadow:0 2px 8px #000}
 .template small{display:block;padding:8px;color:#cbd2e1;font-size:.7rem}
 .help{font-size:.73rem;line-height:1.55;color:#9ea9bd}
 .guide{margin-top:18px;padding:18px}
 .guide h2{font-size:1rem;margin-bottom:13px}
 .guide-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.guide-card{border:1px solid var(--line);background:#0c111c;border-radius:12px;padding:13px}
+.guide-card{border:1px solid var(--line);background:#080d16;border-radius:12px;padding:13px}
 .guide-art{height:88px;border-radius:8px;margin-bottom:10px;display:grid;place-items:center;text-align:center;font-size:1.2rem;font-weight:950;text-shadow:0 2px 8px #000}
 .guide-card b{font-size:.78rem;display:block;margin-bottom:5px}
 .guide-card p{font-size:.72rem;color:var(--muted);line-height:1.45}
-.status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;background:#13251f;color:#a7f3d0;font-size:.78rem;line-height:1.5}
-.status.error{background:#2a151e;color:#fecdd3}
+.status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;background:#101a2b;color:#a7f3d0;font-size:.78rem;line-height:1.5}
+.status.error{background:#142033;color:#d7f2f7}
 input[type=file]{display:none}
 @media(max-width:1120px){.studio{grid-template-columns:1fr}.editor-panel{position:static;max-height:none}.topline{align-items:flex-start}}
 @media(max-width:900px){body>aside{width:220px;padding:16px}main{margin-left:220px;width:calc(100% - 220px);padding:20px}}
 @media(max-width:650px){body>aside{width:66px;padding:12px 7px}body>aside .brand{justify-content:center}body>aside .brand span,body>aside .nav-section-title,body>aside .nav-item span+span{display:none}body>aside .nav-item{justify-content:center;padding:12px 4px}main{margin-left:66px;width:calc(100% - 66px);padding:12px}.pill{display:none}.guide-grid{grid-template-columns:1fr}.two{grid-template-columns:1fr 1fr}}
-</style>  <link rel="stylesheet" href="loox-tool-ui.css?v=3">
+</style>  <link rel="stylesheet" href="loox-tool-ui.css?v=obsidian-blue-1">
 
 
 
@@ -83,9 +83,9 @@ input[type=file]{display:none}
 
 
 
-<link rel="stylesheet" href="loox-experience.css?v=91">
-<style>body.loox-thumb-editing{height:100dvh;overflow:hidden}body.loox-thumb-editing main{height:100dvh;min-height:0;overflow:hidden;padding:10px}body.loox-thumb-editing .topline,body.loox-thumb-editing .loox-guide-host{display:none!important}body.loox-thumb-editing .studio{height:100%;min-height:0}body.loox-thumb-editing .stage-panel,body.loox-thumb-editing .editor-panel{min-height:0;overflow:auto}@media(max-width:650px){body.loox-thumb-editing>aside{display:none}body.loox-thumb-editing main{margin:0!important;width:100%!important;padding:4px!important}body.loox-thumb-editing .studio{display:flex;flex-direction:column}body.loox-thumb-editing .stage-panel{flex:1;min-height:150px}body.loox-thumb-editing .editor-panel{max-height:39dvh;flex:0 0 auto}body.loox-thumb-editing .tabs{display:flex;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin}body.loox-thumb-editing .tabs button{flex:0 0 auto}}</style><link rel="stylesheet" href="loox-page-back.css?v=2">
-<link rel="stylesheet" href="loox-sitewide-nav.css?v=105"></head>
+<link rel="stylesheet" href="loox-experience.css?v=obsidian-blue-1">
+<style>body.loox-thumb-editing{height:100dvh;overflow:hidden}body.loox-thumb-editing main{height:100dvh;min-height:0;overflow:hidden;padding:10px}body.loox-thumb-editing .topline,body.loox-thumb-editing .loox-guide-host{display:none!important}body.loox-thumb-editing .studio{height:100%;min-height:0}body.loox-thumb-editing .stage-panel,body.loox-thumb-editing .editor-panel{min-height:0;overflow:auto}@media(max-width:650px){body.loox-thumb-editing>aside{display:none}body.loox-thumb-editing main{margin:0!important;width:100%!important;padding:4px!important}body.loox-thumb-editing .studio{display:flex;flex-direction:column}body.loox-thumb-editing .stage-panel{flex:1;min-height:150px}body.loox-thumb-editing .editor-panel{max-height:39dvh;flex:0 0 auto}body.loox-thumb-editing .tabs{display:flex;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:thin}body.loox-thumb-editing .tabs button{flex:0 0 auto}}</style><link rel="stylesheet" href="loox-page-back.css?v=obsidian-blue-1">
+<link rel="stylesheet" href="loox-sitewide-nav.css?v=obsidian-blue-1"></head>
 <body>
 <aside>
 <a href="ai-home.html" class="brand"><div class="brand-icon">⚡</div><span>LOOX Tools</span></a>
@@ -128,10 +128,10 @@ input[type=file]{display:none}
 </div>
 <div class="tab-pane" id="tab-layout">
 <div class="field"><label>Choose a starting layout</label><div class="template-grid">
-<button class="template" data-template="gaming"><div class="template-art" style="background:linear-gradient(135deg,#172b64,#e63283)">EPIC WIN</div><small>Gaming / action</small></button>
-<button class="template" data-template="reaction"><div class="template-art" style="background:linear-gradient(135deg,#f97316,#a21caf)">WHAT?!</div><small>Reaction / bold</small></button>
+<button class="template" data-template="gaming"><div class="template-art" style="background:linear-gradient(135deg,#172b64,#22d3ee)">EPIC WIN</div><small>Gaming / action</small></button>
+<button class="template" data-template="reaction"><div class="template-art" style="background:linear-gradient(135deg,#f97316,#3b82f6)">WHAT?!</div><small>Reaction / bold</small></button>
 <button class="template" data-template="tutorial"><div class="template-art" style="background:linear-gradient(135deg,#0e7490,#1d4ed8)">HOW TO</div><small>Tutorial / clean</small></button>
-<button class="template" data-template="cinematic"><div class="template-art" style="background:linear-gradient(135deg,#111827,#7c2d12)">THE FINAL</div><small>Cinematic</small></button>
+<button class="template" data-template="cinematic"><div class="template-art" style="background:linear-gradient(135deg,#101a2b,#7c2d12)">THE FINAL</div><small>Cinematic</small></button>
 </div></div>
 <div class="field"><label>Quick additions</label><div class="two"><button id="addBadge">＋ Add badge</button><button id="addSubtitle">＋ Add subtitle</button></div></div>
 <p class="help">Layouts change text styling and positioning. Every layer remains editable after applying a preset.</p>
@@ -155,8 +155,8 @@ input[type=file]{display:none}
 </section>
 </div>
 <section class="guide"><h2>Make a thumbnail that reads clearly</h2><div class="guide-grid">
-<div class="guide-card"><div class="guide-art" style="background:radial-gradient(circle at 75% 35%,#ffb02e,#db2777 35%,#171b50)">BIG<br>SUBJECT</div><b>1. Start with a clear subject</b><p>Use your own screenshot or photo. Keep the main subject large and leave space for the title.</p></div>
-<div class="guide-card"><div class="guide-art" style="background:linear-gradient(120deg,#172554,#7c3aed)">SHORT<br>BOLD TEXT</div><b>2. Keep words short</b><p>Use a few large words, strong contrast and an outline so text remains readable on a phone.</p></div>
+<div class="guide-card"><div class="guide-art" style="background:radial-gradient(circle at 75% 35%,#ffb02e,#22d3ee 35%,#171b50)">BIG<br>SUBJECT</div><b>1. Start with a clear subject</b><p>Use your own screenshot or photo. Keep the main subject large and leave space for the title.</p></div>
+<div class="guide-card"><div class="guide-art" style="background:linear-gradient(120deg,#172554,#60a5fa)">SHORT<br>BOLD TEXT</div><b>2. Keep words short</b><p>Use a few large words, strong contrast and an outline so text remains readable on a phone.</p></div>
 <div class="guide-card"><div class="guide-art" style="background:linear-gradient(135deg,#0f766e,#0f172a)">16 : 9<br>1280 × 720</div><b>3. Export and check</b><p>Download at 1280 × 720. Preview at a small size before publishing.</p></div>
 </div><p class="help" style="margin-top:12px">Privacy & copyright: uploaded images are processed in your browser and are not sent to LOOX. The built-in starter artwork is drawn with original shapes and gradients—no stock photos or third-party photographs are included. Use images, logos and characters you own or have permission to use.</p></section>
 </main>

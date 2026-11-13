@@ -1,12 +1,12 @@
 /* Wan 2.1 uses the same original LOOX Studio layout as the FLUX workspace. */
-.lvg-body .lvg-video-stage{background:#09090e;overflow:hidden;min-height:240px;max-height:480px}
-.lvg-body .lvg-video-stage video{display:block;width:100%;height:100%;max-height:480px;object-fit:contain;border-radius:13px;background:#09090e}
+.lvg-body .lvg-video-stage{background:#080d16;overflow:hidden;min-height:240px;max-height:480px}
+.lvg-body .lvg-video-stage video{display:block;width:100%;height:100%;max-height:480px;object-fit:contain;border-radius:13px;background:#080d16}
 .lvg-body .lvg-video-stage .lig-skeleton{height:100%}
-.lvg-body .lvg-history-cover{display:grid;place-items:center;aspect-ratio:16/10;background:radial-gradient(circle at 50% 48%,#593883,#201828 52%,#111019);color:#e4d1ff;font-size:28px;font-weight:800}
+.lvg-body .lvg-history-cover{display:grid;place-items:center;aspect-ratio:16/10;background:radial-gradient(circle at 50% 48%,#3b82f6,#142033 52%,#080d16);color:#d9eaff;font-size:28px;font-weight:800}
 .lvg-body .lvg-history-item{min-width:0}
-.lvg-body .lvg-gpu-message{margin:12px 0 0;font-size:12px;line-height:1.45;color:#e9b4bd}
+.lvg-body .lvg-gpu-message{margin:12px 0 0;font-size:12px;line-height:1.45;color:#8fe6ee}
 .lvg-body .lvg-gpu-message[data-online="true"]{color:#9ce4b6}
-.lvg-body .lvg-error{display:flex;align-items:center;justify-content:center;text-align:center;min-height:230px;width:100%;padding:20px;color:#edbdc5;line-height:1.6;font-size:13px}
+.lvg-body .lvg-error{display:flex;align-items:center;justify-content:center;text-align:center;min-height:230px;width:100%;padding:20px;color:#d7f2f7;line-height:1.6;font-size:13px}
 .lvg-body .lig-output-stage{min-height:245px}
 @media(max-width:680px){
  .lvg-body .lvg-video-stage{min-height:210px;max-height:44dvh}
@@ -15,13 +15,13 @@
 }
 
 /* Cloud Wan controls are part of the visible, fixed-height composer. */
-.lvg-body .loox-video-extra-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:9px;padding-top:9px;border-top:1px solid #c3a2e229}
+.lvg-body .loox-video-extra-controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;margin-top:9px;padding-top:9px;border-top:1px solid #a6ccff29}
 .lvg-body .loox-video-extra-setting{display:flex;align-items:center;gap:8px;min-width:0;margin:0!important;padding:0!important}
 .lvg-body .loox-video-extra-setting[hidden]{display:none!important}
-.lvg-body .loox-video-extra-setting>label{font-size:11px!important;color:#ded1ec;white-space:nowrap}
-.lvg-body .loox-video-extra-setting select{max-width:130px;min-height:31px;padding:4px 8px;background:#282033;color:#fff;border:1px solid #776484;border-radius:7px;font-size:11px}
-.lvg-body .loox-video-extra-setting input[type=file]{max-width:min(260px,60vw);font-size:10px;color:#c8bbd5}
-.lvg-body .loox-video-extra-setting input[type=file]::file-selector-button{padding:6px 10px;margin-right:8px;background:#332740;color:#eee;border:1px solid #746180;border-radius:7px;cursor:pointer}
+.lvg-body .loox-video-extra-setting>label{font-size:11px!important;color:#d9eaff;white-space:nowrap}
+.lvg-body .loox-video-extra-setting select{max-width:130px;min-height:31px;padding:4px 8px;background:#142033;color:#fff;border:1px solid #344b69;border-radius:7px;font-size:11px}
+.lvg-body .loox-video-extra-setting input[type=file]{max-width:min(260px,60vw);font-size:10px;color:#a6ccff}
+.lvg-body .loox-video-extra-setting input[type=file]::file-selector-button{padding:6px 10px;margin-right:8px;background:#20314a;color:#e5edf7;border:1px solid #344b69;border-radius:7px;cursor:pointer}
 .lvg-body .loox-video-extra-setting p.lig-help{display:none!important}
 @media(max-width:600px){
  .lvg-body .loox-video-extra-controls{gap:6px 9px}
@@ -31,7 +31,7 @@
 
 /* Override legacy composer rules that hide every label and force blocks to display:block. */
 .lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting:not([hidden]){display:flex!important;align-items:center!important;flex:0 1 auto!important}
-.lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{display:inline!important;color:#e9e0ef!important;font-size:11px!important}
+.lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{display:inline!important;color:#d9eaff!important;font-size:11px!important}
 .lig-body.lvg-body .loox-video-extra-controls .loox-video-extra-setting[hidden]{display:none!important}
 
 /* V4 — aligned model / aspect / duration / reference composer on every screen. */
@@ -50,10 +50,10 @@
 .lvg-body .loox-prompt-controls .loox-ratio-button{white-space:nowrap;min-width:78px}
 .lvg-body .loox-video-extra-controls{grid-column:1/-1;grid-row:2;margin-top:0!important;padding:9px 2px 0!important;display:flex!important;align-items:center!important;justify-content:flex-start;flex-wrap:wrap;gap:10px 17px!important}
 .lvg-body .loox-video-extra-controls .loox-video-extra-setting{height:34px;gap:8px;flex:0 0 auto!important}
-.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{font-size:11px!important;font-weight:650;color:#d8cce0!important}
-.lvg-body .loox-video-extra-controls .loox-video-extra-setting select{height:33px!important;min-height:33px!important;width:112px!important;max-width:112px!important;padding:4px 8px!important;border:1px solid #655470!important;background:#302737!important;color:#f1ebfa!important;border-radius:9px!important}
-.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]{font-size:11px!important;color:#c4b7d4!important;max-width:300px}
-.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]::file-selector-button{background:#352b40!important;border:1px solid #6b5877!important;color:#f6eaff!important;font-size:11px}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting>label{font-size:11px!important;font-weight:650;color:#d9eaff!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting select{height:33px!important;min-height:33px!important;width:112px!important;max-width:112px!important;padding:4px 8px!important;border:1px solid #344b69!important;background:#20314a!important;color:#f1f5f9!important;border-radius:9px!important}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]{font-size:11px!important;color:#a6ccff!important;max-width:300px}
+.lvg-body .loox-video-extra-controls .loox-video-extra-setting input[type=file]::file-selector-button{background:#20314a!important;border:1px solid #344b69!important;color:#f1f5f9!important;font-size:11px}
 .lvg-body .lig-compose-actions{align-items:center!important}
 .lvg-body .lig-compose-actions .lig-primary{min-width:150px!important}
 @media(max-width:750px){

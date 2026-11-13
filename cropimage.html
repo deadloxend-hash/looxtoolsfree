@@ -6,14 +6,14 @@
   <title>Crop Images Online – Ratios & Exact Pixels | LOOX Tools</title>
   <style>
     :root {
-      --bg-dark: #0b0d14;
-      --sidebar-bg: #08090d;
-      --card-bg: #131722;
-      --card-border: #1e2436;
-      --accent-pink: #ec4899;
-      --accent-purple: #8b5cf6;
+      --bg-dark: #080d16;
+      --sidebar-bg: #05080f;
+      --card-bg: #101a2b;
+      --card-border: #142033;
+      --accent-pink: #22d3ee;
+      --accent-purple: #60a5fa;
       --accent-blue: #3b82f6;
-      --text-main: #f3f4f6;
+      --text-main: #e5edf7;
       --text-muted: #9ca3af;
     }
 
@@ -30,7 +30,7 @@
     .nav-links { display: flex; flex-direction: column; gap: 5px; }
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
     .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .nav-item.active { background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.3); color: #fff; }
+    .nav-item.active { background: rgba(34,211,238, 0.1); border-color: rgba(34,211,238, 0.3); color: #fff; }
 
     /* Main Content Area */
     main { margin-left: 260px; flex: 1; padding: 40px; display: flex; flex-direction: column; min-height: 100vh; }
@@ -48,8 +48,8 @@
     .workspace-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); flex: 1; display: flex; flex-direction: column; }
 
     /* Upload Area */
-    .upload-area { border: 2px dashed rgba(236, 72, 153, 0.4); border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); margin: auto 0; }
-    .upload-area:hover { border-color: var(--accent-pink); background: rgba(236, 72, 153, 0.03); }
+    .upload-area { border: 2px dashed rgba(34,211,238, 0.4); border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); margin: auto 0; }
+    .upload-area:hover { border-color: var(--accent-pink); background: rgba(34,211,238, 0.03); }
     .upload-area input { display: none; }
 
     /* Cropper Grid Layout */
@@ -57,7 +57,7 @@
     @media (max-width: 980px) { .cropper-layout { grid-template-columns: 1fr; } }
 
     /* Interactive Canvas Workspace */
-    .canvas-container { position: relative; background: #08090d; border-radius: 12px; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; min-height: 480px; overflow: hidden; user-select: none; }
+    .canvas-container { position: relative; background: #05080f; border-radius: 12px; border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; min-height: 480px; overflow: hidden; user-select: none; }
     .canvas-wrapper { position: relative; display: inline-block; }
     canvas { display: block; max-width: 100%; max-height: 520px; }
 
@@ -87,11 +87,11 @@
     .field-box { display: flex; flex-direction: column; gap: 6px; }
     .field-box label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
     
-    input[type="number"], select { width: 100%; background: #08090d; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; outline: none; font-size: 0.9rem; font-weight: 600; }
+    input[type="number"], select { width: 100%; background: #05080f; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; outline: none; font-size: 0.9rem; font-weight: 600; }
     input[type="number"]:focus, select:focus { border-color: var(--accent-pink); }
 
     .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
-    .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px rgba(34,211,238, 0.3); }
     .btn-primary:hover { opacity: 0.9; }
     .btn-secondary { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--card-border); }
     .btn-secondary:hover { background: rgba(255,255,255,0.1); }
@@ -101,7 +101,7 @@
 .brand{min-height:38px;flex-shrink:0}
 body>aside{box-shadow:12px 0 34px rgba(0,0,0,.16)}
 .nav-item{position:relative;overflow:hidden;transition:background .22s ease,border-color .22s ease,color .22s ease,transform .22s ease}
-.nav-item::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(236,72,153,.14),transparent);transform:translateX(-110%);transition:transform .45s ease;pointer-events:none}
+.nav-item::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(34,211,238,.14),transparent);transform:translateX(-110%);transition:transform .45s ease;pointer-events:none}
 .nav-item:hover::before{transform:translateX(110%)}
 .nav-item:hover{transform:translateX(3px)}
 body{animation:looxPageIn .34s ease both}
@@ -111,7 +111,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 @media(max-width:620px){body>aside{width:68px!important;padding:12px 8px!important}body>aside .brand{justify-content:center}body>aside .brand span,body>aside .nav-section-title,body>aside .nav-item span+span{display:none!important}body>aside .nav-item{justify-content:center!important;padding:12px 4px!important}main{margin-left:68px!important;padding:14px!important}}
 
 </style>
-  <link rel="stylesheet" href="loox-tool-ui.css?v=3">
+  <link rel="stylesheet" href="loox-tool-ui.css?v=obsidian-blue-1">
 
 <meta name="description" content="A stronger frame can make the same photograph tell a clearer story. Learn the workflow, choose useful settings, and review privacy details with LOOX Tools.">
 
@@ -120,7 +120,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 
 
 
-<link rel="stylesheet" href="loox-experience.css?v=93">
+<link rel="stylesheet" href="loox-experience.css?v=obsidian-blue-1">
 
 <style id="loox-mobile-crop-studio">
 @media(max-width:760px){
@@ -132,14 +132,14 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  body:has(#cropperLayout[style*="grid"]) .canvas-container{flex:1 1 0;min-height:0!important;height:auto;overflow:hidden;padding:10px 6px 74px;touch-action:pan-y}
  body:has(#cropperLayout[style*="grid"]) .canvas-wrapper{max-width:100%;max-height:100%;display:flex;align-items:center;justify-content:center}
  body:has(#cropperLayout[style*="grid"]) #sourceCanvas{max-width:100%;max-height:calc(100dvh - 235px);width:auto;height:auto;object-fit:contain}
- body:has(#cropperLayout[style*="grid"]) .controls-panel{position:fixed!important;left:8px;right:8px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:85;max-height:min(43dvh,340px);overflow-y:auto;display:none!important;border:1px solid #44405a;border-radius:15px;background:#15141f;padding:12px;box-shadow:0 -12px 45px #000a}
+ body:has(#cropperLayout[style*="grid"]) .controls-panel{position:fixed!important;left:8px;right:8px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:85;max-height:min(43dvh,340px);overflow-y:auto;display:none!important;border:1px solid #2a405c;border-radius:15px;background:#101a2b;padding:12px;box-shadow:0 -12px 45px #000a}
  body:has(#cropperLayout[style*="grid"]) .controls-panel.loox-crop-drawer-open{display:flex!important}
  .loox-crop-mobile-bar{display:none}
  .controls-panel .control-group[hidden]{display:none!important}
- body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar{position:fixed;bottom:env(safe-area-inset-bottom);left:0;right:0;z-index:90;display:flex;align-items:stretch;justify-content:space-around;gap:5px;padding:9px 8px 13px;border-top:1px solid #343044;background:#15141e;box-shadow:0 -8px 30px #0008}
- .loox-crop-mobile-bar button{flex:1;min-width:0;min-height:49px;border:0;border-radius:11px;background:#272535;color:#f5f2ff;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+ body:has(#cropperLayout[style*="grid"]) .loox-crop-mobile-bar{position:fixed;bottom:env(safe-area-inset-bottom);left:0;right:0;z-index:90;display:flex;align-items:stretch;justify-content:space-around;gap:5px;padding:9px 8px 13px;border-top:1px solid #20314a;background:#101a2b;box-shadow:0 -8px 30px #0008}
+ .loox-crop-mobile-bar button{flex:1;min-width:0;min-height:49px;border:0;border-radius:11px;background:#142033;color:#f1f5f9;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
  .loox-crop-mobile-bar button b{font-size:19px}
- .loox-crop-mobile-bar button.primary{background:#7957e8;color:#fff}
+ .loox-crop-mobile-bar button.primary{background:#60a5fa;color:#fff}
  body:has(#cropperLayout[style*="grid"]) .loox-guide-host,body:has(#cropperLayout[style*="grid"]) .loox-app-footer{display:none!important}
 }
 
@@ -147,10 +147,10 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
 .loox-crop-gesture-hint{display:none}
 #canvasWrapper{touch-action:none!important;-webkit-user-select:none;user-select:none}
 #canvasWrapper.pinching .crop-box{cursor:zoom-out}
-.crop-box{touch-action:none!important;border:2px solid #fff!important;outline:1px solid #1117;outline-offset:-3px}
+.crop-box{touch-action:none!important;border:2px solid #fff!important;outline:1px solid #080d1677;outline-offset:-3px}
 .crop-box .handle{touch-action:none;z-index:2}
 @media(hover:none),(pointer:coarse){
- .crop-box .handle{width:20px;height:20px;border-radius:6px;border-width:2px;box-shadow:0 0 0 2px #111a}
+ .crop-box .handle{width:20px;height:20px;border-radius:6px;border-width:2px;box-shadow:0 0 0 2px #080d16aa}
  .crop-box .handle.nw{top:-10px;left:-10px}.crop-box .handle.ne{top:-10px;right:-10px}
  .crop-box .handle.sw{bottom:-10px;left:-10px}.crop-box .handle.se{bottom:-10px;right:-10px}
  .crop-box .handle.n{top:-10px;left:calc(50% - 10px)}.crop-box .handle.s{bottom:-10px;left:calc(50% - 10px)}
@@ -158,7 +158,7 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
  .crop-box .handle::after{content:"";position:absolute;inset:-8px}
 }
 @media(max-width:760px){
- body:has(#cropperLayout[style*="grid"]) .loox-crop-gesture-hint{display:block;position:absolute;left:50%;top:5px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 22px);padding:5px 9px;border-radius:9px;background:#171426e8;color:#f2ecff;font:600 10px/1.4 system-ui;text-align:center;z-index:3;pointer-events:none}
+ body:has(#cropperLayout[style*="grid"]) .loox-crop-gesture-hint{display:block;position:absolute;left:50%;top:5px;transform:translateX(-50%);width:max-content;max-width:calc(100% - 22px);padding:5px 9px;border-radius:9px;background:#101a2be8;color:#f1f5f9;font:600 10px/1.4 system-ui;text-align:center;z-index:3;pointer-events:none}
  body:has(#cropperLayout[style*="grid"]) .canvas-container{touch-action:none!important;padding:24px 16px 74px!important}
  body:has(#cropperLayout[style*="grid"]) #canvasWrapper{display:inline-block!important;position:relative!important;max-width:100%!important;max-height:100%!important;touch-action:none!important}
  body:has(#cropperLayout[style*="grid"]) #sourceCanvas{display:block!important;max-width:100%!important;max-height:calc(100dvh - 225px)!important;object-fit:contain!important}
@@ -206,8 +206,8 @@ body.loox-leaving{opacity:0;transform:translateY(-5px);transition:opacity .16s e
    max-height:min(32dvh,235px)!important;overflow-y:auto!important;
    overscroll-behavior:contain!important;display:none!important;
    padding:10px!important;gap:8px!important;margin:0!important;
-   box-shadow:none!important;border:1px solid #514967!important;
-   border-radius:12px!important;background:#1d1a2a!important;
+   box-shadow:none!important;border:1px solid #344b69!important;
+   border-radius:12px!important;background:#142033!important;
  }
  body:has(#cropperLayout[style*="grid"]) .controls-panel.loox-crop-drawer-open{
    display:flex!important;flex-direction:column!important;
@@ -263,15 +263,15 @@ body.loox-crop-active.loox-crop-editing #looxCropTopActions>.loox-crop-bar-label
 }
 </style><style id="loox-crop-persistent-actionbar-v9">
 @media(max-width:760px){
-body.loox-crop-active #looxCropTopActions,body.loox-crop-active:not(.loox-crop-editing) #looxCropTopActions{display:flex!important;position:absolute!important;top:8px!important;left:8px!important;right:8px!important;width:auto!important;max-width:calc(100% - 16px)!important;height:43px!important;box-sizing:border-box!important;z-index:95!important;align-items:center!important;flex-direction:row!important;direction:ltr!important;gap:4px!important;padding:4px 6px!important;background:#1b1b22!important;border:1px solid #4d485a!important;border-radius:11px!important;box-shadow:0 3px 12px #0005!important;pointer-events:auto!important}
-body.loox-crop-active #looxCropTopActions button{display:grid!important;place-items:center!important;flex:0 0 36px!important;width:36px!important;height:34px!important;min-width:0!important;padding:0!important;border:0!important;border-radius:7px!important;background:transparent!important;color:#f4f1f8!important;font-size:22px!important;touch-action:manipulation!important}
+body.loox-crop-active #looxCropTopActions,body.loox-crop-active:not(.loox-crop-editing) #looxCropTopActions{display:flex!important;position:absolute!important;top:8px!important;left:8px!important;right:8px!important;width:auto!important;max-width:calc(100% - 16px)!important;height:43px!important;box-sizing:border-box!important;z-index:95!important;align-items:center!important;flex-direction:row!important;direction:ltr!important;gap:4px!important;padding:4px 6px!important;background:#101a2b!important;border:1px solid #2a405c!important;border-radius:11px!important;box-shadow:0 3px 12px #0005!important;pointer-events:auto!important}
+body.loox-crop-active #looxCropTopActions button{display:grid!important;place-items:center!important;flex:0 0 36px!important;width:36px!important;height:34px!important;min-width:0!important;padding:0!important;border:0!important;border-radius:7px!important;background:transparent!important;color:#f1f5f9!important;font-size:22px!important;touch-action:manipulation!important}
 body.loox-crop-active #looxCropTopActions .loox-crop-bar-label{flex:1 1 auto!important;min-width:0!important;text-align:center!important;font-size:13px!important;font-weight:700!important}
 body.loox-crop-active:not(.loox-crop-editing) #looxCropCancel,body.loox-crop-active:not(.loox-crop-editing) #looxCropApply{visibility:hidden!important;pointer-events:none!important}
 body.loox-crop-active #looxCropTopActions button:disabled{opacity:.3!important}
 body.loox-crop-active .canvas-container{padding-top:56px!important}
 }
-</style><link rel="stylesheet" href="loox-page-back.css?v=2">
-<link rel="stylesheet" href="loox-sitewide-nav.css?v=105"></head>
+</style><link rel="stylesheet" href="loox-page-back.css?v=obsidian-blue-1">
+<link rel="stylesheet" href="loox-sitewide-nav.css?v=obsidian-blue-1"></head>
 <body>
 
   <!-- Left Sidebar Navigation -->
@@ -747,8 +747,8 @@ body.loox-crop-active.loox-crop-editing #cropBox{display:block!important}
 body.loox-crop-active .loox-crop-gesture-hint{display:none!important}
 body.loox-crop-active.loox-crop-editing .loox-crop-gesture-hint{display:block!important}
 body.loox-crop-active #looxCropTopActions{display:flex!important;position:fixed;z-index:9998;top:calc(env(safe-area-inset-top) + 8px);left:10px;right:10px;justify-content:space-between;align-items:center;gap:12px;pointer-events:none}
-body.loox-crop-active #looxCropTopActions button{pointer-events:auto;background:#23212e;color:white;border:1px solid #76668f;border-radius:12px;padding:10px 18px;font-size:20px;font-weight:800}
-body.loox-crop-active #looxCropTopActions button:last-child{background:#a884f6;color:#181024}
+body.loox-crop-active #looxCropTopActions button{pointer-events:auto;background:#142033;color:white;border:1px solid #7d9bbd;border-radius:12px;padding:10px 18px;font-size:20px;font-weight:800}
+body.loox-crop-active #looxCropTopActions button:last-child{background:#a6ccff;color:#101a2b}
 body.loox-crop-active:not(.loox-crop-editing) #looxCropTopActions{display:none!important}
 body.loox-crop-active:not(.loox-crop-editing) .controls-panel{display:none!important}
 }
@@ -758,18 +758,18 @@ body.loox-crop-active:not(.loox-crop-editing) .controls-panel{display:none!impor
 body.loox-crop-active #looxCropTopActions{
  position:fixed!important;top:68px!important;left:8px!important;right:8px!important;
  height:43px!important;padding:3px 6px!important;gap:4px!important;box-sizing:border-box!important;
- border:1px solid #484653!important;border-radius:11px!important;
- background:#191a20f5!important;box-shadow:0 3px 14px #0006!important;
+ border:1px solid #2a405c!important;border-radius:11px!important;
+ background:#101a2bf5!important;box-shadow:0 3px 14px #0006!important;
  justify-content:space-between!important;pointer-events:auto!important;
 }
 body.loox-crop-active #looxCropTopActions button{
  flex:0 0 40px!important;width:40px!important;height:34px!important;
  border:0!important;border-radius:7px!important;padding:0!important;
- font-size:21px!important;background:transparent!important;color:#f2f2f5!important;
+ font-size:21px!important;background:transparent!important;color:#f1f5f9!important;
 }
 body.loox-crop-active #looxCropTopActions button:disabled{opacity:.3!important}
-body.loox-crop-active #looxCropTopActions #looxCropApply{background:#9c75ed!important;color:#171120!important}
-body.loox-crop-active #looxCropTopActions .loox-crop-bar-label{flex:1;min-width:0;text-align:center;font-size:12px;font-weight:700;color:#e7e3ee}
+body.loox-crop-active #looxCropTopActions #looxCropApply{background:#a6ccff!important;color:#101a2b!important}
+body.loox-crop-active #looxCropTopActions .loox-crop-bar-label{flex:1;min-width:0;text-align:center;font-size:12px;font-weight:700;color:#f1f5f9}
 body.loox-crop-active .canvas-container{padding-top:53px!important}
 }
 </style><style id="loox-crop-mobile-clean-v7">
@@ -780,7 +780,7 @@ body.loox-crop-active .controls-panel.loox-crop-drawer-open{
 position:absolute!important;left:7px!important;right:7px!important;bottom:7px!important;
 width:auto!important;max-height:min(27dvh,190px)!important;overflow-y:auto!important;
 z-index:80!important;box-shadow:0 10px 30px #000a!important;
-background:#1b1925f2!important;backdrop-filter:blur(12px)!important;
+background:#101a2bf2!important;backdrop-filter:blur(12px)!important;
 padding:9px!important;gap:5px!important;border-radius:12px!important;
 }
 body.loox-crop-active .controls-panel .control-group{padding:8px!important;gap:5px!important}
@@ -823,8 +823,8 @@ host.prepend(button);
 <style>
 #looxChangePhoto{display:none}
 @media(max-width:760px){
-body.loox-crop-active #looxChangePhoto{display:block!important;position:fixed;top:12px;right:14px;z-index:95;background:#30283e;color:#fff;border:1px solid #665577;border-radius:9px;padding:8px 11px;font-weight:700;font-size:12px}
-body.loox-crop-active .loox-crop-mobile-bar button[data-crop-action="save"]{background:#7957e8}
+body.loox-crop-active #looxChangePhoto{display:block!important;position:fixed;top:12px;right:14px;z-index:95;background:#20314a;color:#fff;border:1px solid #344b69;border-radius:9px;padding:8px 11px;font-weight:700;font-size:12px}
+body.loox-crop-active .loox-crop-mobile-bar button[data-crop-action="save"]{background:#60a5fa}
 }
 </style><script src="loox-page-back.js?v=2" defer></script>
 <script defer src="loox-sitewide-nav.js?v=103"></script></body>

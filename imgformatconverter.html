@@ -6,14 +6,14 @@
   <title>Convert Images Online – PNG, JPG & WebP | LOOX Tools</title>
   <style>
     :root {
-      --bg-dark: #0b0d14;
-      --sidebar-bg: #08090d;
-      --card-bg: #131722;
-      --card-border: #1e2436;
-      --accent-pink: #ec4899;
-      --accent-purple: #8b5cf6;
+      --bg-dark: #080d16;
+      --sidebar-bg: #05080f;
+      --card-bg: #101a2b;
+      --card-border: #142033;
+      --accent-pink: #22d3ee;
+      --accent-purple: #60a5fa;
       --accent-blue: #3b82f6;
-      --text-main: #f3f4f6;
+      --text-main: #e5edf7;
       --text-muted: #9ca3af;
     }
 
@@ -30,7 +30,7 @@
     .nav-links { display: flex; flex-direction: column; gap: 5px; }
     .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.2s; cursor: pointer; border: 1px solid transparent; }
     .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-    .nav-item.active { background: rgba(236, 72, 153, 0.1); border-color: rgba(236, 72, 153, 0.3); color: #fff; }
+    .nav-item.active { background: rgba(34,211,238, 0.1); border-color: rgba(34,211,238, 0.3); color: #fff; }
 
     /* Main Content Area */
     main { margin-left: 260px; flex: 1; padding: 40px; display: flex; flex-direction: column; min-height: 100vh; }
@@ -48,8 +48,8 @@
     .workspace-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); flex: 1; display: flex; flex-direction: column; }
 
     /* Upload Box */
-    .upload-area { border: 2px dashed rgba(236, 72, 153, 0.4); border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); margin: auto 0; }
-    .upload-area:hover { border-color: var(--accent-pink); background: rgba(236, 72, 153, 0.03); }
+    .upload-area { border: 2px dashed rgba(34,211,238, 0.4); border-radius: 12px; padding: 50px 20px; text-align: center; cursor: pointer; transition: 0.2s; background: rgba(0,0,0,0.2); margin: auto 0; }
+    .upload-area:hover { border-color: var(--accent-pink); background: rgba(34,211,238, 0.03); }
     .upload-area input { display: none; }
 
     /* Converter Panel */
@@ -63,13 +63,13 @@
     .setting-group { display: flex; flex-direction: column; gap: 8px; }
     .setting-group label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
     
-    select, input[type="range"] { width: 100%; background: #08090d; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; outline: none; font-size: 0.9rem; }
+    select, input[type="range"] { width: 100%; background: #05080f; border: 1px solid var(--card-border); color: #fff; padding: 10px; border-radius: 8px; outline: none; font-size: 0.9rem; }
     
     .file-info { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px solid var(--card-border); padding-top: 10px; margin-top: 5px; flex-wrap: wrap; gap: 10px; }
     .live-preview-note { color: #86efcc; }
 
     .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
-    .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+    .btn-primary { background: linear-gradient(135deg, var(--accent-pink), var(--accent-purple)); color: #fff; box-shadow: 0 4px 15px rgba(34,211,238, 0.3); }
     .btn-primary:hover { opacity: 0.9; }
     .btn-secondary { background: rgba(255,255,255,0.06); color: #fff; border: 1px solid var(--card-border); margin-top: 10px; }
     .btn-secondary:hover { background: rgba(255,255,255,0.1); }
@@ -79,7 +79,7 @@
 .brand{min-height:38px;flex-shrink:0}
 body>aside{box-shadow:12px 0 34px rgba(0,0,0,.16)}
 .nav-item{position:relative;overflow:hidden;transition:background .22s ease,border-color .22s ease,color .22s ease,transform .22s ease}
-.nav-item::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(236,72,153,.14),transparent);transform:translateX(-110%);transition:transform .45s ease;pointer-events:none}
+.nav-item::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent,rgba(34,211,238,.14),transparent);transform:translateX(-110%);transition:transform .45s ease;pointer-events:none}
 .nav-item:hover::before{transform:translateX(110%)}
 .nav-item:hover{transform:translateX(3px)}
 body{animation:looxPageIn .34s ease both}
@@ -95,14 +95,14 @@ body.converter-editing main{height:100dvh;min-height:0;padding:14px 18px 12px;ov
 body.converter-editing .hero{display:none}
 body.converter-editing .workspace-card{min-height:0;flex:1;padding:14px;overflow:hidden}
 body.converter-editing .converter-layout{display:flex!important;flex:1;min-height:0;gap:12px;margin:0}
-.converter-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#ddd5f8;flex:0 0 auto}
-.converter-new{background:#282b40;border:1px solid #444960;color:#fff;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}
+.converter-topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:#d9eaff;flex:0 0 auto}
+.converter-new{background:#20314a;border:1px solid #364c68;color:#fff;border-radius:10px;padding:10px 13px;font-weight:700;cursor:pointer}
 .converter-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(255px,310px);gap:12px;min-height:0;flex:1}
-.converter-stage{min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;border:1px solid #30364b;border-radius:12px;background-color:#10131f;background-image:linear-gradient(45deg,#191d2d 25%,transparent 25%),linear-gradient(-45deg,#191d2d 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#191d2d 75%),linear-gradient(-45deg,transparent 75%,#191d2d 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;padding:12px}
+.converter-stage{min-width:0;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;border:1px solid #2a405c;border-radius:12px;background-color:#101a2b;background-image:linear-gradient(45deg,#142033 25%,transparent 25%),linear-gradient(-45deg,#142033 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#142033 75%),linear-gradient(-45deg,transparent 75%,#142033 75%);background-size:22px 22px;background-position:0 0,0 11px,11px -11px,-11px 0;padding:12px}
 .converter-stage .preview-box{max-height:100%;min-height:0;max-width:100%;flex:0 1 auto}
 .converter-stage .preview-box img{max-width:100%;max-height:calc(100dvh - 180px);object-fit:contain}
-.converter-preview-note{font-size:11px;color:#b1bad1;text-align:center;background:#111827dd;border-radius:8px;padding:5px 8px}
-.converter-inspector{min-height:0;overflow-y:auto;overscroll-behavior:contain;background:#1b1d2d;border:1px solid #38364f;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:12px}
+.converter-preview-note{font-size:11px;color:#b1bad1;text-align:center;background:#101a2bdd;border-radius:8px;padding:5px 8px}
+.converter-inspector{min-height:0;overflow-y:auto;overscroll-behavior:contain;background:#142033;border:1px solid #2a405c;border-radius:12px;padding:15px;display:flex;flex-direction:column;gap:12px}
 .converter-inspector h2{font-size:15px;margin:0}.converter-inspector>p{font-size:12px;color:#b7bdd1;margin:0}
 .converter-inspector .settings-grid{display:flex;flex-direction:column;gap:14px;padding:10px;border-radius:10px;min-width:0}
 .converter-inspector .setting-group{min-width:0}
@@ -126,9 +126,9 @@ body.converter-editing .converter-layout{display:flex!important;flex:1;min-heigh
  .converter-inspector{display:none;position:absolute;inset:auto 4px 3px;z-index:12;max-height:min(65dvh,410px);overflow-y:auto;box-shadow:0 -14px 35px #000b;padding:14px;border-radius:16px}
  .converter-inspector.open{display:flex}
  .converter-mobile-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px 2px calc(7px + env(safe-area-inset-bottom));flex:0 0 auto}
- .converter-mobile-bar button{color:#eee9ff;border:0;border-radius:10px;background:#29263e;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:54px;font-size:11px;font-weight:700;cursor:pointer}
+ .converter-mobile-bar button{color:#f1f5f9;border:0;border-radius:10px;background:#20314a;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:54px;font-size:11px;font-weight:700;cursor:pointer}
  .converter-mobile-bar button b{font-size:20px}
- .converter-mobile-bar button.converter-mobile-save{background:#7554bc;color:white}
+ .converter-mobile-bar button.converter-mobile-save{background:#60a5fa;color:white}
 }
 @media(max-height:540px) and (min-width:651px){.converter-stage .preview-box img{max-height:calc(100dvh - 120px)}}
 
@@ -143,7 +143,7 @@ body.converter-editing .workspace-card,body.converter-editing .converter-layout,
 .converter-inspector .settings-grid{width:100%;box-sizing:border-box}
 .converter-inspector .setting-group{display:flex;flex-direction:column;align-items:stretch;width:100%;gap:8px}
 .converter-inspector .setting-group label{width:100%;line-height:1.45}
-.converter-inspector #qualityRange{display:block;width:100%;max-width:100%;height:28px;padding:0;margin:0;box-sizing:border-box;accent-color:#ac70f2}
+.converter-inspector #qualityRange{display:block;width:100%;max-width:100%;height:28px;padding:0;margin:0;box-sizing:border-box;accent-color:#a6ccff}
 .converter-inspector #formatSelect{width:100%;max-width:100%;min-width:0}
 @media(max-width:650px){
  body.converter-editing main{padding:5px!important}
@@ -163,24 +163,24 @@ body.converter-editing .workspace-card,body.converter-editing .converter-layout,
 /* Precision quality control: consistent row alignment across desktop and mobile */
 .converter-inspector #qualityGroup{display:grid!important;grid-template-columns:minmax(0,1fr);gap:12px!important;align-content:start;justify-items:stretch;min-width:0;width:100%;padding:0}
 .converter-inspector #qualityGroup>label{display:flex!important;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;width:100%;margin:0;line-height:1.5}
-.converter-inspector #qualityVal{font-variant-numeric:tabular-nums;color:#d9b4ff;font-weight:750}
+.converter-inspector #qualityVal{font-variant-numeric:tabular-nums;color:#d9eaff;font-weight:750}
 .converter-inspector #qualityRange{
  appearance:none!important;-webkit-appearance:none!important;
  display:block!important;position:relative;width:100%!important;
  min-width:0!important;max-width:100%!important;
  height:8px!important;margin:9px 0 14px!important;padding:0!important;
  border:0!important;border-radius:999px!important;
- background:linear-gradient(90deg,#a77cff 0%,#a77cff var(--quality-fill,90%),#454258 var(--quality-fill,90%),#454258 100%)!important;
+ background:linear-gradient(90deg,#a6ccff 0%,#a6ccff var(--quality-fill,90%),#2a405c var(--quality-fill,90%),#2a405c 100%)!important;
  outline-offset:7px;box-shadow:none!important;cursor:pointer;
 }
 .converter-inspector #qualityRange::-webkit-slider-thumb{
  appearance:none;-webkit-appearance:none;width:19px;height:19px;
- border:3px solid #eee7ff;border-radius:50%;background:#9668e9;
+ border:3px solid #f1f5f9;border-radius:50%;background:#60a5fa;
  box-shadow:0 1px 6px #0009;cursor:grab;
 }
 .converter-inspector #qualityRange::-moz-range-thumb{
- width:14px;height:14px;border:3px solid #eee7ff;border-radius:50%;
- background:#9668e9;box-shadow:0 1px 6px #0009;cursor:grab;
+ width:14px;height:14px;border:3px solid #f1f5f9;border-radius:50%;
+ background:#60a5fa;box-shadow:0 1px 6px #0009;cursor:grab;
 }
 
 /* Fix: after uploading, the photo workspace must stay fixed without page/canvas scrollbars. */
@@ -205,17 +205,17 @@ body.converter-editing main{margin-top:0!important}
 
 /* Transparent PNG-style viewer on desktop and mobile; never add a decorative frame. */
 body.converter-editing .converter-stage{
- background-color:#10131f!important;
- background-image:linear-gradient(45deg,#191d2d 25%,transparent 25%),linear-gradient(-45deg,#191d2d 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#191d2d 75%),linear-gradient(-45deg,transparent 75%,#191d2d 75%)!important;
+ background-color:#101a2b!important;
+ background-image:linear-gradient(45deg,#142033 25%,transparent 25%),linear-gradient(-45deg,#142033 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#142033 75%),linear-gradient(-45deg,transparent 75%,#142033 75%)!important;
  background-size:22px 22px!important;
  background-position:0 0,0 11px,11px -11px,-11px 0!important;
- border-color:#30364b!important;
+ border-color:#2a405c!important;
 }
 body.converter-editing .converter-stage .preview-box{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
 body.converter-editing .converter-stage #imagePreview{background:transparent!important;border:0!important;outline:0!important;box-shadow:none!important;border-radius:0!important}
-body.converter-editing .converter-preview-note{color:#b1bad1!important;background:#111827dd!important}
+body.converter-editing .converter-preview-note{color:#b1bad1!important;background:#101a2bdd!important}
 </style>
-  <link rel="stylesheet" href="loox-tool-ui.css?v=3">
+  <link rel="stylesheet" href="loox-tool-ui.css?v=obsidian-blue-1">
 
 <meta name="description" content="Convert images to PNG, JPG or WebP in your browser. Preview transparency, adjust quality, compare estimated file size and download a separate image.">
 
@@ -225,9 +225,9 @@ body.converter-editing .converter-preview-note{color:#b1bad1!important;backgroun
 
 
 
-<link rel="stylesheet" href="loox-experience.css?v=91">
-<link rel="stylesheet" href="loox-page-back.css?v=2">
-<link rel="stylesheet" href="loox-sitewide-nav.css?v=105"></head>
+<link rel="stylesheet" href="loox-experience.css?v=obsidian-blue-1">
+<link rel="stylesheet" href="loox-page-back.css?v=obsidian-blue-1">
+<link rel="stylesheet" href="loox-sitewide-nav.css?v=obsidian-blue-1"></head>
 <body>
 
   <!-- Left Sidebar Navigation -->
@@ -297,7 +297,7 @@ body.converter-editing .converter-preview-note{color:#b1bad1!important;backgroun
 
           <div class="file-info" style="grid-column: 1 / -1;">
             <span>Source Name: <strong id="fileNameDisplay" style="color:#fff;">-</strong></span>
-            <span>Detected Format: <strong id="fileTypeDisplay" style="color:#ec4899;">-</strong></span>
+            <span>Detected Format: <strong id="fileTypeDisplay" style="color:#22d3ee;">-</strong></span>
             <span>Source File Size: <strong id="fileSizeDisplay" style="color:#fff;">-</strong></span>
             <span class="live-preview-note">Live Output Size: <strong id="outputSizeDisplay">-</strong></span>
           </div>

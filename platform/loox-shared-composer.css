@@ -1,15 +1,15 @@
 /* Shared LOOX AI glass composer — image, video, and agent. */
-:root{--loox-composer-glass:linear-gradient(115deg,rgba(65,39,81,.76),rgba(101,58,84,.48)),rgba(27,20,36,.58)}
+:root{--loox-composer-glass:linear-gradient(115deg,rgba(42,64,92,.76),rgba(42,64,92,.48)),rgba(16,26,43,.58)}
 .lig-body .lig-compose-card{
  background:var(--loox-composer-glass)!important;
- border:1px solid rgba(230,201,238,.52)!important;
+ border:1px solid rgba(217,234,255,.52)!important;
  border-radius:19px!important;
  padding:16px!important;
  box-shadow:0 16px 38px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.07)!important;
  -webkit-backdrop-filter:blur(22px) saturate(125%);
  backdrop-filter:blur(22px) saturate(125%);
 }
-.lig-body .lig-compose-card:focus-within{border-color:rgba(242,215,255,.85)!important}
+.lig-body .lig-compose-card:focus-within{border-color:rgba(241,245,249,.85)!important}
 .lig-body .lig-compose textarea{
  background:transparent!important;color:#fff!important;
  min-height:76px!important;line-height:1.55!important;
@@ -18,14 +18,14 @@
 }
 .lig-body .lig-compose textarea::placeholder{color:rgba(255,255,255,.83)!important;opacity:1}
 .lig-body .lig-compose-actions{gap:8px!important;margin-top:8px!important}
-.lig-body .loox-prompt-mode{border-radius:11px!important;background:rgba(235,227,242,.87)!important;color:#30253d!important;border:0!important;font-size:12px!important;font-weight:750!important}
-.lig-body .lig-primary{border-radius:12px!important;background:#08080b!important;color:white!important;min-height:39px!important;box-shadow:none!important}
+.lig-body .loox-prompt-mode{border-radius:11px!important;background:rgba(241,245,249,.87)!important;color:#20314a!important;border:0!important;font-size:12px!important;font-weight:750!important}
+.lig-body .lig-primary{border-radius:12px!important;background:#05080f!important;color:white!important;min-height:39px!important;box-shadow:none!important}
 .lig-body .lig-compose-actions .lig-primary{padding:10px 19px!important}
 .lig-body .loox-prompt-toolbar{margin:0 0 12px!important;align-items:center}
 .lig-body .loox-prompt-mode.is-active{background:#c6f1f8!important;color:#007ea2!important}
 .lig-body .loox-prompt-setting .lig-select-trigger,
-.lig-body .loox-prompt-setting select:not(.lig-native-select){background:rgba(234,227,241,.85)!important;color:#2f253b!important;border:0!important;border-radius:10px!important}
-.lig-body .loox-prompt-setting .lig-select-chevron{color:#514364!important}
+.lig-body .loox-prompt-setting select:not(.lig-native-select){background:rgba(241,245,249,.85)!important;color:#20314a!important;border:0!important;border-radius:10px!important}
+.lig-body .loox-prompt-setting .lig-select-chevron{color:#364c68!important}
 .lig-body .lig-compose label{display:none!important}
 @media(max-width:680px){
  .lig-body .lig-compose-card{padding:12px!important;border-radius:17px!important}
