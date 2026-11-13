@@ -14,6 +14,7 @@ on:
       - "trending.html"
       - "scripts/creator-profile-audit.mjs"
       - "scripts/community-viewer-audit.mjs"
+      - "scripts/comments-sheet-audit.mjs"
       - ".github/workflows/creator-profile-check.yml"
 permissions:
   contents: read
@@ -33,6 +34,7 @@ jobs:
           node --check platform/community-social.js
           node --check scripts/community-viewer-audit.mjs
           node --check scripts/creator-profile-audit.mjs
+          node --check scripts/comments-sheet-audit.mjs
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           import assert from 'node:assert/strict';
@@ -63,3 +65,4 @@ jobs:
           sleep 2
           node scripts/creator-profile-audit.mjs
           node scripts/community-viewer-audit.mjs
+          node scripts/comments-sheet-audit.mjs
