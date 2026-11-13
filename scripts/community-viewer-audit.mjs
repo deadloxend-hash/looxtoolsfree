@@ -86,7 +86,7 @@ async function test(pageName,width,owner){
  await viewer.getByRole('button',{name:'View comments'}).click();
  if(pageName==='community.html'&&width<=700){
   assert.equal(await page.evaluate(()=>window.__mobileComments),1);checks++;
-  assert.equal(await page.locator('.community-viewer').count(),0);checks++;
+  await page.locator('.community-viewer').waitFor({state:'detached',timeout:5000});checks++;
  }else{
   await viewer.getByText('Mock comments loaded').waitFor();checks++;
  }
