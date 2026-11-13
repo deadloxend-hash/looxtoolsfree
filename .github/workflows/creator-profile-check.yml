@@ -6,6 +6,11 @@ on:
       - "creator.html"
       - "platform/creator.js"
       - "platform/creator-profile.css"
+      - "platform/community.js"
+      - "platform/community-social.js"
+      - "platform/community-page.js"
+      - "community.html"
+      - "trending.html"
       - "scripts/creator-profile-audit.mjs"
       - ".github/workflows/creator-profile-check.yml"
 permissions:
@@ -20,7 +25,23 @@ jobs:
         with:
           node-version: 22
       - name: Validate profile JavaScript
-        run: node --check platform/creator.js && node --check scripts/creator-profile-audit.mjs
+        run: |
+          node --check platform/creator.js
+          node --check platform/community.js
+          node --check platform/community-social.js
+          node --check scripts/creator-profile-audit.mjs
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const community=fs.readFileSync('platform/community-social.js','utf8');
+          const creator=fs.readFileSync('platform/creator.js','utf8');
+          assert.ok(community.includes("if(this.state.user?.id===post.creator_id){"),'Community owner check missing');
+          assert.ok(community.includes("action:'delete'"),'Community delete action missing');
+          assert.ok(community.includes("action:'edit'"),'Community edit action missing');
+          assert.ok(creator.includes("function ownerPostMenu(post)"),'Creator post menu missing');
+          assert.ok(creator.includes("function deletePostDialog(post)"),'Creator delete confirmation missing');
+          console.log('Community post ownership action regression checks passed');
+          JS
       - name: Install ephemeral Playwright test runner
         run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
       - name: Locate Chromium
