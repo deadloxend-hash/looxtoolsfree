@@ -61,7 +61,21 @@ function setupEngine(){
  engine.connections=showConnections;
  engine.privacy=showPrivacy;
  engine.notifications=showNotifications;
- engine.like=async(post)=>{const on=!post.liked;await cloudRequest(state,'like',{method:'POST',data:{post_id:post.id,on}});post.liked=on;post.likes=Math.max(0,Number(post.likes||0)+(on?1:-1));};
+ engine.like=async(post,button=null)=>{
+  if(!state.user){auth('login');return;}
+  if(engine.pendingLikes.has(post.id))return;
+  engine.pendingLikes.add(post.id);
+  const previous={liked:!!post.liked,likes:Number(post.likes)||0};
+  post.liked=!previous.liked;post.likes=Math.max(0,previous.likes+(post.liked?1:-1));
+  const sync=()=>{
+   if(button?.classList.contains('community-like-shortcut'))engine.renderLike(post,button);
+   document.dispatchEvent(new CustomEvent('loox:post-like-change',{detail:{postId:post.id,liked:post.liked,likes:post.likes}}));
+  };
+  sync();
+  try{await cloudRequest(state,'like',{method:'POST',data:{post_id:post.id,on:post.liked}});}
+  catch(e){Object.assign(post,previous);sync();throw e;}
+  finally{engine.pendingLikes.delete(post.id);}
+ };
  engine.save=async(post)=>{const on=!post.saved;await cloudRequest(state,'save',{method:'POST',data:{post_id:post.id,on}});post.saved=on;};
 }
 async function refreshProfile(){const p=await cloudRequest(state,'profile',{query:{id:creatorId}});
@@ -325,6 +339,34 @@ function preview(post,wrap,asTile=false){
   const io=new IntersectionObserver(entries=>{if(entries.some(x=>x.isIntersecting)){io.disconnect();load();}},{rootMargin:'360px'});
   io.observe(frame);
  }else load();
+
+ // Match Community: a tap opens the viewer, while two nearby taps like
+ // without opening it or accidentally unliking an already-liked post.
+ let firstAt=0,firstX=0,firstY=0,openTimer=null;
+ frame.addEventListener('click',event=>{
+  if(!matchMedia('(max-width:800px)').matches||event.detail===0)return;
+  event.preventDefault();event.stopImmediatePropagation();
+  const at=performance.now();
+  const double=firstAt>0&&at-firstAt<340&&Math.hypot(event.clientX-firstX,event.clientY-firstY)<75;
+  if(openTimer){clearTimeout(openTimer);openTimer=null;}
+  if(double){
+   firstAt=0;
+   const rect=frame.getBoundingClientRect(),burst=el('span','cx-doubletap-heart');
+   const mark=svg('heart',76);mark.querySelector('svg')?.setAttribute('fill','currentColor');
+   burst.append(mark);burst.setAttribute('aria-hidden','true');
+   burst.style.left=Math.max(38,Math.min(rect.width-38,event.clientX-rect.left))+'px';
+   burst.style.top=Math.max(38,Math.min(rect.height-38,event.clientY-rect.top))+'px';
+   frame.append(burst);burst.addEventListener('animationend',()=>burst.remove(),{once:true});
+   setTimeout(()=>burst.remove(),950);
+   if(!post.liked&&!engine.pendingLikes.has(post.id))engine.like(post).catch(showError);
+   return;
+  }
+  firstAt=at;firstX=event.clientX;firstY=event.clientY;
+  openTimer=setTimeout(()=>{
+   openTimer=null;firstAt=0;
+   if(frame.isConnected)Promise.resolve(engine.details(post)).catch(showError);
+  },340);
+ },true);
  return frame;
 }
 function emptyContent(heading,description){
@@ -415,6 +457,14 @@ function ownerPostMenu(post){
  toggle.append(svg('more',20));toggle.setAttribute('aria-label','Post options');
  toggle.title='Post options';toggle.setAttribute('aria-haspopup','dialog');
  return toggle;
+}
+async function openPostComments(post){
+ const {d,wrap}=dialog('Comments');
+ d.classList.add('cx-comments-dialog');
+ const content=el('div','cx-comments-content');
+ wrap.append(content);
+ try{await engine.comments(post,content);}
+ catch(e){content.append(el('p','cx-edit-error',e.message||'Comments unavailable.'));}
 }
 function postCard(post){
  const article=el('article','cx-post');article.dataset.id=post.id;
