@@ -13,7 +13,7 @@ const accountModule=[
  "export async function api(action,body){window.__calls.push(action);if(action==='community_pin'){window.__p.pinned_post_id=body.post;}if(action==='community_details'){window.__p.profile_location=body.location;window.__p.profile_website=body.website;}if(action==='community_cover'){window.__p.cover_key=body.remove?null:'public/avatars/'+window.__p.user_id+'/banner-test.webp';}if(action==='community_avatar'){return {path:window.__p.user_id+'/test.webp'};}return {saved:true};}",
 ].join('\n');
 const communityModule=[
- "export class Community{async details(){window.__details=(window.__details||0)+1;}async like(p){p.likes++;p.liked=true;}async save(p){p.saved=true;}async connections(){window.__connections=(window.__connections||0)+1;}async notifications(){}async manage(){}async privacy(){}}",
+ "export class Community{async details(){window.__details=(window.__details||0)+1;}async comments(post,container){window.__commentOpens=(window.__commentOpens||0)+1;const el=document.createElement('p');el.textContent='Mock Community comments';container.append(el);}async like(p){p.likes++;p.liked=true;}async save(p){p.saved=true;}async connections(){window.__connections=(window.__connections||0)+1;}async notifications(){}async manage(){}async privacy(){}}",
  "export function result(r){if(r.error)throw Error(r.error.message);return r.data;}",
  "export async function rpc(state,method,body){if(method==='loox_creator_summary')return window.__p;if(method==='loox_discover')return {items:window.__posts,has_more:false};if(method==='loox_public_post')return window.__posts[0];if(method==='loox_save_creator'){window.__p.username=body.p_username;window.__p.display_name=body.p_name;window.__p.bio=body.p_bio;window.__p.avatar_path=body.p_avatar;return null;}throw Error('Unexpected RPC: '+method);}",
  "export async function mediaURL(){return '"+icon+"';}"
@@ -56,8 +56,24 @@ async function profilePage(width,path){
  await page.getByRole('button',{name:'Posts',exact:true}).click();
  assert.equal(await page.locator('.cx-post').count(),1);checks++;
  if(!path){
+  await page.getByRole('button',{name:'View comments'}).click();
+  await page.getByRole('dialog').getByText('Mock Community comments').waitFor({timeout:10000});
+  assert.equal(await page.evaluate(()=>window.__commentOpens),1);checks++;
+  await page.getByRole('button',{name:'Close editor'}).click();
+  await page.getByRole('button',{name:'Like post, 3 likes'}).click();
+  assert.equal(await page.locator('.cx-post-like').getAttribute('aria-pressed'),'true');checks++;
+  assert.equal(await page.locator('.cx-post-like svg').getAttribute('fill'),'currentColor');checks++;
+  await page.locator('.cx-post-like').click();
+  assert.equal(await page.locator('.cx-post-like svg').getAttribute('fill'),'none');checks++;
+  if(width<800){
+   await page.locator('.cx-post .cx-media-frame').dblclick({delay:70});
+   await page.waitForTimeout(100);
+   assert.equal(await page.locator('.cx-post-like').getAttribute('aria-pressed'),'true');checks++;
+   assert.equal(await page.locator('.cx-post-like svg').getAttribute('fill'),'currentColor');checks++;
+   assert.equal(await page.evaluate(()=>window.__details),0,'Double tap must not open details');checks++;
+  }
   await page.getByRole('button',{name:'Post options'}).click();
-  await page.getByRole('menuitem',{name:'Pin post'}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Pin post'}).click();
   await page.locator('.cx-pinned').waitFor({timeout:10000});
   assert.equal(await page.locator('.cx-pinned').count(),1);checks++;
   await page.getByRole('button',{name:'Edit profile'}).click();
@@ -67,17 +83,17 @@ async function profilePage(width,path){
   await page.locator('.cx-name-line h2').getByText('Updated Creator').waitFor();
   checks++;
   await page.getByRole('button',{name:'Post options'}).click();
-  await page.getByRole('menuitem',{name:'Edit title'}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Edit title'}).click();
   await page.getByLabel('Post title').fill('Renamed landscape');
   await page.getByRole('button',{name:'Save title'}).click();
   await page.locator('.cx-post-caption').getByText('Renamed landscape').waitFor({timeout:10000});
   assert.equal(await page.evaluate(()=>window.__manageCalls?.at(-1)?.action),'edit');checks++;
   await page.getByRole('button',{name:'Post options'}).click();
-  await page.getByRole('menuitem',{name:'Delete post'}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Delete post'}).click();
   await page.getByRole('button',{name:'Cancel'}).click();
   assert.equal(await page.locator('.cx-post').count(),1);checks++;
   await page.getByRole('button',{name:'Post options'}).click();
-  await page.getByRole('menuitem',{name:'Delete post'}).click();
+  await page.getByRole('dialog').getByRole('button',{name:'Delete post'}).click();
   await page.getByRole('button',{name:'Delete post'}).click();
   await page.locator('.cx-post').waitFor({state:'detached',timeout:10000});
   assert.equal(await page.evaluate(()=>window.__manageCalls?.at(-1)?.action),'delete');checks++;
@@ -91,5 +107,5 @@ async function profilePage(width,path){
 try{
  await profilePage(393,false);
  await profilePage(1350,true);
- console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile editing, deletion, pinning, confirmation, owner-only actions, public follow, tabs, layout.');
+ console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile double-tap likes, filled heart, comments, post dialogs, editing, deletion, pinning, privacy, desktop and mobile layout.');
 }catch(e){console.error('PROFILE AUDIT FAILED:',e);process.exitCode=1;}finally{await browser.close();}
