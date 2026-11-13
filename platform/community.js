@@ -1,5 +1,5 @@
 import {cropAvatar} from './avatar-crop.js?v=1';
-import {installSocial,installPrivacy} from './community-social.js?v=13';
+import {installSocial,installPrivacy} from './community-social.js?v=14';
 import {api,refresh} from './account.js?v=9';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
 // Shared community UI. Only Supabase publishable credentials enter the browser.
