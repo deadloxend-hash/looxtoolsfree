@@ -2971,11 +2971,11 @@ body .community-viewer.loox-viewer-media-first .loox-viewer-toast[hidden]{displa
    the available device height without distorting its natural proportions. */
 body .community-dialog.community-viewer.loox-viewer-media-first[open]{
  position:fixed!important;
+ inset:auto!important;
  top:50%!important;
  left:50%!important;
  right:auto!important;
  bottom:auto!important;
- inset:auto!important;
  transform:translate(-50%,-50%)!important;
  margin:0!important;
  max-height:calc(100dvh - 16px)!important;
@@ -2983,11 +2983,11 @@ body .community-dialog.community-viewer.loox-viewer-media-first[open]{
 }
 @media(max-width:780px){
  body .community-dialog.community-viewer.loox-viewer-media-first[open]{
+  inset:auto!important;
   top:50%!important;
   left:50%!important;
   right:auto!important;
   bottom:auto!important;
-  inset:auto!important;
   transform:translate(-50%,-50%)!important;
   margin:0!important;
   max-height:calc(100dvh - 12px)!important;
