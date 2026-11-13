@@ -19,7 +19,7 @@ try{
     const r=s=>document.querySelector(s).getBoundingClientRect().toJSON();
     return {feed:r('.lig-content-scroll:not([hidden])'),compose:r('.lig-compose-wrap'),search:r('.loox-chat-header-search'),menu:r('.studio-menu-host'),account:r('.lig-header-user'),width:document.documentElement.scrollWidth,viewport:innerWidth};
    });
-   assert.ok(geometry.feed.bottom<=geometry.compose.top+2,'Results must stop above the composer');assert.ok(geometry.compose.bottom<=viewport.height+2,'Composer must fit viewport');assert.ok(geometry.menu.left-geometry.search.right<25,'Header controls must stay together');assert.ok(geometry.account.left-geometry.menu.right<25);assert.ok(geometry.width<=geometry.viewport+2);
+   assert.ok(geometry.feed.bottom<=geometry.compose.top+2,'Results must stop above the composer');assert.ok(geometry.compose.bottom<=viewport.height+2,'Composer must fit viewport');assert.ok(geometry.menu.left-geometry.search.right<25,'Header controls must stay together');assert.ok(geometry.account.left-geometry.menu.right>=8&&geometry.account.left-geometry.menu.right<25,'Header account must not overlap menu');assert.ok(geometry.width<=geometry.viewport+2);
    await page.locator('.studio-model-trigger').click();await page.getByRole('button',{name:/Close Choose/}).waitFor();
    if(prefix==='lvg'){assert.equal(await page.locator('[data-model-value="kling_40"]').count(),1);assert.equal(await page.locator('[data-model-value="grok_video"]').count(),1);}
    const close=page.getByRole('button',{name:/Close Choose/});const size=await close.boundingBox();assert.ok(Math.abs(size.width-size.height)<1);assert.ok(size.width>=32);await close.click();
@@ -36,7 +36,7 @@ try{
   }
   await page.goto(base+'ai-chat.html');await page.locator('body.loox-studio .ai-composer').waitFor();
   const assistant=await page.evaluate(()=>{const rect=s=>document.querySelector(s).getBoundingClientRect().toJSON();return {header:rect('header.lig-header'),search:rect('.loox-chat-header-search'),menu:rect('.studio-menu-host'),account:rect('.lig-header-user'),thread:rect('.ai-thread'),composer:rect('.ai-composer-wrap'),form:rect('.ai-composer'),toolbar:rect('.loox-uc-agent-toolbar')};});
-  assert.equal(assistant.header.height,64);assert.ok(assistant.menu.left-assistant.search.right<25);assert.ok(assistant.account.left-assistant.menu.right<25,'Assistant header controls must stay together');assert.ok(assistant.composer.bottom<=viewport.height+2);assert.ok(assistant.thread.bottom<=assistant.composer.top+2);assert.ok(Math.abs(assistant.toolbar.left-assistant.form.left)<3,'Assistant model must align with composer');
+  assert.equal(assistant.header.height,64);assert.ok(assistant.menu.left-assistant.search.right<25);assert.ok(assistant.account.left-assistant.menu.right>=8&&assistant.account.left-assistant.menu.right<25,'Assistant account must not overlap menu');assert.ok(assistant.composer.bottom<=viewport.height+2);assert.ok(assistant.thread.bottom<=assistant.composer.top+2);assert.ok(Math.abs(assistant.toolbar.left-assistant.form.left)<3,'Assistant model must align with composer');
   await page.screenshot({path:out+'/assistant-'+viewport.width+'.png'});
   await page.goto(base+'upgrade.html');await page.locator('#lp-estimate-model option[value="kling_40"]').waitFor({state:'attached'});
   await page.locator('#lp-estimate-model').selectOption('grok_video');assert.match(await page.locator('[data-plan="creator"] .lp-plan-estimates').innerText(),/9 × 5s videos/);
