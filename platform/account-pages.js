@@ -1,4 +1,4 @@
-import {state,config,api,auth,refresh,signOut} from './account.js?v=10';
+import {state,config,api,auth,refresh,signOut} from './account.js?v=11';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
