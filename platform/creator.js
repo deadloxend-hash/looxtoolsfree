@@ -28,7 +28,7 @@ const icons={
 };
 const svg=(name,size=19)=>{const span=el('span','cx-icon');span.innerHTML='<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(icons[name]||icons.more)+'</svg>';return span;};
 const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
-const btn=(label,click,cls='cx-button')=>{const b=el('button',cls,label);b.type='button';if(click)b.addEventListener('click',()=>Promise.resolve().then(click).catch(showError));return b;};
+const btn=(label,click,cls='cx-button')=>{const b=el('button',cls,label);b.type='button';if(click)b.addEventListener('click',()=>{try{Promise.resolve(click()).catch(showError);}catch(e){showError(e);}});return b;};
 const link=(label,href,cls='')=>{const a=el('a',cls,label);a.href=href;return a;};
 const compact=n=>new Intl.NumberFormat('en',{notation:'compact',maximumFractionDigits:1}).format(Number(n)||0);
 const dateLabel=value=>{const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});};
@@ -391,32 +391,30 @@ function deletePostDialog(post){
 }
 let postMenuAbort=new AbortController();
 function ownerPostMenu(post){
- const wrap=el('div','cx-post-dropdown'),menu=el('div','cx-post-options'),toggle=btn('',()=>setOpen(menu.hidden),'cx-post-more');
- menu.hidden=true;menu.setAttribute('role','menu');
- toggle.append(svg('more',19));toggle.setAttribute('aria-label','Post options');toggle.title='Post options';
- toggle.setAttribute('aria-haspopup','menu');toggle.setAttribute('aria-expanded','false');
- function setOpen(open){
-  for(const node of document.querySelectorAll('#creator-community .cx-post-options:not([hidden])'))if(node!==menu){node.hidden=true;node.parentElement?.querySelector('[aria-haspopup="menu"]')?.setAttribute('aria-expanded','false');}
-  menu.hidden=!open;toggle.setAttribute('aria-expanded',String(open));
- }
- function option(label,iconName,handler,danger=false){
-  const b=btn('',async()=>{
-   setOpen(false);
-   try{await handler();}catch(e){notice(e.message||'Could not update the post.');}
-  },'cx-post-option'+(danger?' cx-post-option-danger':''));
-  b.setAttribute('role','menuitem');b.append(svg(iconName,16),el('span','',label));menu.append(b);
- }
- const pinned=post.id===profile.pinned_post_id;
- option(pinned?'Unpin post':'Pin post','pin',async()=>{
-  await cloudRequest(state,'pin',{method:'POST',data:{post_id:pinned?null:post.id}});
-  await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');
- });
- option('Edit title','edit',()=>editPostTitle(post));
- option('Delete post','trash',()=>deletePostDialog(post),true);
- toggle.addEventListener('keydown',event=>{if(event.key==='Escape'){setOpen(false);toggle.focus();}});
- menu.addEventListener('keydown',event=>{if(event.key==='Escape'){setOpen(false);toggle.focus();}});
- document.addEventListener('click',event=>{if(!wrap.contains(event.target))setOpen(false);},{signal:postMenuAbort.signal});
- wrap.append(toggle,menu);return wrap;
+ const toggle=btn('',()=>{
+  const {d,wrap}=dialog('Post options');
+  d.classList.add('cx-owner-actions-dialog');
+  const list=el('div','cx-owner-actions');
+  function option(label,iconName,handler,danger=false){
+   const b=btn('',async()=>{
+    d.close();
+    try{await handler();}catch(e){notice(e.message||'Could not update the post.');}
+   },'cx-post-option'+(danger?' cx-post-option-danger':''));
+   b.append(svg(iconName,19),el('span','',label));
+   list.append(b);
+  }
+  const pinned=post.id===profile.pinned_post_id;
+  option(pinned?'Unpin post':'Pin post','pin',async()=>{
+   await cloudRequest(state,'pin',{method:'POST',data:{post_id:pinned?null:post.id}});
+   await refreshProfile();await loadFeed(true);notice(pinned?'Post unpinned':'Post pinned to profile');
+  });
+  option('Edit title','edit',()=>editPostTitle(post));
+  option('Delete post','trash',()=>deletePostDialog(post),true);
+  wrap.append(list);
+ },'cx-post-more');
+ toggle.append(svg('more',20));toggle.setAttribute('aria-label','Post options');
+ toggle.title='Post options';toggle.setAttribute('aria-haspopup','dialog');
+ return toggle;
 }
 function postCard(post){
  const article=el('article','cx-post');article.dataset.id=post.id;
