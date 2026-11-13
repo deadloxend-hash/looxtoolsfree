@@ -24,7 +24,7 @@ async function test(pageName,width,owner){
  await page.route(/\/(loox-experience|loox-sitewide-nav)\.js\?/,route=>route.fulfill({status:200,contentType:'text/javascript',body:''}));
  await page.goto(root+pageName,{waitUntil:'load'});
  await page.evaluate(async({owner,ownerId,visitorId,postId})=>{
-  const {installSocial}=await import('/platform/community-social.js?v=15');
+  const {installSocial}=await import('/platform/community-social.js?v=16');
   const e=(tag,cls='',content)=>{const n=document.createElement(tag);n.className=cls;if(content!==undefined)n.textContent=content;return n;};
   const a=(label,fn,cls='',onError=console.error)=>{
    const b=e('button',cls,label);b.type='button';
