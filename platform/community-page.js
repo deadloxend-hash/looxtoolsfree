@@ -157,8 +157,25 @@ if(page==='community.html'){
    if(post.allow_remix!==false)menuButton('Recreate',()=>launch(post,self));
   }
   if(post.allow_download!==false)menuButton('Download original',download);
-  if(self.state.user?.id===post.creator_id)menuButton('Manage post',()=>self.manage());
-  else menuButton('Report post',()=>self.report(post));
+  if(self.state.user?.id===post.creator_id){
+   menuButton('Edit title',async()=>{
+    const value=window.prompt('Edit post title (1–300 characters). Changes require approval.',post.caption);
+    if(value===null)return;
+    const title=value.trim();
+    if(!title||title.length>300)throw Error('Enter a title between 1 and 300 characters.');
+    if(title===post.caption)return;
+    await cloudRequest(self.state,'manage',{method:'POST',data:{id:post.id,action:'edit',caption:title,share_prompt:Boolean(post.shared_prompt)}});
+    await self.load(true);
+    feedback.textContent='Title saved. Your post is awaiting review.';
+   });
+   menuButton('Delete post',async()=>{
+    if(!window.confirm('Delete this Community post? Comments, likes and saves will be removed. Your original AI generation will stay private in your library.'))return;
+    await cloudRequest(self.state,'manage',{method:'POST',data:{id:post.id,action:'delete'}});
+    await self.load(true);
+    feedback.textContent='Community post deleted.';
+   });
+   menuButton('Manage posts',()=>self.manage());
+  }else menuButton('Report post',()=>self.report(post));
   options.append(trigger,menu);headRight.append(options);
   head.append(author,headRight);
   card.prepend(head);
