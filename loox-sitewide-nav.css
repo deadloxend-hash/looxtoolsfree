@@ -2676,3 +2676,25 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
 #loox-sitewide-header{background:#080d16f5!important;border-bottom-color:#20314a!important}
 #loox-sitewide-header .loox-sitewide-links a[aria-current=page]{background:#132b4a!important;color:#eaf4ff!important}
 #loox-sitewide-header .loox-sitewide-links a:focus-visible,#loox-sitewide-header button:focus-visible{outline-color:#22d3ee!important}
+
+
+/* V106 — mobile backdrop safety.
+   An orphaned sidebar scrim must NEVER tint the landing page while the
+   navigation drawer is closed. The real open drawer retains its backdrop. */
+@media(max-width:900px){
+  body.loox-sitewide-active > button.loox-sitewide-scrim:not(.is-open),
+  body.loox-sitewide-active:not(.loox-sitewide-sidebar-open) > button.loox-sitewide-scrim,
+  body.loox-sitewide-active:not(:has(> aside#loox-sitewide-drawer.is-open)) > button.loox-sitewide-scrim{
+    display:none!important;
+    visibility:hidden!important;
+    opacity:0!important;
+    pointer-events:none!important;
+  }
+  body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-scrim.is-open{
+    inset:var(--loox-sitewide-height,64px) 0 0!important;
+  }
+}
+@media(max-width:790px){
+  /* Do not paint an app-modal scrim when the native dialog is not open. */
+  dialog.loox-mobile-app-layer:not([open]){display:none!important}
+}
