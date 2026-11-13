@@ -1,5 +1,5 @@
 import {Community} from './community.js?v=26';
-import {mountModelPicker} from './loox-model-picker.js?v=6';
+import {mountModelPicker} from './loox-model-picker.js?v=8';
 import {MediaSessions} from './loox-image-sessions.js?v=25';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=10';
@@ -106,7 +106,7 @@ async function initWorkspace(){
    const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
    if(isModel){
     const m=allModels.get(option.value);
-    const detail=create('small','lig-model-choice-detail',id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable');
+    const detail=create('small','lig-model-choice-detail',option.value==='flux'?'Fast, high-quality image generation':option.value==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable');
     const status=modelStatus(option.value);
     const meta=create('small','lig-model-choice-meta',status.label+' · '+(m?.cost||3)+' credits');
     const body=create('span','lig-model-choice-body');body.append(label,detail,meta);
