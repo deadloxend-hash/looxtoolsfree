@@ -18,7 +18,7 @@ META = re.compile(r'<meta\b[^>]*\bname\s*=\s*(["\'])theme-color\1[^>]*>', re.I)
 MARK = '/* LOOX Obsidian Blue'
 CSS_ASSET = re.compile(r'(\b(?:href|data-href)\s*=\s*["\'])(?!https?://)([^"\']+?\.css)(?:\?v=[^"\']*)?(["\'])', re.I)
 THEME_VERSION = 'obsidian-blue-1'
-JS_ASSET = re.compile(r'(\b(?:src|data-src)\s*=\s*["\'])(?!https?://)([^"\']+?loox-experience\.js)(?:\?v=[^"\']*)?(["\'])', re.I)
+JS_ASSET = re.compile(r'(\b(?:src|data-src)\s*=\s*["\'])(?!https?://)([^"\']*?loox-experience\.js)(?:\?v=[^"\']*)?(["\'])', re.I)
 
 
 def recolor(hexcode: str) -> str:
@@ -102,8 +102,10 @@ def html_colors(s: str) -> str:
 
 def main() -> None:
     edited = []
+    already_applied = MARK in (ROOT/'loox-experience.css').read_text(encoding='utf-8')
     for path in sorted(ROOT.rglob('*.css')):
         if any(p in {'.git', 'node_modules'} for p in path.parts): continue
+        if already_applied: continue
         original = path.read_text(encoding='utf-8')
         result = css_colors(original)
         rel = path.relative_to(ROOT).as_posix()
@@ -117,7 +119,11 @@ def main() -> None:
     for path in sorted(ROOT.rglob('*.html')):
         if any(p in {'.git', 'node_modules'} for p in path.parts): continue
         original = path.read_text(encoding='utf-8')
-        result = html_colors(original)
+        if already_applied:
+            result = CSS_ASSET.sub(lambda m: m.group(1) + m.group(2) + '?v=' + THEME_VERSION + m.group(3), original)
+            result = JS_ASSET.sub(lambda m: m.group(1) + m.group(2) + '?v=' + THEME_VERSION + m.group(3), result)
+        else:
+            result = html_colors(original)
         if result != original:
             path.write_text(result, encoding='utf-8')
             edited.append(path.relative_to(ROOT).as_posix())
