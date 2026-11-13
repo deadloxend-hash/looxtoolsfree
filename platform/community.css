@@ -2946,3 +2946,21 @@ body .community-viewer.loox-viewer-media-first .loox-viewer-options-label{min-wi
  body .community-viewer.loox-viewer-media-first .loox-viewer-options{top:9px!important;left:9px!important}
  body .community-viewer.loox-viewer-media-first .community-viewer-info:not([hidden]){padding:15px 14px 22px!important}
 }
+
+/* Short-lived feedback never covers a post until an action is taken. */
+body .community-viewer.loox-viewer-media-first .loox-viewer-toast{
+ position:absolute!important;z-index:65!important;
+ bottom:16px!important;left:50%!important;
+ transform:translateX(-50%)!important;
+ max-width:calc(100% - 40px)!important;
+ margin:0!important;
+ padding:10px 14px!important;
+ border-radius:999px!important;
+ border:1px solid #a383b8!important;
+ background:#211729ea!important;color:#f7e7fe!important;
+ box-shadow:0 4px 22px #0009!important;
+ font-size:12px!important;font-weight:650!important;
+ line-height:1.4!important;text-align:center!important;
+ pointer-events:none!important;
+}
+body .community-viewer.loox-viewer-media-first .loox-viewer-toast[hidden]{display:none!important}
