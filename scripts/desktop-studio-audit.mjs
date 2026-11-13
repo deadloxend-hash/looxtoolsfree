@@ -26,7 +26,7 @@ try{
    await page.evaluate(prefix=>{
     const feed=document.getElementById(prefix+'-results');
     const svg='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1400"><rect width="800" height="1400" fill="#372249"/><circle cx="400" cy="700" r="240" fill="#ad7ce7"/></svg>');
-    for(let i=0;i<2;i++){const card=document.createElement('article');card.className='lig-output';card.innerHTML='<div class="lig-output-top">Sample portrait '+i+'</div><div class="lig-output-stage"><img alt="Test portrait" src="'+svg+'"></div><div class="loox-generation-actions"><button>Download</button></div>';feed.append(card);}
+    for(let i=0;i<2;i++){const card=document.createElement('article');card.className='lig-output';card.innerHTML='<div class="lig-output-top"><span class="lig-output-name">'+('A detailed cinematic portrait prompt with soft light and fine textures. '.repeat(8))+'</span></div><small class="loox-generation-meta">FLUX · 3:4 · 2026-11-13</small><div class="lig-output-stage"><img alt="Test portrait" src="'+svg+'"></div><div class="loox-generation-actions"><button>Download</button></div>';feed.append(card);}
    },prefix);
    await page.waitForFunction(()=>[...document.querySelectorAll('.lig-output-stage>img')].every(i=>i.complete&&i.naturalHeight));
    await page.locator('.lig-output').last().scrollIntoViewIfNeeded();
