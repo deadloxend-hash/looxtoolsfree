@@ -43,11 +43,12 @@ function fallbackAvatar(p,cls='cx-avatar'){const a=el('span',cls,((p?.display_na
 }
 function profileURL(p){return 'creator.html?username='+encodeURIComponent(p.username);}
 function profileSkeleton(){root.innerHTML='<div class="cx-shell"><div class="cx-center"><div class="cx-top"><span class="cx-skeleton cx-skeleton-title"></span></div><div class="cx-skeleton cx-skeleton-cover"></div><div class="cx-skeleton cx-skeleton-avatar"></div><div class="cx-skeleton cx-skeleton-lines"></div><div class="cx-skeleton cx-skeleton-lines short"></div></div></div>';}
-function emptyPage(message,signIn){
+function emptyPage(message,signIn,retry=false){
  root.replaceChildren();
  const outer=el('section','cx-empty-page');
  outer.append(el('h1','','Profile'),el('p','',message));
  if(signIn)outer.append(btn('Sign in',()=>auth('login'),'cx-button cx-button-primary'));
+ if(retry)outer.append(btn('Try again',()=>main(),'cx-button cx-button-primary'));
  outer.append(link('Explore Community','community.html','cx-button'));
  root.append(outer);
 }
@@ -478,6 +479,6 @@ async function main(){
   }else if(state.user)creatorId=state.user.id;
   else{emptyPage('Sign in to see your creator profile, or open a creator from Community.',true);return;}
   await refreshProfile();setupEngine();buildPage();
- }catch(e){emptyPage(e.message||'Profile unavailable.',false);}
+ }catch(e){emptyPage(e.message||'Profile unavailable.',false,true);}
 }
 main();
