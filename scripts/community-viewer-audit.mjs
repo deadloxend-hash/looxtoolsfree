@@ -60,6 +60,8 @@ async function test(pageName,width,owner){
 
  const viewer=page.locator('.community-viewer.loox-viewer-media-first');
  await viewer.waitFor({state:'visible'});
+ const centered=await viewer.boundingBox();
+ assert.ok(Math.abs(centered.y+centered.height/2-860/2)<14,'Photo viewer is top-aligned instead of vertically centered: '+JSON.stringify(centered));checks++;
  assert.equal(await viewer.locator('.community-viewer-stage .community-detail-media').count(),1);checks++;
  assert.equal(await viewer.locator('.community-viewer-info').isHidden(),true,'Only media should show by default');checks++;
  assert.equal(await viewer.locator('.loox-social-photo-actions').count(),0,'Old icon toolbar must be absent');checks++;
