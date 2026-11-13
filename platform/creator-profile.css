@@ -641,3 +641,230 @@ body.creator-page.cx-profile-page #creator-community{
  padding:0!important;
  line-height:1!important;
 }
+
+/* V11: polished comments bottom sheet */
+.cx-edit-dialog.cx-comments-dialog{
+ display:flex!important;flex-direction:column!important;
+ width:min(580px,calc(100vw - 24px))!important;
+ height:min(80dvh,700px)!important;
+ min-height:0!important;
+ max-height:calc(100dvh - 22px)!important;
+ padding:0!important;overflow:hidden!important;
+ border:1px solid #644a74!important;border-radius:20px!important;
+ background:#15111b!important;
+ box-shadow:0 24px 85px #000c!important;
+}
+.cx-edit-dialog.cx-comments-dialog::backdrop{
+ background:#05030bb9!important;
+ backdrop-filter:blur(5px)!important;
+ -webkit-backdrop-filter:blur(5px)!important;
+}
+.cx-edit-dialog.cx-comments-dialog .cx-dialog-content{
+ display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;min-height:0!important;
+ overflow:hidden!important;
+}
+.cx-edit-dialog.cx-comments-dialog .cx-dialog-top{
+ position:relative!important;display:flex!important;flex-direction:row-reverse!important;
+ align-items:center!important;justify-content:space-between!important;
+ flex:0 0 auto!important;
+ gap:12px!important;
+ min-height:64px!important;padding:15px 18px!important;
+ background:#1b1522!important;
+ border-bottom:1px solid #382b44!important;
+}
+.cx-edit-dialog.cx-comments-dialog .cx-dialog-top h2{
+ margin:0!important;color:#f5ecfa!important;font-size:17px!important;
+ font-weight:800!important;letter-spacing:-.02em!important;
+}
+.cx-edit-dialog.cx-comments-dialog .cx-dialog-close{
+ flex:none!important;display:grid!important;place-items:center!important;
+ width:36px!important;height:36px!important;
+ padding:8px!important;border-radius:50%!important;
+ border:1px solid #5e496d!important;background:#2a2034!important;
+ color:#eee0f6!important;
+}
+.cx-edit-dialog.cx-comments-dialog .cx-dialog-close:hover,
+.cx-edit-dialog.cx-comments-dialog .cx-dialog-close:focus-visible{background:#40304f!important}
+.cx-edit-dialog.cx-comments-dialog .cx-comments-content{
+ display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;min-height:0!important;
+ padding:0!important;overflow:hidden!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-conversation{
+ display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;min-height:0!important;
+ gap:0!important;
+ margin:0!important;padding:0!important;border:0!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-conversation>h3{
+ display:block!important;flex:none!important;
+ margin:0!important;padding:10px 18px 8px!important;
+ font-size:11px!important;line-height:1.4!important;
+ color:#ad96b9!important;font-weight:700!important;
+ letter-spacing:.015em!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-thread-list{
+ display:flex!important;flex-direction:column!important;
+ flex:1 1 auto!important;min-height:0!important;
+ max-height:none!important;gap:0!important;
+ margin:0!important;
+ padding:0 17px 12px!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain!important;
+ scrollbar-width:thin!important;scrollbar-color:#6c517e transparent!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-thread{
+ display:block!important;flex:none!important;
+ margin:0!important;padding:12px 0!important;
+ border-bottom:1px solid #30273b!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-thread:last-of-type{border-bottom:0!important}
+.cx-edit-dialog.cx-comments-dialog .community-comment{
+ display:flex!important;flex-direction:column!important;
+ gap:4px!important;padding:0!important;margin:0!important;
+ background:transparent!important;border:0!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-top{
+ display:flex!important;align-items:center!important;
+ justify-content:space-between!important;gap:8px!important;min-height:33px!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-author{
+ display:inline-flex!important;align-items:center!important;
+ gap:9px!important;min-width:0!important;max-width:calc(100% - 40px)!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-avatar{
+ flex:0 0 32px!important;width:32px!important;height:32px!important;
+ border-radius:50%!important;border:1px solid #684b78!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-author-labels{
+ display:flex!important;flex-direction:column!important;min-width:0!important;gap:0!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-author-labels strong{
+ font-size:12px!important;line-height:1.25!important;
+ color:#f0e8f6!important;white-space:nowrap!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-author-labels small{
+ color:#a896b4!important;font-size:10px!important;line-height:1.3!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-date{
+ font-size:10px!important;line-height:1.4!important;
+ color:#988aa3!important;white-space:nowrap!important;
+ padding:0!important;margin-left:auto!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-text{
+ margin:2px 0 0 41px!important;padding:0!important;
+ font-size:12px!important;line-height:1.5!important;
+ color:#e9e0ef!important;overflow-wrap:anywhere!important;white-space:pre-wrap!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-actions{
+ display:flex!important;align-items:center!important;gap:16px!important;
+ margin:5px 0 0 41px!important;padding:0!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-action{
+ display:inline-flex!important;min-height:24px!important;
+ padding:2px 0!important;background:transparent!important;border:0!important;
+ color:#b899cd!important;font-size:10px!important;font-weight:700!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-action:hover{color:#edceff!important}
+.cx-edit-dialog.cx-comments-dialog .loox-thread-replies{
+ display:flex!important;flex-direction:column!important;
+ gap:8px!important;margin:9px 0 0 28px!important;
+ padding:0 0 0 11px!important;border-left:2px solid #654877!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-thread-replies:empty{display:none!important}
+.cx-edit-dialog.cx-comments-dialog .community-comment.is-reply{
+ margin:0!important;padding:4px 0!important;
+}
+.cx-edit-dialog.cx-comments-dialog .community-comment.is-reply .loox-comment-avatar{
+ flex-basis:27px!important;width:27px!important;height:27px!important;
+}
+.cx-edit-dialog.cx-comments-dialog .community-comment.is-reply .loox-comment-text{
+ margin-left:36px!important;
+}
+.cx-edit-dialog.cx-comments-dialog .community-comment.is-reply .loox-comment-actions{
+ margin-left:36px!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comments-more{
+ flex:none!important;align-self:center!important;margin:5px 0!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-status{
+ flex:none!important;margin:0!important;
+ padding:6px 18px!important;color:#b9a6c7!important;
+ font-size:11px!important;text-align:center!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-status:empty{display:none!important}
+.cx-edit-dialog.cx-comments-dialog .loox-compact-comment-form{
+ display:flex!important;flex-direction:column!important;
+ flex:0 0 auto!important;gap:9px!important;
+ margin:0!important;
+ padding:11px 16px calc(12px + env(safe-area-inset-bottom,0px))!important;
+ border-top:1px solid #3b3047!important;
+ background:#1d1724!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-input{
+ display:block!important;width:100%!important;
+ min-height:50px!important;max-height:110px!important;
+ padding:11px 13px!important;
+ margin:0!important;border-radius:13px!important;
+ border:1px solid #4b3a59!important;
+ background:#251d2e!important;
+ box-shadow:none!important;color:#f4e9fa!important;
+ font-size:16px!important;line-height:1.4!important;
+ resize:vertical!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-input:focus{
+ outline:0!important;border-color:#b78cd3!important;
+ box-shadow:0 0 0 2px #b78cd329!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-submit-row{
+ display:flex!important;align-items:center!important;
+ justify-content:flex-end!important;gap:10px!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-cancel{
+ padding:7px 13px!important;min-height:34px!important;
+ background:transparent!important;border:1px solid #5b4967!important;
+ border-radius:999px!important;color:#cfbfd9!important;
+ font-size:12px!important;font-weight:700!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-cancel[hidden]{display:none!important}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-send{
+ align-self:auto!important;min-width:72px!important;min-height:34px!important;
+ padding:8px 16px!important;border:0!important;border-radius:999px!important;
+ background:#cd95ea!important;color:#261430!important;
+ font-size:12px!important;font-weight:800!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-comment-send:disabled{opacity:.6!important}
+.cx-edit-dialog.cx-comments-dialog .loox-reply-banner{
+ display:flex!important;align-items:center!important;
+ justify-content:space-between!important;gap:9px!important;
+ padding:6px 10px!important;margin:0!important;
+ border:1px solid #654577!important;
+ border-radius:9px!important;color:#d5b2ed!important;
+ font-size:11px!important;
+}
+.cx-edit-dialog.cx-comments-dialog .loox-reply-banner[hidden]{display:none!important}
+.cx-edit-dialog.cx-comments-dialog .loox-reply-cancel{
+ flex:none!important;padding:4px 8px!important;
+ border:0!important;border-radius:7px!important;
+ background:#473350!important;color:#f6eafa!important;
+ font-size:11px!important;
+}
+@media(max-width:700px){
+ .cx-edit-dialog.cx-comments-dialog{
+  position:fixed!important;inset:auto 0 0!important;
+  width:100vw!important;max-width:none!important;
+  height:min(77dvh,760px)!important;
+  max-height:calc(100dvh - 56px)!important;
+  margin:0!important;
+  border-radius:20px 20px 0 0!important;border-bottom:0!important;
+ }
+ .cx-edit-dialog.cx-comments-dialog .cx-dialog-top{
+  padding:12px 16px!important;min-height:57px!important;
+ }
+ .cx-edit-dialog.cx-comments-dialog .loox-thread-list{padding:0 13px 10px!important}
+ .cx-edit-dialog.cx-comments-dialog .loox-comment-text{font-size:12px!important}
+ .cx-edit-dialog.cx-comments-dialog .loox-compact-comment-form{
+  padding:10px 13px calc(12px + env(safe-area-inset-bottom,0px))!important;
+ }
+}
