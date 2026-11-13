@@ -1,0 +1,61 @@
+name: LOOX All Tools landing page checks
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "index.html"
+      - "loox-tools-landing-2026.css"
+      - "scripts/tools-landing-audit.mjs"
+      - ".github/workflows/tools-landing-check.yml"
+permissions:
+  contents: read
+jobs:
+  landing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate landing JavaScript and preserve cover assets
+        run: |
+          node --check scripts/tools-landing-audit.mjs
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const html=fs.readFileSync('index.html','utf8');
+          const start=html.indexOf('<script>\nconst tools=[');
+          assert.ok(start>=0,'Homepage catalog JavaScript not found');
+          const end=html.indexOf('</script>',start);
+          assert.ok(end>start);
+          new Function(html.slice(start+8,end));
+          assert.ok(!html.includes('id="searchForm"'),'Duplicate hero search must remain removed');
+          assert.ok(html.includes('src="assets/tool-art/photo-editor.webp"'),'Editor cover must stay on homepage');
+          for(const cover of ['photo-editor.webp','video-editor.webp','bg-remove.webp'])
+            assert.ok(fs.existsSync('assets/tool-art/'+cover),'Missing featured tool artwork: '+cover);
+          console.log('Inline catalog JS and original editing artwork passed');
+          JS
+      - name: Check static links and duplicated IDs
+        run: python3 scripts/site-ui-static-audit.py
+      - name: Install Playwright
+        run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.56.1
+      - name: Locate Chromium
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            google-chrome --version
+          else
+            npx playwright install --with-deps chromium
+          fi
+      - name: Test the All Tools landing at mobile, tablet and desktop widths
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/loox-tools-audit.log 2>&1 &
+          sleep 2
+          node scripts/tools-landing-audit.mjs
+      - name: Save desktop and mobile visual captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: loox-tools-landing-visuals
+          path: audit-artifacts/tools-home-*.png
+          if-no-files-found: ignore
