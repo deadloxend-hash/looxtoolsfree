@@ -25,7 +25,7 @@ const iconPaths={
 const glyphs={z_image_turbo:'zimage',flux:'flux',flux2_klein_local_edit:'flux',bfl_flux2_pro:'flux',bfl_klein_4b:'flux',replicate_flux_ultra:'flux',
  google_nano_2:'banana',google_nano_pro:'banana',ideogram_p_image:'ideogram',ideogram_45:'ideogram',
  stability_sd35:'stability',stability_ultra:'stability',byteplus_45:'seedream',byteplus_50_flash:'seedream',
- openai_gpt_image:'openai',replicate_qwen2:'qwen',replicate_hidream:'hidream',replicate_imagen4:'imagen',replicate_photon:'photon',kling_30:'kling',seedance_20:'seedance',veo_31_fast:'veo',runway_45:'runway',flux3_video:'fluxvideo'};
+ openai_gpt_image:'openai',replicate_qwen2:'qwen',replicate_hidream:'hidream',replicate_imagen4:'imagen',replicate_photon:'photon',kling_40:'kling',kling_40_flash:'kling',seedance_25:'seedance',seedance_20_fast:'seedance',veo_31:'veo',veo_31_lite:'veo',grok_video:'photon',minimax_h3:'seedance',minimax_h3_lite:'seedance',luma_ray2:'photon',sora_2:'openai',kling_30:'kling',seedance_20:'seedance',veo_31_fast:'veo',runway_45:'runway',flux3_video:'fluxvideo'};
 const palettes={zimage:'#b29aff',flux:'#aa8bff',banana:'#f4ca5c',ideogram:'#f78aa1',stability:'#90c4ff',
  seedream:'#9dd4fa',openai:'#a4e4bf',qwen:'#c0a3ff',hidream:'#f7a9c6',imagen:'#97dcf0',photon:'#efc3a7',wan:'#a7bfff',kling:'#80cbd7',seedance:'#8fa9ff',veo:'#f1be84',runway:'#dba3d2',fluxvideo:'#baa2fa'};
 const groupsImage=[
@@ -43,11 +43,16 @@ const groupsVideo=[
  {name:'Wan 2.2',provider:'Text & image generation',ids:['wan22_5b_fast','wan22_t2v_fast','wan22_i2v_fast']},
  {name:'Wan 2.5',provider:'Image to video',ids:['wan25_i2v']},
  {name:'Wan 2.6',provider:'Image to video',ids:['wan26_i2v_flash']},
- {name:'Kling',provider:'Kuaishou · Cinematic video',ids:['kling_30']},
- {name:'Seedance',provider:'ByteDance · Creative video',ids:['seedance_20']},
- {name:'Veo',provider:'Google · Video generation',ids:['veo_31_fast']},
+ {name:'Kling',provider:'Kuaishou · Cinematic video',ids:['kling_40','kling_40_flash','kling_30']},
+ {name:'Seedance',provider:'ByteDance · Creative video',ids:['seedance_25','seedance_20_fast','seedance_20']},
+ {name:'Veo',provider:'Google · Video generation',ids:['veo_31','veo_31_fast','veo_31_lite']},
  {name:'Runway',provider:'Runway · Video production',ids:['runway_45']},
- {name:'FLUX Video',provider:'Black Forest Labs · Video generation',ids:['flux3_video']}
+ {name:'FLUX Video',provider:'Black Forest Labs · Video generation',ids:['flux3_video']},
+ {name:'Grok Imagine',provider:'xAI · Native audio',ids:['grok_video']},
+ {name:'MiniMax',provider:'MiniMax · Character motion',ids:['minimax_h3','minimax_h3_lite']},
+ {name:'Wan 3.0',provider:'Alibaba · Text and image to video',ids:['wan_30']},
+ {name:'Luma',provider:'Luma AI · Cinematic motion',ids:['luma_ray2']},
+ {name:'Sora',provider:'OpenAI · Provider unavailable',ids:['sora_2']}
 ];
 function node(tag,cls,text){
  const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;
@@ -166,6 +171,8 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
    const ids=group.ids.filter(id=>known.has(id)&&matches(id));
    section(group.name,group.provider,ids);
   }
+  const groupedIds=new Set(grouped.flatMap(g=>g.ids));
+  const extra=modelOptions.map(o=>o.value).filter(id=>!groupedIds.has(id)&&matches(id));if(extra.length)section('More models','LOOX catalog',extra);
   if(!list.children.length)list.append(node('p','loox-model-empty','No matching models'));
   sync();
  }

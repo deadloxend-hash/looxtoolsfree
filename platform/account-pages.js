@@ -40,6 +40,7 @@ function renderPlans(cfg,failed=false){
 function renderEstimates(cfg){
  const selector=byId('lp-estimate-model'),duration=byId('lp-estimate-duration');if(!selector||!duration)return;
  const models=cfg?.videoModels||[];
+ if(models.length&&selector.options.length===1&&!selector.options[0].value)selector.replaceChildren();
  if(!selector.options.length){for(const m of models.filter(m=>m.available)){const o=elem('option','',m.name+' · '+m.capabilities.resolution);o.value=m.id;selector.append(o);}if(!selector.options.length){const o=elem('option','','Video pricing unavailable');o.value='';selector.append(o);}}
  const model=models.find(m=>m.id===selector.value),previous=duration.value;duration.replaceChildren();
  for(const d of model?.durationOptions||[5]){const o=elem('option','',d+' seconds');o.value=d;duration.append(o);}if([...duration.options].some(o=>o.value===previous))duration.value=previous;

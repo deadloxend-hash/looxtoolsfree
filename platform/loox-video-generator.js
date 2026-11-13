@@ -1,5 +1,5 @@
 import {Community} from './community.js?v=26';
-import {mountModelPicker} from './loox-model-picker.js?v=6';
+import {mountModelPicker} from './loox-model-picker.js?v=7';
 import {MediaSessions} from './loox-image-sessions.js?v=25';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=10';
 
@@ -462,7 +462,7 @@ document.body.classList.add('loox-generator-ready');
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
     if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
-    return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:(m?.minimumPlan==='pro'?'Pro · ':'Creator · ')+(m?.capabilities?.resolution||'720p')+' · '+(m?.imageRequired?'Reference image required':'Text or image to video'),status:m?.status};
+    return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:!m?.available&&m?.reason?m.reason:(m?.minimumPlan==='pro'?'Pro · ':'Creator · ')+(m?.capabilities?.resolution||'720p')+' · '+(m?.imageRequired?'Reference image required':m?.capabilities?.imageReference===false?'Text to video only':'Text or image to video'),status:m?.status};
    }
   });
   // Keep responsive model status and its displayed price in sync.
