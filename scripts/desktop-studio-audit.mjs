@@ -34,6 +34,10 @@ try{
    assert.ok(sample.image.top>=sample.feed.top-2,'Portrait must fit the visible results region');assert.ok(sample.image.bottom<=sample.compose.top+2,'Portrait must never sit behind composer');
    await page.screenshot({path:out+'/'+prefix+'-'+viewport.width+'.png'});
   }
+  await page.goto(base+'ai-chat.html');await page.locator('body.loox-studio .ai-composer').waitFor();
+  const assistant=await page.evaluate(()=>{const rect=s=>document.querySelector(s).getBoundingClientRect().toJSON();return {header:rect('header.lig-header'),search:rect('.loox-chat-header-search'),menu:rect('.studio-menu-host'),account:rect('.lig-header-user'),thread:rect('.ai-thread'),composer:rect('.ai-composer-wrap'),form:rect('.ai-composer'),toolbar:rect('.loox-uc-agent-toolbar')};});
+  assert.equal(assistant.header.height,64);assert.ok(assistant.menu.left-assistant.search.right<25);assert.ok(assistant.account.left-assistant.menu.right<25,'Assistant header controls must stay together');assert.ok(assistant.composer.bottom<=viewport.height+2);assert.ok(assistant.thread.bottom<=assistant.composer.top+2);assert.ok(Math.abs(assistant.toolbar.left-assistant.form.left)<3,'Assistant model must align with composer');
+  await page.screenshot({path:out+'/assistant-'+viewport.width+'.png'});
   await page.goto(base+'upgrade.html');await page.locator('#lp-estimate-model option[value="kling_40"]').waitFor({state:'attached'});
   await page.locator('#lp-estimate-model').selectOption('grok_video');assert.match(await page.locator('[data-plan="creator"] .lp-plan-estimates').innerText(),/9 × 5s videos/);
   await page.getByRole('button',{name:'Yearly · save ~17%',exact:true}).click();assert.match(await page.locator('[data-plan="creator"]').innerText(),/1,200 credits per year/);assert.match(await page.locator('[data-plan="creator"] .lp-plan-estimates').innerText(),/109 × 5s videos/);
