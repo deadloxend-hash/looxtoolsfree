@@ -116,11 +116,13 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     link.append(avatar(profile),labels);
     return link;
    }
-   let form,input,replyLabel;
+   let form,input,replyLabel,cancelDraftButton,submitButton;
+   const syncDraft=()=>{if(cancelDraftButton)cancelDraftButton.hidden=!(input?.value.trim()||replyTo);if(submitButton)submitButton.textContent=replyTo?'Reply':'Post';};
    const cancelReply=()=>{
     replyTo=null;
     if(replyLabel)replyLabel.hidden=true;
     if(input)input.placeholder='Write a comment…';
+    syncDraft();
    };
    const setReply=(c)=>{
     if(!self.state.user){self.auth('login');return;}
@@ -130,14 +132,25 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     replyLabel.replaceChildren(e('span','','Replying to @'+name),
       a('Cancel',cancelReply,'loox-reply-cancel',err=>status.textContent=err.message));
     input.placeholder='Reply to @'+name+'…';
-    input.focus();
+    input.focus();syncDraft();
    };
+   function relativeCommentTime(value){
+    const d=new Date(value),delta=Date.now()-d.getTime();
+    if(!Number.isFinite(d.getTime()))return '';
+    if(delta>=0&&delta<60000)return 'now';
+    if(delta>=0&&delta<3600000)return Math.max(1,Math.floor(delta/60000))+'m';
+    if(delta>=0&&delta<86400000)return Math.floor(delta/3600000)+'h';
+    if(delta>=0&&delta<604800000)return Math.floor(delta/86400000)+'d';
+    return d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+   }
    function render(c,nested=false){
     const person=profiles.get(c.user_id)||{user_id:c.user_id,display_name:'LOOX creator',username:'loox_user'};
     const row=e('article','community-comment'+(nested?' is-reply':''));
     row.dataset.commentId=c.id;
     const top=e('div','loox-comment-top'),info=authorLink(person);
-    top.append(info,e('time','loox-comment-date',new Date(c.created_at).toLocaleString()));
+    const time=e('time','loox-comment-date',relativeCommentTime(c.created_at));
+    time.dateTime=c.created_at||'';time.title=new Date(c.created_at).toLocaleString();
+    top.append(info,time);
     const body=e('p','loox-comment-text',c.body);
     const controls=e('div','loox-comment-actions');
     if(!nested&&post.comments_enabled!==false)
@@ -150,7 +163,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
        document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
        await reload();
       },'loox-comment-action',err=>status.textContent=err.message));
-    controls.append(a('Report',()=>self.report(post,c.id),'loox-comment-action',err=>status.textContent=err.message));
+    if(self.state.user?.id!==c.user_id)controls.append(a('Report',()=>self.report(post,c.id),'loox-comment-action',err=>status.textContent=err.message));
     row.append(top,body,controls);
     return row;
    }
@@ -207,10 +220,17 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     replyLabel=e('div','loox-reply-banner');replyLabel.hidden=true;
     input=e('textarea','loox-comment-input');
     input.rows=2;input.maxLength=1200;input.required=true;
+    input.addEventListener('input',syncDraft);
     input.placeholder='Write a comment…';input.setAttribute('aria-label','Your comment');
     const submit=e('button','community-primary loox-comment-send','Post');
-    submit.type='submit';
-    form.append(replyLabel,input,submit);
+    submit.type='submit';submitButton=submit;
+    const cancel=a('Cancel',()=>{
+     input.value='';cancelReply();input.blur();syncDraft();
+    },'loox-comment-cancel',err=>{status.textContent=err.message;});
+    cancel.type='button';cancelDraftButton=cancel;cancel.hidden=true;
+    const formActions=e('div','loox-comment-submit-row');
+    formActions.append(cancel,submit);
+    form.append(replyLabel,input,formActions);
     section.append(form);
     form.addEventListener('submit',async ev=>{
      ev.preventDefault();
@@ -224,7 +244,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
       await cloudRequest(self.state,'comments',{method:'POST',data});
       post.comments=Math.max(0,(Number(post.comments)||0)+1);
       document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
-      input.value='';cancelReply();
+      input.value='';cancelReply();syncDraft();
       await reload();
      }catch(err){status.textContent=err.message;}
      finally{submit.disabled=false;}
