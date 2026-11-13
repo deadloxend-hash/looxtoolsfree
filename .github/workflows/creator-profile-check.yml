@@ -12,6 +12,7 @@ on:
       - "community.html"
       - "trending.html"
       - "scripts/creator-profile-audit.mjs"
+      - "scripts/community-viewer-audit.mjs"
       - ".github/workflows/creator-profile-check.yml"
 permissions:
   contents: read
@@ -29,6 +30,7 @@ jobs:
           node --check platform/creator.js
           node --check platform/community.js
           node --check platform/community-social.js
+          node --check scripts/community-viewer-audit.mjs
           node --check scripts/creator-profile-audit.mjs
           node --input-type=module <<'JS'
           import fs from 'node:fs';
@@ -56,3 +58,4 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/loox-creator-audit.log 2>&1 &
           sleep 2
           node scripts/creator-profile-audit.mjs
+          node scripts/community-viewer-audit.mjs
