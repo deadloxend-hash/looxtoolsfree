@@ -9,7 +9,7 @@ function render(){
   const b=document.createElement('button');b.type='button';b.className='lx-reward-button';
   const wait=reward?Date.parse(reward.next_claim_at)-(Date.now()+clockOffset):0;
   const cap=Number(state.account?.wallet?.balance)>=10;
-  b.textContent=claiming?'Collecting…':!reward?'Checking reward…':cap?'◇ Reward · use credits first':wait>0?'◇ +1 credit in '+countdown(wait):'✦ Collect 1 free credit';
+  b.textContent=claiming?'Collecting…':!reward?'Checking reward…':wait>0?'◇ +1 credit in '+countdown(wait):cap?'◇ Reward · use credits first':'✦ Collect 1 free credit';
   b.disabled=claiming||!reward||cap||wait>0||reward.eligible===false;b.onclick=claim;
   b.title='One credit every 12 hours. No stacking of missed rewards. Collect while your balance is below 10.';
   slot.append(title,b);
@@ -26,5 +26,12 @@ async function claim(){if(claiming)return;claiming=true;errorText='';render();tr
 if(typeof document!=='undefined'){
 for(const event of ['loox-account','loox-user'])document.addEventListener(event,()=>load());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true);});
-const timer=setInterval(()=>{if(!document.hidden&&state.user&&reward)render();},1000);timer.unref?.();
+const timer=setInterval(()=>{
+ if(document.hidden||!state.user||!reward||claiming)return;
+ const wait=Date.parse(reward.next_claim_at)-(Date.now()+clockOffset),cap=Number(state.account?.wallet?.balance)>=10;
+ for(const b of document.querySelectorAll('.lx-reward-button')){
+  b.textContent=wait>0?'◇ +1 credit in '+countdown(wait):cap?'◇ Reward · use credits first':'✦ Collect 1 free credit';
+  b.disabled=cap||wait>0||reward.eligible===false;
+ }
+},1000);timer.unref?.();
 }
