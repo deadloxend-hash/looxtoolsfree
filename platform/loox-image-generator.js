@@ -170,7 +170,7 @@ async function initWorkspace(){
   native:modelField,root:document.querySelector('[data-custom-select="lig-model"]'),
   mode:'image',getInfo:id=>{
    const m=allModels.get(id),status=modelStatus(id);
-   return {...m,description:id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable',code:id==='flux'?state.config?.local?.code:null,
+   return {...m,description:id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable',code:id==='flux'?state.config?.local?.code:id==='z_image_turbo'?m?.code:null,
     cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??'—'),
     status:m?.status||status.label.toLowerCase().replaceAll(' ','_')};
   }
@@ -466,8 +466,21 @@ async function initWorkspace(){
    const live=await response.json();
    if(!['A8','B8','--'].includes(live.code)||typeof live.available!=='boolean')return;
    const current=state.config.local;
-   if(current.code===live.code&&current.available===live.available&&current.referenceAvailable===live.referenceAvailable)return;
-   state.config.local={...current,code:live.code,available:live.available,referenceAvailable:Boolean(live.referenceAvailable)};
+   const fluxChanged=current.code!==live.code||current.available!==live.available||current.referenceAvailable!==Boolean(live.referenceAvailable);
+   // Z-Image Turbo is PC-only; never infer its availability from cloud tokens.
+   const z=allModels.get('z_image_turbo');
+   const zAvailable=live.zImage?.available===true&&live.zImage?.code==='B8';
+   const zStatus=zAvailable?'available':'coming_soon';
+   const zCode=zAvailable?'B8':null;
+   const zChanged=Boolean(z&&(z.available!==zAvailable||z.status!==zStatus||z.code!==zCode));
+   if(!fluxChanged&&!zChanged)return;
+   if(fluxChanged)state.config.local={...current,code:live.code,available:live.available,referenceAvailable:Boolean(live.referenceAvailable)};
+   if(zChanged){
+    const next={...z,available:zAvailable,status:zStatus,code:zCode,reason:zAvailable?'Ready to create.':'Coming soon.'};
+    allModels.set('z_image_turbo',next);
+    if(zAvailable)availableModels.set('z_image_turbo',next);
+    else availableModels.delete('z_image_turbo');
+   }
    imageModelPicker?.render();
    updateAccount();
   }catch{/* Preserve the last known state during a transient network failure. */}
