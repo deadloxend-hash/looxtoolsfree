@@ -19,7 +19,7 @@ const communityModule=[
  "export async function mediaURL(){return '"+icon+"';}"
 ].join('\n');
 const cloudModule=[
- "export async function cloudRequest(state,path,options={}){window.__cloudCalls=(window.__cloudCalls||0)+1;const p=window.__p;if(path==='profile'){if(options.method==='PATCH'){Object.assign(p,options.data);return p;}return p;}if(path==='feed')return {items:window.__posts,has_more:false};if(path==='replies')return {items:window.__replies,has_more:false};if(path==='pin'){p.pinned_post_id=options.data.post_id;return {pinned_post_id:p.pinned_post_id};}if(path==='follow'){p.followed=options.data.follow;p.followers+=p.followed?1:-1;return p;}if(path==='save'||path==='like')return {on:options.data.on};if(path==='connections')return {items:[],has_more:false};if(path==='privacy'){Object.assign(p,options.data);return p;}if(path==='notifications')return {items:[]};throw Error('Unexpected cloud action '+path);}",
+ "export async function cloudRequest(state,path,options={}){window.__cloudCalls=(window.__cloudCalls||0)+1;const p=window.__p;if(path==='profile'){if(options.method==='PATCH'){Object.assign(p,options.data);return p;}return p;}if(path==='feed')return {items:window.__posts,has_more:false};if(path==='replies')return {items:window.__replies,has_more:false};if(path==='pin'){p.pinned_post_id=options.data.post_id;return {pinned_post_id:p.pinned_post_id};}if(path==='follow'){p.followed=options.data.follow;p.followers+=p.followed?1:-1;return p;}if(path==='save'||path==='like')return {on:options.data.on};if(path==='manage'){window.__manageCalls=(window.__manageCalls||[]);window.__manageCalls.push(options.data);if(options.data.action==='edit')window.__posts[0].caption=options.data.caption;if(options.data.action==='delete'){window.__posts=[];window.__p.posts=0;}return {saved:true};}if(path==='connections')return {items:[],has_more:false};if(path==='privacy'){Object.assign(p,options.data);return p;}if(path==='notifications')return {items:[]};throw Error('Unexpected cloud action '+path);}",
  "export async function cloudImage(){return '"+icon+"';}",
  "export async function cloudUpload(){return {key:'test.webp'};}",
  "export async function cloudDelete(){return {saved:true};}"
@@ -56,7 +56,8 @@ async function profilePage(width,path){
  await page.getByRole('button',{name:'Posts',exact:true}).click();
  assert.equal(await page.locator('.cx-post').count(),1);checks++;
  if(!path){
-  await page.getByRole('button',{name:'Pin',exact:true}).click();
+  await page.getByRole('button',{name:'Post options'}).click();
+  await page.getByRole('menuitem',{name:'Pin post'}).click();
   await page.locator('.cx-pinned').waitFor({timeout:10000});
   assert.equal(await page.locator('.cx-pinned').count(),1);checks++;
   await page.getByRole('button',{name:'Edit profile'}).click();
@@ -65,7 +66,23 @@ async function profilePage(width,path){
   await page.getByRole('button',{name:'Save',exact:true}).last().click();
   await page.locator('.cx-name-line h2').getByText('Updated Creator').waitFor();
   checks++;
+  await page.getByRole('button',{name:'Post options'}).click();
+  await page.getByRole('menuitem',{name:'Edit title'}).click();
+  await page.getByLabel('Post title').fill('Renamed landscape');
+  await page.getByRole('button',{name:'Save title'}).click();
+  await page.locator('.cx-post-caption').getByText('Renamed landscape').waitFor({timeout:10000});
+  assert.equal(await page.evaluate(()=>window.__manageCalls?.at(-1)?.action),'edit');checks++;
+  await page.getByRole('button',{name:'Post options'}).click();
+  await page.getByRole('menuitem',{name:'Delete post'}).click();
+  await page.getByRole('button',{name:'Cancel'}).click();
+  assert.equal(await page.locator('.cx-post').count(),1);checks++;
+  await page.getByRole('button',{name:'Post options'}).click();
+  await page.getByRole('menuitem',{name:'Delete post'}).click();
+  await page.getByRole('button',{name:'Delete post'}).click();
+  await page.locator('.cx-post').waitFor({state:'detached',timeout:10000});
+  assert.equal(await page.evaluate(()=>window.__manageCalls?.at(-1)?.action),'delete');checks++;
  }else{
+  assert.equal(await page.getByRole('button',{name:'Post options'}).count(),0,'Visitors cannot manage another creator\'s posts');checks++;
   await page.getByRole('button',{name:'Follow',exact:true}).click();
   assert.equal((await page.getByRole('button',{name:'Following',exact:true}).count()),1);checks++;
  }
@@ -74,5 +91,5 @@ async function profilePage(width,path){
 try{
  await profilePage(393,false);
  await profilePage(1350,true);
- console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile editing/pinning, public follow, post/replies/media tabs, layout.');
+ console.log('PROFILE AUDIT PASS: '+checks+' checks: mobile editing, deletion, pinning, confirmation, owner-only actions, public follow, tabs, layout.');
 }catch(e){console.error('PROFILE AUDIT FAILED:',e);process.exitCode=1;}finally{await browser.close();}
