@@ -1,6 +1,6 @@
 import {openSheet} from './workspace-sheet.js';
 import {state,auth,initialize} from './account.js?v=9';
-import {element as e,action as a,result,rpc} from './community.js?v=26';
+import {element as e,action as a,result,rpc} from './community.js?v=27';
 const root=document.getElementById('template-library'),workflow=location.pathname.endsWith('workflows.html');
 let kind=root.dataset.generatorKind||'image',category='',query='',offset=0,epoch=0;const selectedStyles=new Set();
 const search=e('input','loox-gallery-search');search.type='search';search.placeholder='Search Templates';search.setAttribute('aria-label','Search Templates');
