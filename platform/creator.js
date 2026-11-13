@@ -489,10 +489,26 @@ function ownerPostMenu(post){
 async function openPostComments(post){
  const {d,wrap}=dialog('Comments');
  d.classList.add('cx-comments-dialog');
+ d.querySelector('.cx-dialog-close')?.setAttribute('aria-label','Close comments');
+ // A tap on the dimmed space outside the sheet closes it, but scrolling,
+ // replying and tapping inside the sheet never do.
+ d.addEventListener('click',event=>{
+  if(event.target===d)d.close();
+ });
  const content=el('div','cx-comments-content');
  wrap.append(content);
- try{await engine.comments(post,content);}
- catch(e){content.append(el('p','cx-edit-error',e.message||'Comments unavailable.'));}
+ try{
+  await engine.comments(post,content);
+  const title=content.querySelector('.loox-conversation > h3');
+  const label=count=>Math.max(0,Number(count)||0)+(Number(count)===1?' comment':' comments');
+  if(title)title.textContent=label(post.comments);
+  const updated=event=>{
+   if(event.detail?.postId===post.id&&title)title.textContent=label(event.detail.count);
+  };
+  const ac=new AbortController();
+  d.addEventListener('close',()=>ac.abort(),{once:true});
+  document.addEventListener('loox:post-comment-count',updated,{signal:ac.signal});
+ }catch(e){content.append(el('p','cx-edit-error',e.message||'Comments unavailable.'));}
 }
 function postCard(post){
  const article=el('article','cx-post');article.dataset.id=post.id;
