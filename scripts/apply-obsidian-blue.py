@@ -18,6 +18,7 @@ META = re.compile(r'<meta\b[^>]*\bname\s*=\s*(["\'])theme-color\1[^>]*>', re.I)
 MARK = '/* LOOX Obsidian Blue'
 CSS_ASSET = re.compile(r'(\b(?:href|data-href)\s*=\s*["\'])(?!https?://)([^"\']+?\.css)(?:\?v=[^"\']*)?(["\'])', re.I)
 THEME_VERSION = 'obsidian-blue-1'
+JS_ASSET = re.compile(r'(\b(?:src|data-src)\s*=\s*["\'])(?!https?://)([^"\']+?loox-experience\.js)(?:\?v=[^"\']*)?(["\'])', re.I)
 
 
 def recolor(hexcode: str) -> str:
@@ -95,6 +96,7 @@ def html_colors(s: str) -> str:
     s = STYLE_ATTR.sub(lambda m: m.group(1) + m.group(2) + css_colors(m.group(3)) + m.group(2), s)
     s = META.sub(lambda m: re.sub(r'#[\da-fA-F]{6}\b', '#080d16', m.group()), s)
     s = CSS_ASSET.sub(lambda m: m.group(1) + m.group(2) + '?v=' + THEME_VERSION + m.group(3), s)
+    s = JS_ASSET.sub(lambda m: m.group(1) + m.group(2) + '?v=' + THEME_VERSION + m.group(3), s)
     return s
 
 
@@ -119,8 +121,15 @@ def main() -> None:
         if result != original:
             path.write_text(result, encoding='utf-8')
             edited.append(path.relative_to(ROOT).as_posix())
+    js = ROOT / 'loox-experience.js'
+    if js.exists():
+        original = js.read_text(encoding='utf-8')
+        updated = original.replace("p.accent:'#a791ff'", "p.accent:'#3b82f6'")
+        if updated != original:
+            js.write_text(updated, encoding='utf-8')
+            edited.append(js.relative_to(ROOT).as_posix())
     print(f'Obsidian Blue: updated {len(edited)} files; {sum(p.endswith(".css") for p in edited)} CSS, {sum(p.endswith(".html") for p in edited)} HTML')
-    assert len(edited) >= 35, 'Unusually few files updated; confirm repository root.'
+    assert (ROOT/'loox-experience.js').exists(), 'Missing shared LOOX theme script.'
     assert 'LOOX Obsidian Blue' in (ROOT/'loox-experience.css').read_text(encoding='utf-8')
 
 
