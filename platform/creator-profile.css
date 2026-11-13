@@ -359,3 +359,21 @@ body.creator-page.cx-profile-page #creator-community{
  padding:12px;border:1px solid #43384b;border-radius:10px;font-size:12px;
 }
 .cx-edit-dialog .cx-notification a{color:#d2a9f2;text-decoration:underline;margin-left:auto}
+
+/* Owner-only post actions: compact, touch-friendly, and never clipped on mobile. */
+#creator-community .cx-post-dropdown{position:relative}
+#creator-community .cx-post-dropdown>.cx-post-more{width:33px;height:32px;display:grid;place-items:center;padding:0;border:1px solid transparent}
+#creator-community .cx-post-dropdown>.cx-post-more[aria-expanded="true"]{background:#392747;border-color:#624971;color:#f3d4ff}
+#creator-community .cx-post-options{position:absolute;right:0;top:calc(100% + 6px);z-index:70;display:flex;flex-direction:column;gap:2px;width:min(210px,calc(100vw - 32px));padding:6px;border:1px solid #624a72;background:#241b2e;border-radius:12px;box-shadow:0 14px 36px #0009}
+#creator-community .cx-post-options[hidden]{display:none!important}
+#creator-community .cx-post-option{width:100%;min-height:39px;display:flex;align-items:center;gap:11px;padding:9px 11px;border:0;background:transparent;border-radius:8px;color:#f5eafa;text-align:left;font-size:12px;font-weight:650}
+#creator-community .cx-post-option:hover,#creator-community .cx-post-option:focus-visible{background:#3e2c4c}
+#creator-community .cx-post-option-danger{color:#ffb0c4}
+#creator-community .cx-post-option-danger:hover{background:#50283e}
+.cx-edit-dialog .cx-dialog-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:6px}
+.cx-edit-dialog .cx-dialog-actions>.cx-button{min-height:39px;padding:9px 17px;font-size:12px;font-weight:750;border-radius:22px;white-space:nowrap}
+.cx-edit-dialog .cx-dialog-actions>.cx-button-outline{border:1px solid #655072;background:transparent;color:#f5eafa}
+.cx-edit-dialog .cx-dialog-actions>.cx-button-primary{border:1px solid #e8d4fb;background:#e8d4fb;color:#281532}
+.cx-edit-dialog .cx-dialog-actions>.cx-button-danger{border:1px solid #f09bb0;background:#9d365b;color:#fff}
+.cx-edit-dialog .cx-delete-post-body{padding:18px 20px 22px;display:flex;flex-direction:column;gap:14px}
+.cx-edit-dialog .cx-delete-post-body>p:first-child{margin:0;color:#cfc0d7;line-height:1.65;font-size:13px}
