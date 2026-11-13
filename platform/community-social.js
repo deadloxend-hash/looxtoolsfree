@@ -26,7 +26,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    label.append(pub,'Make collection public');form.append(label);
    const submit=e('button','community-primary','Create collection');submit.type='submit';
    form.append(submit);d.append(list,form,status);
-   const fail=err=>status.textContent=err.message;
+   const fail=err=>{status.textContent=err.message;notify(err.message||'Action unavailable.');};
    const load=async()=>{
     list.replaceChildren();
     const rows=(await cloudRequest(this.state,'collections')).items||[];
@@ -296,6 +296,13 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    if(index>0)controls.append(a('← Previous',()=>next(-1),'community-button',fail));if(index>=0&&index<this.posts.length-1)controls.append(a('Next →',()=>next(1),'community-button',fail));
    let touchX;stage.addEventListener('touchstart',event=>touchX=event.changedTouches[0].clientX,{passive:true});stage.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchX;if(Math.abs(delta)>80&&!media.classList.contains('is-zoomed'))Promise.resolve(next(delta<0?1:-1)).catch(fail);},{passive:true});
    d.addEventListener('close',()=>{if(post.media_type==='video'){media.pause();media.removeAttribute('src');media.load();}});stage.append(media);
+   const toast=e('p','loox-viewer-toast');toast.setAttribute('role','status');toast.hidden=true;stage.append(toast);
+   let toastTimer;
+   const notify=message=>{
+    toast.textContent=message;toast.hidden=false;clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>{toast.hidden=true;},2600);
+   };
+   d.addEventListener('close',()=>clearTimeout(toastTimer),{once:true});
    const creator=e('a','community-creator loox-social-creator');
    creator.href='creator.html?id='+encodeURIComponent(post.creator_id);
    creator.setAttribute('aria-label','Open '+(post.display_name||post.username)+' profile');
@@ -341,7 +348,9 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     right:'<path d="m9 18 6-6-6-6"/>',
     report:'<path d="M5 21V4m0 1c6-4 9 4 16 0v11c-7 4-10-4-16 0"/>',
     edit:'<path d="m15 5 4 4M4 20l4.5-1 11-11a2.8 2.8 0 0 0-4-4l-11 11L4 20Z"/>',
-    trash:'<path d="M3 6h18M8 6V4h8v2m-11 0 1 15h12l1-15"/>'
+    trash:'<path d="M3 6h18M8 6V4h8v2m-11 0 1 15h12l1-15"/>',
+    copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+    recreate:'<path d="M20 7v5h-5M4 17v-5h5"/><path d="M5.7 9A7 7 0 0 1 18.3 7L20 12M4 12l1.7 5A7 7 0 0 0 18.3 15"/>'
    };
    const options=e('details','loox-viewer-options'),toggle=e('summary','loox-viewer-options-trigger'),menu=e('div','loox-viewer-options-list');
    toggle.setAttribute('aria-label','Post options');toggle.setAttribute('title','Post options');
@@ -382,10 +391,25 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    });
    saveAction.setAttribute('aria-pressed',String(!!post.saved));
    addAction('collection','Add to collection',()=>this.collections(post));
+   if(post.shared_prompt){
+    addAction('copy','Copy prompt',async()=>{
+     await navigator.clipboard.writeText(post.shared_prompt);notify('Prompt copied.');
+    });
+    if(post.allow_remix!==false)addAction('recreate','Recreate',()=>{
+     sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({
+      kind:post.media_type==='video'?'video':'image',
+      prompt:post.shared_prompt,operation:post.model_id,
+      model:(this.state.config?.models?.find(m=>m.operation===post.model_id)
+       ||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id
+       ||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)
+     }));
+     location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');
+    });
+   }
    addAction('share','Share post',async()=>{
     const url=new URL('community.html?post='+encodeURIComponent(post.id),location.href).href;
     if(navigator.share)await navigator.share({title:post.caption||'LOOX creation',url});
-    else{await navigator.clipboard.writeText(url);status.textContent='Post link copied.';}
+    else{await navigator.clipboard.writeText(url);notify('Post link copied.');}
    });
    if(post.allow_download!==false)addAction('download','Download original',async()=>{
     const url=await mediaURL(this.state,post.media_path,'loox-results',{type:'post',id:post.id,variant:'original'});
@@ -396,7 +420,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
      link.download='loox-'+post.id+(post.media_type==='video'?'.mp4':blob.type==='image/jpeg'?'.jpg':blob.type==='image/webp'?'.webp':'.png');
      document.body.append(link);link.click();link.remove();
      setTimeout(()=>URL.revokeObjectURL(link.href),60000);
-    }catch{window.open(url,'_blank','noopener,noreferrer');status.textContent='Original opened in a new tab.';}
+    }catch{window.open(url,'_blank','noopener,noreferrer');notify('Original opened in a new tab.');}
    });
    addAction('expand','Full screen',()=>stage.requestFullscreen?.());
    if(index>0)addAction('left','Previous post',()=>next(-1));
@@ -441,7 +465,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     requestAnimationFrame(measurePrompt);
     window.addEventListener('resize',measurePrompt,{passive:true});
     d.addEventListener('close',()=>window.removeEventListener('resize',measurePrompt),{once:true});
-    const promptActions=e('div','loox-social-prompt-actions');panel.append(promptActions);promptActions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);status.textContent='Prompt copied.';},'community-button',fail));
+    const promptActions=e('div','loox-social-prompt-actions');panel.append(promptActions);promptActions.append(a('Copy prompt',async()=>{await navigator.clipboard.writeText(post.shared_prompt);notify('Prompt copied.');},'community-button',fail));
     if(post.allow_remix!==false)promptActions.append(a('Recreate',()=>{sessionStorage.setItem('loox-creative-launch-v1',JSON.stringify({kind:post.media_type==='video'?'video':'image',prompt:post.shared_prompt,operation:post.model_id,model:(this.state.config?.models?.find(m=>m.operation===post.model_id)||this.state.config?.videoModels?.find(m=>post.model_id===m.operation||post.model_id?.startsWith(m.operation+'_')))?.id||(post.model_id==='generate'?'flux':post.model_id==='generate_video'?'wan21':null)}));location.assign(post.media_type==='video'?'ai-video-generator.html#generate':'ai-text-to-image.html#generate');},'community-primary',fail));
    }else panel.append(e('p','community-note','The creator kept this prompt private.'));
    panel.append(status);panel.hidden=true;d.append(stage,panel);
