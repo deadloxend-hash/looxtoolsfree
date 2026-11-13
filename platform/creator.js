@@ -76,7 +76,14 @@ function setupEngine(){
   catch(e){Object.assign(post,previous);sync();throw e;}
   finally{engine.pendingLikes.delete(post.id);}
  };
- engine.save=async(post)=>{const on=!post.saved;await cloudRequest(state,'save',{method:'POST',data:{post_id:post.id,on}});post.saved=on;};
+ engine.save=async(post,button=null)=>{
+  if(!state.user){auth('login');return;}
+  const next=!post.saved;
+  await cloudRequest(state,'save',{method:'POST',data:{post_id:post.id,on:next}});
+  post.saved=next;
+  if(button){button.setAttribute('aria-pressed',String(next));button.setAttribute('aria-label',next?'Remove saved post':'Save post');}
+  document.dispatchEvent(new CustomEvent('loox:post-save-change',{detail:{postId:post.id,saved:next}}));
+ };
 }
 async function refreshProfile(){const p=await cloudRequest(state,'profile',{query:{id:creatorId}});
  if(!p){emptyPage('This profile is private or unavailable.',false);throw Error('Profile unavailable.');}
@@ -483,25 +490,55 @@ function postCard(post){
  if(post.media_type==='video'||post.media_type==='image')preview(post,body);
  if(post.shared_prompt){const prompt=el('details','cx-prompt');prompt.append(el('summary','','View prompt'),el('p','',post.shared_prompt));body.append(prompt);}
  const actions=el('div','cx-post-actions');
- const comment=btn('',()=>engine.details(post),'cx-post-action');
- comment.append(svg('comment',18),el('span','',compact(post.comments)));comment.setAttribute('aria-label',compact(post.comments)+' comments');
- const like=btn('',async()=>{
-  if(!state.user)return auth('login');
-  like.disabled=true;
-  try{await engine.like(post);updateLike();}finally{like.disabled=false;}
- },'cx-post-action cx-post-like');
- const updateLike=()=>{like.replaceChildren(svg('heart',18),el('span','',compact(post.likes)));like.classList.toggle('cx-active',!!post.liked);like.setAttribute('aria-pressed',String(!!post.liked));like.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+Number(post.likes||0)+' likes');};
- updateLike();
- const save=btn('',async()=>{
-  if(!state.user)return auth('login');
-  await engine.save(post);
-  save.classList.toggle('cx-active',!!post.saved);save.setAttribute('aria-pressed',String(!!post.saved));
- },'cx-post-action cx-save');
- save.append(svg('bookmark',18));save.classList.toggle('cx-active',!!post.saved);save.setAttribute('aria-label','Save post');save.setAttribute('aria-pressed',String(!!post.saved));
- const share=btn('',async()=>{const url=new URL('community.html?post='+encodeURIComponent(post.id),location.href).href;if(navigator.share)await navigator.share({title:post.caption||'LOOX creation',url});else{await navigator.clipboard.writeText(url);notice('Post link copied.');}},'cx-post-action');
- share.append(svg('share',18));share.setAttribute('aria-label','Share post');
- actions.append(comment,like,save,share);
- if(post.media_type==='video'&&Number(post.view_count)>0){const views=el('span','cx-action-views');views.append(svg('views',17),el('span','',compact(post.view_count)));actions.insertBefore(views,save);}
+ const likeGroup=el('span','cx-engagement-group'),commentGroup=el('span','cx-engagement-group');
+ const like=btn('',()=>engine.like(post,like),'cx-post-action cx-post-like');
+ like.setAttribute('data-post-id',post.id);
+ const likeNumber=el('span','cx-engagement-number');
+ const updateLike=()=>{
+  const mark=svg('heart',21);mark.querySelector('svg')?.setAttribute('fill',post.liked?'currentColor':'none');
+  like.replaceChildren(mark);
+  likeNumber.textContent=compact(post.likes);
+  like.classList.toggle('cx-active',!!post.liked);
+  like.setAttribute('aria-pressed',String(!!post.liked));
+  like.setAttribute('aria-label',(post.liked?'Unlike':'Like')+' post, '+Number(post.likes||0)+' likes');
+ };
+ updateLike();likeGroup.append(like,likeNumber);
+ const comment=btn('',()=>openPostComments(post),'cx-post-action cx-post-comment');
+ comment.append(svg('comment',21));comment.setAttribute('aria-label','View comments');
+ const commentNumber=el('span','cx-engagement-number',compact(post.comments));
+ commentGroup.append(comment,commentNumber);
+ const save=btn('',()=>engine.save(post,save),'cx-post-action cx-save');
+ const updateSave=()=>{
+  const mark=svg('bookmark',21);mark.querySelector('svg')?.setAttribute('fill',post.saved?'currentColor':'none');
+  save.replaceChildren(mark);save.classList.toggle('cx-active',!!post.saved);
+  save.setAttribute('aria-label',post.saved?'Remove saved post':'Save post');
+  save.setAttribute('aria-pressed',String(!!post.saved));
+ };
+ updateSave();
+ const share=btn('',async()=>{
+  const url=new URL('community.html?post='+encodeURIComponent(post.id),location.href).href;
+  if(navigator.share)await navigator.share({title:post.caption||'LOOX creation',url});
+  else{await navigator.clipboard.writeText(url);notice('Post link copied.');}
+ },'cx-post-action cx-share');
+ share.append(svg('share',21));share.setAttribute('aria-label','Share post');
+ actions.append(likeGroup,commentGroup,share,save);
+ if(post.media_type==='video'&&Number(post.view_count)>0){
+  const views=el('span','cx-action-views');views.append(svg('views',17),el('span','',compact(post.view_count)));
+  actions.insertBefore(views,share);
+ }
+ document.addEventListener('loox:post-like-change',event=>{
+  if(event.detail?.postId!==post.id)return;
+  post.liked=!!event.detail.liked;post.likes=event.detail.likes;updateLike();
+ },{signal:postMenuAbort.signal});
+ document.addEventListener('loox:post-comment-count',event=>{
+  if(event.detail?.postId!==post.id)return;
+  post.comments=Math.max(0,Number(event.detail.count)||0);
+  commentNumber.textContent=compact(post.comments);
+ },{signal:postMenuAbort.signal});
+ document.addEventListener('loox:post-save-change',event=>{
+  if(event.detail?.postId!==post.id)return;
+  post.saved=!!event.detail.saved;updateSave();
+ },{signal:postMenuAbort.signal});
  body.append(actions);article.append(a,body,toolbar);return article;
 }
 function readDataUrl(blob){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Could not read image.'));reader.readAsDataURL(blob);});}
