@@ -1,0 +1,46 @@
+name: Apply LOOX Obsidian Blue theme sitewide
+on:
+  push:
+    paths:
+      - ".github/workflows/loox-obsidian-blue.yml"
+      - "scripts/apply-obsidian-blue.py"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: loox-obsidian-blue-rollout
+  cancel-in-progress: false
+jobs:
+  convert-site-theme:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Apply shared blue palette to every stylesheet and page
+        run: python3 scripts/apply-obsidian-blue.py
+      - name: Validate site structure and code changes
+        run: |
+          python3 scripts/site-ui-static-audit.py
+          python3 - <<'PY'
+          from pathlib import Path
+          home=Path("index.html").read_text(encoding="utf-8")
+          tokens=Path("loox-experience.css").read_text(encoding="utf-8")
+          assert 'obsidian-blue-1' in home
+          assert '--loox-obsidian-primary:#3b82f6' in tokens
+          assert '--loox-obsidian-cyan:#22d3ee' in tokens
+          assert 'LOOX Obsidian Blue' in Path("loox-sitewide-nav.css").read_text(encoding="utf-8")
+          print("Obsidian theme tokens and cache-busted page references verified.")
+          PY
+      - name: Commit styling changes to main
+        run: |
+          git config user.name "loox-theme-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -u
+          if git diff --cached --quiet; then
+            echo "Theme is already up-to-date."
+            exit 0
+          fi
+          git commit -m "style: apply Obsidian Blue design across LOOX pages"
+          git push
