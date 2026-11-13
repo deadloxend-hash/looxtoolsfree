@@ -115,7 +115,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const selected=native.value,model=info(selected);
   face.replaceChildren(icon(selected));
   text.textContent=describe(selected);
-  const code=mode==='image'&&selected==='flux'&&/^(A8|B8)$/.test(model.code||'')?model.code:'';
+  const code=mode==='image'&&['flux','z_image_turbo'].includes(selected)&&/^(A8|B8)$/.test(model.code||'')?model.code:'';
   route.textContent=code;route.hidden=!code;route.dataset.code=code;
   trigger.disabled=native.disabled;
   trigger.title=describe(selected)+' · '+(model.cost??'—')+' credits';
@@ -128,7 +128,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const main=node('span','loox-model-copy');
   const nameLine=node('span','loox-model-name-line');
   nameLine.append(node('strong','loox-model-name',describe(id)));
-  const code=mode==='image'&&id==='flux'&&/^(A8|B8)$/.test(model.code||'')?model.code:'';
+  const code=mode==='image'&&['flux','z_image_turbo'].includes(id)&&/^(A8|B8)$/.test(model.code||'')?model.code:'';
   if(code){const routeCode=node('small','loox-model-route-code',code);routeCode.dataset.code=code;nameLine.append(routeCode)}
   main.append(nameLine);
   const description=node('span','loox-model-description',model.description||(mode==='video'?'Creative video generation':'AI image generation'));
