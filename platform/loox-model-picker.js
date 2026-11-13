@@ -29,8 +29,8 @@ const glyphs={z_image_turbo:'zimage',flux:'flux',flux2_klein_local_edit:'flux',b
 const palettes={zimage:'#b29aff',flux:'#aa8bff',banana:'#f4ca5c',ideogram:'#f78aa1',stability:'#90c4ff',
  seedream:'#9dd4fa',openai:'#a4e4bf',qwen:'#c0a3ff',hidream:'#f7a9c6',imagen:'#97dcf0',photon:'#efc3a7',wan:'#a7bfff',kling:'#80cbd7',seedance:'#8fa9ff',veo:'#f1be84',runway:'#dba3d2',fluxvideo:'#baa2fa'};
 const groupsImage=[
- {name:'Z-Image Turbo',provider:'LOOX Studio · Local GPU / Cloud',ids:['z_image_turbo']},
- {name:'FLUX',provider:'Black Forest Labs · Local GPU / Cloud',ids:['flux','flux2_klein_local_edit','bfl_flux2_pro','bfl_klein_4b','replicate_flux_ultra']},
+ {name:'Z-Image Turbo',provider:'LOOX Studio',ids:['z_image_turbo']},
+ {name:'FLUX',provider:'Black Forest Labs',ids:['flux','flux2_klein_local_edit','bfl_flux2_pro','bfl_klein_4b','replicate_flux_ultra']},
  {name:'Nano Banana',provider:'Google AI',ids:['google_nano_2','google_nano_pro']},
  {name:'Seedream',provider:'BytePlus',ids:['byteplus_45','byteplus_50_flash']},
  {name:'Ideogram',provider:'Ideogram',ids:['ideogram_p_image','ideogram_45']},
@@ -39,7 +39,7 @@ const groupsImage=[
  {name:'Other creative models',provider:'Replicate',ids:['replicate_qwen2','replicate_hidream','replicate_imagen4','replicate_photon']}
 ];
 const groupsVideo=[
- {name:'Wan 2.1',provider:'LOOX Studio · Local GPU',ids:['wan21']},
+ {name:'Wan 2.1',provider:'LOOX Studio',ids:['wan21']},
  {name:'Wan 2.2',provider:'Text & image generation',ids:['wan22_5b_fast','wan22_t2v_fast','wan22_i2v_fast']},
  {name:'Wan 2.5',provider:'Image to video',ids:['wan25_i2v']},
  {name:'Wan 2.6',provider:'Image to video',ids:['wan26_i2v_flash']},
@@ -90,7 +90,8 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
  trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
  trigger.setAttribute('aria-label','Choose '+mode+' model');
  const face=node('span','loox-model-trigger-face'),text=node('span','loox-model-trigger-title');
- const caret=chevron();caret.classList.add('loox-model-caret');trigger.append(face,text,caret);
+ const route=node('span','loox-model-trigger-route');route.hidden=true;
+ const caret=chevron();caret.classList.add('loox-model-caret');trigger.append(face,text,route,caret);
  const panel=node('div','loox-model-panel');panel.hidden=true;
  panel.setAttribute('role','dialog');panel.setAttribute('aria-label','Choose '+mode+' model');
  const searchBox=node('div','loox-model-search-box');
@@ -114,6 +115,8 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const selected=native.value,model=info(selected);
   face.replaceChildren(icon(selected));
   text.textContent=describe(selected);
+  const code=mode==='image'&&selected==='flux'&&/^(A8|B8)$/.test(model.code||'')?model.code:'';
+  route.textContent=code;route.hidden=!code;route.dataset.code=code;
   trigger.disabled=native.disabled;
   trigger.title=describe(selected)+' · '+(model.cost??'—')+' credits';
   list.querySelectorAll('[data-model-value]').forEach(el=>el.classList.toggle('is-selected',el.dataset.modelValue===selected));
@@ -123,8 +126,12 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const select=node('button','loox-model-choice');select.type='button';
   select.setAttribute('role','option');select.setAttribute('aria-selected',String(native.value===id));
   const main=node('span','loox-model-copy');
-  main.append(node('strong','loox-model-name',describe(id)));
-  const description=node('span','loox-model-description',model.description||((mode==='video'&&id==='wan21')?'Local GPU · text to video':mode==='video'?'Cloud video generation':'AI image generation'));
+  const nameLine=node('span','loox-model-name-line');
+  nameLine.append(node('strong','loox-model-name',describe(id)));
+  const code=mode==='image'&&id==='flux'&&/^(A8|B8)$/.test(model.code||'')?model.code:'';
+  if(code){const routeCode=node('small','loox-model-route-code',code);routeCode.dataset.code=code;nameLine.append(routeCode)}
+  main.append(nameLine);
+  const description=node('span','loox-model-description',model.description||(mode==='video'?'Creative video generation':'AI image generation'));
   main.append(description);
   if(model.status==='coming_soon'||model.status==='temporarily_unavailable'){
    const statusLabel=model.status==='coming_soon'?'Coming soon':'Temporarily unavailable';
