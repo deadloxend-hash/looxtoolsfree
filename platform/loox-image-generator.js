@@ -53,7 +53,7 @@ async function initWorkspace(){
  const availableModels=new Map([...allModels].filter(([,m])=>m.available));
  const modelNote=document.querySelector('.lig-model-note');
  function modelStatus(id){
-  if(id==='flux')return state.config?.local?.available?{label:'Available',reason:state.config?.local?.source==='cloudflare'?'Your PC GPU is offline. Cloudflare FLUX Schnell is ready for text-to-image; reference images still require your PC.':'Your private LOOX GPU is online and will generate this image.'}:{label:'Temporarily Unavailable',reason:'Your GPU is offline and the Cloudflare fallback is not configured.'};
+   if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'Ready to create.'}:{label:'Temporarily Unavailable',reason:'Image generation is temporarily unavailable.'};
   const m=allModels.get(id);
   return {label:m?.status==='available'?'Available':m?.status==='temporarily_unavailable'?'Temporarily Unavailable':'Coming Soon',
    reason:m?.reason||'Requires rotated credentials, provider billing and a verified generation.'};
@@ -106,7 +106,7 @@ async function initWorkspace(){
    const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
    if(isModel){
     const m=allModels.get(option.value);
-    const detail=create('small','lig-model-choice-detail',m?.description||(id==='flux'?'Fast image generation on your PC GPU, with Cloudflare fallback when offline':'Model details unavailable'));
+    const detail=create('small','lig-model-choice-detail',id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable');
     const status=modelStatus(option.value);
     const meta=create('small','lig-model-choice-meta',status.label+' · '+(m?.cost||3)+' credits');
     const body=create('span','lig-model-choice-body');body.append(label,detail,meta);
@@ -170,7 +170,7 @@ async function initWorkspace(){
   native:modelField,root:document.querySelector('[data-custom-select="lig-model"]'),
   mode:'image',getInfo:id=>{
    const m=allModels.get(id),status=modelStatus(id);
-   return {...m,description:m?.description||(id==='flux'?'Fast image generation on your PC GPU, with Cloudflare fallback when offline':'Model details unavailable'),
+   return {...m,description:id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable',code:id==='flux'?state.config?.local?.code:null,
     cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??'—'),
     status:m?.status||status.label.toLowerCase().replaceAll(' ','_')};
   }
@@ -324,8 +324,8 @@ async function initWorkspace(){
   const files=window.__looxFluxReferences?.()||[];
   if(!files.length)return null;
   if(!['flux','flux2_klein_local_edit'].includes(modelField.value))throw Error('Choose FLUX.1 Schnell or FLUX.2 Klein Image Edit to use a reference image.');
-  if(modelField.value==='flux'&&!state.config?.local?.referenceAvailable)throw Error('Your Windows ComfyUI worker needs the FLUX.1 reference workflow. No credits used.');
-  if(modelField.value==='flux2_klein_local_edit'&&!availableModels.has('flux2_klein_local_edit'))throw Error('FLUX.2 Klein is offline. Start the updated LOOX GPU worker. No credits used.');
+  if(modelField.value==='flux'&&!state.config?.local?.referenceAvailable)throw Error('Reference-guided image generation is temporarily unavailable. No credits used.');
+  if(modelField.value==='flux2_klein_local_edit'&&!availableModels.has('flux2_klein_local_edit'))throw Error('This editing mode is temporarily unavailable. No credits used.');
   if(!byId('lig-reference-permission')?.checked)throw Error('Confirm that you have permission to use all selected reference images.');
   if(files.length>12)throw Error('A maximum of 12 reference images can be processed in one generation.');
   if(modelField.value==='flux2_klein_local_edit'&&files.length!==1)throw Error('This FLUX.2 Klein Image Edit workflow accepts exactly one reference image for now.');
@@ -378,7 +378,7 @@ async function initWorkspace(){
  }
  function syncReferenceUI(){
   const isFlux=['flux','flux2_klein_local_edit'].includes(modelField.value),button=byId('lig-reference-quick-add'),tray=byId('lig-reference-tray');
-  if(button){button.hidden=!isFlux;button.title=modelField.value==='flux2_klein_local_edit'?'Add one reference picture for FLUX.2 Klein Image Edit':state.config?.local?.referenceAvailable?'Add reference images':'Update PC worker for FLUX image-to-image';}
+  if(button){button.hidden=!isFlux;button.title=modelField.value==='flux2_klein_local_edit'?'Add one reference picture for FLUX.2 Klein Image Edit':state.config?.local?.referenceAvailable?'Add reference images':'Reference editing is temporarily unavailable';}
   const input=byId('lig-reference-image');if(input)input.disabled=!isFlux;
   if(tray)tray.style.display=isFlux?'':'none';
  }
@@ -455,6 +455,27 @@ async function initWorkspace(){
   syncReferenceUI();
   generateButton.disabled=isBusy||(modelField.value==='flux'?!state.config?.local?.available:!availableModels.has(modelField.value));
  }
+ // Keep the discreet route code current without exposing provider or PC details.
+ async function refreshGenerationCode(){
+  if(document.hidden||!state.config?.local)return;
+  try{
+   const response=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?action=route_code',{
+    credentials:'omit',cache:'no-store',signal:AbortSignal.timeout(10000)
+   });
+   if(!response.ok)return;
+   const live=await response.json();
+   if(!['A8','B8','--'].includes(live.code)||typeof live.available!=='boolean')return;
+   const current=state.config.local;
+   if(current.code===live.code&&current.available===live.available&&current.referenceAvailable===live.referenceAvailable)return;
+   state.config.local={...current,code:live.code,available:live.available,referenceAvailable:Boolean(live.referenceAvailable)};
+   imageModelPicker?.render();
+   updateAccount();
+  }catch{/* Preserve the last known state during a transient network failure. */}
+ }
+ refreshGenerationCode();
+ setInterval(refreshGenerationCode,60000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshGenerationCode()});
+
  modelField.addEventListener('change',()=>{updateModelSettings();updateAccount();const m=allModels.get(modelField.value);const label=m?m.name:'FLUX.1 Schnell';const pill=document.querySelector('.lig-compose .lig-image-pill');if(pill)pill.textContent='✧  '+label;const description=document.querySelector('#lig-generate-view .lig-main-heading p');if(description)description.textContent='Create with '+label+' and keep your generations in one place.';});
  function setMessage(value,isError=false){
   message.textContent=value||'';
