@@ -125,8 +125,8 @@ export function renderHeader(){
   host.classList.add('lx-controls','lx-account-header');
   const signedIn=Boolean(state.user);
   const balance=state.account?.wallet?.balance;
-  const credit=button('',buyCredits,'lx-credit-chip');
-  credit.setAttribute('aria-label',signedIn?'Your available AI credits · Buy Credits':'Buy Credits');
+  const credit=el('span',null,'lx-credit-chip lx-credit-readonly');
+  credit.setAttribute('aria-label',signedIn?'Available AI credits':'Sign in to view your credits');
   credit.append(el('span','Credit','lx-credit-label'),
     el('span',' - ','lx-credit-divider'),
     el('strong',signedIn?(Number.isFinite(Number(balance))?String(balance):'…'):'0','lx-credit-value'));
@@ -154,9 +154,9 @@ export function renderHeader(){
    identity.append(el('small',state.user.email||'','lx-profile-email'));
    menu.append(identity);
    const links=el('div',null,'lx-profile-links');
-   for(const [id,label] of sections)links.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'account.html#'+id));
+   for(const [id,label] of sections){const href=id==='settings'?'settings.html':['credits','subscription','history'].includes(id)?'settings.html#billing':'account.html#'+id;links.append(link(label,href));}
    menu.append(button('Authenticator security',()=>{details.open=false;authenticator();},'lx-button'));
-   menu.append(links,button('Buy Credits',()=>{details.open=false;buyCredits();},'lx-button'));
+   menu.append(links,link('Billing & Credits','settings.html#billing'));
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
   }else{
@@ -206,7 +206,7 @@ function drawDashboard(){
  const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'#'+id));host.append(nav);
  function section(id,title){const s=el('section',null,'lx-card');s.id=id;s.append(el('h2',title));host.append(s);return s;}
  section('profile','Account overview').append(el('h3','Welcome, '+a.profile.name),el('p',a.jobs.length+' recent AI actions'),el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
- section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),button('Buy Credits',buyCredits));
+ section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),link('Manage Billing & Credits →','settings.html#billing'));
  const jobs=section('usage','Recent AI jobs');if(!a.jobs.length)jobs.append(el('p','No AI jobs yet.'));
  for(const j of a.jobs){const row=el('div',null,'lx-row');row.append(el('span',labels[j.operation]+' · '+j.state));
  if(j.state!=='failed')row.append(button(j.state==='succeeded'?'Open result':'Check status',async()=>{try{const result=await api('status',null,{id:j.id});if(result.url){const d=dialog('Your private result');d.box.append(link('Open PNG',result.url));}await refresh();}catch(e){msg(document.querySelector('[data-account-note]'),e.message);}},'lx-link'));jobs.append(row);}
@@ -223,7 +223,6 @@ function drawDashboard(){
 
 }
 if(typeof document!=='undefined'){
-if(/ai-(text-to-image|video-generator|chat)\.html$/.test(location.pathname)){const target=document.querySelector('.ai-composer-wrap')||document.querySelector('.lig-credit-box');if(target){const buy=button('Buy Credits',buyCredits,'lx-buy-credits');target.append(buy);}}
 document.addEventListener('loox-account',drawDashboard);
 document.addEventListener('loox-user',drawDashboard);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user)refresh().catch(()=>{});});
