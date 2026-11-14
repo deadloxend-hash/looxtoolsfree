@@ -185,3 +185,31 @@ button,input,select{font:inherit}
  html body.lp-page[data-account-upgrade] .lp-btn{min-height:46px!important;font-size:15px!important}
 }
 @media(min-width:901px) and (max-width:1250px){html body.lp-page[data-account-upgrade] .lp-plan-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* Billing & Credits lives in Settings; financial history is always read-only. */
+.lp-billing-card{min-width:0}
+.lp-billing-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.lp-billing-stat{display:flex;flex-direction:column;gap:8px;min-width:0;padding:17px 15px;border:1px solid #2a405c;border-radius:14px;background:linear-gradient(145deg,#142033,#101a2b)}
+.lp-billing-stat small{color:#a6ccff;font-size:11px;font-weight:650}
+.lp-billing-stat strong{font-size:clamp(19px,2.2vw,26px);font-weight:780;color:#f1f5f9;overflow-wrap:anywhere;line-height:1.12}
+.lp-billing-stat span{font-size:11px;line-height:1.45;color:#aabdd6}
+.lp-billing-status{padding:11px 14px;border:1px solid #2a405c;border-radius:10px;background:#142033;color:#d9eaff;font-size:12px;line-height:1.5}
+.lp-billing-status[data-error=true]{border-color:#c36a70;color:#ffd4d8}
+.lp-billing-actions{display:flex;align-items:stretch;flex-wrap:wrap;gap:9px;margin:16px 0}
+.lp-billing-actions .lp-btn{display:inline-flex;align-items:center;justify-content:center;min-height:41px;text-align:center;min-width:0}
+.lp-billing-actions .lp-btn:disabled{cursor:not-allowed;opacity:.52}
+.lp-billing-help{margin:0 0 20px;max-width:750px}
+.lp-billing-records{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.lp-billing-records section{min-width:0;padding:15px;border-radius:13px;background:#0b1424;border:1px solid #20314a}
+.lp-billing-records h3{font-size:13px;margin:0 0 12px;color:#f1f5f9}
+.lp-billing-history-list{list-style:none;margin:0;padding:0;display:grid;gap:0;max-height:290px;overflow-y:auto;overscroll-behavior:contain}
+.lp-billing-history-list li{padding:10px 0;font-size:11px;line-height:1.55;color:#b5c5da;overflow-wrap:anywhere;border-bottom:1px solid #20314a}
+.lp-billing-history-list li:last-child{border-bottom:0}
+@media(max-width:720px){
+ .lp-billing-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .lp-billing-stat:first-child{grid-column:1/-1}
+ .lp-billing-actions{display:grid;grid-template-columns:1fr}
+ .lp-billing-records{grid-template-columns:minmax(0,1fr)}
+ .lp-billing-history-list{max-height:220px}
+}
+@media(max-width:360px){.lp-billing-summary{grid-template-columns:minmax(0,1fr)}.lp-billing-stat:first-child{grid-column:auto}}
