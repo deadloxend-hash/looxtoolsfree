@@ -213,3 +213,27 @@ button,input,select{font:inherit}
  .lp-billing-history-list{max-height:220px}
 }
 @media(max-width:360px){.lp-billing-summary{grid-template-columns:minmax(0,1fr)}.lp-billing-stat:first-child{grid-column:auto}}
+
+/* Styled estimator: use the same LOOX picker treatment as all creative tools. */
+body.lp-page[data-account-upgrade] .lp-estimator{position:relative;overflow:visible}
+body.lp-page[data-account-upgrade] .lp-estimator label{min-width:0}
+body.lp-page[data-account-upgrade] .lp-estimator label:has(.loox-dropdown.is-open){z-index:15;position:relative}
+body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown{width:100%;max-width:min(100%,315px)}
+body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-trigger{
+ min-width:0;width:100%;min-height:46px;padding:11px 14px;
+ background:#142033!important;border:1px solid #2a405c!important;border-radius:12px!important;
+ color:#f1f5f9!important;font:600 13px/1.35 Inter,system-ui,sans-serif!important;
+}
+body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown.is-open .loox-dropdown-trigger{border-color:#60a5fa!important;box-shadow:0 0 0 2px #60a5fa35}
+body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-menu{
+ position:absolute!important;max-height:min(285px,42dvh)!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ border:1px solid #37567a!important;background:#142033!important;
+ border-radius:13px!important;box-shadow:0 20px 48px #000b!important;
+}
+body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-option{
+ box-sizing:border-box;min-width:0;max-width:100%;white-space:normal;
+ font:550 12px/1.4 Inter,system-ui,sans-serif!important;
+}
+body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-option>span:first-child{min-width:0;overflow-wrap:anywhere}
+@media(max-width:700px){body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown{max-width:100%}body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-trigger{font-size:14px!important}}
