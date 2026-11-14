@@ -11,6 +11,7 @@ const accountModule=[
  "export function auth(){}",
  "export async function initialize(){}",
  "export async function refresh(){}",
+ "export async function buyCredits(){window.__buyCredits=(window.__buyCredits||0)+1;}",
  "export async function api(action,body){window.__calls.push(action);if(action==='community_pin'){window.__p.pinned_post_id=body.post;}if(action==='community_details'){window.__p.profile_location=body.location;window.__p.profile_website=body.website;}if(action==='community_cover'){window.__p.cover_key=body.remove?null:'public/avatars/'+window.__p.user_id+'/banner-test.webp';}if(action==='community_avatar'){return {path:window.__p.user_id+'/test.webp'};}return {saved:true};}",
 ].join('\n');
 const communityModule=[

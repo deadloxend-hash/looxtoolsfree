@@ -6,6 +6,7 @@ on:
       - ".github/workflows/site-ui-audit.yml"
       - "scripts/site-ui-static-audit.py"
       - "scripts/site-responsive-audit.mjs"
+      - "scripts/billing-ui-audit.mjs"
       - "scripts/desktop-studio-audit.mjs"
       - "platform/desktop-studio.css"
       - "platform/loox-model-picker.js"
@@ -54,6 +55,8 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-ui-audit-server.log 2>&1 &
           sleep 2
           node scripts/site-responsive-audit.mjs
+      - name: Verify monthly billing and disabled recharge at phone, tablet and desktop widths
+        run: node scripts/billing-ui-audit.mjs
       - name: Upload report and failure screenshots
         if: always()
         uses: actions/upload-artifact@v4
