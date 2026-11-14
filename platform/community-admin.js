@@ -1,4 +1,4 @@
-import {state,api,auth,initialize,authenticator} from './account.js?v=12';
+import {state,api,auth,initialize,authenticator} from './account.js?v=13';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 import {element as e,action as a} from './community.js?v=26';
 const root=document.getElementById('admin-root');let page=1;
