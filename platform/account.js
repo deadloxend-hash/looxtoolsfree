@@ -219,7 +219,6 @@ function drawDashboard(){
  const settings=section('settings','Account settings');
  settings.append(el('p','Update your display name, security and account preferences on the dedicated settings page.'));
  settings.append(link('Open account settings →',nextAccountUrl('settings.html')),button('Authenticator security',authenticator));
- if(state.user?.app_metadata?.loox_template_admin===true)settings.append(link('Financial dashboard →','billing-admin.html'));
 
 }
 if(typeof document!=='undefined'){
