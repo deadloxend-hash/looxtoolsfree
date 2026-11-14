@@ -10,9 +10,11 @@
 <title>Upgrade | LOOX AI Plans and Credits</title>
 <link rel="canonical" href="https://deadloxend-hash.github.io/looxtoolsfree/upgrade.html">
 <link rel="stylesheet" href="platform/platform.css?v=obsidian-blue-1">
-<link rel="stylesheet" href="platform/account-pages.css?v=pricing-20261113">
+<link rel="stylesheet" href="platform/account-pages.css?v=credit-dropdown-20261114">
 <script type="module" src="platform/account-pages.js?v=7"></script>
-<link rel="stylesheet" href="loox-sitewide-nav.css?v=obsidian-blue-1"><link rel="stylesheet" href="platform/billing/recharge.css?v=1"></head>
+<link rel="stylesheet" href="platform/loox-dropdowns.css?v=credit-dropdown-1">
+<script defer src="platform/loox-dropdowns.js?v=credit-dropdown-1"></script>
+<link rel="stylesheet" href="loox-sitewide-nav.css?v=visible-sidebar-1"><link rel="stylesheet" href="platform/billing/recharge.css?v=1"></head>
 <body class="lx-shell lp-page" data-account-upgrade>
 <header class="lx-header lp-header">
  <a class="lp-brand" href="ai-home.html" aria-label="LOOX AI Home"><span class="lp-brand-mark">L</span><span>LOOX <b>AI</b></span></a>
@@ -26,7 +28,7 @@
   <p>Find a plan that matches your creative workflow. Browser-based tools remain free, while eligible AI features use account credits.</p>
  </section>
  <div id="lp-billing-notice" class="lp-notice" role="status" aria-live="polite">Checking plan availability…</div>
- <section class="lp-estimator" aria-label="Generation estimate settings"><div><h2>Your credits. Your choice.</h2><p>Compare how many images or videos fit your balance.</p></div><label>Video model<select id="lp-estimate-model"></select></label><label>Clip length<select id="lp-estimate-duration"></select></label><p id="lp-estimate-note" role="status">Loading current model rates…</p></section>
+ <section class="lp-estimator" aria-label="Generation estimate settings"><div><h2>Your credits. Your choice.</h2><p>Compare how many images or videos fit your balance.</p></div><label>Video model<select id="lp-estimate-model" aria-label="Video model for credit estimate"></select></label><label>Clip length<select id="lp-estimate-duration" aria-label="Clip length for credit estimate"></select></label><p id="lp-estimate-note" role="status">Loading current model rates…</p></section>
  <section class="lp-plans-section" aria-labelledby="lp-plans-title">
   <h2 id="lp-plans-title" class="lp-sr-only">Compare LOOX plans</h2>
   <div id="lp-plan-grid" class="lp-plan-grid" aria-live="polite">
