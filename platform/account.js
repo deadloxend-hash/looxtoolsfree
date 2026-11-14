@@ -183,7 +183,7 @@ export function nextAccountUrl(page){
  const current=(location.pathname.split('/').pop()||'index.html')+location.search+location.hash;
  return page+'?from='+encodeURIComponent(current);
 }
-export async function authenticator(){const {openMFA}=await import('./billing/mfa.js?v=1');return openMFA({client,dialog,el,button,refresh});}
+export async function authenticator(){const {openMFA}=await import('./billing/mfa.js?v=2');return openMFA({client,dialog,el,button,refresh});}
 export async function buyCredits(){
  if(!document.querySelector('link[data-recharge-style]')){const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./billing/recharge.css',import.meta.url).href;css.dataset.rechargeStyle='';document.head.append(css);}
  const {openRecharge}=await import('./billing/recharge.js?v=1');return openRecharge({state,api,config,auth,dialog,el,button,refresh});
