@@ -2726,3 +2726,27 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
   -webkit-overflow-scrolling:touch;
  }
 }
+
+/* One discoverable sidebar control across landing, billing and AI workspaces. */
+@media(max-width:900px){
+ body.loox-sitewide-active > button.loox-sitewide-dock-toggle,
+ body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle,
+ body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-dock-toggle{
+  display:flex!important;visibility:visible!important;pointer-events:auto!important;
+  width:30px!important;min-width:30px!important;height:58px!important;min-height:58px!important;
+  border:1px solid #375777!important;border-left:0!important;
+  border-radius:0 13px 13px 0!important;background:#142033eb!important;
+  color:#d9eaff!important;box-shadow:2px 0 16px #0007!important;
+  z-index:10007!important;
+ }
+ body.loox-sitewide-active > button.loox-sitewide-dock-toggle .loox-dock-bars,
+ body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-bars{display:none!important}
+ body.loox-sitewide-active > button.loox-sitewide-dock-toggle .loox-dock-arrow,
+ body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-arrow{
+  display:block!important;font:800 22px/1 Inter,system-ui,sans-serif!important;
+ }
+ body.loox-sitewide-active.loox-sitewide-sidebar-open > aside#loox-sitewide-drawer{
+  visibility:visible!important;z-index:10006!important;
+ }
+ body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{left:min(252px,88vw)!important}
+}
