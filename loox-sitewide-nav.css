@@ -2707,3 +2707,22 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
  body.loox-gallery-workspace > header.loox-gallery-workspace-header .loox-mobile-app-native-trigger{display:grid!important;place-items:center!important;flex:0 0 39px!important;width:39px!important;height:39px!important;padding:0!important;border:1px solid #2a405c!important;border-radius:12px!important;background:#142033!important;color:#d9eaff!important}
  body.loox-gallery-workspace > header.loox-gallery-workspace-header .loox-mobile-app-native-trigger svg{width:19px!important;height:19px!important}
 }
+
+/* Profile popover must paint above fixed/sticky AI composers on mobile.
+   Elevate the header stacking context, not just the menu inside it. */
+@media(max-width:900px){
+ body.loox-sitewide-active:has(#loox-sitewide-header .lx-profile-details[open]) #loox-sitewide-header{
+  z-index:10020!important;overflow:visible!important;isolation:auto!important;
+ }
+ body.loox-sitewide-active #loox-sitewide-header .loox-sitewide-account,
+ body.loox-sitewide-active #loox-sitewide-header .lx-account-header,
+ body.loox-sitewide-active #loox-sitewide-header .lx-profile-details[open]{
+  overflow:visible!important;
+ }
+ body.loox-sitewide-active #loox-sitewide-header .lx-profile-details[open] > .lx-profile-menu.loox-account-popover{
+  z-index:10021!important;
+  max-height:calc(100dvh - var(--loox-sitewide-height,80px) - 14px)!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch;
+ }
+}
