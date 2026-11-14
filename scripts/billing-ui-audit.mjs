@@ -33,5 +33,32 @@ try{for(const width of [360,390,768,1440]){
  assert.deepEqual(errors,[]);checks++;
  await context.close();
  }
- console.log('Billing UI: '+checks+' checks passed at 360, 390, 768 and 1440 pixels.');
+ // Check all three generator routes in a safe signed-out browser. No paid calls.
+ for(const width of [360,390,768]){
+  const context=await browser.newContext({viewport:{width,height:860},reducedMotion:'reduce'});
+  const page=await context.newPage();
+  await page.route('https://looxtoolfree-backend.vercel.app/api/loox?**',route=>{
+   const action=new URL(route.request().url()).searchParams.get('action');
+   return route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify({
+    auth:false,billing:false,annualBillingEnabled:false,plans,operations:[{id:'generate',cost:3},{id:'generate_video',cost:8}],videoModels:[],action
+   })});
+  });
+  for(const route of ['ai-text-to-image.html','ai-video-generator.html','ai-chat.html']){
+   await page.goto(root+route,{waitUntil:'domcontentloaded'});
+   await page.locator('body.loox-studio').waitFor({timeout:20000});
+   assert.equal(await page.locator('button.lx-buy-credits,button.studio-budget-link').count(),0,'Unexpected Buy Credits button in '+route+' at '+width);checks++;
+   const sidebar=page.locator('button.studio-sidebar-menu-action');
+   assert.equal(await sidebar.count(),1,'Sidebar menu fallback is missing in '+route);checks++;
+   if(route==='ai-video-generator.html'){
+    await page.locator('.studio-frame-strip').waitFor({timeout:15000});
+    const nativeVisible=await page.locator('#lvg-image-block').evaluate(element=>getComputedStyle(element).display!=='none');
+    assert.equal(nativeVisible,false,'Native video file control must be hidden beside frame strip at '+width);checks++;
+   }
+  }
+  await page.goto(root+'settings.html',{waitUntil:'domcontentloaded'});
+  assert.equal(await page.locator('#billing').count(),1,'Billing section missing from Settings');checks++;
+  assert.equal(await page.locator('#lp-billing-recharge').count(),1,'Recharge action missing from Settings');checks++;
+  await context.close();
+ }
+ console.log('Billing and generator UI: '+checks+' checks passed, with payments disabled.');
 }finally{await browser.close();}
