@@ -1,5 +1,5 @@
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
-import {state,initialize,auth,api} from './account.js?v=12';
+import {state,initialize,auth,api,refresh} from './account.js?v=12';
 const $=s=>document.querySelector(s),node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,fn,cls='studio-button')=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b;};
 function notify(text){let n=$('.studio-toast');if(!n){n=node('p','studio-toast');n.setAttribute('role','status');document.body.append(n);}n.textContent=text;clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.remove(),4000);}
@@ -499,8 +499,9 @@ function run(){
  const menuHost=node('div','studio-menu-host'),menu=node('div','studio-menu');menu.hidden=true;menu.setAttribute('role','menu');
  const trigger=button('•••',()=>{menu.hidden=!menu.hidden;trigger.setAttribute('aria-expanded',String(!menu.hidden));},'studio-menu-trigger');trigger.setAttribute('aria-label','More workspace actions');trigger.setAttribute('aria-haspopup','menu');trigger.setAttribute('aria-expanded','false');
  const close=()=>{menu.hidden=true;trigger.setAttribute('aria-expanded','false');};
- for(const [label,href] of [['My Creations','?view=creations#generate'],['Templates','templates.html'],['Help','help.html'],['Account','account.html']]){const a=node('a','',label);a.href=href;a.setAttribute('role','menuitem');if(label==='My Creations')a.onclick=e=>{e.preventDefault();close();const target=$('.lig-results')||$('#aiRecentPanel');target?.scrollIntoView({block:'start',behavior:'smooth'});};menu.append(a);}
+ for(const [label,href] of [['My Creations','?view=creations#generate'],['Templates','templates.html'],['Help','help.html'],['Account','account.html'],['Billing & Credits','settings.html#billing']]){const a=node('a','',label);a.href=href;a.setAttribute('role','menuitem');if(label==='My Creations')a.onclick=e=>{e.preventDefault();close();const target=$('.lig-results')||$('#aiRecentPanel');target?.scrollIntoView({block:'start',behavior:'smooth'});};menu.append(a);}
  if(!document.body.classList.contains('ai-chat'))menu.prepend(button('Settings',()=>{close();settingsSheet(document.body.classList.contains('lvg-body')?'lvg':'lig');}),button('Saved Styles',()=>{close();stylesSheet('saved');}));
+ menu.prepend(button('Toggle sidebar',()=>{close();const dock=document.querySelector('body > button.loox-sitewide-dock-toggle, .lig-main > button.loox-ai-dock-toggle, .ai-chat-layout > button.loox-ai-dock-toggle');if(dock)dock.click();else notify('Use the navigation menu to open your workspace.');},'studio-sidebar-menu-action'));
  menuHost.append(trigger,menu);header.insertBefore(menuHost,header.querySelector('.lig-header-user'));document.addEventListener('pointerdown',e=>{if(!menuHost.contains(e.target))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
  }
  const video=document.body.classList.contains('lvg-body'),chat=document.body.classList.contains('ai-chat'),prefix=video?'lvg':'lig';
@@ -660,18 +661,21 @@ function run(){
   const quotaSource=document.querySelector('.'+prefix+'-daily-quota');
   const quotaText=node('span','studio-budget-quota');quotaText.hidden=true;
   quotaText.title='Daily generation allowance from your LOOX account';
-  const link=button('Buy Credits',()=>import('./account.js?v=12').then(m=>m.buyCredits()),'studio-budget-link');
-  bar.append(spec,costText,balanceText,remainderText,quotaText,link);
+  const retry=button('Retry balance',()=>{balanceUnavailable=false;sync();refresh().catch(()=>{balanceUnavailable=true;sync();});},'studio-budget-retry');retry.hidden=true;
+  bar.append(spec,costText,balanceText,remainderText,quotaText,retry);
   card.append(bar);
+  let balanceUnavailable=false;
   const sync=()=>{
    spec.textContent=formatSpec();
    const costMatch=priceSource.textContent.match(/(\d+)\s+credits on success/);
    const balanceMatch=balanceSource.textContent.match(/^(\d+)\s+credits/);
    const charge=costMatch?Number(costMatch[1]):null;
-   const balance=balanceMatch?Number(balanceMatch[1]):null;
+   const wallet=state.account?.wallet?.balance;
+   const balance=wallet!==null&&wallet!==undefined&&Number.isFinite(Number(wallet))?Number(wallet):balanceMatch?Number(balanceMatch[1]):null;
    const estimated=video&&/refreshes before generation/i.test(priceSource.textContent);
    costText.textContent=charge===null?'Checking cost…':(estimated?'Est. ':'')+charge+' credit'+(charge===1?'':'s')+' / shot';
-   balanceText.textContent=balance===null?'Balance: '+(state.user?'Loading…':'Sign in'):'Balance: '+balance;
+   balanceText.textContent=balance===null?(state.user?(balanceUnavailable?'Balance unavailable':'Balance: Loading…'):'Sign in for balance'):'Balance: '+balance;
+   retry.hidden=balance!==null||!state.user||!balanceUnavailable;
    remainderText.textContent=balance===null||charge===null?'':balance>=charge?'After: '+(balance-charge):'Need '+(charge-balance)+' more';
    remainderText.hidden=balance===null||charge===null;
    const daily=quotaSource?.textContent.match(/(?:Videos|Images) left today:\s*(\d+)\s*\/\s*(\d+)/i);
@@ -680,7 +684,8 @@ function run(){
   };
   for(const source of [balanceSource,priceSource,quotaSource].filter(Boolean))new MutationObserver(sync).observe(source,{childList:true,subtree:true,characterData:true});
   for(const id of [prefix+'-ratio',video?'lvg-duration':null,video?'lvg-model':null].filter(Boolean)){document.getElementById(id)?.addEventListener('change',sync);}
-  document.addEventListener('loox-account',sync);document.addEventListener('loox-user',sync);
+  document.addEventListener('loox-account',()=>{balanceUnavailable=Boolean(state.user&&!state.account);sync();});
+  document.addEventListener('loox-user',()=>{balanceUnavailable=false;sync();});
   sync();
  }
 
