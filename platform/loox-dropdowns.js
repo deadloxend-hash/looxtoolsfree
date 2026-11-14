@@ -3,6 +3,7 @@
 (()=>{
  const targets={
   'ai-image-landing.html':['creative-model'],
+  'upgrade.html':['lp-estimate-model','lp-estimate-duration'],
   'ai-video-landing.html':[],
   'ai-video-generator.html':['lvg-duration','lvg-ratio'],
   'ai-text-to-image.html':['lig-resolution','lig-quality']
