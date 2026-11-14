@@ -16,6 +16,20 @@ try{for(const width of [360,390,768,1440]){
  });
  await page.goto(root+'upgrade.html',{waitUntil:'networkidle'});
  assert.equal(await page.locator('.lp-plan').count(),4);checks++;
+ await page.locator('#lp-estimate-model-loox-options').waitFor({state:'attached',timeout:12000});
+ assert.equal(await page.locator('.lp-estimator .loox-dropdown.is-ready').count(),2,'Billing selectors must be LOOX themed at '+width);checks++;
+ await page.locator('.lp-estimator .loox-dropdown-trigger').first().click();
+ assert.equal(await page.locator('#lp-estimate-model-loox-options').isVisible(),true,'Themed model list not open at '+width);checks++;
+ await page.keyboard.press('Escape');
+ assert.equal(await page.locator('#lp-estimate-model-loox-options').isVisible(),false);checks++;
+ if(width<901){
+  const toggle=page.locator('body > button.loox-sitewide-dock-toggle');
+  await toggle.waitFor({state:'visible'});
+  assert.equal(await toggle.isVisible(),true,'Sidebar toggle hidden on upgrade at '+width);checks++;
+  await toggle.click();
+  assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),true,'Sidebar did not open on upgrade at '+width);checks++;
+  await toggle.click();
+ }
  assert.equal(await page.getByRole('button',{name:/Yearly|Annual/}).count(),0);checks++;
  assert.equal(await page.locator('.lp-plan button:disabled').count(),3);checks++;
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Pricing overflow at '+width);checks++;
@@ -47,6 +61,11 @@ try{for(const width of [360,390,768,1440]){
    await page.goto(root+route,{waitUntil:'domcontentloaded'});
    await page.locator('body.loox-studio').waitFor({timeout:20000});
    assert.equal(await page.locator('button.lx-buy-credits,button.studio-budget-link').count(),0,'Unexpected Buy Credits button in '+route+' at '+width);checks++;
+   const dock=page.locator('body > button.loox-sitewide-dock-toggle');
+   await dock.waitFor({state:'visible'});
+   await dock.click();
+   assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),true,'Sidebar inaccessible in '+route+' at '+width);checks++;
+   await dock.click();
    const sidebar=page.locator('button.studio-sidebar-menu-action');
    assert.equal(await sidebar.count(),1,'Sidebar menu fallback is missing in '+route);checks++;
    if(route==='ai-video-generator.html'){
@@ -55,6 +74,15 @@ try{for(const width of [360,390,768,1440]){
     assert.equal(nativeVisible,false,'Native video file control must be hidden beside frame strip at '+width);checks++;
    }
   }
+  await page.goto(root+'ai-image-landing.html',{waitUntil:'domcontentloaded'});
+  await page.locator('#image-landing-model-trigger').waitFor();
+  await page.locator('#image-landing-model-trigger').click();
+  await page.locator('.image-model-option').first().waitFor({timeout:12000});
+  const clipped=await page.locator('.image-model-option').evaluateAll(items=>items.some(item=>{
+   const small=item.querySelector('small'),a=item.getBoundingClientRect(),b=small?.getBoundingClientRect();
+   return !!b&&(b.right>a.right+1||b.left<a.left-1);
+  }));
+  assert.equal(clipped,false,'Image model availability badge overflows at '+width);checks++;
   await page.goto(root+'settings.html',{waitUntil:'domcontentloaded'});
   assert.equal(await page.locator('#billing').count(),1,'Billing section missing from Settings');checks++;
   assert.equal(await page.locator('#lp-billing-recharge').count(),1,'Recharge action missing from Settings');checks++;
