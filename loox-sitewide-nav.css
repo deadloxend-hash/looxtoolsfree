@@ -2698,3 +2698,12 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
   /* Do not paint an app-modal scrim when the native dialog is not open. */
   dialog.loox-mobile-app-layer:not([open]){display:none!important}
 }
+
+/* Landscape phones: keep gallery navigation reachable through the app menu. */
+@media(min-width:791px) and (max-width:1000px){
+ body.loox-gallery-workspace > header.loox-gallery-workspace-header .loox-ai-workspace-tabs,
+ body.loox-gallery-workspace > header.loox-gallery-workspace-header .lig-head-tabs{display:none!important}
+ body.loox-gallery-workspace > header.loox-gallery-workspace-header .lig-head-start{min-width:0!important;margin-right:auto!important;flex:0 1 auto!important}
+ body.loox-gallery-workspace > header.loox-gallery-workspace-header .loox-mobile-app-native-trigger{display:grid!important;place-items:center!important;flex:0 0 39px!important;width:39px!important;height:39px!important;padding:0!important;border:1px solid #2a405c!important;border-radius:12px!important;background:#142033!important;color:#d9eaff!important}
+ body.loox-gallery-workspace > header.loox-gallery-workspace-header .loox-mobile-app-native-trigger svg{width:19px!important;height:19px!important}
+}

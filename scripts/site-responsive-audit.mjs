@@ -110,3 +110,5 @@ const failed=results.filter(x=>x.problems.length);
 const summary={tests:results.length,failed:failed.length,byPage:failed.map(x=>({file:x.file,viewport:x.viewport,problems:x.problems}))};
 fs.writeFileSync(path.join(outDir,'visual-report.json'),JSON.stringify({summary,results},null,2));
 console.log('RESPONSIVE AUDIT SUMMARY',JSON.stringify(summary));
+
+process.exitCode=failed.length?1:0;
