@@ -897,8 +897,7 @@ body.loox-studio.lvg-body .studio-frame-strip{box-sizing:border-box;max-width:10
 body.loox-studio.lvg-body .studio-frame-row{box-sizing:border-box;width:100%;min-width:0}
 body.loox-studio.lvg-body .studio-frame-text{min-width:0}
 @media(max-width:900px){
- /* The sidebar remains available from More → Toggle sidebar; avoid an unexplained edge grip. */
- body.loox-studio.loox-sitewide-active > button.loox-sitewide-dock-toggle,
+ /* Keep the single shared sidebar toggle accessible on every generator. */
  body.loox-studio.loox-conversations .lig-main > button.loox-ai-dock-toggle,
  body.loox-studio.ai-chat .ai-chat-layout > button.loox-ai-dock-toggle{display:none!important}
  body.loox-studio.lvg-body .lig-compose-card{
