@@ -433,3 +433,18 @@ body[data-image-showcase] #image-hero #image-landing-model-trigger{
  font:600 12px/1.2 Inter,system-ui,sans-serif!important;text-align:left!important;cursor:pointer!important;
 }
 body[data-image-showcase] #image-hero #image-landing-model-options[hidden]{display:none!important}
+
+/* Keep availability inside the image-model popover on narrow phones. */
+body[data-image-showcase] #image-hero .image-model-options{box-sizing:border-box;max-width:100%;min-width:0;overflow-x:hidden!important}
+body[data-image-showcase] #image-hero .image-model-option{
+ box-sizing:border-box!important;display:grid!important;grid-template-columns:minmax(0,1fr) max-content 12px;
+ align-items:center;gap:5px!important;max-width:100%;min-width:0;width:100%;
+ padding:8px!important;overflow:hidden;
+}
+body[data-image-showcase] #image-hero .image-model-option>span:first-child{display:block!important;min-width:0!important;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-image-showcase] #image-hero .image-model-option small{
+ display:inline-block!important;min-width:0!important;max-width:73px!important;
+ font:550 9px/1.2 Inter,system-ui,sans-serif!important;
+ white-space:nowrap!important;letter-spacing:-.01em;
+}
+body[data-image-showcase] #image-hero .image-model-check{width:12px!important;min-width:12px!important;justify-self:end}
