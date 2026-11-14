@@ -81,7 +81,7 @@ function renderSettings(){
  if(document.activeElement!==name)name.value=state.account.profile?.name||'';
  byId('lp-email').value=state.user.email||'';
  const plan=state.account.plan||'free';
- byId('lp-plan-info').textContent=(plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
+ byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
   ' · '+(state.account.wallet?.balance??'…')+' available credits';
 }
 if(document.body.hasAttribute('data-settings-page')){

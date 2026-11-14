@@ -1,10 +1,11 @@
-import {state,initialize,auth,api} from './account.js?v=12';
+import {state,initialize,auth,api,authenticator} from './account.js?v=12';
 const root=document.getElementById('template-manager');
 const E=(tag,cls='',txt='')=>{const x=document.createElement(tag);x.className=cls;x.textContent=txt;return x};
 const note=E('p','community-note'),grid=E('div','loox-preset-grid'),form=E('form','community-admin-editor');
 let editing=null,oldPath=null,items=[];
 const heading=E('h2','','Image & video template manager');
 const intro=E('p','community-note','Upload real image/video previews with prompts. Publish, edit, unpublish or delete templates. Only administrators can make changes.');
+const verifyAdmin=E('button','community-button','Verify administrator');verifyAdmin.type='button';verifyAdmin.onclick=authenticator;root.append(verifyAdmin);
 const fields={};
 function field(label,tag='input',type='text'){const wrap=E('label','community-field',label),el=E(tag);if(tag==='input')el.type=type;wrap.append(el);form.append(wrap);return el;}
 fields.title=field('Template title');fields.title.required=true;fields.title.maxLength=120;
@@ -66,7 +67,7 @@ async function uploadTemplateMedia(file,kind){
  const sha256=Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('');
  return api('r2_media',{purpose:'template_image_complete',path:prepared.path,sha256});
 }
-async function load(){grid.replaceChildren();if(!isAdmin()){note.textContent='Sign in with your LOOX template administrator account.';form.hidden=true;return;}form.hidden=false;note.textContent='Loading templates…';
+async function load(){grid.replaceChildren();if(!isAdmin()){note.textContent='Sign in with your LOOX template administrator account.';form.hidden=true;return;}const assurance=await state.client.auth.mfa.getAuthenticatorAssuranceLevel();if(assurance.error||assurance.data.currentLevel!=='aal2'){form.hidden=true;note.textContent='Verify your authenticator code before managing templates.';return;}form.hidden=false;note.textContent='Loading templates…';
 try{const {data,error}=await state.client.from('loox_template_catalog').select('*').order('created_at',{ascending:false}).limit(500);if(error)throw error;items=data;for(const t of data){const card=E('article','loox-preset-card'),art=E('div','loox-preset-art'),body=E('div','loox-preset-body'),actions=E('div','community-post-actions');if(t.media_path){const media=document.createElement(t.kind==='video'?'video':'img');
 if(t.media_provider==='r2'){
  if(t.active){
@@ -93,3 +94,5 @@ clear();await load();note.textContent='Template saved successfully.';}catch(e){/
 fail(e);}finally{save.disabled=false;}};
 refresh.onclick=load;
 await initialize({publicAccess:true}).catch(fail);if(isAdmin()){await categories().catch(fail);await styles().catch(fail);}await load();document.addEventListener('loox-user',async()=>{if(isAdmin()){await categories().catch(fail);await styles().catch(fail);}await load();});
+
+document.addEventListener('loox-account',()=>load());

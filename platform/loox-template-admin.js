@@ -1,7 +1,8 @@
 
-import {state,initialize,auth} from './account.js?v=12';
+import {state,initialize,auth,authenticator} from './account.js?v=12';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 const notice=document.getElementById('notice'),queue=document.getElementById('queue');
+const verify=document.createElement('button');verify.type='button';verify.className='lx-button';verify.textContent='Verify administrator';verify.onclick=authenticator;document.querySelector('main')?.prepend(verify);
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 async function request(action,body){
  const session=await state.client?.auth.getSession(),token=session?.data?.session?.access_token;
@@ -83,3 +84,5 @@ document.getElementById('reload').addEventListener('click',load);
 document.getElementById('reload').addEventListener('click',loadCloudQueue);
 await initialize();await Promise.all([load(),loadCloudQueue()]);
 document.addEventListener('loox-user',()=>{void load();void loadCloudQueue();});
+
+document.addEventListener('loox-account',()=>{void load();void loadCloudQueue();});

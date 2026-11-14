@@ -149,7 +149,7 @@ export function renderHeader(){
   if(signedIn){
    const identity=el('div',null,'lx-profile-identity');
    identity.append(el('strong',name,'lx-profile-name'));
-   identity.append(el('span',({basic:'◇ Basic',creator:'✦ Creator',pro:'♛ Pro'})[state.account?.plan]||'◇ Basic','lx-plan-badge'));
+   identity.append(el('span',({basic:'◇ Basic',creator:'✦ Creator',pro:'♛ Pro',business:'◆ Business'})[state.account?.plan]||'◇ Basic','lx-plan-badge'));
    const reward=el('div',null,'lx-return-reward');reward.dataset.looxReward='';identity.append(reward);
    identity.append(el('small',state.user.email||'','lx-profile-email'));
    menu.append(identity);

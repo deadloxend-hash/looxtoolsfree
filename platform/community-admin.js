@@ -1,4 +1,4 @@
-import {state,api,auth,initialize} from './account.js?v=12';
+import {state,api,auth,initialize,authenticator} from './account.js?v=12';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 import {element as e,action as a} from './community.js?v=26';
 const root=document.getElementById('admin-root');let page=1;
@@ -6,6 +6,7 @@ root.replaceChildren();
 const note=e('p','community-note'),content=e('div','community-admin-content'),tabs=e('nav','community-filters');
 root.append(e('span','community-eyebrow','LOOX ADMINISTRATION'),e('h1','','Platform overview'),e('p','community-note','Manage accounts, community reports and AI usage. Private generations are excluded from browsing.'),tabs,note,content);
 const fail=error=>note.textContent=error.message;
+tabs.append(a('Verify administrator',authenticator,'community-button',fail));
 function table(headers,rows){const wrap=e('div','community-table-wrap'),t=e('table','community-table'),head=e('thead'),tr=e('tr');for(const h of headers)tr.append(e('th','',h));head.append(tr);t.append(head);const body=e('tbody');for(const row of rows){const tr=e('tr');for(const value of row){const td=e('td');if(value instanceof Node)td.append(value);else td.textContent=value??'—';tr.append(td);}body.append(tr);}t.append(body);wrap.append(t);return wrap;}
 async function show(section){
  note.textContent='Loading…';content.replaceChildren();tabs.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.section===section)));
@@ -36,3 +37,5 @@ function adjust(user){
 }
 for(const [name,section] of [['Overview','overview'],['Accounts','users'],['Reports','reports'],['AI prices','models'],['Templates','templates']]){const b=a(name,()=>show(section),'community-filter',fail);b.dataset.section=section;tabs.append(b);}const moderation=e('a','community-button','Review submissions');moderation.href='loox-template-admin.html';tabs.append(moderation);
 await initialize({publicAccess:true}).catch(fail);await show('overview');document.addEventListener('loox-user',()=>show('overview'));
+
+document.addEventListener('loox-account',()=>show('overview'));
