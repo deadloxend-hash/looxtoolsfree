@@ -39,7 +39,10 @@ try{
   assert.equal(assistant.header.height,64);assert.ok(assistant.menu.left-assistant.search.right<25);assert.ok(assistant.account.left-assistant.menu.right>=8&&assistant.account.left-assistant.menu.right<25,'Assistant account must not overlap menu');assert.ok(assistant.composer.bottom<=viewport.height+2);assert.ok(assistant.thread.bottom<=assistant.composer.top+2);assert.ok(Math.abs(assistant.toolbar.left-assistant.form.left)<3,'Assistant model must align with composer');
   await page.screenshot({path:out+'/assistant-'+viewport.width+'.png'});
   await page.goto(base+'upgrade.html');await page.locator('#lp-estimate-model option[value="kling_40"]').waitFor({state:'attached'});
-  await page.locator('#lp-estimate-model').selectOption('grok_video');assert.match(await page.locator('[data-plan="creator"] .lp-plan-estimates').innerText(),/10 × 5s videos/);
+  await page.locator('.lp-estimator .loox-dropdown-trigger').first().click();
+  await page.locator('#lp-estimate-model-loox-options').getByRole('option',{name:/Grok Imagine Video/}).click();
+  assert.equal(await page.locator('#lp-estimate-model').inputValue(),'grok_video');
+  assert.match(await page.locator('[data-plan="creator"] .lp-plan-estimates').innerText(),/10 × 5s videos/);
   assert.equal(await page.getByRole('button',{name:/Yearly|Annual/}).count(),0);assert.match(await page.locator('[data-plan="creator"]').innerText(),/500 credits per month/);assert.match(await page.locator('[data-plan="creator"] .lp-plan-estimates').innerText(),/10 × 5s videos/);
   await page.screenshot({path:out+'/plans-'+viewport.width+'.png',fullPage:true});await page.close();
  }
