@@ -65,6 +65,60 @@ if(document.body.hasAttribute('data-account-upgrade')){
  for(const id of ['lp-estimate-model','lp-estimate-duration'])byId(id)?.addEventListener('change',()=>renderEstimates(plansConfig));
 }
 
+const monthlyCredits={free:25,basic:25,creator:500,pro:1500,business:4000};
+const billingNames={free:'LOOX Basic',basic:'LOOX Basic',creator:'LOOX Creator',pro:'LOOX Pro',business:'LOOX Business'};
+let rechargeOwner=null,rechargeItems=null,rechargeError='';
+const recordDate=value=>{const time=new Date(value);return Number.isFinite(time.getTime())?time.toLocaleDateString():'';};
+function historyRows(id,records,emptyMessage){
+ const list=byId(id);if(!list)return;
+ list.replaceChildren();
+ if(!records.length)list.append(elem('li','',emptyMessage));
+ for(const line of records)list.append(elem('li','',line));
+}
+function fetchRechargeHistory(){
+ const owner=state.user?.id;
+ if(!owner||rechargeOwner===owner)return;
+ rechargeOwner=owner;rechargeItems=null;rechargeError='';
+ api('recharge_history').then(data=>{
+  if(state.user?.id!==owner)return;
+  rechargeItems=Array.isArray(data?.items)?data.items:[];renderBilling();
+ }).catch(error=>{
+  if(state.user?.id!==owner)return;
+  rechargeError=error.message||'Recharge history could not be loaded.';
+  rechargeItems=[];renderBilling();
+ });
+}
+function renderBilling(){
+ if(!document.body.hasAttribute('data-settings-page')||!state.user||!state.account)return;
+ const account=state.account,rawPlan=String(account.plan||'free');
+ const annual=rawPlan.endsWith('_yearly'),tier=rawPlan.replace(/_yearly$/,'');
+ const subscription=Array.isArray(account.subscriptions)?account.subscriptions:[];
+ const active=subscription.find(s=>['active','trialing','past_due'].includes(s.status));
+ const balance=Number(account.wallet?.balance);
+ byId('lp-billing-balance').textContent=Number.isFinite(balance)?balance.toLocaleString():'Unavailable';
+ byId('lp-billing-plan').textContent=billingNames[tier]||'Existing plan';
+ byId('lp-billing-plan-status').textContent=active?'Subscription · '+String(active.status).replace(/_/g,' '):'No active paid subscription';
+ byId('lp-billing-allocation').textContent=annual?'—':(monthlyCredits[tier]??'—').toLocaleString();
+ byId('lp-billing-allocation-note').textContent=annual?'Existing annual plan · review your subscription':tier==='free'||tier==='basic'?'One-time signup credits':'Credits per paid month';
+ const enabled=state.config?.billing===true;
+ byId('lp-billing-status').textContent=enabled?'Secure billing is configured. Check your subscription status before managing payments.':'Payments are not active yet. Recharge and subscription checkout are coming soon.';
+ const portal=byId('lp-billing-portal');portal.disabled=!enabled||!active;
+ portal.title=portal.disabled?'Subscription portal available after billing setup and an active subscription':'Manage or cancel your subscription securely';
+ const credits=(Array.isArray(account.credits)?account.credits:[]).slice(0,25).map(item=>
+  [recordDate(item.created_at),item.reason||'Credit activity',Number(item.amount)>0?'+':null,Number(item.amount||0).toLocaleString()+' credits'].filter(Boolean).join(' · '));
+ historyRows('lp-billing-credit-history',credits,'No credit activity to display.');
+ const payments=(Array.isArray(account.payments)?account.payments:[]).slice(0,20).map(item=>
+  [recordDate(item.created_at),billingNames[item.plan]||item.plan||'Subscription',money(Number(item.amount_cents||0)),item.status||'Pending'].filter(Boolean).join(' · '));
+ if(rechargeItems)for(const item of rechargeItems.slice(0,20))payments.push(
+  [recordDate(item.created_at),item.package_id||'Credit recharge',money(Number(item.amount_cents||0)),item.status||'Pending'].filter(Boolean).join(' · '));
+ if(rechargeError)payments.push(rechargeError);
+ historyRows('lp-billing-transaction-history',payments,rechargeItems===null?'Loading recharge history…':'No transactions to display.');
+ fetchRechargeHistory();
+ if(location.hash==='#billing'&&!document.body.dataset.billingAnchored){
+  document.body.dataset.billingAnchored='true';
+  requestAnimationFrame(()=>byId('billing')?.scrollIntoView({block:'start',behavior:'instant'}));
+ }
+}
 function renderSettings(){
  if(!document.body.hasAttribute('data-settings-page'))return;
  const guest=byId('lp-settings-guest'),loading=byId('lp-settings-loading'),content=byId('lp-settings-content');
@@ -83,12 +137,25 @@ function renderSettings(){
  const plan=state.account.plan||'free';
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
   ' · '+(state.account.wallet?.balance??'…')+' available credits';
+ renderBilling();
 }
 if(document.body.hasAttribute('data-settings-page')){
  document.addEventListener('loox-user',renderSettings);
  document.addEventListener('loox-account',renderSettings);
  renderSettings();
  byId('lp-settings-login').addEventListener('click',()=>auth('login'));
+ byId('lp-billing-recharge').addEventListener('click',()=>buyCredits());
+ byId('lp-billing-portal').addEventListener('click',async()=>{
+  const trigger=byId('lp-billing-portal'),status=byId('lp-billing-status');
+  if(trigger.disabled||!state.config?.billing)return;
+  trigger.disabled=true;setStatus(status,'Opening your secure subscription portal…');
+  try{
+   const result=await api('portal',{}),url=new URL(result.url);
+   if(url.protocol!=='https:'||!(url.hostname==='lemonsqueezy.com'||url.hostname.endsWith('.lemonsqueezy.com')))throw Error('Unexpected billing portal address.');
+   location.assign(url.href);
+  }catch(error){setStatus(status,error.message||'The subscription portal is unavailable.',true);renderBilling();}
+  finally{trigger.disabled=!(state.config?.billing&&state.account?.subscriptions?.some(s=>['active','trialing','past_due'].includes(s.status)));}
+ });
  byId('lp-profile-form').addEventListener('submit',async event=>{
   event.preventDefault();
   const name=byId('lp-display-name').value.trim();
