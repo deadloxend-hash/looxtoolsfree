@@ -154,7 +154,7 @@ export function renderHeader(){
    identity.append(el('small',state.user.email||'','lx-profile-email'));
    menu.append(identity);
    const links=el('div',null,'lx-profile-links');
-   for(const [id,label] of sections){const href=id==='settings'?'settings.html':['credits','subscription','history'].includes(id)?'settings.html#billing':'account.html#'+id;links.append(link(label,href));}
+   for(const [id,label] of sections){if(['credits','subscription','history'].includes(id))continue;links.append(link(label,id==='settings'?'settings.html':'account.html#'+id));}
    menu.append(button('Authenticator security',()=>{details.open=false;authenticator();},'lx-button'));
    menu.append(links,link('Billing & Credits','settings.html#billing'));
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
