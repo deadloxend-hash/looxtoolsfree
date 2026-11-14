@@ -11,7 +11,7 @@
 <title>Account Settings | LOOX AI</title>
 <link rel="stylesheet" href="platform/platform.css?v=obsidian-blue-1">
 <link rel="stylesheet" href="platform/account-pages.css?v=obsidian-blue-1">
-<script type="module" src="platform/account-pages.js?v=2"></script>
+<script type="module" src="platform/account-pages.js?v=3"></script>
 <link rel="stylesheet" href="loox-sitewide-nav.css?v=obsidian-blue-1"></head>
 <body class="lx-shell lp-page" data-settings-page>
 <header class="lx-header lp-header">
@@ -48,6 +48,7 @@
    <a href="#profile">Profile</a>
    <a href="#workspace-preferences">Workspace</a>
    <a href="#security">Security</a>
+   <a href="#billing">Billing &amp; Credits</a>
    <a href="#account-management">Account</a>
   </nav>
   <div class="lp-settings-sections">
@@ -66,9 +67,28 @@
     <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◇</span><div><h2>Security</h2><p>Keep your LOOX account protected.</p></div></div>
     <div class="lp-setting-row"><div><strong>Password</strong><small>Request a password reset email if you want to change your password.</small></div><button id="lp-password-reset" type="button" class="lp-btn lp-btn-secondary">Reset password</button></div>
    </section>
+   <section id="billing" class="lp-settings-card lp-billing-card" aria-labelledby="lp-billing-title">
+    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">✧</span><div><h2 id="lp-billing-title">Billing &amp; Credits</h2><p>View your current balance, credit usage, recharge options and subscription in one place.</p></div></div>
+    <div class="lp-billing-summary" aria-label="Your billing overview">
+     <div class="lp-billing-stat"><small>Available credits</small><strong id="lp-billing-balance">—</strong><span>Live account wallet</span></div>
+     <div class="lp-billing-stat"><small>Current plan</small><strong id="lp-billing-plan">—</strong><span id="lp-billing-plan-status">Checking your subscription…</span></div>
+     <div class="lp-billing-stat"><small>Plan allowance</small><strong id="lp-billing-allocation">—</strong><span id="lp-billing-allocation-note">Based on your current plan</span></div>
+    </div>
+    <p class="lp-billing-status" id="lp-billing-status" role="status">Checking billing availability…</p>
+    <div class="lp-billing-actions">
+     <button type="button" id="lp-billing-recharge" class="lp-btn lp-btn-primary">Buy Credits</button>
+     <a href="upgrade.html" class="lp-btn lp-btn-secondary">Compare monthly plans</a>
+     <button type="button" id="lp-billing-portal" class="lp-btn lp-btn-secondary" disabled>Manage Subscription</button>
+    </div>
+    <p class="lp-subtle lp-billing-help">Recharge packages and purchase history are shown here for your account. Secure checkout stays disabled until the payment provider is configured.</p>
+    <div class="lp-billing-records">
+     <section aria-labelledby="lp-credit-history-title"><h3 id="lp-credit-history-title">Credit usage history</h3><ul id="lp-billing-credit-history" class="lp-billing-history-list"><li>Loading credit history…</li></ul></section>
+     <section aria-labelledby="lp-transaction-history-title"><h3 id="lp-transaction-history-title">Transaction history</h3><ul id="lp-billing-transaction-history" class="lp-billing-history-list"><li>Loading transactions…</li></ul></section>
+    </div>
+   </section>
    <section id="account-management" class="lp-settings-card">
     <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">☷</span><div><h2>Account management</h2><p>View your subscription and control your account.</p></div></div>
-    <div class="lp-setting-row"><div><strong>Subscription and credits</strong><small id="lp-plan-info">Manage your plan and credit balance.</small></div><a class="lp-btn lp-btn-secondary" href="account.html#subscription">View account</a></div>
+    <div class="lp-setting-row"><div><strong>Subscription and credits</strong><small id="lp-plan-info">Manage your plan and credit balance.</small></div><a class="lp-btn lp-btn-secondary" href="#billing">Open billing</a></div>
     <div class="lp-setting-row"><div><strong>Sign out</strong><small>End your session on this device.</small></div><button id="lp-sign-out" type="button" class="lp-btn lp-btn-secondary">Sign out</button></div>
     <div class="lp-setting-row lp-setting-danger"><div><strong>Delete account</strong><small>This permanently removes your LOOX account, private outputs and remaining credits. Cancel recurring billing first.</small></div><button id="lp-delete-open" type="button" class="lp-btn lp-btn-danger">Delete account</button></div>
    </section>
