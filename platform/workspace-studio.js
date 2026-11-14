@@ -1,5 +1,5 @@
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
-import {state,initialize,auth,api} from './account.js?v=10';
+import {state,initialize,auth,api} from './account.js?v=12';
 const $=s=>document.querySelector(s),node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,fn,cls='studio-button')=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b;};
 function notify(text){let n=$('.studio-toast');if(!n){n=node('p','studio-toast');n.setAttribute('role','status');document.body.append(n);}n.textContent=text;clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.remove(),4000);}
@@ -660,8 +660,7 @@ function run(){
   const quotaSource=document.querySelector('.'+prefix+'-daily-quota');
   const quotaText=node('span','studio-budget-quota');quotaText.hidden=true;
   quotaText.title='Daily generation allowance from your LOOX account';
-  const link=node('a','studio-budget-link','Credits');
-  link.href='account.html#credits';
+  const link=button('Buy Credits',()=>import('./account.js?v=12').then(m=>m.buyCredits()),'studio-budget-link');
   bar.append(spec,costText,balanceText,remainderText,quotaText,link);
   card.append(bar);
   const sync=()=>{

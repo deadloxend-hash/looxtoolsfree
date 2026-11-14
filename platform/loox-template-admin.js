@@ -1,5 +1,5 @@
 
-import {state,initialize,auth} from './account.js?v=10';
+import {state,initialize,auth} from './account.js?v=12';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 const notice=document.getElementById('notice'),queue=document.getElementById('queue');
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';

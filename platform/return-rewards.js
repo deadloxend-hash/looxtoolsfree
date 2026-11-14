@@ -1,4 +1,4 @@
-import {state,api,refresh} from './account.js?v=10';
+import {state,api,refresh} from './account.js?v=12';
 let reward=null,owner=null,loading=false,lastFetch=0,clockOffset=0,errorText='',claiming=false;
 const countdown=ms=>{const sec=Math.max(0,Math.ceil(ms/1000));return [Math.floor(sec/3600),Math.floor(sec%3600/60),sec%60].map(n=>String(n).padStart(2,'0')).join(':');};
 function render(){

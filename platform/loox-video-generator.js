@@ -1,7 +1,7 @@
 import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
 import {MediaSessions} from './loox-image-sessions.js?v=25';
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=10';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=12';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
 // Vercel queue; the browser never connects to ComfyUI or sees worker credentials.

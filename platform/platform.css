@@ -363,3 +363,6 @@
 @media (prefers-reduced-motion:reduce){
   .lx-shell :is(.lx-button,.lx-close){transition:none!important}
 }
+
+/* Shared billing entry points; dialog details load on demand. */
+.lx-buy-credits{font:inherit;font-size:12px;white-space:nowrap;padding:8px 12px;border:1px solid #405879;border-radius:10px;background:#15253b;color:#dceaff;cursor:pointer}.lx-credit-chip[type=button]{font:inherit;cursor:pointer}.lx-buy-credits:focus-visible{outline:2px solid #a5c9ff;outline-offset:3px}

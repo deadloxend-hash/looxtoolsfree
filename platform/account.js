@@ -125,8 +125,8 @@ export function renderHeader(){
   host.classList.add('lx-controls','lx-account-header');
   const signedIn=Boolean(state.user);
   const balance=state.account?.wallet?.balance;
-  const credit=el('span',null,'lx-credit-chip');
-  credit.setAttribute('aria-label',signedIn?'Your available AI credits':'AI credits');
+  const credit=button('',buyCredits,'lx-credit-chip');
+  credit.setAttribute('aria-label',signedIn?'Your available AI credits · Buy Credits':'Buy Credits');
   credit.append(el('span','Credit','lx-credit-label'),
     el('span',' - ','lx-credit-divider'),
     el('strong',signedIn?(Number.isFinite(Number(balance))?String(balance):'…'):'0','lx-credit-value'));
@@ -155,7 +155,8 @@ export function renderHeader(){
    menu.append(identity);
    const links=el('div',null,'lx-profile-links');
    for(const [id,label] of sections)links.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'account.html#'+id));
-   menu.append(links);
+   menu.append(button('Authenticator security',()=>{details.open=false;authenticator();},'lx-button'));
+   menu.append(links,button('Buy Credits',()=>{details.open=false;buyCredits();},'lx-button'));
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
   }else{
@@ -177,10 +178,15 @@ if(typeof document!=='undefined')document.addEventListener('keydown',event=>{
 export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut();if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
 const sections=[['profile','Account Overview'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);}
-export async function plans(host){host.replaceChildren(el('p','Explore LOOX Basic, Creator and Pro with monthly or yearly billing.'),button('Compare plans and generation counts',pricing,'lx-button lx-primary'));}
+export async function plans(host){host.replaceChildren(el('p','Explore LOOX Basic, Creator, Pro and Business with monthly billing.'),button('Compare plans and generation counts',pricing,'lx-button lx-primary'));}
 export function nextAccountUrl(page){
  const current=(location.pathname.split('/').pop()||'index.html')+location.search+location.hash;
  return page+'?from='+encodeURIComponent(current);
+}
+export async function authenticator(){const {openMFA}=await import('./billing/mfa.js?v=1');return openMFA({client,dialog,el,button,refresh});}
+export async function buyCredits(){
+ if(!document.querySelector('link[data-recharge-style]')){const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./billing/recharge.css',import.meta.url).href;css.dataset.rechargeStyle='';document.head.append(css);}
+ const {openRecharge}=await import('./billing/recharge.js?v=1');return openRecharge({state,api,config,auth,dialog,el,button,refresh});
 }
 export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
 export async function initialize({publicAccess=false,waitForAccount=true}={}){
@@ -200,7 +206,7 @@ function drawDashboard(){
  const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'#'+id));host.append(nav);
  function section(id,title){const s=el('section',null,'lx-card');s.id=id;s.append(el('h2',title));host.append(s);return s;}
  section('profile','Account overview').append(el('h3','Welcome, '+a.profile.name),el('p',a.jobs.length+' recent AI actions'),el('p',a.profile.name+' · '+state.user.email),el('p','Plan · '+planName[a.plan]));
- section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),button('Buy credits',pricing));
+ section('credits','My credits').append(el('strong',a.wallet.balance+' available credits','lx-price'),button('Buy Credits',buyCredits));
  const jobs=section('usage','Recent AI jobs');if(!a.jobs.length)jobs.append(el('p','No AI jobs yet.'));
  for(const j of a.jobs){const row=el('div',null,'lx-row');row.append(el('span',labels[j.operation]+' · '+j.state));
  if(j.state!=='failed')row.append(button(j.state==='succeeded'?'Open result':'Check status',async()=>{try{const result=await api('status',null,{id:j.id});if(result.url){const d=dialog('Your private result');d.box.append(link('Open PNG',result.url));}await refresh();}catch(e){msg(document.querySelector('[data-account-note]'),e.message);}},'lx-link'));jobs.append(row);}
@@ -209,12 +215,15 @@ function drawDashboard(){
  const history=section('history','Transaction history');
  for(const item of a.credits)history.append(el('p',new Date(item.created_at).toLocaleString()+' · '+item.reason+' · '+(item.amount>0?'+':'')+item.amount+' credits'));
  for(const p of a.payments)history.append(el('p',planName[p.plan]+' · '+money(p.amount_cents)+' · '+p.status));
+ api('recharge_history').then(data=>{if(!history.isConnected)return;for(const p of data.items)history.append(el('p',p.package_id+' · '+money(p.amount_cents)+' · '+p.status+' · '+p.reference));}).catch(()=>history.append(el('p','Recharge history is temporarily unavailable.')));
  const settings=section('settings','Account settings');
  settings.append(el('p','Update your display name, security and account preferences on the dedicated settings page.'));
- settings.append(link('Open account settings →',nextAccountUrl('settings.html')));
+ settings.append(link('Open account settings →',nextAccountUrl('settings.html')),button('Authenticator security',authenticator));
+ if(state.user?.app_metadata?.loox_template_admin===true)settings.append(link('Financial dashboard →','billing-admin.html'));
 
 }
 if(typeof document!=='undefined'){
+if(/ai-(text-to-image|video-generator|chat)\.html$/.test(location.pathname)){const target=document.querySelector('.ai-composer-wrap')||document.querySelector('.lig-credit-box');if(target){const buy=button('Buy Credits',buyCredits,'lx-buy-credits');target.append(buy);}}
 document.addEventListener('loox-account',drawDashboard);
 document.addEventListener('loox-user',drawDashboard);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&state.user)refresh().catch(()=>{});});

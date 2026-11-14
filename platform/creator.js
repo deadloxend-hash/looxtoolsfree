@@ -1,4 +1,4 @@
-import {state,auth,initialize,refresh} from './account.js?v=10';
+import {state,auth,initialize,refresh,buyCredits} from './account.js?v=12';
 import {Community,rpc,mediaURL,result} from './community.js?v=32';
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
@@ -229,7 +229,7 @@ function buildPage(){
   const body=el('div','cx-account-panel-body');
   const balance=el('span','cx-account-balance','Open to see your available credits');
   const accountLinks=el('div','cx-account-links');
-  accountLinks.append(link('Account overview','account.html'),link('Settings','settings.html'),link('Upgrade','upgrade.html'));
+  accountLinks.append(link('Account overview','account.html'),link('Settings','settings.html'),link('Upgrade','upgrade.html'),btn('Buy Credits',buyCredits));
   body.append(balance,accountLinks);accountPanel.append(summary,body);
   accountPanel.addEventListener('toggle',async()=>{
    if(!accountPanel.open)return;

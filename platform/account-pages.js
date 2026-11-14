@@ -1,4 +1,4 @@
-import {state,config,api,auth,refresh,signOut} from './account.js?v=11';
+import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=12';
 import {cloudRequest} from './profile-cloudflare.js?v=1';
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
@@ -13,9 +13,10 @@ function addNotice(text,tone){const n=byId('lp-billing-notice');if(n){n.textCont
 function planAction(button,notice,id){button.addEventListener('click',async()=>{if(!state.user){auth('login');return;}button.disabled=true;setStatus(notice,'Opening secure checkout…');try{const r=await api('checkout',{plan:id});const url=new URL(r.url);if(url.protocol!=='https:'||!url.hostname.endsWith('.lemonsqueezy.com'))throw Error('Invalid checkout URL.');location.assign(url.href);}catch(e){setStatus(notice,e.message||'Checkout is unavailable.',true);button.disabled=false;}});}
 function renderPlans(cfg,failed=false){
  const host=byId('lp-plan-grid');if(!host)return;
+ if(cfg?.annualBillingEnabled!==true)cadence='month';
  const plans=cfg?.plans?.length?cfg.plans:proposedPlans,live=cfg?.billing===true;
  const current=state.account?.plan||'basic';host.replaceChildren();
- addNotice(failed?'Plan service is unavailable. Displayed prices are previews.':!live?'Plans are ready to explore. Secure checkout is awaiting merchant setup.':cfg?.testBilling?'Test checkout · No real payments.':'Secure checkout · USD prices. Applicable taxes are shown before payment.',live?'live':'preview');
+ addNotice(failed?'Plan service is unavailable. Displayed prices are previews.':!live?'Secure checkout coming soon · monthly plans are previews. No payment is taken.':cfg?.testBilling?'Test checkout · No real payments.':'Secure checkout · USD prices. Applicable taxes are shown before payment.',live?'live':'preview');
  for(const id of ['free','creator','pro','business']){
   const key=id==='free'?id:id+(cadence==='year'?'_yearly':'');
   const p=plans.find(p=>p.id===key)||proposedPlans.find(p=>p.id===key),copy=presentation[id],featured=id==='pro';
@@ -28,14 +29,14 @@ function renderPlans(cfg,failed=false){
   const standardCost=Math.max(1,Number(cfg?.operations?.find(o=>o.id==='generate')?.cost)||3);
   const imageCount=Math.floor(p.credits/standardCost).toLocaleString();
   card.append(elem('p','lp-plan-usecase',id==='free'?'Try AI images and basic tools':cadence==='year'?'Up to '+imageCount+' standard AI images per year':'Up to '+imageCount+' standard AI images per month'));
-  const features=id==='business'?['4,000 credits monthly · 48,000 yearly','All Pro model access; premium video priced by model and length','Private creations and credit history','Priority access to local GPU when available']:id==='free'?['25 credits after email verification','Earn 5 return credits every 12 hours; balance cap 50','Local AI models when the GPU is online','Free browser tools and a Basic profile badge']:id==='creator'?['500 credits monthly · 6,000 yearly','Standard cloud video models and AI images','Credits shown before each generation','Creator badge and local queue priority']:['1,500 credits monthly · 18,000 yearly','Creator features plus premium video models','Pay credits based on chosen model and duration','Pro badge and highest local queue priority'];
+  const features=id==='business'?['4,000 credits per month','All Pro model access; premium video priced by model and length','Private creations and credit history','Priority access to local GPU when available']:id==='free'?['25 credits after email verification','Earn 5 return credits every 12 hours; balance cap 50','Local AI models when the GPU is online','Free browser tools and a Basic profile badge']:id==='creator'?['500 credits per month','Standard cloud video models and AI images','Credits shown before each generation','Creator badge and local queue priority']:['1,500 credits per month','Creator features plus premium video models','Pay credits based on chosen model and duration','Pro badge and highest local queue priority'];
   const list=elem('ul','lp-plan-features');for(const text of features)list.append(elem('li','',text));
   card.append(list,elem('p','lp-plan-small',id==='free'?'Rewards require a manual claim. First reward unlocks 12 hours after your first signed-in visit.':cadence==='year'?'All annual credits arrive after a successful annual payment.':'Credits arrive after each successful monthly payment.'));
   const examples=elem('div','lp-plan-estimates');examples.dataset.credits=p.credits;examples.dataset.tier=id==='free'?'basic':id;card.append(examples);
   const button=elem('button','lp-btn '+(featured?'lp-btn-primary':'lp-btn-secondary')),note=elem('p','lp-plan-small');button.type='button';note.setAttribute('role','status');
   if(state.user&&current===(id==='free'?'basic':id)){button.textContent='Your current plan';button.disabled=true;}
   else if(id==='free'){button.textContent=state.user?'Basic included':'Start creating free';button.disabled=Boolean(state.user);button.onclick=()=>auth('register');}
-  else{const configured=live&&(!Array.isArray(cfg.checkoutPlans)||cfg.checkoutPlans.includes(key));button.textContent=configured?'Choose '+copy.name:'Checkout pending';button.disabled=!configured;planAction(button,note,key);}
+  else{const configured=live&&(!Array.isArray(cfg.checkoutPlans)||cfg.checkoutPlans.includes(key));button.textContent=configured?'Choose '+copy.name:'Secure checkout coming soon';button.disabled=!configured;planAction(button,note,key);}
   card.append(elem('div','lp-plan-grow'),button,note);host.append(card);
  }
  renderEstimates(cfg);
@@ -58,9 +59,7 @@ function renderEstimates(cfg){
  byId('lp-estimate-note').textContent=model?'Counts are alternatives from the same balance, not combined allowances. '+model.name+': '+videoCost+' credits per '+duration.value+'s clip at '+model.capabilities.resolution+'. Local generation depends on GPU availability.':'Counts use the same shared credit balance. Live video prices could not be loaded.';
 }
 if(document.body.hasAttribute('data-account-upgrade')){
- const controls=elem('div','lp-billing-toggle');controls.setAttribute('aria-label','Billing period');
- for(const [value,label] of [['month','Monthly'],['year','Yearly · save ~17%']]){const b=elem('button','',label);b.type='button';b.setAttribute('aria-pressed',String(cadence===value));b.onclick=()=>{cadence=value;for(const item of controls.children)item.setAttribute('aria-pressed',String(item===b));renderPlans(plansConfig,plansError);};controls.append(b);}
- byId('lp-plan-grid').before(controls);
+ const buy=byId('lp-buy-credits');if(buy)buy.onclick=buyCredits;
  renderPlans(null);config().then(c=>{plansConfig=c;renderPlans(c);}).catch(()=>{plansError=true;renderPlans(null,true);});
  for(const name of ['loox-user','loox-account'])document.addEventListener(name,()=>renderPlans(plansConfig,plansError));
  for(const id of ['lp-estimate-model','lp-estimate-duration'])byId(id)?.addEventListener('change',()=>renderEstimates(plansConfig));
