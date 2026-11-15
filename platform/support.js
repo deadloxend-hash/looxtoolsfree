@@ -1,4 +1,4 @@
-import {state,initialize,auth} from './account.js?v=13';
+import {state,initialize,auth} from './account.js?v=14';
 const $=s=>document.querySelector(s),E=(tag,text)=>{const n=document.createElement(tag);n.textContent=text;return n;};let page=1,requestId=crypto.randomUUID();
 async function api(action,body=null,query={}){if(!state.user)throw Error('Sign in to submit or view support requests.');const {data}=await state.client.auth.getSession();const r=await fetch('https://looxtoolfree-backend.vercel.app/api/loox?'+new URLSearchParams({action:'control_'+action,...query}),{method:body?'POST':'GET',headers:{Authorization:'Bearer '+data.session.access_token,...(body?{'Content-Type':'application/json'}:{})},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(30000)});const d=await r.json();if(!r.ok)throw Error(d.error||'Support is temporarily unavailable.');return d;}
 function button(label,run){const b=E('button',label);b.className='lx-button';b.type='button';b.onclick=async()=>{b.disabled=true;try{await run();}catch(e){$('#support-status').textContent=e.message;}finally{b.disabled=false;}};return b;}
