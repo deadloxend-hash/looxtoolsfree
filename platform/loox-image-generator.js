@@ -53,10 +53,10 @@ async function initWorkspace(){
  const availableModels=new Map([...allModels].filter(([,m])=>m.available));
  const modelNote=document.querySelector('.lig-model-note');
  function modelStatus(id){
-   if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'Ready to create.'}:{label:'Temporarily Unavailable',reason:'Image generation is temporarily unavailable.'};
+   if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'Ready to create.'}:{label:'Temporarily Unavailable',reason:'A8 server is temporarily unavailable. Please try again later.'};
   const m=allModels.get(id);
   return {label:m?.status==='available'?'Available':m?.status==='temporarily_unavailable'?'Temporarily Unavailable':'Coming Soon',
-   reason:m?.reason||'Requires rotated credentials, provider billing and a verified generation.'};
+   reason:m?.status==='temporarily_unavailable'?'This model is temporarily unavailable. Please try again later.':m?.status==='coming_soon'?'Coming soon.':'This model is not available right now. Please try again later.'};
  }
  const generateButton=byId('lig-generate'),message=byId('lig-message');
  const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
