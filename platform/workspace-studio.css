@@ -920,3 +920,26 @@ body.loox-studio.lvg-body .studio-frame-text{min-width:0}
  body.loox-studio.lvg-body .studio-frame-text small{max-width:95px!important}
  body.loox-studio .studio-budget-retry{font-size:10px}
 }
+
+/* V19: keep completed image previews within the usable mobile viewport.
+   A portrait must be fully visible without being covered by the fixed composer.
+   Full native resolution remains available in saved media / download. */
+@media(max-width:900px){
+ body.loox-studio .lig-results > .lig-output .lig-output-stage:has(> img){
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;max-width:100%!important;
+  height:auto!important;min-height:0!important;max-height:none!important;
+  aspect-ratio:auto!important;overflow:hidden!important;background:#0e1726!important;
+ }
+ body.loox-studio .lig-results > .lig-output .lig-output-stage > img{
+  display:block!important;width:auto!important;height:auto!important;
+  max-width:100%!important;max-height:min(54dvh,520px)!important;
+  object-fit:contain!important;object-position:center!important;
+  margin:0 auto!important;
+ }
+}
+@media(max-width:600px){
+ body.loox-studio .lig-results > .lig-output .lig-output-stage > img{
+  max-height:min(52dvh,450px)!important;
+ }
+}
