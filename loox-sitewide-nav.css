@@ -2727,3 +2727,21 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
  }
 }
 
+/* V108: native AI generator header owns its own profile popover.
+   The earlier layering fix covered #loox-sitewide-header only, while
+   Image/Video/Assistant use a separate header.lig-header. Elevate the
+   entire native header only while the account menu is open. */
+body.loox-generator-no-topnav:has(> header.lig-header .lx-profile-details[open]) > header.lig-header{
+ position:relative!important;z-index:10020!important;
+ isolation:auto!important;overflow:visible!important;
+}
+body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open],
+body.loox-generator-no-topnav > header.lig-header .lig-header-user:has(.lx-profile-details[open]){
+ overflow:visible!important;
+}
+body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .lx-profile-menu{
+ z-index:10021!important;
+ max-height:min(75dvh,calc(100dvh - 90px))!important;
+ overflow-y:auto!important;overscroll-behavior:contain!important;
+ -webkit-overflow-scrolling:touch;
+}
