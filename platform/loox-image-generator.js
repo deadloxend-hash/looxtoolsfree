@@ -1,6 +1,6 @@
 import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
-import {MediaSessions} from './loox-image-sessions.js?v=25';
+import {MediaSessions} from './loox-image-sessions.js?v=26';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=15';
 
@@ -543,7 +543,7 @@ async function initWorkspace(){
   });
   bottom.append(promptWrap);
   card.append(top,stage,bottom);
-  results.append(card);
+  results.prepend(card);
   const setStage=(label,sub)=>{
    indicator.textContent=label;
    loadingTitle.textContent=label;
@@ -609,7 +609,6 @@ async function initWorkspace(){
   // Publishing is provided by the shared session actions.
 
   sessions.completed(view,id);
-  sessions.bottom(sessions.nearBottom());
  }
  async function poll(id,view,ratio){
   let consecutiveErrors=0;
@@ -675,8 +674,7 @@ async function initWorkspace(){
    if(modelId==='flux2_klein_local_edit'&&!resumeId&&!reference)throw Error('Upload one reference image to use FLUX.2 Klein Image Edit.');
    const settings=['flux','flux2_klein_local_edit'].includes(modelId)?(reference?{reference:'Image-to-image',reference_similarity:Math.round(reference.reference_strength*100)+'%'}:{}):Object.fromEntries(Object.entries(settingFields).filter(([,f])=>!f.block.hidden).map(([key,f])=>[key,f.select.value]));
    const entry=await sessions.begin({prompt,ratio,model_id:modelId,model_name:modelId==='flux'?'FLUX.1 Schnell':allModels.get(modelId)?.name||'AI image',media_type:'image',settings});
-   const follow=sessions.nearBottom();
-   view=outputCard(prompt,ratio,entry.model_name);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
+   view=outputCard(prompt,ratio,entry.model_name);sessions.attach(view,entry);sessions.revealNewest(view.card);
    const isLocal=['flux','flux2_klein_local_edit'].includes(modelId);
    const id=resumeId||(await api(isLocal?'job':'cloud_job',{
     ...(isLocal?{operation:modelId==='flux'?'generate':'generate_flux2_klein_edit'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(isLocal?(reference||{}):{settings}),...(seed==null?{}:{seed})
