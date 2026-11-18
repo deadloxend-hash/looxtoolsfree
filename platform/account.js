@@ -155,7 +155,6 @@ export function renderHeader(){
    menu.append(identity);
    const links=el('div',null,'lx-profile-links');
    for(const [id,label] of sections){if(['credits','subscription','history'].includes(id))continue;links.append(link(label,id==='settings'?'settings.html':'account.html#'+id));}
-   menu.append(button('Authenticator security',()=>{details.open=false;authenticator();},'lx-button'));
    menu.append(links,link('Billing & Credits','settings.html#billing'));
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
@@ -183,7 +182,6 @@ export function nextAccountUrl(page){
  const current=(location.pathname.split('/').pop()||'index.html')+location.search+location.hash;
  return page+'?from='+encodeURIComponent(current);
 }
-export async function authenticator(){const {openMFA}=await import('./billing/mfa.js?v=2');return openMFA({client,dialog,el,button,refresh});}
 export async function buyCredits(){
  if(!document.querySelector('link[data-recharge-style]')){const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./billing/recharge.css',import.meta.url).href;css.dataset.rechargeStyle='';document.head.append(css);}
  const {openRecharge}=await import('./billing/recharge.js?v=1');return openRecharge({state,api,config,auth,dialog,el,button,refresh});
@@ -218,7 +216,7 @@ function drawDashboard(){
  api('recharge_history').then(data=>{if(!history.isConnected)return;for(const p of data.items)history.append(el('p',p.package_id+' · '+money(p.amount_cents)+' · '+p.status+' · '+p.reference));}).catch(()=>history.append(el('p','Recharge history is temporarily unavailable.')));
  const settings=section('settings','Account settings');
  settings.append(el('p','Update your display name, security and account preferences on the dedicated settings page.'));
- settings.append(link('Open account settings →',nextAccountUrl('settings.html')),button('Authenticator security',authenticator));
+ settings.append(link('Open account settings →',nextAccountUrl('settings.html')));
 
 }
 if(typeof document!=='undefined'){
