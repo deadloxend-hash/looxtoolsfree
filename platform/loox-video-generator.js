@@ -49,13 +49,13 @@ function updateModelUI(){
  imageField.required=Boolean(m?.image);
  for(const option of durationField.options){const supported=Boolean(m?.durations.includes(Number(option.value)));option.hidden=cloud&&!supported;option.disabled=cloud&&!supported;}
  if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
- modelNote.textContent=!cloud?'Local PC · Wan 2.1 · ~2 seconds. Requires your ComfyUI worker.':
+ modelNote.textContent=!cloud?'Wan 2.1 · ~2 seconds. Powered by LOOX.':
   m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
  const info=modelInfo();
  const supportedRatios=info?.capabilities?.ratios||['16:9','9:16','1:1','4:3','3:4'];
  for(const option of ratioField.options){option.disabled=!supportedRatios.includes(option.value);option.hidden=option.disabled;}
  if(!supportedRatios.includes(ratioField.value))ratioField.value=supportedRatios[0];
- if(info&&!info.available)modelNote.textContent+=' Cloud model is not available yet.';
+ if(info&&!info.available)modelNote.textContent+=' This model is not available yet.';
  accountInfo();checkGPU().catch(()=>{});
 }
 modelField.addEventListener('change',updateModelUI);
@@ -218,7 +218,7 @@ syncHeader();
 function refreshButton(){
   const rank={basic:0,free:0,creator:1,pro:2},required=modelInfo()?.minimumPlan;const locked=Boolean(state.user&&required&&(rank[state.account?.plan]||0)<rank[required]);
   generateButton.disabled=busy || Boolean(state.user&&!online)||locked;
-  generateButton.textContent=locked?'Requires LOOX '+(required==='pro'?'Pro':'Creator'):busy?'Generating…':state.user&&!online?(isCloud()?'Model unavailable':'GPU offline'):'Generate video';
+  generateButton.textContent=locked?'Requires LOOX '+(required==='pro'?'Pro':'Creator'):busy?'Generating…':state.user&&!online?(isCloud()?'Model unavailable':'B8 offline'):'Generate video';
 }
 let gpuCheckVersion=0;
 async function checkGPU(){
@@ -228,7 +228,7 @@ async function checkGPU(){
     const ready=Boolean(state.config?.videoModels?.find(m=>m.id===selectedModel)?.available);
     if(version!==gpuCheckVersion)return;
     online=ready;
-    gpuLabel.textContent=ready?'● Cloud video model ready':'● Cloud model unavailable · check provider billing and configuration';
+    gpuLabel.textContent=ready?'● Video model ready':'● Video model temporarily unavailable';
     gpuLabel.dataset.online=String(ready);
     refreshButton();return;
   }
@@ -242,7 +242,7 @@ async function checkGPU(){
     const data=await api('gpu');
     if(version!==gpuCheckVersion||selectedModel!==modelField.value)return;
     online=Boolean(data.video);
-    gpuLabel.textContent=online?'● PC GPU online · Wan 2.1 ready':'● PC GPU offline · Start ComfyUI and the LOOX Windows worker';
+    gpuLabel.textContent=online?'● B8 server ready':'● B8 server is temporarily unavailable. Please try again later.';
   }catch{
     if(version!==gpuCheckVersion||selectedModel!==modelField.value)return;
     online=false;gpuLabel.textContent='Unable to check GPU availability right now.';
@@ -261,7 +261,7 @@ function createCard(prompt,ratio){
   const loading=make('div','lig-skeleton'),overlay=make('div','lig-loading-overlay');
   overlay.setAttribute('role','status');
   const spinner=make('span','lig-spinner'),label=make('strong',null,'Preparing your video');
-  const caption=make('small',null,isCloud()?'Your cloud video request is processing.':'Your PC GPU will process this request.');
+  const caption=make('small',null,isCloud()?'Your video request is processing.':'LOOX is preparing your video.');
   overlay.append(spinner,label,caption);stage.append(loading,overlay);
   const bottom=make('div','lig-output-bottom');
   bottom.append(make('span','lig-prompt-label',prompt));
@@ -338,7 +338,7 @@ async function poll(id,view){
     }
     if(status.state==='processing')
       view.setStage('Generating video',isCloud()?'Your cloud model is processing this video.':'Your PC is creating the video. You can keep this tab open.');
-    else view.setStage('In the queue',isCloud()?'Waiting for the video provider to start.':'Waiting for the GPU to pick up your request.');
+    else view.setStage('In the queue',isCloud()?'Waiting for video processing to start.':'Waiting for the B8 server.');
   }
   throw Error('Your video is still processing. Check recent AI jobs in your LOOX account.');
 }
@@ -353,7 +353,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     await refreshQuota();
     if(remainingVideos===0){notice('You have used all 30 video generations today. Resets at 00:00 UTC.',true);return;}
     await checkGPU();
-    if(!online){notice(isCloud()?'Cloud video model is unavailable. Check server configuration and provider billing.':'Your PC GPU is offline. Run ComfyUI and the LOOX worker, then try again.',true);return;}
+    if(!online){notice(isCloud()?'This video model is temporarily unavailable. Please try again later.':'B8 server is temporarily unavailable. Please try again later.',true);return;}
     const displayed=cost(),quote=await updateQuote();if(!quote)return;if(quote.credits!==displayed){notice('Price updated to '+quote.credits+' credits. Click Generate to accept the new quote.');return;}
     if(state.account?.wallet && state.account.wallet.balance<quote.credits){
       pricing();notice('Your account needs more AI credits for this video.',true);return;
@@ -459,7 +459,7 @@ document.body.classList.add('loox-generator-ready');
   syncCloudModels();
   const picker=mountModelPicker({
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
-    if(id==='wan21')return {name:'Wan 2.1 Local',description:'Local PC · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};
+    if(id==='wan21')return {name:'Wan 2.1',description:'LOOX B8 · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
     return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:!m?.available&&m?.reason?m.reason:(m?.minimumPlan==='pro'?'Pro · ':'Creator · ')+(m?.capabilities?.resolution||'720p')+' · '+(m?.imageRequired?'Reference image required':m?.capabilities?.imageReference===false?'Text to video only':'Text or image to video'),status:m?.status};
    }
