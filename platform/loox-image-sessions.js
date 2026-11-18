@@ -81,6 +81,23 @@ export class MediaSessions {
    else this.feed.lastElementChild?.scrollIntoView({block:'end',behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
   });
  }
+ // New live generations appear first; reveal them rather than scrolling
+ // down to the oldest result when an image or video is submitted.
+ revealNewest(card=this.feed.firstElementChild){
+  if(!card)return;
+  const show=()=>{
+   if(!card.isConnected||this.feed.firstElementChild!==card)return;
+   const cardTop=card.getBoundingClientRect().top;
+   if(this.hasOwnScroller()){
+    this.scroll.scrollTop+=cardTop-this.scroll.getBoundingClientRect().top-12;
+   }else{
+    const header=document.querySelector('body > header');
+    const headerBottom=Math.max(0,header?.getBoundingClientRect().bottom||0);
+    window.scrollTo({top:Math.max(0,window.scrollY+cardTop-headerBottom-12),behavior:'instant'});
+   }
+  };
+  requestAnimationFrame(()=>{show();requestAnimationFrame(show);});
+ }
  async init(){const uid=this.state.user?.id||null;if(uid===this.user)return;if(this.user&&uid!==this.user){this.id=null;this.url();}this.user=uid;this.epoch++;this.id=null;this.statusCache.clear();this.feed.replaceChildren();if(!uid){this.list.replaceChildren(el('p','','Sign in to save your sessions.'));this.more.hidden=true;return;}await this.loadList();const params=new URLSearchParams(location.search),id=params.get('session');if(id)await this.open(id);const reuse=params.get('reuse');if(reuse&&id){const entry=checked(await this.state.client.from('loox_media_entries').select('*').eq('id',reuse).eq('session_id',id).single());const u=new URL(location.href);u.searchParams.delete('reuse');history.replaceState(null,'',u.pathname+u.search+u.hash);await this.reuse(entry);}}
  async fresh(){if(this.isBusy())throw Error('Wait for the current generation.');document.dispatchEvent(new Event('loox:session-new'));this.epoch++;this.id=null;this.feed.replaceChildren();this.url();await this.loadList();if(matchMedia('(max-width:900px)').matches)this.collapse(true);this.prompt.focus();}
  pinKey(){return 'loox-pinned-media-sessions:'+this.state.user?.id;}
