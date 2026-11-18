@@ -1,6 +1,6 @@
 import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
-import {MediaSessions} from './loox-image-sessions.js?v=25';
+import {MediaSessions} from './loox-image-sessions.js?v=26';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=15';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
@@ -265,7 +265,7 @@ function createCard(prompt,ratio){
   overlay.append(spinner,label,caption);stage.append(loading,overlay);
   const bottom=make('div','lig-output-bottom');
   bottom.append(make('span','lig-prompt-label',prompt));
-  card.append(top,stage,bottom);resultList.append(card);
+  card.append(top,stage,bottom);resultList.prepend(card);
 
   return {card,stage,bottom,indicator,prompt,setStage:(text,detail)=>{
     indicator.textContent=text;label.textContent=text;if(detail)caption.textContent=detail;
@@ -310,7 +310,7 @@ function showVideo(view,url,id){
   view.indicator.textContent='Completed · LOOX Video';
   const reuse=make('button','lig-small-action','Reuse prompt');
   reuse.type='button';reuse.addEventListener('click',()=>{promptField.value=view.prompt;promptField.focus();});
-  sessions.completed(view,id);sessions.bottom(sessions.nearBottom());
+  sessions.completed(view,id);
 }
 async function poll(id,view){
   let errors=0;
@@ -364,7 +364,6 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
   notice(resumeId?'Restoring your pending video…':'Submitting your video request…');
   let view=null;
   try{
-    const follow=sessions.nearBottom();
     const m=chosen(),duration=isCloud()?Number(durationField.value):2;
     if(m?.image&&!imageField.files?.[0])throw Error('This model requires a reference image.');
     let upload=null;
@@ -380,7 +379,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     }
     const entry=await sessions.begin({prompt,ratio,model_id:m?modelField.value:'wan21',model_name:m?.name||'Wan 2.1 Local',
       media_type:'video',settings:{duration:m?duration+' seconds':'33 frames (~2 seconds)'}});
-    view=createCard(prompt,ratio);view.follow=follow;sessions.attach(view,entry);sessions.bottom(follow);
+    view=createCard(prompt,ratio);sessions.attach(view,entry);sessions.revealNewest(view.card);
     const id=resumeId||(await api(isCloud()?'cloud_video_job':'job',isCloud()?
       {model:modelField.value,duration:Number(durationField.value),image:upload,
        requestId:entry.request_id,prompt,ratio,quoteToken:serverQuote?.token}:
