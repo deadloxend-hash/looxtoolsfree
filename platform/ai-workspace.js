@@ -1,4 +1,4 @@
-import {auth,state,initialize,pricing} from './account.js?v=15';
+import {auth,state,initialize,pricing} from './account.js?v=16';
 
 const $=id=>document.getElementById(id);
 const landing=document.body.classList.contains('ai-home');
@@ -59,12 +59,7 @@ let mobile=window.matchMedia('(max-width:760px)');
 let recentClosed=false;
 
 function note(value){if(status)status.textContent=value;}
-function allowance(kind=model){
- const u=usage[kind];
- return u&&Number.isFinite(u.remaining)?u.remaining+' of '+u.limit+' messages remaining':
-  (kind==='free'?'25 requests per 24 hours':'20 requests per 24 hours');
-}
-function quotaNote(){note((model==='free'?'LOOX Free · ':'LOOX Pro · ')+allowance());}
+function quotaNote(){note(state.user?'Free AI Assistant':'Sign in to chat and save your conversations.');}
 function premium(){return ['pro','lifetime'].includes(state.account?.plan);}
 function hideMenus(){
  modelMenu.hidden=true;toolsMenu.hidden=true;
@@ -120,9 +115,7 @@ async function refreshQuota(){
 }
 function selectModel(choice){
  hideMenus();
- if(choice==='premium'&&!premium()){
-  pricing();note('LOOX Pro requires an active subscription.');return;
- }
+ if(choice!=='free')return;
  if(choice!==model&&!landing){
   if(busy){note('Finish the current reply before switching models.');return;}
   newChat(false);
@@ -350,7 +343,7 @@ async function openThread(id){
   const result=await historyRequest('read',{id});
   if(seq!==openingThread||user!==state.user?.id)return;
   currentThreadId=result.thread.id;
-  model=result.thread.model;
+  model=result.thread.model; // Keep legacy conversations readable without sending paid requests.
   modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
   messages=result.messages.map(m=>({role:m.role,text:m.content}));
   attachments=[];drawThread();chatURLState(id);renderSelectedThread();quotaNote();
@@ -361,7 +354,7 @@ async function openThread(id){
 async function sendMessage(message){
  if(busy)return;
  if(!state.user){prompt.value=message;auth('login');note('Sign in to send your message.');return;}
- if(model==='premium'&&!premium()){prompt.value=message;pricing();note('Upgrade to LOOX Pro to use this model.');return;}
+ if(model!=='free'){note('This conversation is archived. Start a new chat to use the free AI Assistant.');return;}
  const chosen=model,generationUser=state.user.id;
  busy=true;send.disabled=true;
  prompt.value='';resize();
@@ -380,7 +373,7 @@ async function sendMessage(message){
   const data=await response.json().catch(()=>({}));
   if(generationUser!==state.user?.id)return;
   if(data.usage)usage[chosen]=data.usage;
-  if(!response.ok)throw Error(data.error||'LOOX AI could not answer.');
+  if(!response.ok){if(response.status===429){const reset=Date.parse(data.resetAt||'');throw Error(Number.isFinite(reset)?'AI Assistant is temporarily unavailable. Please try again after '+new Date(reset).toLocaleString()+'.':'AI Assistant is temporarily unavailable. Please try again later.');}throw Error(data.error||'AI Assistant is temporarily unavailable. Please try again later.');}
   const reply=String(data.reply||'').trim();
   if(!reply||typeof data.threadId!=='string')throw Error('The reply was not saved. Please retry.');
   // The backend only returns threadId after a successful, atomic save.
@@ -404,7 +397,7 @@ async function sendMessage(message){
   await refreshQuota();
  }finally{
   thinking.remove();busy=false;send.disabled=false;
-  if(!landing)prompt.focus();
+  if(!landing&&matchMedia('(pointer:fine)').matches)prompt.focus({preventScroll:true});
  }
 }
 form?.addEventListener('submit',event=>{
@@ -439,14 +432,14 @@ async function start(){
  await syncUser();
  await refreshQuota();
  if(landing){
-  if(!state.user)note('Free: 25 messages per day · Pro: paid subscribers');
+  if(!state.user)note('Sign in to chat and save your conversations.');
   return;
  }
  drawThread();
  let draft=null;
  try{draft=JSON.parse(sessionStorage.getItem(draftsKey)||'null');sessionStorage.removeItem(draftsKey);}catch{}
  if(draft&&typeof draft.message==='string'&&draft.message.trim()){
-  model=draft.model==='premium'?'premium':'free';
+  model='free';
   modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
   if(state.user)await sendMessage(draft.message.trim().slice(0,1800));
   else{

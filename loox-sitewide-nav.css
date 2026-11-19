@@ -2745,3 +2745,5 @@ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .l
  overflow-y:auto!important;overscroll-behavior:contain!important;
  -webkit-overflow-scrolling:touch;
 }
+/* Keep all account actions inside the narrowest supported header. */
+@media(max-width:360px){html body #loox-sitewide-header .loox-sitewide-inner{gap:4px!important;padding-left:10px!important;padding-right:10px!important}html body #loox-sitewide-header .loox-sitewide-logo{padding-left:0!important;padding-right:2px!important}html body #loox-sitewide-header .loox-sitewide-credit-bundle{gap:3px!important}html body #loox-sitewide-header .lx-upgrade{padding-left:5px!important;padding-right:5px!important}}

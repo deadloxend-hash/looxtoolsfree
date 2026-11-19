@@ -1,100 +1,66 @@
-/* LOOX accessible custom dropdowns for visible native selects.
-   The original select remains the source of truth for form submission and app events. */
+/* Custom selects retain the native field as the source of form values. */
 (()=>{
- const targets={
-  'ai-image-landing.html':['creative-model'],
-  'upgrade.html':['lp-estimate-model','lp-estimate-duration'],
-  'ai-video-landing.html':[],
-  'ai-video-generator.html':['lvg-duration','lvg-ratio'],
-  'ai-text-to-image.html':['lig-resolution','lig-quality']
- };
- const page=location.pathname.split('/').pop();
- const ids=targets[page]||[];
- const instances=[];
- // The two landing pages already have dedicated, model-aware LOOX pickers.
- // Both generators have custom Workspace Studio fields and model pickers.
- // Wrapping those native source fields a second time causes duplicate UI
- // and breaks the original form-control listeners.
- const ownedByExistingPickers=new Set([
-  'creative-model','lvg-duration','lvg-ratio','lig-resolution','lig-quality',
-  'lvg-model','lig-model','lig-ratio'
- ]);
+ const owned=new Set(['creative-model','lvg-duration','lvg-ratio','lig-resolution','lig-quality','lvg-model','lig-model','lig-ratio']);
+ let active=null,serial=0;
  function enhance(select){
-  if(!select||ownedByExistingPickers.has(select.id)||select.dataset.looxDropdown==='true')return;
-  const wrapper=document.createElement('div');wrapper.className='loox-dropdown';
-  select.parentNode.insertBefore(wrapper,select);
-  wrapper.append(select);
+  if(owned.has(select.id)||select.dataset.looxDropdown||select.multiple)return;
+  if(!select.id)select.id='loox-select-'+(++serial);
+  select.dataset.looxDropdown='true';select.setAttribute('aria-hidden','true');select.tabIndex=-1;
+  const wrap=document.createElement('div');wrap.className='loox-dropdown is-ready';select.before(wrap);wrap.append(select);
   const trigger=document.createElement('button');trigger.type='button';trigger.className='loox-dropdown-trigger';
-  trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
-  const label=document.createElement('span');label.className='loox-dropdown-value';
-  const arrow=document.createElement('span');arrow.className='loox-dropdown-chevron';arrow.setAttribute('aria-hidden','true');arrow.textContent='⌄';
-  trigger.append(label,arrow);
-  const list=document.createElement('div');list.className='loox-dropdown-menu';list.hidden=true;list.setAttribute('role','listbox');
-  list.id=select.id+'-loox-options';list.setAttribute('aria-label',select.getAttribute('aria-label')||document.querySelector('label[for="'+select.id+'"]')?.textContent||'Choose an option');
-  trigger.setAttribute('aria-controls',list.id);
-  wrapper.append(trigger,list);
-  let isOpen=false;
-  const close=(focus=false)=>{isOpen=false;list.hidden=true;trigger.setAttribute('aria-expanded','false');wrapper.classList.remove('is-open');if(focus)trigger.focus({preventScroll:true});};
-  function render(){
-   const current=select.selectedOptions[0];
-   label.textContent=current?.textContent?.trim()||'Select an option';
-   trigger.disabled=select.disabled;
-   list.replaceChildren();
-   for(const option of select.options){
-    if(option.hidden)continue;
-    const button=document.createElement('button');button.type='button';button.className='loox-dropdown-option';
-    button.setAttribute('role','option');button.setAttribute('aria-selected',String(option.selected));
-    button.disabled=option.disabled;
-    const text=document.createElement('span');text.textContent=option.textContent;
-    const check=document.createElement('span');check.className='loox-dropdown-check';check.textContent=option.selected?'✓':'';
-    check.setAttribute('aria-hidden','true');button.append(text,check);
-    button.addEventListener('click',()=>{
-     if(button.disabled)return;
-     select.value=option.value;
-     select.dispatchEvent(new Event('input',{bubbles:true}));
-     select.dispatchEvent(new Event('change',{bubbles:true}));
-     render();close(true);
-    });
-    list.append(button);
-   }
+  const label=select.getAttribute('aria-label')||select.labels?.[0]?.childNodes?.[0]?.textContent?.trim()||'Choose an option';
+  trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');wrap.append(trigger);
+  const popup=document.createElement('div');popup.className='loox-dropdown-menu loox-dropdown-portal';popup.hidden=true;
+  popup.id=select.id+'-options';trigger.setAttribute('aria-controls',popup.id);
+  popup.setAttribute('popover','manual');document.body.append(popup);
+  const search=document.createElement('input');search.type='search';search.placeholder='Search options';search.setAttribute('aria-label','Search '+label);search.className='loox-dropdown-search';
+  const list=document.createElement('div');list.setAttribute('role','listbox');list.setAttribute('aria-label',label);popup.append(search,list);
+  let open=false;
+  function sync(){
+   trigger.textContent=(select.selectedOptions[0]?.textContent||'Choose an option')+' ⌄';
+   trigger.setAttribute('aria-label',label+': '+(select.selectedOptions[0]?.textContent||''));trigger.disabled=select.disabled;
+   if(open)options();
   }
-  trigger.addEventListener('click',()=>{
-   if(isOpen){close();return;}
-   instances.forEach(x=>x.close());
-   render();isOpen=true;list.hidden=false;wrapper.classList.add('is-open');
-   trigger.setAttribute('aria-expanded','true');
-   const spaceBelow=innerHeight-trigger.getBoundingClientRect().bottom;
-   wrapper.classList.toggle('open-up',spaceBelow<Math.min(260,list.scrollHeight+16)&&trigger.getBoundingClientRect().top>spaceBelow);
-  });
-  trigger.addEventListener('keydown',e=>{
-   if(e.key==='ArrowDown'||e.key==='ArrowUp'){
-    e.preventDefault();if(!isOpen)trigger.click();
-    const available=[...list.querySelectorAll('button:not(:disabled)')];
-    (e.key==='ArrowUp'?available.at(-1):available[0])?.focus();
+  function options(){
+   search.hidden=select.options.length<10;list.replaceChildren();
+   for(const option of select.options){
+    if(option.hidden||!option.textContent.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()))continue;
+    const b=document.createElement('button');b.type='button';b.className='loox-dropdown-option';b.role='option';
+    b.setAttribute('aria-selected',String(option.selected));b.disabled=option.disabled;
+    b.textContent=option.textContent+(option.selected?' ✓':'');
+    b.onclick=e=>{e.preventDefault();select.value=option.value;select.dispatchEvent(new Event('input',{bubbles:true}));select.dispatchEvent(new Event('change',{bubbles:true}));close(true);sync();};list.append(b);
    }
-  });
-  list.addEventListener('keydown',e=>{
+   if(!list.children.length)list.textContent='No matching options.';
+  }
+  function position(){
+   if(!open)return;const r=trigger.getBoundingClientRect(),v=visualViewport;
+   const top=v?.offsetTop||0,bottom=top+(v?.height||innerHeight),left=v?.offsetLeft||0;
+   const width=Math.min(Math.max(r.width,200),(v?.width||innerWidth)-24);
+   const below=bottom-r.bottom-12,above=r.top-top-12,up=below<180&&above>below;
+   popup.style.width=width+'px';popup.style.left=Math.max(left+12,Math.min(r.left,left+(v?.width||innerWidth)-width-12))+'px';
+   popup.style.maxHeight=Math.max(90,Math.min(320,up?above:below))+'px';
+   popup.style.top=(up?Math.max(top+8,r.top-Math.min(popup.scrollHeight,Math.min(320,above))-6):r.bottom+6)+'px';
+  }
+  function close(focus=false){open=false;popup.hidePopover?.();popup.hidden=true;trigger.setAttribute('aria-expanded','false');wrap.classList.remove('is-open');if(active?.close===close)active=null;if(focus)trigger.focus({preventScroll:true});}
+  function show(){active?.close();open=true;search.value='';options();popup.hidden=false;popup.showPopover?.();trigger.setAttribute('aria-expanded','true');wrap.classList.add('is-open');active={close,position,popup,wrap};position();}
+  trigger.onclick=e=>{e.preventDefault();open?close():show();};
+  trigger.onkeydown=e=>{if(['ArrowDown','ArrowUp'].includes(e.key)){e.preventDefault();if(!open)show();const items=[...list.querySelectorAll('button:not(:disabled)')];(e.key==='ArrowUp'?items.at(-1):items[0])?.focus();}};
+  popup.onkeydown=e=>{
    if(e.key==='Escape'){e.preventDefault();e.stopPropagation();close(true);return;}
    if(e.key==='Tab'){close();return;}
-   if(!['ArrowDown','ArrowUp','Home','End'].includes(e.key))return;
-   const available=[...list.querySelectorAll('button:not(:disabled)')];if(!available.length)return;
-   const index=available.indexOf(document.activeElement);
-   const next=e.key==='Home'?0:e.key==='End'?available.length-1:
-    (index+(e.key==='ArrowDown'?1:-1)+available.length)%available.length;
-   e.preventDefault();available[next].focus();
-  });
-  select.addEventListener('change',render);
-  const observer=new MutationObserver(()=>render());
-  observer.observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','hidden','selected','label']});
-  select.dataset.looxDropdown='true';
-  wrapper.classList.add('is-ready');
-  instances.push({close,wrapper});
-  render();
+   if(!['ArrowDown','ArrowUp','Home','End'].includes(e.key)||e.target===search&&['Home','End'].includes(e.key))return;
+   const items=[...list.querySelectorAll('button:not(:disabled)')];if(!items.length)return;
+   const i=items.indexOf(document.activeElement),n=e.key==='Home'?0:e.key==='End'?items.length-1:(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;
+   e.preventDefault();items[n].focus();
+  };
+  search.oninput=()=>{options();position();};select.addEventListener('change',sync);
+  new MutationObserver(sync).observe(select,{subtree:true,childList:true,attributes:true,attributeFilter:['disabled','selected','hidden','label']});sync();
  }
- function init(){ids.forEach(id=>enhance(document.getElementById(id)));}
+ function init(){document.querySelectorAll('select').forEach(enhance);}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
- document.addEventListener('pointerdown',e=>{
-  instances.forEach(item=>{if(!item.wrapper.contains(e.target))item.close();});
- });
- document.addEventListener('keydown',e=>{if(e.key==='Escape')instances.forEach(item=>item.close());});
+ new MutationObserver(records=>{if(records.some(r=>[...r.addedNodes].some(n=>n.nodeType===1&&(n.matches('select')||n.querySelector('select')))))init();}).observe(document.body,{childList:true,subtree:true});
+ document.addEventListener('pointerdown',e=>{if(active&&!active.wrap.contains(e.target)&&!active.popup.contains(e.target))active.close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')active?.close(true);});
+ window.addEventListener('resize',()=>active?.position());window.addEventListener('scroll',()=>active?.position(),true);
+ visualViewport?.addEventListener('resize',()=>active?.position());visualViewport?.addEventListener('scroll',()=>active?.position());
 })();

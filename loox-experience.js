@@ -238,5 +238,7 @@
   document.querySelectorAll('#favGrid,#recentGrid').forEach(personal=>new MutationObserver(()=>brandCards(personal)).observe(personal,{childList:true}));
  }).catch(error=>{console.error('LOOX optional catalog or translation setup failed:',error);if(!aiSharedDialog)applyPreferences(); /* Keep the already-rendered sidebar and Settings button visible. */});
  if(!aiSharedDialog)window.addEventListener('hashchange',()=>{drawRail();chooseToolbox();loadGuide()});
+ window.addEventListener('looxpreferenceschange',()=>{applyPreferences();const next=read('loox-language','en');if(supportedCodes.has(next)&&next!==language)changeLanguage(next);});
+ window.addEventListener('storage',event=>{if(['loox-platform-prefs','loox-language'].includes(event.key)){applyPreferences();const next=read('loox-language','en');if(supportedCodes.has(next)&&next!==language)changeLanguage(next);}});
  matchMedia('(prefers-color-scheme:light)').addEventListener('change',()=>{if(preferences().theme==='system')applyPreferences()});
 })();

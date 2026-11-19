@@ -1,7 +1,7 @@
 import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
-import {MediaSessions} from './loox-image-sessions.js?v=26';
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=15';
+import {MediaSessions} from './loox-image-sessions.js?v=upgrade-20261119-1';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=16';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
 // Vercel queue; the browser never connects to ComfyUI or sees worker credentials.
@@ -19,6 +19,7 @@ const promptField=$('lvg-prompt'),ratioField=$('lvg-ratio'),form=$('lvg-compose'
 const modelField=$('lvg-model'),imageField=$('lvg-image'),durationField=$('lvg-duration');
 const imageBlock=$('lvg-image-block'),durationBlock=$('lvg-duration-block'),modelNote=$('lvg-model-note');
 const imageRequired=$('lvg-image-required');
+form.noValidate=true;
 const cloudModels=new Map([
  ['wan22_i2v_fast',{name:'Wan 2.2 I2V Fast',image:true,durations:[5]}],
  ['wan22_5b_fast',{name:'Wan 2.2 5B Fast',image:false,durations:[5]}],
@@ -44,13 +45,14 @@ function syncCloudModels(){
 function updateModelUI(){
  syncCloudModels();
  const m=chosen(),cloud=Boolean(m);
- imageBlock.hidden=!cloud||modelField.value==='wan22_t2v_fast';durationBlock.hidden=!cloud;
+ const capability=modelInfo()?.capabilities;
+ imageBlock.hidden=!cloud||!(capability?.startFrame??capability?.imageReference);imageField.disabled=imageBlock.hidden;durationBlock.hidden=!cloud;
  imageRequired.textContent=m?.image?'(required)':'(optional)';
  imageField.required=Boolean(m?.image);
  for(const option of durationField.options){const supported=Boolean(m?.durations.includes(Number(option.value)));option.hidden=cloud&&!supported;option.disabled=cloud&&!supported;}
  if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
  modelNote.textContent=!cloud?'Wan 2.1 · ~2 seconds. Powered by LOOX.':
-  m.image?'Image-to-video · upload a reference image.':'Text-to-video · optionally animate a reference image.';
+  m.image?'Image-to-video · upload a start frame.':imageBlock.hidden?'Text-to-video · image uploads are not supported.':'Text-to-video or image-to-video · choose a mode.';
  const info=modelInfo();
  const supportedRatios=info?.capabilities?.ratios||['16:9','9:16','1:1','4:3','3:4'];
  for(const option of ratioField.options){option.disabled=!supportedRatios.includes(option.value);option.hidden=option.disabled;}
@@ -71,7 +73,7 @@ const composer=$('lvg-compose-wrap');
 let busy=false,online=false,knownUser=null,historyOffset=0,historyLoading=false,lastGpuCheck=0;
 const sessions=new MediaSessions({state,api,auth,root:document.querySelector('.lig-main'),feed:resultList,prompt:promptField,notice,isBusy:()=>busy,reuse:async entry=>{
  if(entry.media_type==='image'){location.assign('ai-text-to-image.html?session='+sessions.id+'&reuse='+entry.id+'#generate');return;}
- if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
+ if(entry.ratio)ratioField.value=entry.ratio;ratioField.dispatchEvent(new Event('change'));promptField.value=entry.prompt;if(entry.model_id&&[...modelField.options].some(o=>o.value===entry.model_id)){modelField.value=entry.model_id;modelField.dispatchEvent(new Event('change'));}const seconds=parseInt(entry.settings?.duration);if(seconds&&[...durationField.options].some(o=>o.value===String(seconds))){durationField.value=String(seconds);durationField.dispatchEvent(new Event('change'));}notice('Settings restored. Review the cost and press Generate when ready.');
 }});
 const community=new Community({state,auth,initialize,root:$('lvg-public-templates')});
 
@@ -367,7 +369,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     const m=chosen(),duration=isCloud()?Number(durationField.value):2;
     if(m?.image&&!imageField.files?.[0])throw Error('This model requires a reference image.');
     let upload=null;
-    if(isCloud()&&!imageBlock.hidden&&imageField.files?.[0]){
+    if(isCloud()&&!imageBlock.hidden&&imageField.dataset.videoMode!=='text'&&imageField.files?.[0]){
       const file=imageField.files[0];
       if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>2400000)throw Error('Upload a JPG, PNG or WebP under 2.4 MB.');
       upload=await new Promise((resolve,reject)=>{
@@ -377,13 +379,20 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
         reader.readAsDataURL(file);
       });
     }
+    const endField=$('lvg-end-image');let endUpload=null;
+    if(isCloud()&&!endField.disabled&&endField.files?.[0]){
+     if(!upload)throw Error('Add a start frame before an end frame.');
+     const file=endField.files[0];if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>2400000)throw Error('End frame must be a JPG, PNG or WebP under 2.4 MB.');
+     const requiredDurations=modelInfo()?.capabilities?.endFrameDurations;if(requiredDurations&&!requiredDurations.includes(duration))throw Error('Choose 8 seconds for this end-frame transition.');
+     endUpload=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('Could not read the end frame.'));reader.readAsDataURL(file);});
+    }
     const entry=await sessions.begin({prompt,ratio,model_id:m?modelField.value:'wan21',model_name:m?.name||'Wan 2.1 Local',
       media_type:'video',settings:{duration:m?duration+' seconds':'33 frames (~2 seconds)'}});
     view=createCard(prompt,ratio);sessions.attach(view,entry);sessions.revealNewest(view.card);
     const id=resumeId||(await api(isCloud()?'cloud_video_job':'job',isCloud()?
-      {model:modelField.value,duration:Number(durationField.value),image:upload,
+      {model:modelField.value,duration:Number(durationField.value),image:upload,...(endUpload?{end_image:endUpload}:{}),
        requestId:entry.request_id,prompt,ratio,quoteToken:serverQuote?.token}:
-      {operation:'generate_video',requestId:entry.request_id,prompt,ratio})).id;
+      {operation:'generate_video',requestId:entry.request_id,prompt,ratio,expectedCredits:serverQuote?.credits})).id;
     if(!id)throw Error('The backend did not return a video job ID.');
     promptField.value='';
     if(!resumeId){

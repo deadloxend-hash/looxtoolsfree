@@ -13,6 +13,7 @@ async function config(){
 
 const kind=document.body.dataset.creativeMode,video=kind==='video';
 const prompt=document.getElementById('creative-prompt'),model=document.getElementById('creative-model'),status=document.getElementById('creative-landing-status');
+const aspectControls=(await import('./aspect-controls.js?v=1')).mountLandingAspectControls();
 const key='loox-creative-launch-v1',destination=video?'ai-video-generator.html':'ai-text-to-image.html';
 // Landing pages always start with a blank, real input. Previous homepage drafts
 // and generator launch data must never be restored into the landing composer.
@@ -28,6 +29,7 @@ window.addEventListener('pageshow',()=>{
 });
 function enter(event){
  event.preventDefault();
+ if(aspectControls&&!aspectControls.validate())return;
  const launch={kind,prompt:prompt.value.trim(),model:model.value};
  if(video){
   // Keep video-only staging separate from the Image landing implementation.
@@ -37,6 +39,7 @@ function enter(event){
   const ratio=document.querySelector('input[name="creative-ratio"]:checked');
   if(ratio)launch.settings={aspect_ratio:ratio.value};
  }
+ Object.assign(launch.settings||={},aspectControls?.get()||{});
  try{sessionStorage.setItem(key,JSON.stringify(launch));}catch{}
  location.assign(destination+'#generate');
 }
@@ -58,6 +61,6 @@ if(motion&&toggle){
  if(managed)document.addEventListener('visibilitychange',()=>{if(document.hidden)motion.pause();else if(wanted&&visible)play();});
 }
 
-try{await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available){model.value=available.id;const count=models.filter(m=>m.available).length;status.textContent=count+' image model'+(count===1?'':'s')+' available · Your prompt is prepared here; generation and credit cost are confirmed in Studio.';}else{model.value='flux';status.textContent='Image models are temporarily unavailable. You can still prepare your idea and explore the Studio.';}}}catch(error){status.textContent=error.message;}
+try{await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available){model.value=available.id;const count=models.filter(m=>m.available).length;status.textContent=count+' image model'+(count===1?'':'s')+' available · Your prompt is prepared here; generation and credit cost are confirmed in Studio.';}else{model.value='flux';status.textContent='Image models are temporarily unavailable. You can still prepare your idea and explore the Studio.';}}}catch{status.textContent='Model availability could not load. You can still explore Studio.';}
 
 })();

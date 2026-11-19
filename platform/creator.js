@@ -1,7 +1,7 @@
-import {state,auth,initialize,refresh} from './account.js?v=15';
+import {state,auth,initialize,refresh} from './account.js?v=16';
 import {Community,rpc,mediaURL,result} from './community.js?v=32';
 import {cropAvatar} from './avatar-crop.js?v=1';
-import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=1';
+import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=2';
 
 const root=document.getElementById('creator-community');
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

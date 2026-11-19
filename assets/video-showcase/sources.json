@@ -1,0 +1,47 @@
+{
+  "car": {
+    "kind": "original_ai",
+    "model": "MiniMax H3",
+    "job": "job_715884d8-9b20-4f3d-8821-b7d3db3868e7",
+    "source": "https://videogen.vidiq.com/02e008c8-da7a-465d-b328-2ac1f15ffc87/867ae2e0-21b9-4ccd-a15d-eb2cfb4bcd5e_minimax-465096824103242_50ac4405-67b4-4339-a9d0-2dd732c8db23.mp4",
+    "credits_used": 60,
+    "output": "car.mp4",
+    "poster": "car-poster.webp",
+    "encoding": "H.264, 1280x720, 24 fps, silent, faststart"
+  },
+  "temporary_clips": [
+    {
+      "scene": "city",
+      "author": "Th2city Santana",
+      "source": "https://www.pexels.com/video/city-traffic-on-a-rainy-night-15661481/",
+      "local_output": "city.mp4",
+      "poster": "city-poster.webp",
+      "encoding": "6 seconds, H.264, 1280x720, 24 fps, silent, faststart"
+    },
+    {
+      "scene": "nature",
+      "author": "Mikhail Nilov",
+      "source": "https://www.pexels.com/video/aerial-shot-of-a-water-falls-6943026/",
+      "local_output": "nature.mp4",
+      "poster": "nature-poster.webp",
+      "encoding": "6 seconds, H.264, 1280x720, 24 fps, silent, faststart"
+    },
+    {
+      "scene": "fashion",
+      "author": "RDNE Stock project",
+      "source": "https://www.pexels.com/video/a-woman-modeling-while-walking-in-the-street-8929220/",
+      "local_output": "fashion.mp4",
+      "poster": "fashion-poster.webp",
+      "encoding": "6 seconds, H.264, 1280x720, 24 fps, silent, faststart"
+    }
+  ],
+  "license": "https://www.pexels.com/license/",
+  "remaining_original_scenes": [
+    "cyberpunk city",
+    "fantasy dragon",
+    "fashion",
+    "nature",
+    "character animation"
+  ],
+  "reason": "Each additional generation requires 60 vidIQ credits; only 30 remained after the first clip. No extra clips were charged."
+}

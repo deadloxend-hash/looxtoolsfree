@@ -20,7 +20,7 @@ export async function cloudRequest(state,path,{method='GET',query=null,data=null
   body:data!==null?JSON.stringify(data):blob||undefined,credentials:'omit',signal:AbortSignal.timeout(20000)});
  if(!response.ok){
   const body=await response.json().catch(()=>null);
-  throw Error(body?.error||'Cloudflare profile service unavailable ('+response.status+').');
+  throw Error(body?.error||'Profile service unavailable ('+response.status+').');
  }
  if(media)return response.blob();
  return response.json();
@@ -35,11 +35,22 @@ export async function cloudImage(state,id,type){
 }
 export async function cloudUpload(state,type,blob){
  const result=await cloudRequest(state,type,{method:'POST',blob});
- mediaCache.delete(state.user?.id+'/'+type+'/'+(state.user?.id||'public'));
+ const key=state.user?.id+'/'+type+'/'+(state.user?.id||'public');
+ const previous=mediaCache.get(key);mediaCache.delete(key);
+ if(previous)Promise.resolve(previous).then(url=>setTimeout(()=>URL.revokeObjectURL(url),30000)).catch(()=>{});
+ if(type==='avatar'){try{sessionStorage.removeItem('loox-avatar-reference:'+state.user?.id);localStorage.setItem('loox-avatar-updated',String(Date.now()));}catch{}document.dispatchEvent(new Event('loox-avatar-change'));}
  return result;
 }
 export async function cloudDelete(state,type){
  const result=await cloudRequest(state,type,{method:'DELETE'});
- mediaCache.delete(state.user?.id+'/'+type+'/'+(state.user?.id||'public'));
+ const key=state.user?.id+'/'+type+'/'+(state.user?.id||'public');
+ const previous=mediaCache.get(key);mediaCache.delete(key);
+ if(previous)Promise.resolve(previous).then(url=>setTimeout(()=>URL.revokeObjectURL(url),30000)).catch(()=>{});
+ if(type==='avatar'){try{sessionStorage.removeItem('loox-avatar-reference:'+state.user?.id);localStorage.setItem('loox-avatar-updated',String(Date.now()));}catch{}document.dispatchEvent(new Event('loox-avatar-change'));}
  return result;
+}
+
+export function invalidateCloudImage(state,id,type){
+ const key=id+'/'+type+'/'+(state.user?.id||'public'),previous=mediaCache.get(key);mediaCache.delete(key);
+ if(previous)Promise.resolve(previous).then(url=>setTimeout(()=>URL.revokeObjectURL(url),30000)).catch(()=>{});
 }

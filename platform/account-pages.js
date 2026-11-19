@@ -1,5 +1,5 @@
-import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=15';
-import {cloudRequest} from './profile-cloudflare.js?v=1';
+import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=16';
+import {cloudRequest} from './profile-cloudflare.js?v=2';
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
 const proposedPlans=[{id:'free',price_cents:0,credits:25,cadence:'signup'},{id:'creator',price_cents:1200,credits:500,cadence:'month'},{id:'creator_yearly',price_cents:12000,credits:6000,cadence:'year'},{id:'pro',price_cents:2900,credits:1500,cadence:'month'},{id:'pro_yearly',price_cents:29000,credits:18000,cadence:'year'},{id:'business',price_cents:6900,credits:4000,cadence:'month'},{id:'business_yearly',price_cents:69000,credits:48000,cadence:'year'}];
@@ -188,7 +188,7 @@ if(document.body.hasAttribute('data-settings-page')){
  theme.value=['dark','light','system'].includes(old.theme)?old.theme:'dark';
  const preferredLang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('loox-language')||'en';
  language.value=languages.some(([code])=>code===preferredLang)?preferredLang:'en';
- byId('lp-accent').value=/^#[0-9a-f]{6}$/i.test(old.accent||'')?old.accent:'#a791ff';
+ byId('lp-accent').value=/^#[0-9a-f]{6}$/i.test(old.accent||'')?old.accent:'#3b82f6';
  byId('lp-password-length').value=Number.isFinite(Number(old.passwordLength))?Math.max(12,Math.min(128,Number(old.passwordLength))):24;
  byId('lp-image-format').value=['image/png','image/jpeg','image/webp'].includes(old.imageFormat)?old.imageFormat:'image/png';
  byId('lp-live-preview').checked=old.livePreview!==false;
@@ -207,6 +207,9 @@ if(document.body.hasAttribute('data-settings-page')){
    localStorage.setItem('loox-language',language.value);
    const light=values.theme==='light'||(values.theme==='system'&&matchMedia('(prefers-color-scheme:light)').matches);
    localStorage.setItem('loox-theme-v1',light?'white':'dark');
+   document.documentElement.dataset.lxTheme=light?'light':'dark';
+   document.documentElement.style.setProperty('--lx-accent',values.accent);
+   if(typeof window.LOOXApplyTheme==='function')window.LOOXApplyTheme(light?'white':'dark');
    window.dispatchEvent(new CustomEvent('looxpreferenceschange',{detail:values}));
    setStatus(status,'Preferences saved. Your supported LOOX pages will use them.');
   }catch{setStatus(status,'Unable to save your preferences on this device.',true);}

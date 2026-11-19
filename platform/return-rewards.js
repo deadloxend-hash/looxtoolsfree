@@ -1,4 +1,4 @@
-import {state,api,refresh} from './account.js?v=15';
+import {state,api,refresh} from './account.js?v=16';
 let reward=null,owner=null,loading=false,lastFetch=0,clockOffset=0,errorText='',claiming=false;
 const countdown=ms=>{const sec=Math.max(0,Math.ceil(ms/1000));return [Math.floor(sec/3600),Math.floor(sec%3600/60),sec%60].map(n=>String(n).padStart(2,'0')).join(':');};
 function render(){
@@ -24,6 +24,7 @@ async function load(force=false){
 }
 async function claim(){if(claiming)return;claiming=true;errorText='';render();try{const r=await api('claim_reward',{});reward=r;clockOffset=Date.parse(r.server_now)-Date.now();await refresh();errorText='5 credits added to your balance.';}catch(e){errorText=e.message;await load(true);}finally{claiming=false;render();}}
 if(typeof document!=='undefined'){
+document.addEventListener('loox-header',render);
 for(const event of ['loox-account','loox-user'])document.addEventListener(event,()=>load());
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(true);});
 const timer=setInterval(()=>{

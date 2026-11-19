@@ -634,13 +634,15 @@
   const originalSignout=menu.querySelector('.lx-profile-signout');
   const existingLinks=menu.querySelector('.lx-profile-links');
   const plan=looxAccountModule?.state?.account?.plan;
-  const planText={free:'Free Plan',pro:'LOOX Pro',lifetime:'LOOX Lifetime'}[plan]||'Account plan';
+  const planText={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',pro:'LOOX Pro',business:'LOOX Business',lifetime:'LOOX Lifetime'}[plan]||'Account plan';
   const avatar=el('span','loox-popover-avatar');
   avatar.setAttribute('aria-hidden','true');
   avatar.textContent=name.slice(0,1).toUpperCase();
   const identityText=el('div','loox-popover-identity-text');
   identityText.append(el('strong','loox-popover-name',name),el('small','loox-popover-plan',planText));
+  const reward=identity.querySelector('[data-loox-reward]');
   identity.replaceChildren(avatar,identityText);
+  if(reward)identity.after(reward);
   identity.classList.add('loox-popover-identity');
   const creditBox=el('section','loox-popover-credits');
   creditBox.setAttribute('aria-label','Your AI credits');
@@ -693,49 +695,10 @@
   }
  }
 
- // Reuse the public creator avatar as the single account/avatar identity.
- // Fall back to the account initial if no creator image is configured.
- let avatarUser=null,avatarLoaded=false,avatarUrl=null,avatarTask=null;
- function paintCreatorAvatar(imageUrl){
-  if(!imageUrl)return;
-  const holders=[
-   ...document.querySelectorAll('[data-loox-account] .lx-avatar'),
-   ...document.querySelectorAll('[data-loox-account] .loox-popover-avatar'),
-   avatarMark
-  ];
-  for(const holder of holders){
-   if(!holder||holder.querySelector('img')?.src===imageUrl)continue;
-   const img=el('img','loox-creator-avatar-img');
-   img.src=imageUrl;img.alt='';img.loading='lazy';img.decoding='async';
-   img.addEventListener('error',()=>{if(img.isConnected)img.remove();},{once:true});
-   holder.replaceChildren(img);
-  }
- }
- function syncCreatorAvatar(){
-  const uid=looxAccountModule?.state?.user?.id;
-  if(!uid||!looxAccountModule?.state?.client)return;
-  if(avatarUser===uid&&avatarLoaded){if(avatarUrl)paintCreatorAvatar(avatarUrl);return;}
-  if(avatarUser===uid&&avatarTask)return;
-  avatarUser=uid;avatarLoaded=false;
-  avatarTask=(async()=>{
-   const {data}=await looxAccountModule.state.client.auth.getSession();
-   const token=data?.session?.access_token;
-   if(!token)return;
-   const root='https://loox-profile-api.looxai-studio.workers.dev/v1/';
-   const headers={Authorization:'Bearer '+token};
-   const profileResponse=await fetch(root+'profile?id='+encodeURIComponent(uid),{headers,credentials:'omit',cache:'no-store'});
-   if(!profileResponse.ok)return;
-   const profile=await profileResponse.json();
-   if(!profile?.avatar_path&&!profile?.avatar_key)return;
-   const response=await fetch(root+'media?type=avatar&id='+encodeURIComponent(uid),{headers,credentials:'omit',cache:'no-store'});
-   if(!response.ok||looxAccountModule.state.user?.id!==uid)return;
-   const blob=await response.blob();
-   const next=URL.createObjectURL(blob);
-   if(avatarUrl?.startsWith('blob:'))URL.revokeObjectURL(avatarUrl);
-   avatarUrl=next;paintCreatorAvatar(avatarUrl);
-  })().catch(()=>{}).finally(()=>{avatarLoaded=true;avatarTask=null;});
- }
- document.addEventListener('loox-account',()=>{avatarLoaded=false;avatarUrl=null;});
+ // The shared account module owns avatar loading and authentication timing.
+ let sharedAvatar=null;
+ import(url('platform/account-avatar.js?v=1')).then(module=>{sharedAvatar=module;syncAccountHeader();});
+ function syncCreatorAvatar(){if(looxAccountModule){sharedAvatar?.syncAccountAvatar(looxAccountModule.state);sharedAvatar?.paintAccountAvatar();}}
  function syncAccountHeader(){
   const credit=account.querySelector('.lx-credit-chip');
   const upgrade=account.querySelector('.lx-upgrade');
@@ -751,6 +714,7 @@
   sideSubtitle.textContent=userName?'Creator & account':'Sign in or create account';
   syncCreatorAvatar();
  }
+ document.addEventListener('loox-header',syncAccountHeader);
  const accountObserver=new MutationObserver(syncAccountHeader);
  accountObserver.observe(account,{childList:true});
  // Unified full tool finder. Uses the existing public tool catalog and real tool links.
@@ -803,9 +767,10 @@
  },true);
  // Use the real account UI for credits, upgrade, and avatar; no invented balances.
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
-  const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=25');document.head.append(style);
+  const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=upgrade-20261119-1');document.head.append(style);
  }
- import(url('platform/account.js?v=15')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
+ import(url('platform/mobile-viewport.js?v=1'));
+ import(url('platform/account.js?v=16')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);
  });

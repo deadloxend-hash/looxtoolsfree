@@ -136,17 +136,7 @@ function setupImageFirstCreation(){
  const observer=new MutationObserver(syncModel);
  observer.observe(model,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','selected']});
  syncModel();
- // Prevent submitting an empty prompt. The existing launch handler remains the
- // only place that stages the real prompt/model/settings and opens the studio.
- form.addEventListener('submit',event=>{
-  if(prompt.value.trim())return;
-  event.preventDefault();
-  event.stopImmediatePropagation();
-  error.textContent='Add a short description or choose one of the starter ideas above.';
-  error.hidden=false;
-  prompt.setAttribute('aria-invalid','true');
-  prompt.focus({preventScroll:true});
- },true);
+ // Empty prompts are valid when exploring Studio; generation validates there.
 }
 if(root)setupImageFirstCreation();
 if(root){

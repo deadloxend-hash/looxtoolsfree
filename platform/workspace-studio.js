@@ -1,5 +1,7 @@
+import {mountAspectControls} from './aspect-controls.js?v=1';
+import {mountVideoControls} from './video-controls.js?v=1';
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
-import {state,initialize,auth,api,refresh} from './account.js?v=15';
+import {state,initialize,auth,api,refresh} from './account.js?v=16';
 const $=s=>document.querySelector(s),node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,fn,cls='studio-button')=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b;};
 function notify(text){let n=$('.studio-toast');if(!n){n=node('p','studio-toast');n.setAttribute('role','status');document.body.append(n);}n.textContent=text;clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.remove(),4000);}
@@ -292,6 +294,7 @@ function settingsSheet(prefix){
   const picker=studioSettingsSelect(select,kind);
   picker.refresh();active.push(picker);
  }
+ if(!controls.querySelector('.loox-aspect-panel')){const custom=node('details','loox-custom-ratio');custom.append(node('summary','','Custom aspect ratio'));controls.append(custom);mountAspectControls(custom,{kind:prefix==='lvg'?'video':'image',supported:()=>[...document.getElementById(prefix+'-ratio').options].filter(o=>!o.disabled&&!o.hidden).map(o=>o.value),onChoose:value=>{const field=document.getElementById(prefix+'-ratio');field.value=value;field.dispatchEvent(new Event('change',{bubbles:true}));}});}
  const closeAll=()=>active.forEach(picker=>picker.close());
  dialog.addEventListener('pointerdown',event=>{
   if(!event.target.closest('.studio-select-picker'))closeAll();
@@ -583,6 +586,7 @@ function run(){
    row.append(thumb,description,choose,remove);
    area.append(heading,row);
    card.insertBefore(area,prompt);
+   mountVideoControls(card,area);
    let objectUrl=null;
    const sync=()=>{
     const supported=!upload.hidden&&!file.disabled,selected=file.files?.[0]||null;

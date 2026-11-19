@@ -114,11 +114,7 @@ menu.addEventListener('keydown',e=>{
 document.addEventListener('pointerdown',e=>{if(open&&!e.target.closest('.video-model-control'))closeMenu();});
 document.addEventListener('keydown',e=>{if(open&&e.key==='Escape'){e.preventDefault();closeMenu(true);}});
 model.addEventListener('change',syncModel);
-form.addEventListener('submit',e=>{
- if(prompt.value.trim())return;
- e.preventDefault();e.stopImmediatePropagation();error.textContent='Describe your scene or choose a starter idea.';
- error.hidden=false;prompt.setAttribute('aria-invalid','true');prompt.focus({preventScroll:true});
-},true);
+window.__looxVideoLandingRatios=()=>byId.get(model.value)?.ratios?.length?byId.get(model.value).ratios:['16:9','9:16','1:1','4:3','3:4'];
 window.__looxVideoLandingSettings=()=>({
  aspect_ratio:ratioInputs.find(x=>x.checked&&!x.disabled)?.value||'16:9',
  ...(choice&&!choice.local&&duration?{duration}:{})
@@ -128,12 +124,14 @@ async function hydrateVideoModels(){
 try{
  const cfg=await config();
  const fetched=new Map((cfg?.videoModels||[]).map(x=>[x.id,x]));
+ for(const server of cfg?.videoModels||[]){if(!byId.has(server.id)){const candidate={id:server.id,label:server.name,lengths:server.durationOptions||[],ratios:server.capabilities?.ratios||[],needsImage:Boolean(server.imageRequired),local:false,available:Boolean(server.available)};catalog.push(candidate);byId.set(candidate.id,candidate);}}
  for(const candidate of catalog){
   const server=fetched.get(candidate.id);
   candidate.available=!candidate.local&&Boolean(server?.available);
   candidate.needsImage=Boolean(server?.imageRequired??candidate.needsImage);
-  if(Array.isArray(server?.durations)&&server.durations.length){
-   const supported=server.durations.map(Number).filter(n=>candidate.lengths.includes(n));
+  if(server?.capabilities?.ratios)candidate.ratios=server.capabilities.ratios;
+  if(Array.isArray(server?.durationOptions)&&server.durationOptions.length){
+   const supported=server.durationOptions.map(Number).filter(n=>candidate.lengths.includes(n));
    if(supported.length)candidate.lengths=supported;
   }
  }

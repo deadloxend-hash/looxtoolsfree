@@ -1,8 +1,8 @@
 import {Community} from './community.js?v=26';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
-import {MediaSessions} from './loox-image-sessions.js?v=26';
+import {MediaSessions} from './loox-image-sessions.js?v=upgrade-20261119-1';
 
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=15';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=16';
 
 const byId=id=>document.getElementById(id);
 const create=(tag,cls,text)=>{
@@ -186,7 +186,7 @@ async function initWorkspace(){
   if(entry.ratio)ratioField.value=entry.ratio;
   modelField.dispatchEvent(new Event('change'));ratioField.dispatchEvent(new Event('change'));
   for(const [key,value] of Object.entries(entry.settings||{}))if(settingFields[key])settingFields[key].select.value=value;
-  promptField.value=entry.prompt;await submit(entry.prompt,ratioField.value);
+  promptField.value=entry.prompt;setMessage('Settings restored. Review the cost and press Generate when ready.');
  }});
  const community=new Community({state,auth,initialize,root:byId('lig-public-templates')});
  const params=new URLSearchParams(location.search);
@@ -677,7 +677,7 @@ async function initWorkspace(){
    view=outputCard(prompt,ratio,entry.model_name);sessions.attach(view,entry);sessions.revealNewest(view.card);
    const isLocal=['flux','flux2_klein_local_edit'].includes(modelId);
    const id=resumeId||(await api(isLocal?'job':'cloud_job',{
-    ...(isLocal?{operation:modelId==='flux'?'generate':'generate_flux2_klein_edit'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,...(isLocal?(reference||{}):{settings}),...(seed==null?{}:{seed})
+    ...(isLocal?{operation:modelId==='flux'?'generate':'generate_flux2_klein_edit'}:{model:modelId}),requestId:entry.request_id,prompt,ratio,expectedCredits:modelCost,...(isLocal?(reference||{}):{settings}),...(seed==null?{}:{seed})
    })).id;
    if(!id)throw Error('The backend did not return a job ID.');
    if(promptField.value.trim()===prompt)promptField.value='';

@@ -1,3 +1,4 @@
+import {syncAccountAvatar} from './account-avatar.js?v=1';
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
 export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image',generate_video:'Text to video',enhance:'Image enhancer',uncrop:'Generative uncrop',restore:'Old photo restorer',retouch:'Skin retoucher',face_restore:'Face restoration',face_swap:'Face swap'};
@@ -12,10 +13,10 @@ export function button(label,fn,cls='lx-button'){
  const b=el('button',label,cls);b.type='button';b.onclick=fn;return b;
 }
 function link(label,href){const a=el('a',label);a.href=href;return a;}
-export function msg(node,text){node.textContent=text;node.hidden=!text;}
+export function msg(node,text){if(!node)return;node.textContent=text;node.hidden=!text;}
 export async function config(){
  if(!loading)loading=fetch(endpoint+'?action=config',{signal:AbortSignal.timeout(20000),credentials:'omit'}).then(async r=>{
-  if(!r.ok)throw Error();state.config=await r.json();return state.config;
+  if(!r.ok)throw Error();state.config=await r.json();if(typeof document!=='undefined')document.dispatchEvent(new Event('loox-config'));return state.config;
  }).catch(()=>{loading=null;throw Error('The LOOX account service is unavailable. Please try again later.');});
  return loading;
 }
@@ -134,15 +135,16 @@ export function renderHeader(){
   const upgrade=button('Upgrade',pricing,'lx-button lx-primary lx-upgrade');
   upgrade.setAttribute('aria-label','View LOOX upgrade plans');
   host.append(upgrade);
-  const rewardSlot=el('div',null,'lx-header-reward');rewardSlot.dataset.looxReward='';host.append(rewardSlot);
+  const rewardSlot=el('div',null,'lx-header-reward');rewardSlot.dataset.looxReward='';rewardSlot.hidden=true;host.append(rewardSlot);
   const details=el('details',null,'lx-details lx-profile-details');
   const summary=el('summary',null,'lx-profile-trigger');
   summary.setAttribute('aria-label',signedIn?'Open your account menu':'Sign in or create an account');
   summary.setAttribute('title',signedIn?'Account':'Sign in');
   const name=String(state.account?.profile?.name||state.user?.user_metadata?.full_name||state.user?.email?.split('@')[0]||'Account').trim()||'Account';
-  const initial=(signedIn?name:'?').slice(0,1).toUpperCase();
+  const initial=(signedIn?name:'L').slice(0,1).toUpperCase();
   const avatar=el('span',initial,'lx-avatar');
   avatar.setAttribute('aria-hidden','true');
+  if(state.authRestoring&&!signedIn)avatar.classList.add('loox-avatar-loading');
   summary.append(avatar);
   const menu=el('nav',null,'lx-menu lx-profile-menu');
   menu.setAttribute('aria-label','Account options');
@@ -166,6 +168,8 @@ export function renderHeader(){
   details.append(summary,menu);
   host.append(details);
  }
+ void syncAccountAvatar(state);
+ document.dispatchEvent(new Event('loox-header'));
 }
 if(typeof document!=='undefined')document.addEventListener('pointerdown',event=>{
  if(event.target.closest('.lx-profile-details'))return;
@@ -188,11 +192,12 @@ export async function buyCredits(){
 }
 export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
 export async function initialize({publicAccess=false,waitForAccount=true}={}){
- renderHeader();
+ state.authRestoring=Boolean(store().getItem(sessionKey));renderHeader();
  const accountPage=!!document.querySelector('[data-dashboard],[data-upgrade-page],[data-settings-page]');
  if(publicAccess||accountPage||store().getItem(sessionKey)||location.search.includes('code=')){
-  try{await client();renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
+  try{await client();state.authRestoring=false;renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
  }
+ state.authRestoring=false;renderHeader();
  if(accountPage)drawDashboard();
  const planHost=document.querySelector('[data-pricing]');if(planHost)plans(planHost);
 }
@@ -227,4 +232,9 @@ if(location.search.includes('payment=return')){const note=document.querySelector
 initialize();
 }
 
-import './return-rewards.js?v=1';
+import './return-rewards.js?v=upgrade-20261119-1';
+
+if(typeof document!=='undefined'){
+document.addEventListener('loox-avatar-change',()=>syncAccountAvatar(state,true));
+window.addEventListener('storage',event=>{if(event.key==='loox-avatar-updated')syncAccountAvatar(state,true);});
+}
