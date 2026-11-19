@@ -25,6 +25,7 @@ Date: 2026-11-19. Payments remain disabled. Existing accounts, media, prices, en
 | Empty prompt blocked | Both landing scripts explicitly intercepted blank submissions and focused the textarea. |
 | Reuse incurred a new generation | The session reuse callback called submit directly. |
 | Video feature mismatch | Broad inferred model flags were not sufficient to describe individual configured adapters. |
+| Oversized mobile video previews | HTML fallback height remained fixed after CSS reduced the width; explicit automatic height restores 16:9 sizing. |
 | Narrow header overflow | Fixed navigation actions exceeded the available width at the smallest breakpoint. |
 | Settings startup exception | Account error rendering assumed an optional note element always existed. |
 
