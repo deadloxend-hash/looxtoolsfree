@@ -3019,3 +3019,20 @@ body .community-dialog.community-viewer.loox-viewer-media-first[open]{
 @media(max-width:700px){
  .community-dialog .loox-comment-input{font-size:16px!important}
 }
+
+/* Community modal scroll isolation: the feed stays fixed while comments scroll. */
+html.loox-community-modal-open{overflow:hidden!important;overscroll-behavior:none!important}
+body.community-page.loox-community-modal-open{
+ position:fixed!important;left:0!important;right:0!important;width:100%!important;
+ overflow:hidden!important;overscroll-behavior:none!important;
+}
+body.community-page .community-dialog[open]{
+ overscroll-behavior:contain!important;touch-action:pan-y!important;
+}
+body.community-page .loox-community-comments-sheet[open]{
+ overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;
+ max-height:calc(100dvh - 12px)!important;
+}
+body.community-page .loox-community-comments-sheet :is(.loox-comment-list,.loox-comments-list,.community-comments){
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch;
+}
