@@ -33,7 +33,7 @@
    if(!list.children.length)list.textContent='No matching options.';
   }
   function position(){
-   if(!open)return;const r=trigger.getBoundingClientRect(),v=visualViewport;
+   if(!open)return;const r=trigger.getBoundingClientRect(),v=window.visualViewport;
    const top=v?.offsetTop||0,bottom=top+(v?.height||innerHeight),left=v?.offsetLeft||0;
    const width=Math.min(Math.max(r.width,200),(v?.width||innerWidth)-24);
    const below=bottom-r.bottom-12,above=r.top-top-12,up=below<180&&above>below;
@@ -62,5 +62,5 @@
  document.addEventListener('pointerdown',e=>{if(active&&!active.wrap.contains(e.target)&&!active.popup.contains(e.target))active.close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')active?.close(true);});
  window.addEventListener('resize',()=>active?.position());window.addEventListener('scroll',()=>active?.position(),true);
- visualViewport?.addEventListener('resize',()=>active?.position());visualViewport?.addEventListener('scroll',()=>active?.position());
+ window.visualViewport?.addEventListener('resize',()=>active?.position());window.visualViewport?.addEventListener('scroll',()=>active?.position());
 })();
