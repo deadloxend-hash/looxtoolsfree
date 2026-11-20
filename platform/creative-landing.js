@@ -29,7 +29,8 @@ window.addEventListener('pageshow',()=>{
 });
 function enter(event){
  event.preventDefault();
- if(aspectControls&&!aspectControls.validate())return;
+ // Studio is always accessible, including when a model is offline or a draft is blank.
+ if(!video&&aspectControls&&!aspectControls.validate())return;
  const launch={kind,prompt:prompt.value.trim(),model:model.value};
  if(video){
   // Keep video-only staging separate from the Image landing implementation.
