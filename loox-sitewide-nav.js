@@ -4,6 +4,19 @@
  */
 (() => {
  'use strict';
+ // Keep standard selects consistent with the LOOX Obsidian Blue design on every
+ // page using the shared navigation. Already enhanced pages retain one instance.
+ if(!document.querySelector('script[src*="loox-dropdowns.js"]')){
+   const css=document.createElement('link');
+   css.rel='stylesheet';
+   css.href=new URL('platform/loox-dropdowns.css?v=sitewide-20261120-1',document.currentScript?.src||location.href).href;
+   if(!document.querySelector('link[href*="loox-dropdowns.css"]'))document.head.append(css);
+   const script=document.createElement('script');
+   script.src=new URL('platform/loox-dropdowns.js?v=sitewide-20261120-1',document.currentScript?.src||location.href).href;
+   script.defer=true;
+   document.head.append(script);
+ }
+
  const page=location.pathname.split('/').pop()||'index.html';
  const pinnedWorkspace=['community.html','trending.html','templates.html','workflows.html','collections.html','creator.html','account.html'].includes(page);
  if(pinnedWorkspace)document.body.classList.add('loox-workspace-sidebar');
