@@ -3,6 +3,29 @@ import {cloudRequest} from './profile-cloudflare.js?v=2';
 import {Community,element,action,result,mediaURL} from './community.js?v=32';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
+// Lock the underlying feed while a post or comments dialog is open.
+// Preserve its exact scroll position and restore it when the last dialog closes.
+if(page==='community.html'){
+ let lockedY=0,locked=false;
+ const syncDialogLock=()=>{
+  const hasDialog=[...document.querySelectorAll('dialog[open]')].some(d=>d.matches('.community-dialog'));
+  if(hasDialog&&!locked){
+   lockedY=window.scrollY;locked=true;
+   document.documentElement.classList.add('loox-community-modal-open');
+   document.body.classList.add('loox-community-modal-open');
+   document.body.style.top=-lockedY+'px';
+  }else if(!hasDialog&&locked){
+   locked=false;document.documentElement.classList.remove('loox-community-modal-open');
+   document.body.classList.remove('loox-community-modal-open');
+   document.body.style.top='';
+   window.scrollTo(0,lockedY);
+  }
+ };
+ const observer=new MutationObserver(syncDialogLock);
+ observer.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['open']});
+ document.addEventListener('close',()=>requestAnimationFrame(syncDialogLock),true);
+}
+
 if(discoveryPage)document.body.classList.add('loox-discovery-gallery');
 if(page==='community.html')document.body.classList.add('loox-community-photo-wall');
 if(page==='trending.html')document.body.classList.add('loox-trending-feed');
