@@ -115,3 +115,13 @@ The backend derives ownership from the authenticated user, ignores any requested
 All queried columns were checked against the live schema without retrieving user rows. The backend suite passes 55 tests and frontend suite passes 17. The added tests cover ownership filters, thread scoping, pagination, oversized-data rejection, wrong passwords, MFA checks and verification-session cleanup. Actual download with a real user password remains an acceptance task; no user password or production export was collected during this audit. Backend export implementation commit: `65eb35b12e33d24229bb6cffa0fc4b56c93a8ba1`.
 
 Additional backend files: api/loox.js, lib/account-export.js, test/account-export.test.js. The Privacy Policy now names the model-processing integrations seen in source rather than referring only to unspecified external services.
+
+## Final continuation verification
+
+- Frontend export UI commit: `01c5a6bba06b80411a861a9b0dc4cc8b698ff25b`; Pages deployment succeeded.
+- Workflow `44915032008` completed successfully after the export UI change: desktop studio, static references, 110 responsive checks, five-size consent checks and disabled-payment billing checks.
+- Export API deployment `dpl_EEARDC6nHfMYZfFB6p2CowPDvxND` reached READY with the production alias. An unauthenticated export request returned 401 and private/no-store; no account data was returned.
+- Final automated unit totals: frontend 17 passed; backend 55 passed; 0 final failures. Live authenticated download still needs user acceptance, as distinct from unit/mocked tests.
+- GPU worker source hardening commit `00ac8ad4ce3de705b2b51b6f0d5b127d987b50a8` removes URL/path output and arbitrary exception strings from failure logs. Python syntax was checked. This source update does not update the running Windows installation; that remains an operational action. No claim is made that the PC worker has been patched or restarted.
+
+Pending owner decision: apply `database/review/admin-mfa-hardening.sql` only after confirming an authenticator-verified administrator sign-in works. It enforces AAL2 for two legacy template write policies, the administrator branch of a legacy media-read policy, and the legacy review RPC. It preserves the public/owner branches of media access. It was tested only in an isolated database and has not altered production policies.
