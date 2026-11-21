@@ -62,7 +62,7 @@ for(const viewport of widths){
      if(style.visibility==='hidden'||style.display==='none'||rect.width<8||rect.height<8)continue;
      if(rect.right>width+6&&rect.left<width&&rect.top>=0&&rect.top<innerHeight){
       const parent=el.closest('.community-filters,.creative-examples,.studio-quick,.studio-tabs,.loox-sitewide-sidebar');
-      const editorRail=el.closest('.ds-rail,.ds-toolbar,.mobile-bar,.filter-categories');
+      const editorRail=el.closest('.ds-rail,.ds-toolbar,.mobile-bar,.filter-categories,.studio-toolrail');
       const intentionallyScrollable=editorRail&&
        ['auto','scroll'].includes(getComputedStyle(editorRail).overflowX)&&
        editorRail.scrollWidth>editorRail.clientWidth+2;
