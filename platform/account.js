@@ -172,7 +172,7 @@ export function renderHeader(){
    menu.append(button('Create account',()=>{details.open=false;auth('register');},'lx-button lx-profile-auth'));
   }
   details.append(summary,menu);
-  if(menuWasOpen)details.open=true;
+  if(menuWasOpen){details.open=true;menu.scrollTop=0;requestAnimationFrame(()=>{if(details.open)menu.scrollTop=0;});}
   host.append(details);
  }
  void syncAccountAvatar(state);
