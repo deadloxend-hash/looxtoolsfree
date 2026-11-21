@@ -22,6 +22,8 @@ export async function config(){
 }
 const rememberKey='loox-auth-storage',sessionKey='loox-account-v1';
 function store(){return localStorage.getItem(rememberKey)==='session'?sessionStorage:localStorage;}
+function hasStoredSession(){return Boolean(localStorage.getItem(sessionKey)||sessionStorage.getItem(sessionKey));}
+const authStorage={getItem:k=>localStorage.getItem(k)??sessionStorage.getItem(k),setItem:(k,v)=>{const target=store();target.setItem(k,v);(target===localStorage?sessionStorage:localStorage).removeItem(k);},removeItem:k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);}};
 async function sdk(){
  if(!library)library=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('../vendor/supabase-2.118.0.js',import.meta.url);s.onload=resolve;s.onerror=()=>{library=null;reject(Error('Account library could not load.'));};document.head.append(s);});
  await library;
@@ -29,7 +31,7 @@ async function sdk(){
 async function client(){
  const cfg=await config();if(!cfg.auth)throw Error('Account setup is pending. Free browser tools are available.');
  if(!clientReady)clientReady=(async()=>{
-  await sdk();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:{getItem:k=>store().getItem(k),setItem:(k,v)=>store().setItem(k,v),removeItem:k=>store().removeItem(k)},storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:true}});
+  await sdk();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:true}});
   state.client=api;
   api.auth.onAuthStateChange((event,session)=>{
    const changed=state.user?.id!==session?.user?.id;
@@ -122,9 +124,11 @@ function strong(p){return p.length>=12&&/[a-z]/i.test(p)&&/\d/.test(p);}
 // Personal information is visible only after opening the profile avatar.
 export function renderHeader(){
  for(const host of document.querySelectorAll('[data-loox-account]')){
+  const menuWasOpen=Boolean(host.querySelector('.lx-profile-details[open]'));
   host.replaceChildren();
   host.classList.add('lx-controls','lx-account-header');
   const signedIn=Boolean(state.user);
+  const restoring=Boolean(state.authRestoring&&!signedIn);
   const balance=state.account?.wallet?.balance;
   const credit=el('span',null,'lx-credit-chip lx-credit-readonly');
   credit.setAttribute('aria-label',signedIn?'Available AI credits':'Sign in to view your credits');
@@ -138,7 +142,7 @@ export function renderHeader(){
   const rewardSlot=el('div',null,'lx-header-reward');rewardSlot.dataset.looxReward='';rewardSlot.hidden=true;host.append(rewardSlot);
   const details=el('details',null,'lx-details lx-profile-details');
   const summary=el('summary',null,'lx-profile-trigger');
-  summary.setAttribute('aria-label',signedIn?'Open your account menu':'Sign in or create an account');
+  summary.setAttribute('aria-label',signedIn?'Open your account menu':restoring?'Restoring your account':'Sign in or create an account');
   summary.setAttribute('title',signedIn?'Account':'Sign in');
   const name=String(state.account?.profile?.name||state.user?.user_metadata?.full_name||state.user?.email?.split('@')[0]||'Account').trim()||'Account';
   const initial=(signedIn?name:'L').slice(0,1).toUpperCase();
@@ -160,12 +164,15 @@ export function renderHeader(){
    menu.append(links,link('Billing & Credits','settings.html#billing'));
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
+  }else if(restoring){
+   menu.append(el('div','Restoring your account…','lx-profile-identity'));
   }else{
    menu.append(el('div','Welcome to LOOX','lx-profile-identity'));
    menu.append(button('Sign in',()=>{details.open=false;auth('login');},'lx-button lx-primary lx-profile-auth'));
    menu.append(button('Create account',()=>{details.open=false;auth('register');},'lx-button lx-profile-auth'));
   }
   details.append(summary,menu);
+  if(menuWasOpen)details.open=true;
   host.append(details);
  }
  void syncAccountAvatar(state);
@@ -192,9 +199,9 @@ export async function buyCredits(){
 }
 export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
 export async function initialize({publicAccess=false,waitForAccount=true}={}){
- state.authRestoring=Boolean(store().getItem(sessionKey));renderHeader();
+ state.authRestoring=hasStoredSession();renderHeader();
  const accountPage=!!document.querySelector('[data-dashboard],[data-upgrade-page],[data-settings-page]');
- if(publicAccess||accountPage||store().getItem(sessionKey)||location.search.includes('code=')){
+ if(publicAccess||accountPage||hasStoredSession()||location.search.includes('code=')){
   try{await client();state.authRestoring=false;renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
  }
  state.authRestoring=false;renderHeader();
