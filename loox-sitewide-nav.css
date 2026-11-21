@@ -2747,3 +2747,31 @@ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .l
 }
 /* Keep all account actions inside the narrowest supported header. */
 @media(max-width:360px){html body #loox-sitewide-header .loox-sitewide-inner{gap:4px!important;padding-left:10px!important;padding-right:10px!important}html body #loox-sitewide-header .loox-sitewide-logo{padding-left:0!important;padding-right:2px!important}html body #loox-sitewide-header .loox-sitewide-credit-bundle{gap:3px!important}html body #loox-sitewide-header .lx-upgrade{padding-left:5px!important;padding-right:5px!important}}
+
+
+/* V109 — Keep account dropdown entirely within the mobile viewport.
+   Its own scroll area must start at the identity, not above the screen. */
+@media(max-width:790px){
+ body.loox-sitewide-active .lx-profile-details[open] > .lx-profile-menu,
+ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .lx-profile-menu,
+ body.loox-sitewide-active #loox-sitewide-header .lx-profile-details[open] > .lx-profile-menu {
+  position:fixed!important;
+  top:calc(78px + env(safe-area-inset-top,0px))!important;
+  right:12px!important;left:auto!important;bottom:auto!important;
+  transform:none!important;
+  box-sizing:border-box!important;
+  width:min(350px,calc(100vw - 24px))!important;
+  min-width:0!important;max-width:calc(100vw - 24px)!important;
+  height:auto!important;
+  max-height:calc(100dvh - 94px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  z-index:10050!important;
+  border-radius:18px!important;
+ }
+ body.loox-sitewide-active .lx-profile-details[open] > .lx-profile-menu .lx-profile-identity,
+ body.loox-sitewide-active .lx-profile-details[open] > .lx-profile-menu .loox-popover-identity{
+  position:relative!important;top:auto!important;
+ }
+}
