@@ -119,11 +119,43 @@ function renderBilling(){
   requestAnimationFrame(()=>byId('billing')?.scrollIntoView({block:'start',behavior:'instant'}));
  }
 }
+let securityOwner=null,securityLoaded=0,securityPending=false;
+const securityTime=value=>value?new Date(value).toLocaleString(): 'Unavailable';
+async function loadSecurity(force=false){
+ const owner=state.user?.id;if(!owner)return;
+ if(securityPending&&securityOwner===owner||!force&&securityOwner===owner&&Date.now()-securityLoaded<30000)return;
+ securityOwner=owner;securityPending=true;
+ const sessions=byId('lp-security-sessions'),activity=byId('lp-security-activity'),remove=byId('lp-delete-open');
+ if(!sessions||!activity)return;
+ remove.disabled=true;sessions.replaceChildren(elem('li','','Checking active sign-ins…'));activity.replaceChildren(elem('li','','Checking security activity…'));
+ try{
+  const data=await api('security_summary');if(state.user?.id!==owner)return;
+  sessions.replaceChildren();activity.replaceChildren();
+  for(const session of data.sessions||[]){
+   const item=elem('li');item.append(elem('strong','',session.current?'This browser session':'Other sign-in session'),elem('small','','Started '+securityTime(session.created_at)+' · Last token refresh '+securityTime(session.refreshed_at)));
+   if(session.user_agent){const details=elem('details');details.append(elem('summary','','Browser information'),elem('small','',session.user_agent));item.append(details);}sessions.append(item);
+  }
+  if(!sessions.children.length)sessions.append(elem('li','','No active sessions returned.'));
+  for(const event of data.activity||[])activity.append(elem('li','',(event.action||'Account event').replaceAll('_',' ')+' · '+securityTime(event.created_at)));
+  if(!activity.children.length)activity.append(elem('li','','No retained security activity was returned.'));
+  const needsReview=data.deletion?.requires_support;
+  remove.disabled=needsReview!==false;
+  byId('lp-deletion-eligibility').textContent=needsReview===true?'This account needs a verified support review because of billing, administrator access or shared platform assets.':needsReview===false?'Password verification is required. Your private records and media will be removed across both storage services.':'Deletion eligibility could not be verified. Contact support.';
+  securityLoaded=Date.now();
+ }catch{
+  if(state.user?.id!==owner)return;
+  sessions.replaceChildren(elem('li','','Session information is temporarily unavailable.'));activity.replaceChildren(elem('li','','Security activity is temporarily unavailable.'));
+  byId('lp-deletion-eligibility').textContent='Deletion eligibility could not be verified. Refresh Settings or contact support.';
+ }finally{if(securityOwner===owner)securityPending=false;}
+}
+function savePrivateDownload(blob,name){
+ const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+}
 function renderSettings(){
  if(!document.body.hasAttribute('data-settings-page'))return;
  const guest=byId('lp-settings-guest'),loading=byId('lp-settings-loading'),content=byId('lp-settings-content');
  if(!state.user){
-  guest.hidden=false;loading.hidden=true;content.hidden=true;return;
+  guest.hidden=false;loading.hidden=true;content.hidden=true;securityOwner=null;securityLoaded=0;return;
  }
  guest.hidden=true;
  if(!state.account){
@@ -144,6 +176,7 @@ function renderSettings(){
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
   ' · '+(state.account.wallet?.balance??'…')+' available credits';
  renderBilling();
+ loadSecurity();
 }
 if(document.body.hasAttribute('data-settings-page')){
  document.addEventListener('loox-user',renderSettings);
@@ -224,20 +257,40 @@ if(document.body.hasAttribute('data-settings-page')){
  byId('lp-data-export').addEventListener('click',async()=>{
   const {dialog,field,msg}=await import('./account.js?v=security-20261121-1');
   const owner=state.user?.id;if(!owner)return;
-  const {box,d}=dialog('Download account records');
-  const explanation=document.createElement('p');explanation.textContent='This JSON contains account, credit, billing, job and conversation records. It excludes original media files and Cloudflare creator/social data. Use Support for a complete cross-service export. Store the downloaded file privately.';
-  const form=document.createElement('form');form.className='lx-stack';
+  const {box,d}=dialog('Download personal data');
+  box.append(elem('p','','Verify your password to collect account, credit, conversation, creator and social records. Download the JSON and every media part for your content. Links expire after five minutes; verify again for fresh links. Keep downloads private. Very large exports require Support.'));
+  const form=elem('form','lx-stack'),parts=elem('div','lp-export-parts');
   const password=field(form,'Confirm your password','password',{required:true,maxLength:128,autocomplete:'current-password'});
-  const submit=document.createElement('button');submit.type='submit';submit.className='lx-button lx-primary';submit.textContent='Download JSON';
-  const note=document.createElement('p');note.setAttribute('role','status');form.append(submit,note);box.append(explanation,form);
-  form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;msg(note,'Verifying and collecting your records…');
+  const submit=elem('button','lx-button lx-primary','Verify and prepare downloads');submit.type='submit';
+  const note=elem('p');note.setAttribute('role','status');form.append(submit,note);box.append(form,parts);
+  const abort=new AbortController();d.addEventListener('close',()=>{abort.abort();parts.replaceChildren();},{once:true});
+  let busy=false;
+  form.onsubmit=async event=>{event.preventDefault();if(busy)return;busy=true;submit.disabled=true;parts.replaceChildren();msg(note,'Verifying and collecting your records…');
    const value=password.value;password.value='';
    try{
-    const data=await api('export_account',{password:value});if(state.user?.id!==owner)return;
-    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
-    const a=document.createElement('a');a.href=url;a.download='loox-account-records-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
-    msg(note,'Your account-record download is ready. Original media and Cloudflare social data are not included.');
-   }catch(error){msg(note,error.message||'Unable to export records. Please use Support.');}finally{submit.disabled=false;}
+    const data=await api('export_account',{password:value});if(state.user?.id!==owner||!d.open)return;
+    const {groupMedia,buildPrivateArchive}=await import('./privacy-data.js?v=1');
+    const authHost=new URL((await config()).url).hostname,groups=groupMedia(data.media||[],owner,authHost);
+    savePrivateDownload(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),'loox-personal-data-'+new Date().toISOString().slice(0,10)+'.json');
+    groups.forEach((part,index)=>{
+     const button=elem('button','lx-button',part.direct?'Download original '+part.files[0].key.split('/').pop():'Download media part '+(index+1)+' ('+part.files.length+' files)');button.type='button';parts.append(button);
+     button.onclick=async()=>{
+      if(busy)return;
+      if(state.user?.id!==owner||Date.parse(data.media_links_expire_at)<=Date.now()){msg(note,'Account changed or links expired. Verify your password again.');return;}
+      busy=true;submit.disabled=true;for(const item of parts.children)item.disabled=true;
+      try{
+       if(part.direct){const a=elem('a');a.href=part.files[0].url;a.rel='noreferrer noopener';a.download=part.files[0].key.split('/').pop();a.target='_blank';document.body.append(a);a.click();a.remove();msg(note,'Original-file download opened.');}
+       else{
+        const bytes=await buildPrivateArchive(data,part,{owner,currentUser:()=>state.user?.id,authHost,signal:abort.signal,progress:(n,total)=>msg(note,'Downloading media '+n+' of '+total+'…')});
+        if(state.user?.id!==owner||!d.open)return;
+        savePrivateDownload(new Blob([bytes],{type:'application/zip'}),'loox-media-part-'+(index+1)+'.zip');msg(note,'Media part '+(index+1)+' is ready. Download all remaining parts.');
+       }
+      }catch(error){msg(note,error.message||'Unable to download media. Verify again or contact Support.');}
+      finally{busy=false;submit.disabled=false;for(const item of parts.children)item.disabled=false;}
+     };
+    });
+    msg(note,groups.length?'Records JSON is ready. Download every media part below to include your original files.':'Personal-data JSON is ready. No private media files were found.');
+   }catch(error){msg(note,error.message||'Unable to export personal data. Please use Support.');}finally{busy=false;submit.disabled=false;}
   };
  });
  byId('lp-sign-out').addEventListener('click',signOut);
@@ -256,12 +309,12 @@ if(document.body.hasAttribute('data-settings-page')){
     if(verified.error||verified.data?.user?.id!==owner)throw Error('Password verification failed.');
     if(state.user?.id!==owner)throw Error('Account changed. Please retry.');
     const result=await state.client.auth.signOut({scope:'others'});if(result.error)throw result.error;
-    byId('lp-security-status').textContent='Other sessions revoked. Existing access tokens may remain valid until expiry.';d.close();
+    byId('lp-security-status').textContent='Other sessions revoked. Existing access tokens may remain valid until expiry.';d.close();loadSecurity(true);
    }catch(error){msg(note,error.message||'Unable to revoke sessions.');}finally{submit.disabled=false;if(proof)await proof.auth.signOut({scope:'local'}).catch(()=>{});}
   };
  });
  const deleteDialog=byId('lp-delete-dialog');
- byId('lp-delete-open').addEventListener('click',()=>deleteDialog.showModal());
+ byId('lp-delete-open').addEventListener('click',()=>{if(!byId('lp-delete-open').disabled)deleteDialog.showModal();});
  byId('lp-delete-cancel').addEventListener('click',()=>deleteDialog.close());
  deleteDialog.addEventListener('close',()=>{
   byId('lp-delete-form').reset();
@@ -269,7 +322,7 @@ if(document.body.hasAttribute('data-settings-page')){
  });
  byId('lp-delete-form').addEventListener('submit',async event=>{
   event.preventDefault();
-  const password=byId('lp-delete-password').value;
+  const password=byId('lp-delete-password').value;byId('lp-delete-password').value='';
   if(!password||!byId('lp-delete-agree').checked)return;
   const btn=byId('lp-delete-confirm'),status=byId('lp-delete-status');
   btn.disabled=true;setStatus(status,'Deleting your account…');

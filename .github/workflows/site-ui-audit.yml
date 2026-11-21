@@ -7,6 +7,10 @@ on:
       - "scripts/site-ui-static-audit.py"
       - "scripts/site-responsive-audit.mjs"
       - "scripts/privacy-consent-audit.mjs"
+      - "scripts/account-security-audit.mjs"
+      - "platform/privacy-data.js"
+      - "tests/privacy-data.test.mjs"
+      - "settings.html"
       - "platform/privacy.js"
       - "platform/privacy.css"
       - "platform/account.js"
@@ -64,6 +68,10 @@ jobs:
         run: node scripts/privacy-consent-audit.mjs
       - name: Verify monthly billing and disabled recharge at phone, tablet and desktop widths
         run: node scripts/billing-ui-audit.mjs
+      - name: Verify authenticated account security and export UI with synthetic data
+        run: node scripts/account-security-audit.mjs
+      - name: Run frontend regression tests
+        run: node --test tests/*.test.mjs
       - name: Upload report and failure screenshots
         if: always()
         uses: actions/upload-artifact@v4
