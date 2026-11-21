@@ -1,0 +1,83 @@
+/* AI Video Studio — compact phone composer (2026-11-21).
+   Visual-only override; keeps model capability/validation logic unchanged. */
+@media (max-width:700px) {
+ body.loox-studio.lvg-body .lig-compose-wrap {
+   padding:5px 9px max(9px, env(safe-area-inset-bottom))!important;
+ }
+ body.loox-studio.lvg-body .lig-compose-card {
+   width:100%!important;box-sizing:border-box!important;
+   padding:10px 12px!important;gap:6px!important;
+   border-radius:17px!important;
+ }
+ body.loox-studio.lvg-body .loox-video-modes {
+   display:flex!important;flex-wrap:nowrap!important;
+   margin:0 0 3px!important;gap:7px!important;
+ }
+ body.loox-studio.lvg-body .loox-video-modes button {
+   flex:1 1 0!important;min-width:0!important;min-height:38px!important;
+   padding:6px 8px!important;font-size:12px!important;
+   border-radius:12px!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-strip {
+   margin:1px 0 3px!important;padding:5px 0 6px!important;
+   border-bottom:1px solid #ffffff1a;
+ }
+ body.loox-studio.lvg-body .studio-frame-heading {
+   margin:0 0 3px!important;min-height:27px!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-heading strong {font-size:12px!important;}
+ body.loox-studio.lvg-body .studio-shots-button {
+   min-height:28px!important;padding:4px 9px!important;font-size:11px!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-row {
+   min-height:40px!important;gap:7px!important;padding:2px 0!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-thumb {
+   flex:0 0 38px!important;width:38px!important;height:38px!important;
+   min-height:38px!important;border-radius:9px!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-row .studio-frame-text strong {
+   font-size:12px!important;line-height:1.25!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-row .studio-frame-text small {
+   font-size:10px!important;line-height:1.25!important;
+   white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-change {
+   flex:0 0 auto!important;min-height:31px!important;
+   padding:5px 9px!important;border-radius:9px!important;font-size:11px!important;
+ }
+ body.loox-studio.lvg-body .studio-frame-row:has(.studio-frame-change:disabled) {
+   display:none!important;
+ }
+ body.loox-studio.lvg-body .loox-video-capabilities {
+   font-size:10px!important;line-height:1.35!important;
+   white-space:nowrap!important;overflow:hidden!important;
+   text-overflow:ellipsis!important;max-height:17px!important;
+   margin:1px 0 3px!important;padding:0 2px!important;
+ }
+ body.loox-studio.lvg-body #lvg-prompt {
+   display:block!important;width:100%!important;box-sizing:border-box!important;
+   min-height:68px!important;height:68px!important;max-height:135px!important;
+   padding:9px 3px!important;margin:2px 0!important;
+   font-size:15px!important;line-height:1.4!important;
+   resize:vertical!important;
+ }
+ body.loox-studio.lvg-body .lig-compose-actions {
+   display:flex!important;align-items:center!important;gap:7px!important;
+   flex-wrap:wrap!important;margin:0!important;
+ }
+ body.loox-studio.lvg-body .lig-compose-actions .lig-primary {
+   min-height:42px!important;min-width:142px!important;
+   padding:9px 13px!important;font-size:13px!important;
+   border-radius:12px!important;margin-left:auto!important;
+ }
+ body.loox-studio.lvg-body .studio-quick {gap:5px!important;margin:2px 0!important}
+ body.loox-studio.lvg-body .studio-quick button {
+   min-height:32px!important;padding:5px 8px!important;font-size:11px!important;
+ }
+}
+@media (max-width:370px) {
+ body.loox-studio.lvg-body .lig-compose-card {padding:9px!important;}
+ body.loox-studio.lvg-body .lig-compose-actions .lig-primary {min-width:125px!important;font-size:12px!important;}
+}
