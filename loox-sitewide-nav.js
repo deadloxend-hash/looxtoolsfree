@@ -624,6 +624,7 @@
   const details=menu.closest('.lx-profile-details');
   if(details){
    let timer;
+   details.addEventListener('toggle',()=>{if(details.open){menu.scrollTop=0;requestAnimationFrame(()=>{if(details.open)menu.scrollTop=0;});}});
    details.addEventListener('pointerenter',event=>{
     if(event.pointerType!=='mouse')return;
     clearTimeout(timer);
