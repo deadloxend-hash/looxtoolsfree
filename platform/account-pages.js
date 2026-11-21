@@ -168,13 +168,13 @@ function renderSettings(){
  if(document.activeElement!==name)name.value=state.account.profile?.name||'';
  byId('lp-email').value=state.user.email||'';
  byId('lp-email-verification').textContent=state.user.email_confirmed_at?'Verified email address':'Email verification required';
- const securityOwner=state.user.id;
+ const factorOwner=state.user.id;
  state.client?.auth.mfa.listFactors().then(({data,error})=>{
-  if(state.user?.id!==securityOwner)return;
+  if(state.user?.id!==factorOwner)return;
   const enabled=data?.totp?.some(f=>f.status==='verified');
   byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':enabled?'Authenticator enabled. Use your code when signing in. Contact support if you lose your authenticator.':'Add a time-based authenticator after verifying your password.';
   byId('lp-mfa-enable').hidden=Boolean(error||enabled);
- }).catch(()=>{if(state.user?.id===securityOwner)byId('lp-mfa-status').textContent='Authenticator status unavailable';});
+ }).catch(()=>{if(state.user?.id===factorOwner)byId('lp-mfa-status').textContent='Authenticator status unavailable';});
  const plan=state.account.plan||'free';
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
   ' · '+(state.account.wallet?.balance??'…')+' available credits';
