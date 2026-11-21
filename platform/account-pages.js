@@ -1,4 +1,5 @@
 import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=security-20261121-1';
+import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=1';
 import {cloudRequest} from './profile-cloudflare.js?v=2';
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
@@ -170,7 +171,9 @@ function renderSettings(){
  const securityOwner=state.user.id;
  state.client?.auth.mfa.listFactors().then(({data,error})=>{
   if(state.user?.id!==securityOwner)return;
-  byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':data?.totp?.some(f=>f.status==='verified')?'Authenticator enabled':'No verified authenticator enrolled. Contact support for enrollment assistance.';
+  const enabled=data?.totp?.some(f=>f.status==='verified');
+  byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':enabled?'Authenticator enabled. Use your code when signing in. Contact support if you lose your authenticator.':'Add a time-based authenticator after verifying your password.';
+  byId('lp-mfa-enable').hidden=Boolean(error||enabled);
  }).catch(()=>{if(state.user?.id===securityOwner)byId('lp-mfa-status').textContent='Authenticator status unavailable';});
  const plan=state.account.plan||'free';
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
@@ -254,6 +257,49 @@ if(document.body.hasAttribute('data-settings-page')){
   }catch{setStatus(status,'Unable to save your preferences on this device.',true);}
  });
  byId('lp-password-reset').addEventListener('click',()=>auth('forgot'));
+ byId('lp-mfa-enable').addEventListener('click',async()=>{
+  const {dialog,field,msg}=await import('./account.js?v=security-20261121-1');
+  const owner=state.user?.id,user=state.user;if(!owner)return;
+  const {box,d}=dialog('Set up authenticator');
+  box.append(elem('p','','Keep access to your verified recovery email. Use a trusted authenticator app and keep its backup securely. Do not share the setup code.'));
+  const form=elem('form','lx-stack'),note=elem('p');note.setAttribute('role','status');
+  const password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
+  const submit=elem('button','lx-button lx-primary','Verify password');submit.type='submit';form.append(submit,note);box.append(form);
+  let factor=null,operation=Promise.resolve(),complete=false;
+  d.addEventListener('close',()=>{
+   box.replaceChildren();
+   operation.finally(async()=>{
+    if(!factor||complete||state.user?.id!==owner)return;
+    try{const result=await state.client.auth.mfa.listFactors();if(result.data?.totp?.some(f=>f.id===factor&&f.status==='unverified'))await state.client.auth.mfa.unenroll({factorId:factor});}catch{/* Unverified factors cannot authorize sign-ins; support can remove stale enrollments. */}
+   });
+  },{once:true});
+  form.onsubmit=event=>{event.preventDefault();submit.disabled=true;const value=password.value;password.value='';
+   operation=(async()=>{
+    try{
+     await verifyCurrentPassword({sdk:window.supabase,config:await config(),user,password:value,currentUser:()=>state.user?.id});
+     if(state.user?.id!==owner||!d.open)return;
+     const existing=await state.client.auth.mfa.listFactors();if(existing.error)throw existing.error;
+     if(existing.data?.totp?.some(f=>f.status==='verified'))throw Error('An authenticator is already enabled. Refresh Settings.');
+     const enrolled=await state.client.auth.mfa.enroll({factorType:'totp',friendlyName:'LOOX '+new Date().toISOString().slice(0,19)});
+     if(enrolled.error)throw enrolled.error;factor=enrolled.data?.id;
+     if(!factor)throw Error('Authenticator setup failed.');
+     if(state.user?.id!==owner||!d.open)return;
+     const qr=elem('img','lp-mfa-qr');qr.alt='Scan this code in your authenticator app';qr.src=authenticatorImage(enrolled.data.totp);qr.width=224;qr.height=224;
+     const instructions=elem('p','','Scan this QR code, then enter the current six-digit code to activate two-factor authentication. Setup is incomplete until the code is verified.');
+     form.replaceChildren(qr,instructions);
+     const code=field(form,'Authenticator code','text',{required:true,inputMode:'numeric',pattern:'[0-9]{6}',maxLength:6,autocomplete:'one-time-code'});
+     const confirm=elem('button','lx-button lx-primary','Enable authenticator');confirm.type='submit';form.append(confirm,note);msg(note,'');code.focus();
+     form.onsubmit=event=>{event.preventDefault();if(state.user?.id!==owner||!d.open)return;confirm.disabled=true;const entered=code.value;code.value='';
+      operation=(async()=>{try{
+       const result=await state.client.auth.mfa.challengeAndVerify({factorId:factor,code:entered});if(result.error)throw result.error;
+       complete=true;factor=null;if(state.user?.id!==owner||!d.open)return;
+       d.close();renderSettings();byId('lp-security-status').textContent='Authenticator enabled. Your next sign-in will request a code.';loadSecurity(true);
+      }catch(error){msg(note,error.message||'Code verification failed. Try the latest code.');confirm.disabled=false;}})();
+     };
+    }catch(error){msg(note,error.message||'Unable to start authenticator setup.');submit.disabled=false;}
+   })();
+  };
+ });
  byId('lp-data-export').addEventListener('click',async()=>{
   const {dialog,field,msg}=await import('./account.js?v=security-20261121-1');
   const owner=state.user?.id;if(!owner)return;

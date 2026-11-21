@@ -7,8 +7,8 @@ let browser;try{browser=await chromium.launch({channel:'chrome',headless:true,ar
 try{
  for(const width of [320,360,393,768,1365]){
   const context=await browser.newContext({viewport:{width,height:850},acceptDownloads:true,reducedMotion:'reduce'}),page=await context.newPage();
-  const errors=[];page.on('pageerror',e=>errors.push(e.message));let needsSupport=false,exportCalls=0;
-  await page.route('**/vendor/supabase-2.118.0.js',route=>route.fulfill({contentType:'application/javascript',body:`window.supabase={createClient(){const session={access_token:'synthetic-test-token',user:{id:'${id}',email:'fixture@example.com',email_confirmed_at:'2026-11-01T00:00:00Z'}};return {auth:{onAuthStateChange(callback){setTimeout(()=>callback('INITIAL_SESSION',session),0);return {data:{subscription:{unsubscribe(){}}}}},getSession:async()=>({data:{session}}),mfa:{listFactors:async()=>({data:{totp:[]}})}}}}};`}));
+  const errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error('UI error: '+e.message);});let needsSupport=false,exportCalls=0;
+  await page.route('**/vendor/supabase-2.118.0.js',route=>route.fulfill({contentType:'application/javascript',body:`window.supabase={createClient(){let verified=false;const session={access_token:'synthetic-test-token',user:{id:'${id}',email:'fixture@example.com',email_confirmed_at:'2026-11-01T00:00:00Z'}};return {auth:{onAuthStateChange(callback){setTimeout(()=>callback('INITIAL_SESSION',session),0);return {data:{subscription:{unsubscribe(){}}}}},getSession:async()=>({data:{session}}),signInWithPassword:async()=>({data:{user:session.user,session}}),signOut:async()=>({}),mfa:{listFactors:async()=>({data:{totp:verified?[{id:'factor-fixture',status:'verified'}]:[]}}),enroll:async()=>({data:{id:'factor-fixture',totp:{qr_code:'data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="224" height="224"></svg>'}}}),challengeAndVerify:async({code})=>{if(code!=='123456')return {error:{message:'Wrong code'}};verified=true;return {data:{}};},unenroll:async()=>({})}}}}};`}));
   await page.route('https://loox-profile-api.looxai-studio.workers.dev/**',r=>r.fulfill({json:{user_id:id,display_name:'Fixture',profile:{user_id:id,display_name:'Fixture'}}}));
   await page.route('https://looxtoolfree-backend.vercel.app/api/**',async route=>{
    const action=new URL(route.request().url()).searchParams.get('action');let result;
@@ -29,7 +29,7 @@ try{
   assert.equal(await page.locator('#lp-delete-open').isEnabled(),true);
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Settings overflow at '+width);
   await page.locator('#lp-data-export').click();
-  const dialog=page.locator('dialog[open]');await dialog.waitFor();
+  const dialog=page.locator('dialog[open]');await dialog.waitFor({timeout:8000}).catch(async error=>{console.error(JSON.stringify({width,errors,dialogs:await page.locator('dialog').evaluateAll(nodes=>nodes.map(n=>({open:n.open,hidden:n.hidden,display:getComputedStyle(n).display,text:n.textContent.slice(0,160)})))}));throw error;});
   await dialog.getByLabel('Confirm your password').fill('fixture-only-password');
   const download=page.waitForEvent('download');await dialog.getByRole('button',{name:'Verify and prepare downloads'}).click();
   assert.match((await download).suggestedFilename(),/^loox-personal-data-.*\.json$/);assert.equal(exportCalls,1);
@@ -37,6 +37,15 @@ try{
   assert.equal(await dialog.getByLabel('Confirm your password').inputValue(),'');
   const bounds=await dialog.boundingBox();assert.ok(bounds.x>=0&&bounds.x+bounds.width<=width+1);
   await dialog.getByRole('button',{name:'Close dialog'}).click();
+  await page.locator('#lp-mfa-enable').click();
+  const setup=page.locator('dialog[open]');await setup.getByLabel('Current password').fill('fixture-only-password');
+  await setup.getByRole('button',{name:'Verify password',exact:true}).click();
+  await setup.getByLabel('Authenticator code').fill('654321');await setup.getByRole('button',{name:'Enable authenticator',exact:true}).click();
+  await setup.getByText('Wrong code',{exact:true}).waitFor();
+  await setup.getByLabel('Authenticator code').fill('123456');await setup.getByRole('button',{name:'Enable authenticator',exact:true}).click();
+  await page.getByText('Authenticator enabled. Your next sign-in will request a code.',{exact:true}).waitFor();
+  assert.equal(await page.locator('#lp-mfa-enable').isHidden(),true);
+  assert.equal(await page.locator('.lp-mfa-qr').count(),0,'Setup QR must be removed after verification');
   needsSupport=true;await page.reload();await page.getByText(/This account needs a verified support review/).waitFor();
   assert.equal(await page.locator('#lp-delete-open').isDisabled(),true);
   assert.deepEqual(errors,[]);await context.close();

@@ -9,6 +9,8 @@ on:
       - "scripts/privacy-consent-audit.mjs"
       - "scripts/account-security-audit.mjs"
       - "platform/privacy-data.js"
+      - "platform/account-security.js"
+      - "tests/account-security.test.mjs"
       - "tests/privacy-data.test.mjs"
       - "settings.html"
       - "platform/privacy.js"
@@ -59,6 +61,10 @@ jobs:
           else
             npx playwright install chromium
           fi
+      - name: Verify authenticated account security and export UI with synthetic data
+        run: |
+          python3 -m http.server 8766 --bind 127.0.0.1 >/tmp/loox-security-audit-server.log 2>&1 &
+          LOOX_AUDIT_URL=http://127.0.0.1:8766/ node scripts/account-security-audit.mjs
       - name: Run responsive overflow and interaction checks
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-ui-audit-server.log 2>&1 &
@@ -68,8 +74,6 @@ jobs:
         run: node scripts/privacy-consent-audit.mjs
       - name: Verify monthly billing and disabled recharge at phone, tablet and desktop widths
         run: node scripts/billing-ui-audit.mjs
-      - name: Verify authenticated account security and export UI with synthetic data
-        run: node scripts/account-security-audit.mjs
       - name: Run frontend regression tests
         run: node --test tests/*.test.mjs
       - name: Upload report and failure screenshots
