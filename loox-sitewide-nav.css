@@ -2843,3 +2843,24 @@ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .l
   font-size:11px!important;white-space:nowrap!important;
  }
 }
+
+
+/* V112 — the profile identity must never disappear under the menu's top edge.
+   Browser scroll anchoring can restore a previous scroll offset on DOM rebuild. */
+@media(max-width:790px){
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover{
+  overflow-anchor:none!important;
+  scroll-behavior:auto!important;
+  scroll-padding-top:0!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .lx-profile-identity.loox-popover-identity{
+  position:sticky!important;top:0!important;z-index:3!important;
+  flex-shrink:0!important;
+  margin-top:0!important;
+  background:#20314a!important;
+  box-shadow:0 3px 9px #091322a8!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-credits{
+  flex-shrink:0!important;
+ }
+}
