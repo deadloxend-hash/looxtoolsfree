@@ -16,12 +16,17 @@ try{for(const width of [360,390,768,1440]){
  });
  await page.goto(root+'upgrade.html',{waitUntil:'networkidle'});
  assert.equal(await page.locator('.lp-plan').count(),4);checks++;
- await page.locator('#lp-estimate-model-loox-options').waitFor({state:'attached',timeout:12000});
+ const modelTrigger=page.locator('.lp-estimator .loox-dropdown-trigger').first();
+ await modelTrigger.waitFor();
+ const popupId=await modelTrigger.getAttribute('aria-controls');
+ assert.ok(popupId,'Model selector must identify its controlled popup');
+ const modelPopup=page.locator('#'+popupId);
+ await modelPopup.waitFor({state:'attached',timeout:12000});
  assert.equal(await page.locator('.lp-estimator .loox-dropdown.is-ready').count(),2,'Billing selectors must be LOOX themed at '+width);checks++;
  await page.locator('.lp-estimator .loox-dropdown-trigger').first().click();
- assert.equal(await page.locator('#lp-estimate-model-loox-options').isVisible(),true,'Themed model list not open at '+width);checks++;
+ assert.equal(await modelPopup.isVisible(),true,'Themed model list not open at '+width);checks++;
  await page.keyboard.press('Escape');
- assert.equal(await page.locator('#lp-estimate-model-loox-options').isVisible(),false);checks++;
+ assert.equal(await modelPopup.isVisible(),false);checks++;
  if(width<901){
   const toggle=page.locator('body > button.loox-sitewide-dock-toggle');
   await toggle.waitFor({state:'visible'});
