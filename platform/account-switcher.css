@@ -1,0 +1,101 @@
+/* LOOX account chooser — local email suggestions, no extra stored sessions. */
+.lx-modal.loox-switch-dialog {
+ width:min(440px,calc(100vw - 26px))!important;
+ box-sizing:border-box!important;
+ max-height:min(82dvh,690px)!important;
+ padding:18px!important;
+ background:#0d1726!important;
+ border:1px solid #2a405c!important;
+ border-radius:20px!important;
+ box-shadow:0 25px 80px #000b!important;
+ color:#f1f5f9!important;
+}
+.loox-switch-dialog .lx-modal-head {margin-bottom:13px!important;}
+.loox-switch-dialog .lx-modal-head h2 {font-size:19px!important;}
+.loox-switch-dialog .loox-switch-note {
+ margin:0 0 13px!important;font:400 13px/1.55 system-ui,sans-serif!important;
+ color:#b7cbe3!important;
+}
+.loox-switch-dialog .loox-switch-current,
+.loox-switch-dialog .loox-switch-choice,
+.loox-switch-dialog .loox-switch-add {
+ display:flex!important;align-items:center!important;gap:11px!important;
+ width:100%!important;min-width:0!important;box-sizing:border-box!important;
+ padding:11px 12px!important;
+ border:1px solid #2a405c!important;border-radius:13px!important;
+ text-align:left!important;
+}
+.loox-switch-dialog .loox-switch-current {
+ background:#20314a!important;border-color:#3c638a!important;
+}
+.loox-switch-dialog .loox-switch-list {
+ display:flex!important;flex-direction:column!important;gap:7px!important;
+}
+.loox-switch-dialog .loox-switch-choice,
+.loox-switch-dialog .loox-switch-add {
+ background:#142033!important;color:#f1f5f9!important;
+ min-height:52px!important;font:600 13px/1.4 system-ui,sans-serif!important;
+ cursor:pointer!important;
+}
+.loox-switch-dialog .loox-switch-choice:hover,
+.loox-switch-dialog .loox-switch-choice:focus-visible,
+.loox-switch-dialog .loox-switch-add:hover,
+.loox-switch-dialog .loox-switch-add:focus-visible {
+ background:#20314a!important;border-color:#60a5fa!important;
+}
+.loox-switch-dialog .loox-switch-avatar {
+ display:grid!important;place-items:center!important;flex:0 0 37px!important;
+ width:37px!important;height:37px!important;border:1px solid #60a5fa!important;
+ background:#13487e!important;color:white!important;
+ border-radius:50%!important;font:700 16px system-ui,sans-serif!important;
+}
+.loox-switch-dialog .loox-switch-copy {
+ display:flex!important;flex-direction:column!important;flex:1!important;
+ min-width:0!important;gap:3px!important;
+}
+.loox-switch-dialog .loox-switch-copy strong {
+ color:#f1f5f9!important;font-size:13px!important;line-height:1.35!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.loox-switch-dialog .loox-switch-copy small {
+ color:#a6ccff!important;font:400 12px/1.3 system-ui,sans-serif!important;
+ overflow-wrap:anywhere!important;
+}
+.loox-switch-dialog .loox-switch-status {
+ flex:0 0 auto!important;font:600 10px/1.2 system-ui,sans-serif!important;
+ color:#a6ccff!important;white-space:nowrap!important;
+}
+.loox-switch-dialog .loox-switch-heading {
+ display:block!important;margin:14px 0 7px!important;
+ font:650 12px/1.3 system-ui,sans-serif!important;color:#a6ccff!important;
+}
+.loox-switch-dialog .loox-switch-add {margin-top:10px!important;}
+.loox-switch-dialog .loox-switch-plus {
+ display:grid!important;place-items:center!important;
+ flex:0 0 37px!important;width:37px!important;height:37px!important;
+ border:1px solid #60a5fa!important;border-radius:50%!important;
+ color:#a6ccff!important;font:400 24px/1 system-ui,sans-serif!important;
+}
+.loox-switch-dialog .loox-switch-privacy {
+ color:#93abc7!important;font:400 11px/1.5 system-ui,sans-serif!important;
+ margin:11px 0 0!important;
+}
+.loox-switch-dialog .loox-switch-forget {
+ background:transparent!important;border:0!important;padding:8px 2px!important;
+ color:#a6ccff!important;text-decoration:underline!important;
+ font:500 12px system-ui,sans-serif!important;cursor:pointer!important;
+}
+.loox-switch-dialog .loox-switch-choice:focus-visible,
+.loox-switch-dialog .loox-switch-add:focus-visible,
+.loox-switch-dialog .loox-switch-forget:focus-visible {
+ outline:2px solid #a6ccff!important;outline-offset:2px!important;
+}
+@media(max-width:390px){
+ .lx-modal.loox-switch-dialog{padding:13px!important;}
+ .loox-switch-dialog .loox-switch-current,
+ .loox-switch-dialog .loox-switch-choice,
+ .loox-switch-dialog .loox-switch-add{padding:9px!important;}
+}
+@media(prefers-reduced-motion:reduce){
+ .loox-switch-dialog *{transition:none!important;}
+}
