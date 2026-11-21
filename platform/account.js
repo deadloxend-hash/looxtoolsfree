@@ -94,6 +94,8 @@ export function auth(mode='login',options={}){
  const titles={login:'Welcome back',register:'Create your LOOX account',forgot:'Forgot your password?',reset:'Choose a new password'};
  const switching=mode==='login'&&Boolean(options.switching);
  const previousUserId=state.user?.id||null;
+ const previousUserEmail=state.user?.email||null;
+ const previousRemembered=store()===localStorage;
  const {box,d}=dialog(switching?'Sign in to another account':titles[mode]);
  if(switching)box.append(el('p','Your current LOOX account stays signed in until the new account is verified.','lx-note'));
  const form=el('form',null,'lx-stack');box.append(form);
@@ -135,7 +137,10 @@ export function auth(mode='login',options={}){
    return;
   }
   if(reset){await c.auth.signOut();history.replaceState(null,'','account.html');auth();return;}
-  if(mode==='login'&&remember?.checked)rememberRecentAccount(result.data?.user?.email||email.value.trim());
+  if(mode==='login'&&remember?.checked){
+   if(switching&&previousRemembered&&previousUserEmail)rememberRecentAccount(previousUserEmail);
+   rememberRecentAccount(result.data?.user?.email||email.value.trim());
+  }
   d.close();
   // Reload creative workspaces after a successful switch to clear previous-user media.
   if(switching&&previousUserId!==(result.data?.user?.id||state.user?.id)){
@@ -155,7 +160,6 @@ export function switchAccount(){
  document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
  ensureSwitcherStyles();
  const currentEmail=String(state.user.email||'').trim().toLowerCase();
- if(currentEmail&&store()===localStorage)rememberRecentAccount(currentEmail);
  const {box,d}=dialog('Switch account');
  d.classList.add('loox-switch-dialog');
  box.append(el('p','Choose an account. Your current account stays active unless another sign-in succeeds.','loox-switch-note'));
