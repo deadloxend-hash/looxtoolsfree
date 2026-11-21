@@ -2775,3 +2775,38 @@ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .l
   position:relative!important;top:auto!important;
  }
 }
+
+
+/* V110: compact phone profile dropdown, anchored under avatar without clipping. */
+@media(max-width:790px){
+ body.loox-sitewide-active .lx-profile-details[open] > .lx-profile-menu,
+ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .lx-profile-menu,
+ body.loox-sitewide-active #loox-sitewide-header .lx-profile-details[open] > .lx-profile-menu,
+ body.loox-sitewide-active .lx-account-header .lx-profile-menu.loox-account-popover,
+ body.loox-sitewide-active #loox-sitewide-header .loox-sitewide-account .lx-profile-menu.loox-account-popover {
+  position:fixed!important;
+  top:calc(78px + env(safe-area-inset-top,0px))!important;
+  right:12px!important;left:auto!important;bottom:auto!important;
+  transform:none!important;
+  width:min(285px,calc(100vw - 24px))!important;
+  min-width:0!important;max-width:calc(100vw - 24px)!important;
+  max-height:min(68dvh,calc(100dvh - 95px - env(safe-area-inset-top,0px)))!important;
+  height:auto!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  overscroll-behavior:contain!important;
+  box-sizing:border-box!important;
+  border-radius:16px!important;
+  padding:9px!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-identity,
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-credits,
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .lx-return-reward{
+  margin-bottom:7px!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-link{
+  min-height:38px!important;padding:7px 9px!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-profile-actions{
+  padding:7px 2px!important;
+ }
+}
