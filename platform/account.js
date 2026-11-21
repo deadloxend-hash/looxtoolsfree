@@ -316,7 +316,7 @@ if(location.search.includes('payment=return')){const note=document.querySelector
 initialize();
 }
 
-import './return-rewards.js?v=upgrade-20261119-1';
+import './return-rewards.js?v=account-switch-20261121-1';
 
 if(typeof document!=='undefined'){
 document.addEventListener('loox-avatar-change',()=>syncAccountAvatar(state,true));
