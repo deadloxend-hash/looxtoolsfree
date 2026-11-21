@@ -784,7 +784,7 @@
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=upgrade-20261119-1');document.head.append(style);
  }
  import(url('platform/mobile-viewport.js?v=1'));
- import(url('platform/account.js?v=17')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
+ import(url('platform/account.js?v=18')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);
  });
