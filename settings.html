@@ -10,9 +10,9 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://*.supabase.co https://*.r2.cloudflarestorage.com https://loox-profile-api.looxai-studio.workers.dev; connect-src 'self' https://looxtoolfree-backend.vercel.app https://*.supabase.co https://*.r2.cloudflarestorage.com wss://*.supabase.co https://loox-profile-api.looxai-studio.workers.dev; object-src 'none'; base-uri 'self'; form-action 'self'">
 <title>Account Settings | LOOX AI</title>
 <link rel="stylesheet" href="platform/platform.css?v=upgrade-20261119-1">
-<link rel="stylesheet" href="platform/account-pages.css?v=billing-credits-1">
-<script defer src="loox-experience.js?v=upgrade-20261119-1"></script><script type="module" src="platform/account-pages.js?v=account-switch-20261121-1"></script>
-<link rel="stylesheet" href="loox-sitewide-nav.css?v=account-switch-20261121-1"><link rel="stylesheet" href="platform/loox-dropdowns.css?v=upgrade-20261119-1"><script defer src="platform/loox-dropdowns.js?v=upgrade-20261119-1"></script></head>
+<link rel="stylesheet" href="platform/account-pages.css?v=security-20261121-1">
+<script defer src="loox-experience.js?v=upgrade-20261119-1"></script><script type="module" src="platform/account-pages.js?v=security-20261121-1"></script>
+<link rel="stylesheet" href="loox-sitewide-nav.css?v=account-switch-20261121-1"><link rel="stylesheet" href="platform/loox-dropdowns.css?v=upgrade-20261119-1"><script defer src="platform/loox-dropdowns.js?v=upgrade-20261119-1"></script><script defer src="platform/privacy.js?v=1"></script></head>
 <body class="lx-shell lp-page" data-settings-page>
 <header class="lx-header lp-header">
  <a class="lp-brand" href="ai-home.html" aria-label="LOOX AI Home"><span class="lp-brand-mark">L</span><span>LOOX <b>AI</b></span></a>
@@ -64,8 +64,15 @@
     </form>
    </section>
    <section id="security" class="lp-settings-card">
-    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◇</span><div><h2>Security</h2><p>Keep your LOOX account protected.</p></div></div>
+    <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">◇</span><div><h2>Security &amp; Privacy</h2><p>Keep your LOOX account protected.</p></div></div>
     <div class="lp-setting-row"><div><strong>Password</strong><small>Request a password reset email if you want to change your password.</small></div><button id="lp-password-reset" type="button" class="lp-btn lp-btn-secondary">Reset password</button></div>
+    <div class="lp-setting-row"><div><strong>Email verification</strong><small id="lp-email-verification">Checking verified account information…</small></div></div>
+    <div class="lp-setting-row"><div><strong>Two-factor authentication</strong><small id="lp-mfa-status">Checking authenticator status…</small></div></div>
+    <div class="lp-setting-row"><div><strong>Current session</strong><small id="lp-session-status">This browser. A complete device list and login history are not available here.</small></div></div>
+    <div class="lp-setting-row"><div><strong>Other sessions</strong><small>Verify your password to revoke other sign-ins. Previously issued access tokens may work until they expire.</small></div><button id="lp-sign-out-others" type="button" class="lp-btn lp-btn-secondary">Sign out other devices</button></div>
+    <p id="lp-security-status" role="status" class="lp-form-status"></p>
+    <div class="lp-setting-row"><div><strong>Privacy preferences</strong><small>Review or withdraw optional browser-storage choices.</small></div><button type="button" data-loox-privacy-open class="lp-btn lp-btn-secondary">Cookie Settings</button></div>
+    <div class="lp-setting-row"><div><strong>Personal data and recovery</strong><small>Use the password reset above for email recovery. Request a full export, including creator data and media, from support after identity verification.</small></div><a class="lp-btn lp-btn-secondary" href="support.html">Request data export</a></div>
    </section>
    <section id="billing" class="lp-settings-card lp-billing-card" aria-labelledby="lp-billing-title">
     <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">✧</span><div><h2 id="lp-billing-title">Billing &amp; Credits</h2><p>View your current balance, credit usage, recharge options and subscription in one place.</p></div></div>
@@ -90,7 +97,7 @@
     <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">☷</span><div><h2>Account management</h2><p>View your subscription and control your account.</p></div></div>
     <div class="lp-setting-row"><div><strong>Subscription and credits</strong><small id="lp-plan-info">Manage your plan and credit balance.</small></div><a class="lp-btn lp-btn-secondary" href="#billing">Open billing</a></div>
     <div class="lp-setting-row"><div><strong>Sign out</strong><small>End your session on this device.</small></div><button id="lp-sign-out" type="button" class="lp-btn lp-btn-secondary">Sign out</button></div>
-    <div class="lp-setting-row lp-setting-danger"><div><strong>Delete account</strong><small>This permanently removes your LOOX account, private outputs and remaining credits. Cancel recurring billing first.</small></div><button id="lp-delete-open" type="button" class="lp-btn lp-btn-danger">Delete account</button></div>
+    <div class="lp-setting-row lp-setting-danger"><div><strong>Delete account</strong><small>Removes your sign-in account and associated Supabase records. Cross-service media and creator-data cleanup requires support confirmation. Cancel recurring billing first.</small></div><button id="lp-delete-open" type="button" class="lp-btn lp-btn-danger">Delete account</button></div>
    </section>
   </div>
  </div>
@@ -99,7 +106,7 @@
 <dialog id="lp-delete-dialog" class="lp-delete-dialog" aria-labelledby="lp-delete-title">
  <form id="lp-delete-form">
   <h2 id="lp-delete-title">Permanently delete your LOOX account?</h2>
-  <p>This cannot be undone. Your private results, account credits and local billing history will be deleted. Cancel any paid subscription first.</p>
+  <p>This cannot be undone. Your sign-in account and associated Supabase account records will be removed. Cloudflare creator data and some stored media may require separate support cleanup. Cancel any paid subscription first.</p>
   <label for="lp-delete-password">Confirm your password</label>
   <input type="password" id="lp-delete-password" name="password" autocomplete="current-password" required>
   <label class="lp-delete-confirm"><input id="lp-delete-agree" type="checkbox" required> I understand this action is permanent.</label>
@@ -107,5 +114,5 @@
   <div class="lp-delete-actions"><button id="lp-delete-cancel" type="button" class="lp-btn lp-btn-secondary">Cancel</button><button id="lp-delete-confirm" type="submit" class="lp-btn lp-btn-danger">Permanently delete</button></div>
  </form>
 </dialog>
-<script defer src="loox-sitewide-nav.js?v=account-switch-20261121-1"></script></body>
+<script defer src="loox-sitewide-nav.js?v=security-20261121-1"></script></body>
 </html>

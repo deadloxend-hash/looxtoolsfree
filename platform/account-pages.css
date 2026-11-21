@@ -237,3 +237,6 @@ body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-option{
 }
 body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-option>span:first-child{min-width:0;overflow-wrap:anywhere}
 @media(max-width:700px){body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown{max-width:100%}body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-trigger{font-size:14px!important}}
+
+/* Security settings wrap independently from composer and profile menu rules. */
+#security .lp-setting-row{gap:16px;flex-wrap:wrap}#security .lp-setting-row>div{min-width:0;flex:1 1 220px}#security small{overflow-wrap:anywhere}#security .lp-btn{min-height:44px;white-space:normal} @media(max-width:390px){#security .lp-btn{width:100%}}

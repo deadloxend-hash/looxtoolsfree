@@ -1,4 +1,4 @@
-import {publishCreation} from './community.js?v=5';
+import {publishCreation} from './community.js?v=security-20261121-1';
 // Private media conversations; job API remains responsible for credits and files.
 const el=(tag,cls,text)=>{const n=document.createElement(tag);n.className=cls||'';if(text!=null)n.textContent=text;return n;};
 const checked=r=>{if(r.error)throw Error(r.error.message);return r.data;};

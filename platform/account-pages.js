@@ -1,4 +1,4 @@
-import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=19';
+import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=security-20261121-1';
 import {cloudRequest} from './profile-cloudflare.js?v=2';
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
@@ -134,6 +134,12 @@ function renderSettings(){
  // Do not overwrite an in-progress edit during an incidental account refresh.
  if(document.activeElement!==name)name.value=state.account.profile?.name||'';
  byId('lp-email').value=state.user.email||'';
+ byId('lp-email-verification').textContent=state.user.email_confirmed_at?'Verified email address':'Email verification required';
+ const securityOwner=state.user.id;
+ state.client?.auth.mfa.listFactors().then(({data,error})=>{
+  if(state.user?.id!==securityOwner)return;
+  byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':data?.totp?.some(f=>f.status==='verified')?'Authenticator enabled':'No verified authenticator enrolled. Contact support for enrollment assistance.';
+ }).catch(()=>{if(state.user?.id===securityOwner)byId('lp-mfa-status').textContent='Authenticator status unavailable';});
  const plan=state.account.plan||'free';
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
   ' · '+(state.account.wallet?.balance??'…')+' available credits';
@@ -216,6 +222,25 @@ if(document.body.hasAttribute('data-settings-page')){
  });
  byId('lp-password-reset').addEventListener('click',()=>auth('forgot'));
  byId('lp-sign-out').addEventListener('click',signOut);
+ byId('lp-sign-out-others').addEventListener('click',async()=>{
+  const {dialog,field,button,msg}=await import('./account.js?v=security-20261121-1');
+  const owner=state.user?.id,email=state.user?.email;if(!owner)return;
+  const {box,d}=dialog('Verify your password');
+  const form=document.createElement('form');form.className='lx-stack';
+  const password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
+  const submit=document.createElement('button');submit.type='submit';submit.className='lx-button lx-primary';submit.textContent='Sign out other devices';
+  const note=document.createElement('p');note.setAttribute('role','status');form.append(submit,note);box.append(form);
+  form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;let proof;
+   try{
+    const cfg=await config();proof=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+    const verified=await proof.auth.signInWithPassword({email,password:password.value});password.value='';
+    if(verified.error||verified.data?.user?.id!==owner)throw Error('Password verification failed.');
+    if(state.user?.id!==owner)throw Error('Account changed. Please retry.');
+    const result=await state.client.auth.signOut({scope:'others'});if(result.error)throw result.error;
+    byId('lp-security-status').textContent='Other sessions revoked. Existing access tokens may remain valid until expiry.';d.close();
+   }catch(error){msg(note,error.message||'Unable to revoke sessions.');}finally{submit.disabled=false;if(proof)await proof.auth.signOut({scope:'local'}).catch(()=>{});}
+  };
+ });
  const deleteDialog=byId('lp-delete-dialog');
  byId('lp-delete-open').addEventListener('click',()=>deleteDialog.showModal());
  byId('lp-delete-cancel').addEventListener('click',()=>deleteDialog.close());

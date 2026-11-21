@@ -1,4 +1,4 @@
-import {auth,state,initialize,pricing} from './account.js?v=19';
+import {auth,state,initialize,pricing} from './account.js?v=security-20261121-1';
 
 const $=id=>document.getElementById(id);
 const landing=document.body.classList.contains('ai-home');

@@ -1,8 +1,8 @@
-import {Community} from './community.js?v=account-switch-20261121-1';
+import {Community} from './community.js?v=security-20261121-1';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
-import {MediaSessions} from './loox-image-sessions.js?v=upgrade-20261119-1';
+import {MediaSessions} from './loox-image-sessions.js?v=security-20261121-1';
 
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=19';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=security-20261121-1';
 
 const byId=id=>document.getElementById(id);
 const create=(tag,cls,text)=>{

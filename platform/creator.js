@@ -1,5 +1,5 @@
-import {state,auth,initialize,refresh} from './account.js?v=19';
-import {Community,rpc,mediaURL,result} from './community.js?v=account-switch-20261121-1';
+import {state,auth,initialize,refresh} from './account.js?v=security-20261121-1';
+import {Community,rpc,mediaURL,result} from './community.js?v=security-20261121-1';
 import {cropAvatar} from './avatar-crop.js?v=1';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=2';
 

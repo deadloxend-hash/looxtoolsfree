@@ -1,6 +1,6 @@
-import {state,auth,initialize} from './account.js?v=19';
+import {state,auth,initialize} from './account.js?v=security-20261121-1';
 import {cloudRequest} from './profile-cloudflare.js?v=2';
-import {Community,element,action,result,mediaURL} from './community.js?v=account-switch-20261121-1';
+import {Community,element,action,result,mediaURL} from './community.js?v=security-20261121-1';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
 // Lock the underlying feed while a post or comments dialog is open.

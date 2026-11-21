@@ -50,7 +50,14 @@ async function client(){
   api.auth.onAuthStateChange((event,session)=>{
    const changed=state.user?.id!==session?.user?.id;
    state.user=session?.user||null;
-   if(changed){state.account=null;accountError='';renderHeader();document.dispatchEvent(new Event('loox-user'));}
+   if(changed){
+    // Shared-device drafts must never transfer to the next signed-in account.
+    if(window.__looxPreviousUser && window.__looxPreviousUser!==session?.user?.id){
+     for(const key of ['loox-image-generator-draft-v2','loox-creative-launch-v1'])sessionStorage.removeItem(key);
+     location.reload();
+    }
+    window.__looxPreviousUser=session?.user?.id||null;
+    state.account=null;accountError='';renderHeader();document.dispatchEvent(new Event('loox-user'));}
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>auth('reset'),0);
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
@@ -60,10 +67,10 @@ async function client(){
  return clientReady;
 }
 export async function api(action,body,extra={}){
- const c=await client(),{data}=await c.auth.getSession();if(!data.session)throw Error('Sign in to continue.');
+ const c=await client(),owner=state.user?.id,{data}=await c.auth.getSession();if(!data.session)throw Error('Sign in to continue.');
  const r=await fetch(endpoint+'?'+new URLSearchParams({action,...extra}),{method:body==null?'GET':'POST',credentials:'omit',
   headers:{Authorization:'Bearer '+data.session.access_token,...(body==null?{}:{'Content-Type':'application/json'})},body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(action==='cloud_job'?115000:60000)});
- const result=await r.json().catch(()=>({}));if(!r.ok){const e=Error(result.error||'Request failed. Please retry.');e.status=r.status;throw e;}return result;
+ const result=await r.json().catch(()=>({}));if(state.user?.id!==owner)throw Error('Account changed. Please retry.');if(!r.ok){const e=Error(result.error||'Request failed. Please retry.');e.status=r.status;throw e;}return result;
 }
 export async function refresh(){
  if(!state.user)return;
@@ -123,13 +130,42 @@ export function auth(mode='login',options={}){
  config().then(cfg=>{if(!cfg.auth){submit.disabled=true;msg(note,'Account setup is pending. You can still use all free browser tools.');}}).catch(e=>msg(note,e.message));
  withStatus(form,submit,note,async()=>{
   if(confirm&&(!strong(pass.value)||pass.value!==confirm.value))throw Error('Use a stronger password and make sure both passwords match.');
-  if(remember)localStorage.setItem(rememberKey,remember.checked?'local':'session');
+  // Commit persistence preferences only after credentials have been verified.
   const c=await client(),redirect=new URL('account.html',document.baseURI);
   let result;
   if(reg){result=await c.auth.signUp({email:email.value.trim(),password:pass.value,options:{emailRedirectTo:redirect.href,data:{full_name:full.value.trim(),loox_terms:terms}}});}
   else if(forgot){redirect.searchParams.set('flow','recovery');result=await c.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:redirect.href});}
   else if(reset){result=await c.auth.updateUser({password:pass.value});}
-  else result=await c.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
+  else {
+   // An isolated client keeps failed credentials and MFA challenges from replacing the active account.
+   const cfg=await config();
+   const candidate=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+   result=await candidate.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
+   if(result.error)throw result.error;
+   if(!result.data?.session)throw Error('Sign-in did not return a session.');
+   if((await candidate.auth.mfa.getAuthenticatorAssuranceLevel()).data?.nextLevel==='aal2'){
+    const factors=await candidate.auth.mfa.listFactors();
+    const factor=factors.data?.totp?.find(f=>f.status==='verified');
+    if(!factor)throw Error('Use your account recovery method to complete two-factor sign-in.');
+    const code=field(form,'Authenticator code','text',{required:true,maxLength:6,inputMode:'numeric',autocomplete:'one-time-code'});
+    pass.value='';
+    await new Promise((resolve,reject)=>{
+     form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;try{
+      const challenge=await candidate.auth.mfa.challengeAndVerify({factorId:factor.id,code:code.value.trim()});
+      if(challenge.error)throw challenge.error;
+      result={data:{session:challenge.data,user:result.data.user}};resolve();
+     }catch(error){msg(note,friendlyAuthError(error));}finally{submit.disabled=false;}};
+     msg(note,'Enter the six-digit code from your authenticator.');submit.disabled=false;code.focus();
+     d.addEventListener('close',()=>reject(Error('Sign-in canceled.')),{once:true});
+    });
+   }
+   const before=localStorage.getItem(rememberKey);
+   try{
+    if(remember)localStorage.setItem(rememberKey,remember.checked?'local':'session');
+    const installed=await c.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
+    if(installed.error)throw installed.error;
+   }catch(error){if(before===null)localStorage.removeItem(rememberKey);else localStorage.setItem(rememberKey,before);throw error;}
+  }
   if(result.error)throw result.error;
   if(forgot||reg){
    form.replaceChildren(el('p',forgot?'If this email has an account, check your inbox for a recovery link. Only request another email if needed.':'Registration was submitted. Check your inbox for a verification link. After verifying, return to the LOOX website and choose Sign in with the same email and password. Do not register a second time.'));
@@ -194,6 +230,20 @@ export function switchAccount(){
  }
 }
 function strong(p){return p.length>=12&&/[a-z]/i.test(p)&&/\d/.test(p);}
+function positionAccountMenu(details,menu){
+ const rect=details.querySelector('summary').getBoundingClientRect();
+ const width=Math.min(300,Math.max(240,window.innerWidth-24));
+ menu.style.setProperty('position','fixed','important');
+ menu.style.setProperty('inset','auto','important');
+ menu.style.setProperty('margin','0','important');
+ menu.style.setProperty('width',Math.min(width,window.innerWidth-24)+'px','important');
+ menu.style.setProperty('left',Math.max(12,Math.min(rect.right-width,window.innerWidth-width-12))+'px','important');
+ const top=Math.max(12,Math.min(rect.bottom+8,window.innerHeight-180));
+ menu.style.setProperty('top',top+'px','important');
+ menu.style.setProperty('max-height',Math.max(140,window.innerHeight-top-12)+'px','important');
+ menu.style.setProperty('overflow-y','auto','important');
+ menu.style.setProperty('overscroll-behavior','contain','important');
+}
 // Shared, compact account header for every LOOX page with [data-loox-account].
 // Personal information is visible only after opening the profile avatar.
 export function renderHeader(){
@@ -249,6 +299,13 @@ export function renderHeader(){
    menu.append(button('Create account',()=>{details.open=false;auth('register');},'lx-button lx-profile-auth'));
   }
   details.append(summary,menu);
+  if(typeof menu.showPopover==='function'){
+   menu.setAttribute('popover','manual');
+   details.addEventListener('toggle',()=>{
+    if(details.open){positionAccountMenu(details,menu);if(!menu.matches(':popover-open'))menu.showPopover();}
+    else if(menu.matches(':popover-open'))menu.hidePopover();
+   });
+  }
   if(menuWasOpen){details.open=true;menu.scrollTop=0;requestAnimationFrame(()=>{if(details.open)menu.scrollTop=0;});}
   host.append(details);
  }
@@ -262,7 +319,7 @@ if(typeof document!=='undefined')document.addEventListener('pointerdown',event=>
 if(typeof document!=='undefined')document.addEventListener('keydown',event=>{
  if(event.key==='Escape')document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
 });
-export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut();if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
+export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut({scope:'local'});if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
 const sections=[['profile','Account Overview'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);}
 export async function plans(host){host.replaceChildren(el('p','Explore LOOX Basic, Creator, Pro and Business with monthly billing.'),button('Compare plans and generation counts',pricing,'lx-button lx-primary'));}
@@ -316,9 +373,11 @@ if(location.search.includes('payment=return')){const note=document.querySelector
 initialize();
 }
 
-import './return-rewards.js?v=account-switch-20261121-1';
+import './return-rewards.js?v=security-20261121-1';
 
 if(typeof document!=='undefined'){
 document.addEventListener('loox-avatar-change',()=>syncAccountAvatar(state,true));
 window.addEventListener('storage',event=>{if(event.key==='loox-avatar-updated')syncAccountAvatar(state,true);});
 }
+
+if(typeof window!=='undefined')window.addEventListener('resize',()=>{document.querySelectorAll('.lx-profile-details[open]').forEach(details=>positionAccountMenu(details,details.querySelector('.lx-profile-menu')));});
