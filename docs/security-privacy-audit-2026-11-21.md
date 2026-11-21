@@ -13,7 +13,7 @@ This is a scoped engineering audit, not a penetration-test certification or lega
 | Profile menu vulnerable to ancestor clipping/stacking | Medium (UI) | Improved but Not Fully Tested | Supported browsers use native popover top layer, viewport-clamped position and bounded internal scrolling. Desktop guest popup checked visually; mobile and authenticated popup acceptance outstanding. |
 | Privacy/cookie descriptions do not describe actual mixed storage | Medium | Improved | Disclose Supabase records and legacy media, Cloudflare D1 creator/social data, R2 newer media, configured processing services, browser sessions and drafts. No universal compliance or retention promises. |
 | Cookie Settings has only a local preference reset | Low | Improved | Add Essential, Analytics, Functional and Marketing choices; Accept All, Reject Optional, custom save, versioned 180-day preference lifetime, same-origin persistence and cross-tab notifications. |
-| Legacy storage administrator policies and review RPC lack explicit AAL2 checks | High | Needs Attention — prepared for approval | Live storage INSERT/DELETE policies check admin metadata but not MFA; legacy loox_private.loox_review_creation also lacks an MFA check. The draft SQL below adds AAL2. Isolated database tests deny AAL1 upload/delete/review and allow AAL2. Not applied because this can interrupt legacy admin workflows. |
+| Legacy storage administrator policies and review RPC lack explicit AAL2 checks | High | Needs Attention — prepared for approval | Live storage INSERT/DELETE policies and the administrator branch of consented_community_media SELECT check admin metadata but not MFA; legacy loox_private.loox_review_creation also lacks an MFA check. The draft SQL below adds AAL2. Isolated database tests deny AAL1 upload/delete/review and privileged private-media reads, and allow AAL2. Not applied because this can interrupt legacy admin workflows. |
 | Leaked-password protection disabled | Medium | Needs Attention | Live Supabase advisor warning. Enable after checking plan support and auth configuration; no credential/plan setting changed. |
 | Account deletion does not demonstrate complete Cloudflare/R2 cleanup | High (privacy obligation) | Needs Attention | Existing backend deletes auth/legacy results and reference assets but does not orchestrate all D1 social/profile data and R2 generations. Settings and policy no longer promise complete cleanup. Destructive cleanup requires separately reviewed design below. |
 | Full personal-data export unavailable | Medium | Needs Attention | Offer verified support request, not a fake download of partial data. No invented export completion. |
@@ -57,7 +57,7 @@ Not ready for real payment activation. Source review and existing tests cover ra
 
 | Check | Result | Limit |
 |---|---|---|
-| Frontend Node suite | 16 passed, 0 failed | Includes failed/successful/MFA switch fixtures, avatar ownership/stale response, sessions and community tests |
+| Frontend Node suite | 17 passed, 0 failed | Includes failed/successful/MFA switch fixtures, avatar ownership/stale response, sessions and community tests |
 | Backend Node suite | 52 passed, 0 failed | Includes SQL isolation/financial tests, provider routing and two new request-security tests |
 | Live Supabase cross-account tests | Passed | Role impersonation in rolled-back transaction, not two real user browser sessions |
 | Live owner balance/subscription write checks | Passed | Rolled back; no policy mutation |
@@ -84,7 +84,7 @@ During testing an initial new test-fixture syntax error and microtask scheduling
 
 Real two-account browser navigation/switching, authenticated media uploads and generations, physical Android/iOS and authenticated mobile layouts, actual password recovery delivery, new MFA enrollment/recovery, full session inventory, complete personal-data export, complete deletion, login-abuse/CAPTCHA and auth-log alert thresholds, email alert delivery, exhaustive CSP/XSS review, provider sandbox billing, retention schedule and jurisdiction-specific legal review.
 
-Prepared database change: [admin-mfa-hardening.sql](../database/review/admin-mfa-hardening.sql). It changes two legacy storage policies and the legacy review RPC only; it has not been applied. Per the requested access-interruption rule, owner approval is required before applying it.
+Prepared database change: [admin-mfa-hardening.sql](../database/review/admin-mfa-hardening.sql). It changes three legacy storage policies and the legacy review RPC only; it has not been applied. Per the requested access-interruption rule, owner approval is required before applying it.
 
 See security-privacy-changed-files-2026-11-21.json for the exact frontend file list. Core implementation files: platform/account.js, platform/account-pages.js, platform/chat.js, platform/privacy.js, platform/privacy.css, platform/account-pages.css, settings.html, cookie-settings.html, cookie-policy.html, privacy-policy.html, terms.html, tests/account-switch-security.test.mjs. Other frontend edits load shared privacy controls and synchronize script cache versions. Backend modifications: lib/core.js and test/request-security.test.js.
 
@@ -97,9 +97,11 @@ Deployment and commit references are supplied in the completion message, since t
 - Vercel production deployment `dpl_BZxAttBADeHK9qzB5uytuejiJkuU` reached READY and received the production alias. Live config returned auth enabled, R2 configured and billing false. Unauthenticated account API returned 401; both responses included the new HSTS header.
 - The post-deployment account/wallet aggregate snapshot matched the pre-change baseline.
 - Creator-profile responsive workflow and All Tools landing workflow passed.
-- Initial broader UI audit: 108/110 viewport checks passed; the two flags involved deliberately swipeable video-editor tools. The audit now recognizes that rail using the same overflow test used for other intended editor rails. No failure was suppressed for a non-scrollable or misaligned control.
+- Initial broader UI audit (before test corrections): 108/110 viewport checks passed; the two flags involved deliberately swipeable video-editor tools. The audit now recognizes that rail using the same overflow test used for other intended editor rails. No failure was suppressed for a non-scrollable or misaligned control.
 - Initial desktop test failed because it expected an obsolete dropdown ID. The corrected test follows aria-controls; the full desktop job subsequently passed.
 - Follow-up QA commits: `fd12cbe78d0583c4d9c928aab5b0813810c24e6c` and `5ed1fddc75ae1e812722333be444ae8f3ebf2897`. The latter adds a five-size privacy browser test and includes privacy changes in workflow triggers.
-- The corrected responsive check passed all 110 viewport checks. Consent-specific checks passed at all five screen sizes. The billing audit then exposed the same obsolete dropdown ID; it has also been corrected to follow aria-controls. Final billing workflow result is in the completion message.
+- The corrected responsive check passed all 110 viewport checks. Consent-specific checks passed at all five screen sizes. The billing audit then exposed the same obsolete dropdown ID; it has also been corrected to follow aria-controls. The corrected billing UI checks passed with payments disabled. Workflow 44913961794 finished successfully, including desktop studio, 110 responsive checks, five consent sizes and billing UI.
 
 These automated UI fixtures do not replace real authenticated two-account, recovery-delivery, paid-generation, or physical-device acceptance. No production password, MFA factor, checkout, database policy or data-retention setting was changed.
+
+A final account-lifecycle guard ignores toggle events for detached profile menus and ensures blocked draft storage cannot prevent an identity-change reload. The frontend suite passes 17 tests, including a blocked-storage identity-change regression. No production credentials were used for this test.

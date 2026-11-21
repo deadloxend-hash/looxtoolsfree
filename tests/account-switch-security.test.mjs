@@ -18,3 +18,13 @@ function fixture({failed=false,mfa=false}={}){
 test('failed account switch never installs session or changes persistence',async()=>{const f=fixture({failed:true});await assert.rejects(f.run(),/Invalid credentials/);assert.equal(f.installed,0);assert.equal(f.remember,'local');assert.equal(f.reloads,0)});
 test('successful switch installs verified session and clears workspace through reload',async()=>{const f=fixture();await f.run();assert.equal(f.installed,1);assert.equal(f.reloads,1)});
 test('MFA switch installs only the challenged session',async()=>{const f=fixture({mfa:true});const pending=f.run();await new Promise(resolve=>setImmediate(resolve));assert.equal(f.installed,0);await f.form.onsubmit({preventDefault(){}});await pending;assert.equal(f.installed,1);assert.equal(f.reloads,1)});
+test('blocked draft storage cannot prevent clearing private account state on identity change',()=>{
+ const start=source.indexOf('api.auth.onAuthStateChange(')+'api.auth.onAuthStateChange('.length;
+ const end=source.indexOf('\n  });',start);
+ const callback=source.slice(start,end+4);
+ let reloads=0;
+ const context={state:{user:{id:'A'},account:{wallet:{balance:25}}},previousIdentity:'A',accountError:'',sessionStorage:{removeItem(){throw Error('Storage blocked')}},location:{reload(){reloads++}},renderHeader(){},document:{dispatchEvent(){}},Event:class{},setTimeout(){}};
+ vm.runInNewContext('handler='+callback,context);
+ context.handler('SIGNED_IN',{user:{id:'B'}});
+ assert.equal(reloads,1);assert.equal(context.state.user.id,'B');assert.equal(context.state.account,null);
+});

@@ -14,6 +14,20 @@ using (
  and coalesce(auth.jwt()->'app_metadata'->>'loox_template_admin','false')='true'
  and auth.jwt()->>'aal'='aal2'
 );
+-- Keep public and owner access; only the privileged administrator branch gains MFA.
+alter policy consented_community_media on storage.objects to anon,authenticated
+using (
+ bucket_id='loox-results'
+ and exists (
+  select 1 from public.loox_community_posts p
+  where p.media_path=objects.name
+  and (
+   loox_private.public_post(p.id)
+   or p.creator_id=auth.uid()
+   or (coalesce(auth.jwt()->'app_metadata'->>'loox_template_admin','false')='true' and auth.jwt()->>'aal'='aal2')
+  )
+ )
+);
 create or replace function loox_private.loox_review_creation(p_id uuid,p_status text)
 returns void language plpgsql security definer set search_path='' as $function$
 begin

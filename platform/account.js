@@ -5,7 +5,7 @@ export const labels={fill:'Generative Fill',background:'Background removal',upsc
 const proposal=[{id:'free',price_cents:0,credits:25},{id:'creator',price_cents:1200,credits:500},{id:'pro',price_cents:2900,credits:1500},{id:'business',price_cents:6900,credits:4000}];
 const planName={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',creator_yearly:'LOOX Creator',pro:'LOOX Pro',pro_yearly:'LOOX Pro',business:'LOOX Business',business_yearly:'LOOX Business',lifetime:'Legacy Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
-let loading,library,clientReady,modal,refreshTask,accountError='';
+let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='';
 export function el(tag,text,cls){
  const node=document.createElement(tag);if(text!=null)node.textContent=text;if(cls)node.className=cls;return node;
 }
@@ -52,11 +52,11 @@ async function client(){
    state.user=session?.user||null;
    if(changed){
     // Shared-device drafts must never transfer to the next signed-in account.
-    if(window.__looxPreviousUser && window.__looxPreviousUser!==session?.user?.id){
-     for(const key of ['loox-image-generator-draft-v2','loox-creative-launch-v1'])sessionStorage.removeItem(key);
+    if(previousIdentity && previousIdentity!==session?.user?.id){
+     try{for(const key of ['loox-image-generator-draft-v2','loox-creative-launch-v1'])sessionStorage.removeItem(key);}catch{/* Reload still clears private in-memory state when storage is unavailable. */}
      location.reload();
     }
-    window.__looxPreviousUser=session?.user?.id||null;
+    previousIdentity=session?.user?.id||null;
     state.account=null;accountError='';renderHeader();document.dispatchEvent(new Event('loox-user'));}
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>auth('reset'),0);
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
@@ -302,6 +302,7 @@ export function renderHeader(){
   if(typeof menu.showPopover==='function'){
    menu.setAttribute('popover','manual');
    details.addEventListener('toggle',()=>{
+    if(!details.isConnected||!menu.isConnected)return;
     if(details.open){positionAccountMenu(details,menu);if(!menu.matches(':popover-open'))menu.showPopover();}
     else if(menu.matches(':popover-open'))menu.hidePopover();
    });
