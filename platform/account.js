@@ -20,7 +20,21 @@ export async function config(){
  }).catch(()=>{loading=null;throw Error('The LOOX account service is unavailable. Please try again later.');});
  return loading;
 }
-const rememberKey='loox-auth-storage',sessionKey='loox-account-v1';
+const rememberKey='loox-auth-storage',sessionKey='loox-account-v1',recentAccountsKey='loox-recent-accounts-v1';
+function recentAccounts(){
+ try{
+  const parsed=JSON.parse(localStorage.getItem(recentAccountsKey)||'[]');
+  if(!Array.isArray(parsed))return [];
+  return [...new Set(parsed.filter(value=>typeof value==='string'&&value.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)).map(value=>value.toLowerCase()))].slice(0,5);
+ }catch{return [];}
+}
+function rememberRecentAccount(email){
+ const value=String(email||'').trim().toLowerCase();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)||value.length>254)return;
+ try{localStorage.setItem(recentAccountsKey,JSON.stringify([value,...recentAccounts().filter(e=>e!==value)].slice(0,5)));}
+ catch{/* Blocked storage must not prevent a login. */}
+}
+
 function store(){return localStorage.getItem(rememberKey)==='session'?sessionStorage:localStorage;}
 function hasStoredSession(){return Boolean(localStorage.getItem(sessionKey)||sessionStorage.getItem(sessionKey));}
 const authStorage={getItem:k=>localStorage.getItem(k)??sessionStorage.getItem(k),setItem:(k,v)=>{const target=store();target.setItem(k,v);(target===localStorage?sessionStorage:localStorage).removeItem(k);},removeItem:k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);}};
@@ -76,12 +90,17 @@ function friendlyAuthError(err){
 function withStatus(form,submit,status,call){
  form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;msg(status,'');try{await call();}catch(err){msg(status,friendlyAuthError(err));}finally{submit.disabled=false;}};
 }
-export function auth(mode='login'){
+export function auth(mode='login',options={}){
  const titles={login:'Welcome back',register:'Create your LOOX account',forgot:'Forgot your password?',reset:'Choose a new password'};
- const {box,d}=dialog(titles[mode]);const form=el('form',null,'lx-stack');box.append(form);
+ const switching=mode==='login'&&Boolean(options.switching);
+ const previousUserId=state.user?.id||null;
+ const {box,d}=dialog(switching?'Sign in to another account':titles[mode]);
+ if(switching)box.append(el('p','Your current LOOX account stays signed in until the new account is verified.','lx-note'));
+ const form=el('form',null,'lx-stack');box.append(form);
  const reg=mode==='register', reset=mode==='reset', forgot=mode==='forgot';
  const full=reg&&field(form,'Full name','text',{required:true,maxLength:80,autocomplete:'name'});
  const email=!reset&&field(form,'Email address','email',{required:true,autocomplete:'email',maxLength:254});
+ if(email&&mode==='login'&&typeof options.email==='string')email.value=options.email.slice(0,254);
  const pass=!forgot&&field(form,reset?'New password':'Password','password',{required:true,minLength:reg||reset?12:1,maxLength:128,autocomplete:reg||reset?'new-password':'current-password'});
  const confirm=(reg||reset)&&field(form,'Confirm password','password',{required:true,autocomplete:'new-password'});
  if(pass){
@@ -116,8 +135,59 @@ export function auth(mode='login'){
    return;
   }
   if(reset){await c.auth.signOut();history.replaceState(null,'','account.html');auth();return;}
-  d.close();await refresh();
+  if(mode==='login'&&remember?.checked)rememberRecentAccount(result.data?.user?.email||email.value.trim());
+  d.close();
+  // Reload creative workspaces after a successful switch to clear previous-user media.
+  if(switching&&previousUserId!==(result.data?.user?.id||state.user?.id)){
+   location.reload();return;
+  }
+  await refresh();
  });
+}
+function ensureSwitcherStyles(){
+ if(document.querySelector('link[data-loox-account-switcher]'))return;
+ const style=el('link');style.rel='stylesheet';
+ style.href=new URL('./account-switcher.css?v=1',import.meta.url).href;
+ style.dataset.looxAccountSwitcher='';document.head.append(style);
+}
+export function switchAccount(){
+ if(!state.user){auth('login');return;}
+ document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
+ ensureSwitcherStyles();
+ const currentEmail=String(state.user.email||'').trim().toLowerCase();
+ if(currentEmail&&store()===localStorage)rememberRecentAccount(currentEmail);
+ const {box,d}=dialog('Switch account');
+ d.classList.add('loox-switch-dialog');
+ box.append(el('p','Choose an account. Your current account stays active unless another sign-in succeeds.','loox-switch-note'));
+ const current=el('div',null,'loox-switch-current');
+ const avatar=el('span',String(state.account?.profile?.name||state.user.user_metadata?.full_name||currentEmail||'L').slice(0,1).toUpperCase(),'loox-switch-avatar');
+ avatar.setAttribute('aria-hidden','true');
+ const identity=el('span',null,'loox-switch-copy');
+ identity.append(el('strong',String(state.account?.profile?.name||state.user.user_metadata?.full_name||'Current account')));
+ identity.append(el('small',currentEmail));
+ current.append(avatar,identity,el('span','Current','loox-switch-status'));
+ box.append(current);
+ const others=recentAccounts().filter(email=>email!==currentEmail);
+ if(others.length){
+  box.append(el('strong','Other accounts on this device','loox-switch-heading'));
+  const list=el('div',null,'loox-switch-list');
+  for(const email of others){
+   const option=button('',()=>auth('login',{switching:true,email}),'loox-switch-choice');
+   const icon=el('span',email.slice(0,1).toUpperCase(),'loox-switch-avatar');icon.setAttribute('aria-hidden','true');
+   const copy=el('span',null,'loox-switch-copy');
+   copy.append(el('strong',email),el('small','Sign in to switch'));
+   option.append(icon,copy);list.append(option);
+  }
+  box.append(list);
+ }
+ const another=button('',()=>auth('login',{switching:true}),'loox-switch-add');
+ another.append(el('span','+','loox-switch-plus'),el('span','Use another account','loox-switch-copy'));
+ box.append(another);
+ box.append(el('p','Only previously used email addresses are remembered on this device. Passwords and extra login sessions are not saved by this account chooser.','loox-switch-privacy'));
+ if(recentAccounts().length){
+  const clear=button('Forget account suggestions',()=>{try{localStorage.removeItem(recentAccountsKey);}catch{}d.close();switchAccount();},'loox-switch-forget');
+  box.append(clear);
+ }
 }
 function strong(p){return p.length>=12&&/[a-z]/i.test(p)&&/\d/.test(p);}
 // Shared, compact account header for every LOOX page with [data-loox-account].
@@ -162,6 +232,9 @@ export function renderHeader(){
    const links=el('div',null,'lx-profile-links');
    for(const [id,label] of sections){if(['credits','subscription','history'].includes(id))continue;links.append(link(label,id==='settings'?'settings.html':'account.html#'+id));}
    menu.append(links,link('Billing & Credits','settings.html#billing'));
+   const switchButton=button('Switch account',switchAccount,'lx-link lx-profile-switch-account');
+   switchButton.setAttribute('aria-label','Switch to another LOOX account');
+   menu.append(switchButton);
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
   }else if(restoring){
