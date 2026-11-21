@@ -2810,3 +2810,36 @@ body.loox-generator-no-topnav > header.lig-header .lx-profile-details[open] > .l
   padding:7px 2px!important;
  }
 }
+
+
+/* V111 — prevent wallet and Upgrade button from colliding in narrow popovers. */
+@media(max-width:790px){
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-credits{
+  display:flex!important;flex-direction:column!important;
+  width:100%!important;min-width:0!important;box-sizing:border-box!important;
+  gap:8px!important;padding:10px!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-credit-top{
+  display:flex!important;flex-wrap:wrap!important;
+  align-items:center!important;justify-content:space-between!important;
+  min-width:0!important;gap:4px 8px!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-credit-top > *{
+  max-width:100%!important;overflow-wrap:anywhere!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-premium{
+  display:grid!important;grid-template-columns:20px minmax(0,1fr) auto!important;
+  align-items:center!important;column-gap:7px!important;
+  min-width:0!important;width:100%!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-premium > strong{
+  min-width:0!important;font-size:11px!important;
+  white-space:normal!important;overflow-wrap:break-word!important;
+ }
+ body.loox-sitewide-active .lx-profile-menu.loox-account-popover .loox-popover-upgrade{
+  flex-shrink:0!important;grid-column:3!important;
+  width:auto!important;min-width:0!important;max-width:100%!important;
+  margin:0!important;padding:5px 9px!important;
+  font-size:11px!important;white-space:nowrap!important;
+ }
+}
