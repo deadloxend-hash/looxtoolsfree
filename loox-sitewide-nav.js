@@ -613,6 +613,7 @@
   faq:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 1 1 4.4 1.9c-1.1 1-1.9 1.4-1.9 2.7M12 17h.01"/>',
   bug:'<path d="M8 4 7 2m9 2 1-2M5 12H2m20 0h-3M6 8 3.8 6m14.4 0L20 8M6 17l-2.2 2m14.4-2 1.8 2"/><rect x="6" y="5" width="12" height="16" rx="6"/><path d="M6 12h12M12 12v9"/>',
   logout:'<path d="M10 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h5"/><path d="m15 7 5 5-5 5M20 12H9"/>',
+  switch:'<path d="M7 7h14m-4-4 4 4-4 4M17 17H3m4-4-4 4 4 4"/>',
   crown:'<path d="M2 7 7 11 12 4 17 11 22 7l-2 12H4L2 7z"/>',
   account:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="9" r="3"/><path d="M5.5 19c.8-4 12.2-4 13 0"/>'
  };
@@ -646,6 +647,7 @@
   const name=identity?.querySelector('.lx-profile-name')?.textContent?.trim();
   if(!name)return;
   const originalSignout=menu.querySelector('.lx-profile-signout');
+  const originalSwitch=menu.querySelector('.lx-profile-switch-account');
   const existingLinks=menu.querySelector('.lx-profile-links');
   const plan=looxAccountModule?.state?.account?.plan;
   const planText={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',pro:'LOOX Pro',business:'LOOX Business',lifetime:'LOOX Lifetime'}[plan]||'Account plan';
@@ -674,6 +676,12 @@
   premium.append(upgrade);
   creditBox.append(balanceRow,accent,premium);
   identity.after(creditBox);
+  if(originalSwitch){
+   creditBox.after(originalSwitch);
+   originalSwitch.classList.add('loox-popover-switch');
+   originalSwitch.textContent='Switch account';
+   originalSwitch.insertAdjacentHTML('afterbegin',accountGlyph('switch'));
+  }
   if(existingLinks){
    existingLinks.replaceChildren();
    existingLinks.classList.add('loox-popover-links');
