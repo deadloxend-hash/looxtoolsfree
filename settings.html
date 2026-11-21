@@ -11,7 +11,7 @@
 <title>Account Settings | LOOX AI</title>
 <link rel="stylesheet" href="platform/platform.css?v=upgrade-20261119-1">
 <link rel="stylesheet" href="platform/account-pages.css?v=security-20261121-1">
-<script defer src="loox-experience.js?v=upgrade-20261119-1"></script><script type="module" src="platform/account-pages.js?v=security-20261121-1"></script>
+<script defer src="loox-experience.js?v=upgrade-20261119-1"></script><script type="module" src="platform/account-pages.js?v=security-20261121-2"></script>
 <link rel="stylesheet" href="loox-sitewide-nav.css?v=account-switch-20261121-1"><link rel="stylesheet" href="platform/loox-dropdowns.css?v=upgrade-20261119-1"><script defer src="platform/loox-dropdowns.js?v=upgrade-20261119-1"></script><script defer src="platform/privacy.js?v=1"></script></head>
 <body class="lx-shell lp-page" data-settings-page>
 <header class="lx-header lp-header">
@@ -72,7 +72,8 @@
     <div class="lp-setting-row"><div><strong>Other sessions</strong><small>Verify your password to revoke other sign-ins. Previously issued access tokens may work until they expire.</small></div><button id="lp-sign-out-others" type="button" class="lp-btn lp-btn-secondary">Sign out other devices</button></div>
     <p id="lp-security-status" role="status" class="lp-form-status"></p>
     <div class="lp-setting-row"><div><strong>Privacy preferences</strong><small>Review or withdraw optional browser-storage choices.</small></div><button type="button" data-loox-privacy-open class="lp-btn lp-btn-secondary">Cookie Settings</button></div>
-    <div class="lp-setting-row"><div><strong>Personal data and recovery</strong><small>Use the password reset above for email recovery. Request a full export, including creator data and media, from support after identity verification.</small></div><a class="lp-btn lp-btn-secondary" href="support.html">Request data export</a></div>
+    <div class="lp-setting-row"><div><strong>Download account records</strong><small>JSON download of account, credit, payment, job and conversation records retained in Supabase. Password verification is required. Original media and Cloudflare social data are excluded.</small></div><button id="lp-data-export" type="button" class="lp-btn lp-btn-secondary">Download account records</button></div>
+    <div class="lp-setting-row"><div><strong>Full export and recovery</strong><small>Use the password reset above for email recovery. Request a full export, including creator data and media, from support after identity verification.</small></div><a class="lp-btn lp-btn-secondary" href="support.html">Request data export</a></div>
    </section>
    <section id="billing" class="lp-settings-card lp-billing-card" aria-labelledby="lp-billing-title">
     <div class="lp-settings-card-header"><span class="lp-section-icon" aria-hidden="true">✧</span><div><h2 id="lp-billing-title">Billing &amp; Credits</h2><p>View your current balance, credit usage, recharge options and subscription in one place.</p></div></div>

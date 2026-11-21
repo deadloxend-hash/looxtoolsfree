@@ -16,7 +16,7 @@ This is a scoped engineering audit, not a penetration-test certification or lega
 | Legacy storage administrator policies and review RPC lack explicit AAL2 checks | High | Needs Attention — prepared for approval | Live storage INSERT/DELETE policies and the administrator branch of consented_community_media SELECT check admin metadata but not MFA; legacy loox_private.loox_review_creation also lacks an MFA check. The draft SQL below adds AAL2. Isolated database tests deny AAL1 upload/delete/review and privileged private-media reads, and allow AAL2. Not applied because this can interrupt legacy admin workflows. |
 | Leaked-password protection disabled | Medium | Needs Attention | Live Supabase advisor warning. Enable after checking plan support and auth configuration; no credential/plan setting changed. |
 | Account deletion does not demonstrate complete Cloudflare/R2 cleanup | High (privacy obligation) | Needs Attention | Existing backend deletes auth/legacy results and reference assets but does not orchestrate all D1 social/profile data and R2 generations. Settings and policy no longer promise complete cleanup. Destructive cleanup requires separately reviewed design below. |
-| Full personal-data export unavailable | Medium | Needs Attention | Offer verified support request, not a fake download of partial data. No invented export completion. |
+| Complete cross-service personal-data export unavailable | Medium | Improved but Not Fully Tested; complete export Needs Attention | Added an explicitly scoped JSON account-record download: server password verification, enrolled-MFA assurance check, owner filters, owned-thread message access, stable pagination and payload/query limits. Original media, D1 social data and some support/security/legacy records remain excluded and need support. No claim of a complete archive. |
 | Payment/security alert email delivery unconfigured | High before payments | Needs Attention | Source requires SECURITY_ALERT_EMAIL, SECURITY_ALERT_FROM and RESEND_API_KEY; these names are absent from inspected Vercel settings. No emails sent and no secrets exposed. |
 | Several Vercel secrets use readable encrypted rather than sensitive storage | Medium | Needs Attention | Worker, migration and one legacy provider credential flagged readable-secret by Vercel metadata. No values retrieved or rotated. Review sensitive-variable conversion and remove obsolete credentials with a tested rollback plan. |
 | JSON request bounds not enforced by shared helper | Medium (defense in depth) | Improved | Enforce 4.5 MB bounds on declared size, encoded string bytes and parsed object bytes, matching the hosting request ceiling. Add regression tests. |
@@ -47,7 +47,7 @@ Browser preferences are not encrypted credentials or a server-side consent ledge
 
 Settings displays actual email verification and verified TOTP factor status. Password reset uses Supabase recovery. A current-browser description is shown without inventing a device inventory. Other-session revocation requires password verification through an isolated client. It does not promise instantaneous access-token invalidation. No fake login history or security events are displayed.
 
-TOTP sign-in challenges are supported for already enrolled factors; new MFA enrollment/recovery management and a complete session/device inventory are not shipped in this change. Full export and cross-service deletion need additional implementation. Support requests are the available route and must verify identity before releasing data.
+TOTP sign-in challenges are supported for already enrolled factors; new MFA enrollment/recovery management and a complete session/device inventory are not shipped in this change. Complete cross-service export and deletion need additional implementation. Core account records can now be downloaded separately as a clearly scoped JSON. Support requests are the available route and must verify identity before releasing data.
 
 ## Payment readiness
 
@@ -58,7 +58,7 @@ Not ready for real payment activation. Source review and existing tests cover ra
 | Check | Result | Limit |
 |---|---|---|
 | Frontend Node suite | 17 passed, 0 failed | Includes failed/successful/MFA switch fixtures, avatar ownership/stale response, sessions and community tests |
-| Backend Node suite | 52 passed, 0 failed | Includes SQL isolation/financial tests, provider routing and two new request-security tests |
+| Backend Node suite | 55 passed, 0 failed | Includes SQL isolation/financial tests, provider routing and two request-security tests and three account-export security tests |
 | Live Supabase cross-account tests | Passed | Role impersonation in rolled-back transaction, not two real user browser sessions |
 | Live owner balance/subscription write checks | Passed | Rolled back; no policy mutation |
 | Account/wallet preservation snapshot | Unchanged | Aggregate snapshot only, concurrent use can change future values |
@@ -105,3 +105,13 @@ Deployment and commit references are supplied in the completion message, since t
 These automated UI fixtures do not replace real authenticated two-account, recovery-delivery, paid-generation, or physical-device acceptance. No production password, MFA factor, checkout, database policy or data-retention setting was changed.
 
 A final account-lifecycle guard ignores toggle events for detached profile menus and ensures blocked draft storage cannot prevent an identity-change reload. The frontend suite passes 17 tests, including a blocked-storage identity-change regression. No production credentials were used for this test.
+
+## Continued safe work: account-record download
+
+The requested continuation adds a password-verified account-record JSON download in Settings → Security & Privacy. It exports selected account fields, wallet/credit records, payment/subscription records, job metadata, conversations and generation sessions retained in Supabase. It excludes original files, Cloudflare D1 social/profile data and some support/security/legacy records, as stated both before downloading and inside the JSON. It is not presented as a complete archive.
+
+The backend derives ownership from the authenticated user, ignores any requested owner ID, fetches messages only through owned threads, and never selects tokens, provider state, raw keys or abuse fingerprints. It revokes the isolated verification session, requires AAL2 if verified factors are present, rate-limits attempts, paginates through server page caps and rejects exports exceeding safe query/response limits rather than returning a partial download. Records are collected page by page, not in a database snapshot; concurrent edits may appear in a later export.
+
+All queried columns were checked against the live schema without retrieving user rows. The backend suite passes 55 tests and frontend suite passes 17. The added tests cover ownership filters, thread scoping, pagination, oversized-data rejection, wrong passwords, MFA checks and verification-session cleanup. Actual download with a real user password remains an acceptance task; no user password or production export was collected during this audit. Backend export implementation commit: `65eb35b12e33d24229bb6cffa0fc4b56c93a8ba1`.
+
+Additional backend files: api/loox.js, lib/account-export.js, test/account-export.test.js. The Privacy Policy now names the model-processing integrations seen in source rather than referring only to unspecified external services.

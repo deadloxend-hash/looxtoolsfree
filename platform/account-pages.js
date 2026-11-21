@@ -221,6 +221,25 @@ if(document.body.hasAttribute('data-settings-page')){
   }catch{setStatus(status,'Unable to save your preferences on this device.',true);}
  });
  byId('lp-password-reset').addEventListener('click',()=>auth('forgot'));
+ byId('lp-data-export').addEventListener('click',async()=>{
+  const {dialog,field,msg}=await import('./account.js?v=security-20261121-1');
+  const owner=state.user?.id;if(!owner)return;
+  const {box,d}=dialog('Download account records');
+  const explanation=document.createElement('p');explanation.textContent='This JSON contains account, credit, billing, job and conversation records. It excludes original media files and Cloudflare creator/social data. Use Support for a complete cross-service export. Store the downloaded file privately.';
+  const form=document.createElement('form');form.className='lx-stack';
+  const password=field(form,'Confirm your password','password',{required:true,maxLength:128,autocomplete:'current-password'});
+  const submit=document.createElement('button');submit.type='submit';submit.className='lx-button lx-primary';submit.textContent='Download JSON';
+  const note=document.createElement('p');note.setAttribute('role','status');form.append(submit,note);box.append(explanation,form);
+  form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;msg(note,'Verifying and collecting your records…');
+   const value=password.value;password.value='';
+   try{
+    const data=await api('export_account',{password:value});if(state.user?.id!==owner)return;
+    const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download='loox-account-records-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
+    msg(note,'Your account-record download is ready. Original media and Cloudflare social data are not included.');
+   }catch(error){msg(note,error.message||'Unable to export records. Please use Support.');}finally{submit.disabled=false;}
+  };
+ });
  byId('lp-sign-out').addEventListener('click',signOut);
  byId('lp-sign-out-others').addEventListener('click',async()=>{
   const {dialog,field,button,msg}=await import('./account.js?v=security-20261121-1');
