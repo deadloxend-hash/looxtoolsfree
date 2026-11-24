@@ -13,7 +13,7 @@ async function config(){
 
 const kind=document.body.dataset.creativeMode,video=kind==='video';
 const prompt=document.getElementById('creative-prompt'),model=document.getElementById('creative-model'),status=document.getElementById('creative-landing-status');
-const aspectControls=(await import('./aspect-controls.js?v=1')).mountLandingAspectControls();
+const aspectControls=(await import('./aspect-controls.js?v=settings-2-20261124')).mountLandingAspectControls();
 const key='loox-creative-launch-v1',destination=video?'ai-video-generator.html':'ai-text-to-image.html';
 // Landing pages always start with a blank, real input. Previous homepage drafts
 // and generator launch data must never be restored into the landing composer.

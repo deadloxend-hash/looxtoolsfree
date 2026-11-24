@@ -1,5 +1,5 @@
-import {mountAspectControls} from './aspect-controls.js?v=1';
-import {mountVideoControls} from './video-controls.js?v=security-20261121-1';
+import {mountAspectControls} from './aspect-controls.js?v=settings-2-20261124';
+import {mountVideoControls} from './video-controls.js?v=settings-2-20261124';
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
 import {state,initialize,auth,api,refresh} from './account.js?v=settings-2-20261124';
 const $=s=>document.querySelector(s),node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};

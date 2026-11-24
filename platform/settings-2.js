@@ -1,6 +1,6 @@
 import {state,api,refresh,auth,switchAccount,signOut,initialize} from './account.js?v=settings-2-20261124';
-import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=2';
-import {cropAvatar} from './avatar-crop.js?v=1';
+import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=settings-2-20261124';
+import {cropAvatar} from './avatar-crop.js?v=settings-2-20261124';
 const $=id=>document.getElementById(id);
 const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text)n.textContent=text;if(cls)n.className=cls;return n;};
 const categories=[['general','General','sliders'],['personalization','Personalization','palette'],['profile','Profile','user'],['ai-preferences','AI Preferences','sparkles'],['notifications','Notifications','bell'],['data-controls','Data Controls','database'],['privacy','Privacy','shield'],['security','Security','lock'],['devices','Devices & Sessions','monitor'],['connected','Connected Accounts','link'],['billing','Billing & Credits','wallet'],['storage','Storage & Collections','folder'],['accessibility','Accessibility','eye'],['help','Help & Support','help'],['about','About LOOX','info']];

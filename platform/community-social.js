@@ -1,5 +1,5 @@
-import {trackMeaningfulView} from './community-watch.js?v=1';
-import {cloudRequest} from './profile-cloudflare.js?v=2';
+import {trackMeaningfulView} from './community-watch.js?v=settings-2-20261124';
+import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
 // Persistent social controls. User-generated text is always rendered as textContent.
 // Helpers are injected to keep this module independent of the existing generator.
 export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,modal,field}){

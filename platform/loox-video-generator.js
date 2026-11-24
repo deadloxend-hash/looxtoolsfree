@@ -1,7 +1,7 @@
-import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=2';
-import {Community} from './community.js?v=security-20261121-1';
-import {mountModelPicker} from './loox-model-picker.js?v=9';
-import {MediaSessions} from './loox-image-sessions.js?v=security-20261121-1';
+import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=settings-2-20261124';
+import {Community} from './community.js?v=settings-2-20261124';
+import {mountModelPicker} from './loox-model-picker.js?v=settings-2-20261124';
+import {MediaSessions} from './loox-image-sessions.js?v=settings-2-20261124';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated

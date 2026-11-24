@@ -1,7 +1,7 @@
 import {setupSettings} from './settings-2.js?v=settings-2-20261124';
 import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=settings-2-20261124';
-import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=1';
-import {cloudRequest} from './profile-cloudflare.js?v=2';
+import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=settings-2-20261124';
+import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
 if(document.body.hasAttribute('data-settings-page'))setupSettings();
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
@@ -274,7 +274,7 @@ if(document.body.hasAttribute('data-settings-page')){
    const value=password.value;password.value='';
    try{
     const data=await api('export_account',{password:value});if(state.user?.id!==owner||!d.open)return;
-    const {groupMedia,buildPrivateArchive}=await import('./privacy-data.js?v=1');
+    const {groupMedia,buildPrivateArchive}=await import('./privacy-data.js?v=settings-2-20261124');
     const authHost=new URL((await config()).url).hostname,groups=groupMedia(data.media||[],owner,authHost);
     savePrivateDownload(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),'loox-personal-data-'+new Date().toISOString().slice(0,10)+'.json');
     groups.forEach((part,index)=>{

@@ -1,4 +1,4 @@
-import {cloudRequest,cloudImage,invalidateCloudImage} from './profile-cloudflare.js?v=2';
+import {cloudRequest,cloudImage,invalidateCloudImage} from './profile-cloudflare.js?v=settings-2-20261124';
 let owner=null,url=null,task=null,checked=0,epoch=0;
 const holders=()=>document.querySelectorAll('[data-loox-account] .lx-avatar,[data-loox-account] .loox-popover-avatar,.loox-sidebar-avatar');
 export function paintAccountAvatar(){

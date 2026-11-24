@@ -12,7 +12,7 @@
    css.href=new URL('platform/loox-dropdowns.css?v=sitewide-20261120-1',document.currentScript?.src||location.href).href;
    if(!document.querySelector('link[href*="loox-dropdowns.css"]'))document.head.append(css);
    const script=document.createElement('script');
-   script.src=new URL('platform/loox-dropdowns.js?v=sitewide-20261120-1',document.currentScript?.src||location.href).href;
+   script.src=new URL('platform/loox-dropdowns.js?v=settings-2-20261124',document.currentScript?.src||location.href).href;
    script.defer=true;
    document.head.append(script);
  }
@@ -391,7 +391,7 @@
  const navStyle=el('link');navStyle.rel='stylesheet';
  navStyle.href=url('platform/workspace-navigation.css?v=14');
  document.head.append(navStyle);
- import(url('platform/workspace-navigation.js?v=10')).then(({mountWorkspaceNavigation})=>{
+ import(url('platform/workspace-navigation.js?v=settings-2-20261124')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
@@ -719,7 +719,7 @@
 
  // The shared account module owns avatar loading and authentication timing.
  let sharedAvatar=null;
- import(url('platform/account-avatar.js?v=1')).then(module=>{sharedAvatar=module;syncAccountHeader();});
+ import(url('platform/account-avatar.js?v=settings-2-20261124')).then(module=>{sharedAvatar=module;syncAccountHeader();});
  function syncCreatorAvatar(){if(looxAccountModule){sharedAvatar?.syncAccountAvatar(looxAccountModule.state);sharedAvatar?.paintAccountAvatar();}}
  function syncAccountHeader(){
   const credit=account.querySelector('.lx-credit-chip');
@@ -791,7 +791,7 @@
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=upgrade-20261119-1');document.head.append(style);
  }
- import(url('platform/mobile-viewport.js?v=1'));
+ import(url('platform/mobile-viewport.js?v=settings-2-20261124'));
  import(url('platform/account.js?v=settings-2-20261124')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);

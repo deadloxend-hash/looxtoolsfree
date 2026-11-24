@@ -1,4 +1,4 @@
-import {syncAccountAvatar} from './account-avatar.js?v=1';
+import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
 export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image',generate_video:'Text to video',enhance:'Image enhancer',uncrop:'Generative uncrop',restore:'Old photo restorer',retouch:'Skin retoucher',face_restore:'Face restoration',face_swap:'Face swap'};
@@ -342,7 +342,7 @@ export function nextAccountUrl(page){
 }
 export async function buyCredits(){
  if(!document.querySelector('link[data-recharge-style]')){const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('./billing/recharge.css',import.meta.url).href;css.dataset.rechargeStyle='';document.head.append(css);}
- const {openRecharge}=await import('./billing/recharge.js?v=1');return openRecharge({state,api,config,auth,dialog,el,button,refresh});
+ const {openRecharge}=await import('./billing/recharge.js?v=settings-2-20261124');return openRecharge({state,api,config,auth,dialog,el,button,refresh});
 }
 export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
 export async function initialize({publicAccess=false,waitForAccount=true}={}){
@@ -386,7 +386,7 @@ if(location.search.includes('payment=return')){const note=document.querySelector
 initialize();
 }
 
-import './return-rewards.js?v=security-20261121-1';
+import './return-rewards.js?v=settings-2-20261124';
 
 if(typeof document!=='undefined'){
 document.addEventListener('loox-avatar-change',()=>syncAccountAvatar(state,true));
