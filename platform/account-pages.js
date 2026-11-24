@@ -114,6 +114,7 @@ function renderBilling(){
   [recordDate(item.created_at),billingNames[item.plan]||item.plan||'Subscription',money(Number(item.amount_cents||0)),item.status||'Pending'].filter(Boolean).join(' · '));
  if(rechargeItems)for(const item of rechargeItems.slice(0,20))payments.push(
   [recordDate(item.created_at),item.package_id||'Credit recharge',money(Number(item.amount_cents||0)),item.status||'Pending'].filter(Boolean).join(' · '));
+ if(account.unavailable?.includes('payments'))payments.push('Subscription payment history is temporarily unavailable. Retry billing.');
  if(rechargeError)payments.push(rechargeError);
  historyRows('lp-billing-transaction-history',payments,rechargeItems===null?'Loading recharge history…':'No transactions to display.');
  fetchRechargeHistory();
@@ -184,6 +185,7 @@ function renderSettings(){
  loadSecurity();
 }
 if(document.body.hasAttribute('data-settings-page')){
+ document.addEventListener('loox-billing-retry',()=>{rechargeOwner=null;rechargeItems=null;rechargeError='';if(state.account)renderBilling();});
  document.addEventListener('loox-security-retry',()=>loadSecurity(true));
  document.addEventListener('loox-user',renderSettings);
  document.addEventListener('loox-account',renderSettings);
