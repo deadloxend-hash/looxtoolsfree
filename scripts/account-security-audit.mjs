@@ -48,7 +48,7 @@ try{
   await page.getByText('Authenticator enabled. Your next sign-in will request a code.',{exact:true}).waitFor();
   assert.equal(await page.locator('#lp-mfa-enable').isHidden(),true);
   assert.equal(await page.locator('.lp-mfa-qr').count(),0,'Setup QR must be removed after verification');
-  needsSupport=true;await page.goto(base+'settings.html#data-controls');await page.getByText(/This account needs a verified support review/).waitFor();
+  needsSupport=true;await page.goto(base+'settings.html#data-controls');await page.reload();await page.getByText(/This account needs a verified support review/).waitFor();
   assert.equal(await page.locator('#lp-delete-open').isDisabled(),true);
   assert.deepEqual(errors,[]);await context.close();
   console.log('Account security, record export, safe rendering and deletion eligibility passed at '+width+'px');
