@@ -1,6 +1,6 @@
 import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=settings-2-20261124';
 import {Community} from './community.js?v=settings-2-20261124';
-import {mountModelPicker} from './loox-model-picker.js?v=settings-2-20261124';
+import {mountModelPicker} from './loox-model-picker.js?v=engine-2-20261124';
 import {MediaSessions} from './loox-image-sessions.js?v=settings-2-20261124';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
 
@@ -52,13 +52,13 @@ function updateModelUI(){
  imageField.required=Boolean(m?.image);
  for(const option of durationField.options){const supported=Boolean(m?.durations.includes(Number(option.value)));option.hidden=cloud&&!supported;option.disabled=cloud&&!supported;}
  if(m&&!m.durations.includes(Number(durationField.value)))durationField.value=String(m.durations[0]);
- modelNote.textContent=!cloud?'Wan 2.1 · ~2 seconds. Powered by LOOX.':
+ modelNote.textContent=!cloud?'Wan 2.1 · ~2 seconds.':
   m.image?'Image-to-video · upload a start frame.':imageBlock.hidden?'Text-to-video · image uploads are not supported.':'Text-to-video or image-to-video · choose a mode.';
  const info=modelInfo();
  const supportedRatios=info?.capabilities?.ratios||['16:9','9:16','1:1','4:3','3:4'];
  for(const option of ratioField.options){option.disabled=!supportedRatios.includes(option.value);option.hidden=option.disabled;}
  if(!supportedRatios.includes(ratioField.value))ratioField.value=supportedRatios[0];
- if(info&&!info.available)modelNote.textContent+=' This model is not available yet.';
+ if(info&&!info.available)modelNote.textContent=info.reason||'Coming soon. No credits used.';
  accountInfo();checkGPU().catch(()=>{});
 }
 modelField.addEventListener('change',updateModelUI);

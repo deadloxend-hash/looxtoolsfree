@@ -32,11 +32,11 @@ const groupsImage=[
  {name:'Z-Image Turbo',provider:'LOOX Studio',ids:['z_image_turbo']},
  {name:'FLUX',provider:'Black Forest Labs',ids:['flux','flux2_klein_local_edit','bfl_flux2_pro','bfl_klein_4b','replicate_flux_ultra']},
  {name:'Nano Banana',provider:'Google AI',ids:['google_nano_2','google_nano_pro']},
- {name:'Seedream',provider:'BytePlus',ids:['byteplus_45','byteplus_50_flash']},
+ {name:'Seedream',provider:'ByteDance',ids:['byteplus_45','byteplus_50_flash']},
  {name:'Ideogram',provider:'Ideogram',ids:['ideogram_p_image','ideogram_45']},
  {name:'Stable Diffusion',provider:'Stability AI',ids:['stability_sd35','stability_ultra']},
  {name:'GPT Image',provider:'OpenAI',ids:['openai_gpt_image']},
- {name:'Other creative models',provider:'Replicate',ids:['replicate_qwen2','replicate_hidream','replicate_imagen4','replicate_photon']}
+ {name:'Other creative models',provider:'Model creators',ids:['replicate_qwen2','replicate_hidream','replicate_imagen4','replicate_photon']}
 ];
 const groupsVideo=[
  {name:'Wan 2.1',provider:'LOOX Studio',ids:['wan21']},
@@ -133,16 +133,17 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   main.append(nameLine);
   const description=node('span','loox-model-description',model.description||(mode==='video'?'Creative video generation':'AI image generation'));
   main.append(description);
-  if(model.status==='coming_soon'||model.status==='temporarily_unavailable'){
-   const statusLabel=model.status==='coming_soon'?'Coming soon':'Temporarily unavailable';
+  const labels={available:'Available',coming_soon:'Coming soon',temporarily_unavailable:'Temporarily unavailable',local_offline:'Local server offline',maintenance:'Maintenance',provider_balance_insufficient:'Temporarily unavailable',spending_limit_reached:'Generation limit reached'};
+  if(model.status&&labels[model.status]){
+   const statusLabel=labels[model.status];
    main.append(node('span','loox-model-status',statusLabel));
   }
   const price=node('span','loox-model-cost',(model.cost??'—')+' credits');
   const state=model.status||'';
   if(state==='coming_soon'||state==='temporarily_unavailable')price.classList.add('is-muted');
-  const specs=[...(model.resolutions||[]),...(model.durationOptions||model.durations||[]).map(v=>v+'s')];
+  const specs=[...(model.capabilities?.schemaVerified===false?[]:model.resolutions||model.capabilities?.resolutions||[]),...(model.capabilities?.schemaVerified===false?[]:model.durationOptions||model.durations||[]).map(v=>v+'s'),...(model.minimumPlan?[model.minimumPlan==='pro'?'Pro / Business':'Creator+']:[])];
   if(specs.length)main.append(node('small','loox-model-specs',specs.join(' · ')));
-  select.disabled=['coming_soon','temporarily_unavailable'].includes(model.status);
+  select.disabled=model.available===false||['coming_soon','temporarily_unavailable','local_offline','maintenance','provider_balance_insufficient','spending_limit_reached'].includes(model.status);
   select.append(icon(id),main,price);
   select.addEventListener('click',()=>{if(native.disabled)return;native.value=id;native.dispatchEvent(new Event('change',{bubbles:true}));sync();close();trigger.focus()});
   const favorite=node('button','loox-model-favorite');favorite.type='button';favorite.append(starIcon());

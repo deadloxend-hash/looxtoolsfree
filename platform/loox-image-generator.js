@@ -1,6 +1,6 @@
 import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=settings-2-20261124';
 import {Community} from './community.js?v=settings-2-20261124';
-import {mountModelPicker} from './loox-model-picker.js?v=settings-2-20261124';
+import {mountModelPicker} from './loox-model-picker.js?v=engine-2-20261124';
 import {MediaSessions} from './loox-image-sessions.js?v=settings-2-20261124';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
@@ -431,10 +431,8 @@ async function initWorkspace(){
  settingFields.quality.select.addEventListener('change',updateQualityHelp);
  function updateModelSettings(){
   const id=modelField.value;
-  const choices={
-   resolution:id.startsWith('google_')?['1K','2K','4K']:id==='ideogram_p_image'?['1k','2k']:[],
-   quality:id==='ideogram_p_image'?['medium','high']:id==='openai_gpt_image'?['low','medium','high']:[]
-  };
+  const verified=allModels.get(id);
+  const choices={resolution:verified?.settings?.resolution||[],quality:verified?.settings?.quality||[]};
   for(const [key,field] of Object.entries(settingFields)){
    field.block.hidden=!choices[key].length;
    field.select.replaceChildren(...choices[key].map(value=>new Option(
