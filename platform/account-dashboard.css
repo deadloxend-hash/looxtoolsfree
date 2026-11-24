@@ -1,0 +1,26 @@
+/* Account dashboard only; preserve shared account behavior. */
+body.lx-account-page main.lx-page{width:min(1120px,calc(100% - 48px))!important;max-width:1120px!important;margin:36px auto 72px!important;padding:0!important}
+.lx-account-page main.lx-page>h1{font-size:clamp(28px,4vw,42px);letter-spacing:-.045em;margin:8px 0}
+.lx-account-page main.lx-page>p{color:#a8bad0}
+.lx-account-page main.lx-page>a{font-size:12px;text-decoration:none;color:#a6ccff}
+.lx-account-page [data-account-note]:empty{display:none}
+.lx-account-page [data-dashboard]{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;margin-top:24px;align-items:start}
+.lx-account-page [data-dashboard]>.lx-tabs{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;padding:6px;background:#0d1624;border:1px solid #263950;border-radius:14px;margin:0 0 4px}
+.lx-account-page .lx-tabs a{padding:10px 14px;border-radius:9px;text-decoration:none;font-weight:650;font-size:13px;color:#b9cce2}
+.lx-account-page .lx-tabs a:hover,.lx-account-page .lx-tabs a:focus-visible{background:#233a55;color:white}
+.lx-account-page [data-dashboard]>.lx-card{min-width:0;margin:0;padding:22px;border-radius:16px;background:#111c2c;border:1px solid #293c55}
+.lx-account-page .lx-card h2{font-size:16px;letter-spacing:-.01em;margin:0 0 16px;color:#b8cce5}
+.lx-account-page .lx-card h3{font-size:22px;margin:0 0 10px}
+.lx-account-page .lx-card p{font-size:14px;color:#b9c8db;margin:7px 0}
+.lx-account-page #profile,.lx-account-page #credits{min-height:190px}
+.lx-account-page #credits{background:linear-gradient(125deg,#162c49,#111c2c)}
+.lx-account-page #credits .lx-price{font-size:clamp(23px,3vw,34px);letter-spacing:-.04em;margin:12px 0}
+.lx-account-page #credits a,.lx-account-page #settings a{display:inline-block;padding:8px 12px;background:#1e3450;border:1px solid #385577;border-radius:9px;text-decoration:none;margin-top:8px;font-size:13px}
+.lx-account-page #usage{grid-column:1/-1;grid-row:4;max-height:420px;overflow:auto;scrollbar-width:thin}
+.lx-account-page #usage .lx-row{padding:11px 0;border-top:1px solid #26374d;font-size:13px}
+.lx-account-page #usage .lx-link{padding:6px 10px;border:1px solid #314963;border-radius:8px;text-decoration:none;font-size:12px}
+.lx-account-page #history{grid-column:1/-1;max-height:420px;overflow:auto;scrollbar-width:thin}
+.lx-account-page #history p{padding:10px 0;border-top:1px solid #26374d}
+.lx-account-page #subscription,.lx-account-page #settings{grid-row:3;min-height:160px}
+.lx-account-page #subscription .lx-button{background:#24548a;border-color:#487bb5}
+@media(max-width:700px){body.lx-account-page main.lx-page{width:calc(100% - 28px)!important;margin:24px auto 48px!important}.lx-account-page [data-dashboard]{grid-template-columns:minmax(0,1fr);gap:12px}.lx-account-page [data-dashboard]>.lx-card{grid-column:1;grid-row:auto;min-height:0;padding:17px}.lx-account-page [data-dashboard]>.lx-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}.lx-account-page .lx-tabs a{white-space:nowrap;padding:9px 12px}.lx-account-page #usage,.lx-account-page #history{max-height:360px}}
