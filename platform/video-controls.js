@@ -1,4 +1,4 @@
-import {state} from './account.js?v=security-20261121-1';
+import {state} from './account.js?v=settings-2-20261124';
 export function mountVideoControls(card,area){
  const model=document.getElementById('lvg-model'),duration=document.getElementById('lvg-duration'),start=document.getElementById('lvg-image'),end=document.getElementById('lvg-end-image');
  if(!end||!start)return;

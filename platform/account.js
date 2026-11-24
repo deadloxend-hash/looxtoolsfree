@@ -39,7 +39,7 @@ function store(){return localStorage.getItem(rememberKey)==='session'?sessionSto
 function hasStoredSession(){return Boolean(localStorage.getItem(sessionKey)||sessionStorage.getItem(sessionKey));}
 const authStorage={getItem:k=>localStorage.getItem(k)??sessionStorage.getItem(k),setItem:(k,v)=>{const target=store();target.setItem(k,v);(target===localStorage?sessionStorage:localStorage).removeItem(k);},removeItem:k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);}};
 async function sdk(){
- if(!library)library=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('../vendor/supabase-2.118.0.js',import.meta.url);s.onload=resolve;s.onerror=()=>{library=null;reject(Error('Account library could not load.'));};document.head.append(s);});
+ if(!library)library=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('../vendor/supabase-2.118.0.js',import.meta.url);const timer=setTimeout(()=>{library=null;s.remove();reject(Error('Account library timed out. Check your connection and retry.'));},15000);s.onload=()=>{clearTimeout(timer);resolve();};s.onerror=()=>{clearTimeout(timer);library=null;reject(Error('Account library could not load.'));};document.head.append(s);});
  await library;
 }
 async function client(){
@@ -61,7 +61,7 @@ async function client(){
    if(event==='PASSWORD_RECOVERY')setTimeout(()=>auth('reset'),0);
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
-  const {data,error}=await api.auth.getSession();if(error)throw error;
+  const {data,error}=await Promise.race([api.auth.getSession(),new Promise((_,reject)=>setTimeout(()=>reject(Error('Session restoration timed out. Check your connection and retry.')),15000))]);if(error)throw error;
   state.user=data.session?.user||null;return api;
  })().catch(e=>{clientReady=null;throw e;});
  return clientReady;
@@ -69,12 +69,12 @@ async function client(){
 export async function api(action,body,extra={}){
  const c=await client(),owner=state.user?.id,{data}=await c.auth.getSession();if(!data.session)throw Error('Sign in to continue.');
  const r=await fetch(endpoint+'?'+new URLSearchParams({action,...extra}),{method:body==null?'GET':'POST',credentials:'omit',
-  headers:{Authorization:'Bearer '+data.session.access_token,...(body==null?{}:{'Content-Type':'application/json'})},body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(action==='cloud_job'?115000:60000)});
+  headers:{Authorization:'Bearer '+data.session.access_token,...(body==null?{}:{'Content-Type':'application/json'})},body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(action==='cloud_job'?115000:action==='account'?20000:60000)});
  const result=await r.json().catch(()=>({}));if(state.user?.id!==owner)throw Error('Account changed. Please retry.');if(!r.ok){const e=Error(result.error||'Request failed. Please retry.');e.status=r.status;throw e;}return result;
 }
 export async function refresh(){
  if(!state.user)return;
- if(!refreshTask){const id=state.user.id;refreshTask=api('account').then(data=>{if(state.user?.id!==id)return;state.account=data;accountError='';renderHeader();document.dispatchEvent(new Event('loox-account'));}).catch(e=>{accountError=e.message||'Could not load your account.';document.dispatchEvent(new Event('loox-account'));throw e;}).finally(()=>{refreshTask=null;});}
+ if(!refreshTask){const id=state.user.id;refreshTask=(async()=>{try{return await api('account');}catch(error){if(state.user?.id!==id||error.status&&error.status<500||typeof navigator!=='undefined'&&!navigator.onLine)throw error;await new Promise(resolve=>setTimeout(resolve,600));return api('account');}})().then(data=>{if(state.user?.id!==id)return;state.account=data;accountError='';state.accountError='';renderHeader();document.dispatchEvent(new Event('loox-account'));}).catch(e=>{accountError=e.message||'Could not load your account.';state.accountError=accountError;renderHeader();document.dispatchEvent(new Event('loox-account'));throw e;}).finally(()=>{refreshTask=null;});}
  return refreshTask;
 }
 export function dialog(title){
@@ -143,18 +143,26 @@ export function auth(mode='login',options={}){
    result=await candidate.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
    if(result.error)throw result.error;
    if(!result.data?.session)throw Error('Sign-in did not return a session.');
-   if((await candidate.auth.mfa.getAuthenticatorAssuranceLevel()).data?.nextLevel==='aal2'){
+   const assurance=await candidate.auth.mfa.getAuthenticatorAssuranceLevel();
+   if(assurance.error)throw assurance.error;
+   if(assurance.data?.nextLevel==='aal2'){
     const factors=await candidate.auth.mfa.listFactors();
+    if(factors.error)throw factors.error;
     const factor=factors.data?.totp?.find(f=>f.status==='verified');
     if(!factor)throw Error('Use your account recovery method to complete two-factor sign-in.');
-    const code=field(form,'Authenticator code','text',{required:true,maxLength:6,inputMode:'numeric',autocomplete:'one-time-code'});
+    form.replaceChildren();
+    form.append(el('p','Verify your sign-in with the six-digit code from your authenticator app.'));
+    submit.textContent='Verify and sign in';
+    const code=field(form,'Authenticator code','text',{required:true,maxLength:6,pattern:'[0-9]{6}',inputMode:'numeric',autocomplete:'one-time-code'});
+    form.append(submit,note);
     pass.value='';
     await new Promise((resolve,reject)=>{
-     form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;try{
+     let verifying=false,nextAttempt=0;
+     form.onsubmit=async event=>{event.preventDefault();if(verifying||Date.now()<nextAttempt)return;verifying=true;submit.disabled=true;try{
       const challenge=await candidate.auth.mfa.challengeAndVerify({factorId:factor.id,code:code.value.trim()});
       if(challenge.error)throw challenge.error;
       result={data:{session:challenge.data,user:result.data.user}};resolve();
-     }catch(error){msg(note,friendlyAuthError(error));}finally{submit.disabled=false;}};
+     }catch(error){nextAttempt=Date.now()+2000;msg(note,'Code invalid or expired. Use the latest six-digit code and try again in a moment.');}finally{verifying=false;submit.disabled=false;}};
      msg(note,'Enter the six-digit code from your authenticator.');submit.disabled=false;code.focus();
      d.addEventListener('close',()=>reject(Error('Sign-in canceled.')),{once:true});
     });
@@ -258,7 +266,7 @@ export function renderHeader(){
   credit.setAttribute('aria-label',signedIn?'Available AI credits':'Sign in to view your credits');
   credit.append(el('span','Credit','lx-credit-label'),
     el('span',' - ','lx-credit-divider'),
-    el('strong',signedIn?(Number.isFinite(Number(balance))?String(balance):'…'):'0','lx-credit-value'));
+    el('strong',signedIn?(balance!=null&&Number.isFinite(Number(balance))?String(balance):state.accountError?'Unavailable':'Loading'):'0','lx-credit-value'));
   host.append(credit);
   const upgrade=button('Upgrade',pricing,'lx-button lx-primary lx-upgrade');
   upgrade.setAttribute('aria-label','View LOOX upgrade plans');
@@ -337,10 +345,10 @@ export async function initialize({publicAccess=false,waitForAccount=true}={}){
  state.authRestoring=hasStoredSession();renderHeader();
  const accountPage=!!document.querySelector('[data-dashboard],[data-upgrade-page],[data-settings-page]');
  if(publicAccess||accountPage||hasStoredSession()||location.search.includes('code=')){
-  try{await client();state.authRestoring=false;renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';msg(document.querySelector('[data-account-note]'),accountError);}}
+  try{await client();state.authRestoring=false;renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';state.accountError=accountError;msg(document.querySelector('[data-account-note]'),accountError);}}
  }
  state.authRestoring=false;renderHeader();
- if(accountPage)drawDashboard();
+ if(accountPage){drawDashboard();document.dispatchEvent(new Event('loox-user'));}
  const planHost=document.querySelector('[data-pricing]');if(planHost)plans(planHost);
 }
 function drawDashboard(){

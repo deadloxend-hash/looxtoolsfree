@@ -1,7 +1,8 @@
+import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=2';
 import {Community} from './community.js?v=security-20261121-1';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
 import {MediaSessions} from './loox-image-sessions.js?v=security-20261121-1';
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=security-20261121-1';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
 
 // LOOX Wan 2.1 video workspace. All generation calls go through the authenticated
 // Vercel queue; the browser never connects to ComfyUI or sees worker credentials.
@@ -357,6 +358,7 @@ async function submit(promptText,ratio=ratioField.value,resumeId=null){
     await checkGPU();
     if(!online){notice(isCloud()?'This video model is temporarily unavailable. Please try again later.':'B8 server is temporarily unavailable. Please try again later.',true);return;}
     const displayed=cost(),quote=await updateQuote();if(!quote)return;if(quote.credits!==displayed){notice('Price updated to '+quote.credits+' credits. Click Generate to accept the new quote.');return;}
+    if(!await confirmGenerationCost(quote.credits))return;
     if(state.account?.wallet && state.account.wallet.balance<quote.credits){
       pricing();notice('Your account needs more AI credits for this video.',true);return;
     }
@@ -466,6 +468,7 @@ document.body.classList.add('loox-generator-ready');
   modelField.insertAdjacentElement('afterend',pickerRoot);
   modelField.classList.add('loox-hidden-native-model');
   syncCloudModels();
+  applyGenerationPreferences('video',{model:modelField,ratio:ratioField,duration:durationField});
   const picker=mountModelPicker({
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
     if(id==='wan21')return {name:'Wan 2.1',description:'LOOX B8 · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};

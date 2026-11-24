@@ -1,6 +1,8 @@
-import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=security-20261121-1';
+import {setupSettings} from './settings-2.js?v=settings-2-20261124';
+import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=settings-2-20261124';
 import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=1';
 import {cloudRequest} from './profile-cloudflare.js?v=2';
+if(document.body.hasAttribute('data-settings-page'))setupSettings();
 const byId=id=>document.getElementById(id);
 const elem=(tag,className,text)=>{const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=text;return n;};
 const proposedPlans=[{id:'free',price_cents:0,credits:25,cadence:'signup'},{id:'creator',price_cents:1200,credits:500,cadence:'month'},{id:'creator_yearly',price_cents:12000,credits:6000,cadence:'year'},{id:'pro',price_cents:2900,credits:1500,cadence:'month'},{id:'pro_yearly',price_cents:29000,credits:18000,cadence:'year'},{id:'business',price_cents:6900,credits:4000,cadence:'month'},{id:'business_yearly',price_cents:69000,credits:48000,cadence:'year'}];
@@ -95,19 +97,19 @@ function renderBilling(){
  const annual=rawPlan.endsWith('_yearly'),tier=rawPlan.replace(/_yearly$/,'');
  const subscription=Array.isArray(account.subscriptions)?account.subscriptions:[];
  const active=subscription.find(s=>['active','trialing','past_due'].includes(s.status));
- const balance=Number(account.wallet?.balance);
+ const balance=account.wallet?.balance;
  byId('lp-billing-balance').textContent=Number.isFinite(balance)?balance.toLocaleString():'Unavailable';
  byId('lp-billing-plan').textContent=billingNames[tier]||'Existing plan';
  byId('lp-billing-plan-status').textContent=active?'Subscription · '+String(active.status).replace(/_/g,' '):'No active paid subscription';
  byId('lp-billing-allocation').textContent=annual?'—':(monthlyCredits[tier]??'—').toLocaleString();
  byId('lp-billing-allocation-note').textContent=annual?'Existing annual plan · review your subscription':tier==='free'||tier==='basic'?'One-time signup credits':'Credits per paid month';
- const enabled=state.config?.billing===true;
+ const enabled=false; // Free launch: checkout remains unavailable.
  byId('lp-billing-status').textContent=enabled?'Secure billing is configured. Check your subscription status before managing payments.':'Payments are not active yet. Recharge and subscription checkout are coming soon.';
  const portal=byId('lp-billing-portal');portal.disabled=!enabled||!active;
  portal.title=portal.disabled?'Subscription portal available after billing setup and an active subscription':'Manage or cancel your subscription securely';
  const credits=(Array.isArray(account.credits)?account.credits:[]).slice(0,25).map(item=>
   [recordDate(item.created_at),item.reason||'Credit activity',Number(item.amount)>0?'+':null,Number(item.amount||0).toLocaleString()+' credits'].filter(Boolean).join(' · '));
- historyRows('lp-billing-credit-history',credits,'No credit activity to display.');
+ historyRows('lp-billing-credit-history',credits,account.unavailable?.includes('credits')?'Credit history is temporarily unavailable. Retry billing.':'No credit activity to display.');
  const payments=(Array.isArray(account.payments)?account.payments:[]).slice(0,20).map(item=>
   [recordDate(item.created_at),billingNames[item.plan]||item.plan||'Subscription',money(Number(item.amount_cents||0)),item.status||'Pending'].filter(Boolean).join(' · '));
  if(rechargeItems)for(const item of rechargeItems.slice(0,20))payments.push(
@@ -115,10 +117,7 @@ function renderBilling(){
  if(rechargeError)payments.push(rechargeError);
  historyRows('lp-billing-transaction-history',payments,rechargeItems===null?'Loading recharge history…':'No transactions to display.');
  fetchRechargeHistory();
- if(location.hash==='#billing'&&!document.body.dataset.billingAnchored){
-  document.body.dataset.billingAnchored='true';
-  requestAnimationFrame(()=>byId('billing')?.scrollIntoView({block:'start',behavior:'instant'}));
- }
+
 }
 let securityOwner=null,securityLoaded=0,securityPending=false;
 const securityTime=value=>value?new Date(value).toLocaleString(): 'Unavailable';
@@ -160,12 +159,12 @@ function renderSettings(){
  }
  guest.hidden=true;
  if(!state.account){
-  loading.hidden=false;content.hidden=true;return;
- }
- loading.hidden=true;content.hidden=false;
+  loading.hidden=false;loading.textContent=state.accountError||'Loading your billing information…';content.hidden=false;
+ }else{loading.hidden=true;content.hidden=false;}
+ // Profile and security are independent of the wallet request.
  const name=byId('lp-display-name');
  // Do not overwrite an in-progress edit during an incidental account refresh.
- if(document.activeElement!==name)name.value=state.account.profile?.name||'';
+ if(document.activeElement!==name)name.value=state.account?.profile?.name||state.user.user_metadata?.full_name||'';
  byId('lp-email').value=state.user.email||'';
  byId('lp-email-verification').textContent=state.user.email_confirmed_at?'Verified email address':'Email verification required';
  const factorOwner=state.user.id;
@@ -175,18 +174,19 @@ function renderSettings(){
   byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':enabled?'Authenticator enabled. Use your code when signing in. Contact support if you lose your authenticator.':'Add a time-based authenticator after verifying your password.';
   byId('lp-mfa-enable').hidden=Boolean(error||enabled);
  }).catch(()=>{if(state.user?.id===factorOwner)byId('lp-mfa-status').textContent='Authenticator status unavailable';});
- const plan=state.account.plan||'free';
+ const plan=state.account?.plan||'free';
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
-  ' · '+(state.account.wallet?.balance??'…')+' available credits';
+  ' · '+(state.account?.wallet?.balance??'Unavailable')+' available credits';
  renderBilling();
  loadSecurity();
 }
 if(document.body.hasAttribute('data-settings-page')){
+ document.addEventListener('loox-security-retry',()=>loadSecurity(true));
  document.addEventListener('loox-user',renderSettings);
  document.addEventListener('loox-account',renderSettings);
  renderSettings();
  byId('lp-settings-login').addEventListener('click',()=>auth('login'));
- byId('lp-billing-recharge').addEventListener('click',()=>buyCredits());
+ byId('lp-billing-recharge').disabled=true;byId('lp-billing-recharge').textContent='Recharge · Coming soon';
  byId('lp-billing-portal').addEventListener('click',async()=>{
   const trigger=byId('lp-billing-portal'),status=byId('lp-billing-status');
   if(trigger.disabled||!state.config?.billing)return;
@@ -212,53 +212,9 @@ if(document.body.hasAttribute('data-settings-page')){
    setStatus(status,error?.message||'Could not save your profile.',true);
   }finally{btn.disabled=false;}
  });
- const languages=[
-  ['en','English'],['es','Español'],['pt-BR','Português'],['fr','Français'],['de','Deutsch'],
-  ['it','Italiano'],['pl','Polski'],['ja','日本語'],['zh-CN','简体中文'],['ko','한국어'],
-  ['tr','Türkçe'],['id','Bahasa Indonesia'],['vi','Tiếng Việt'],['hu','Magyar'],
-  ['fi','Suomi'],['cs','Čeština'],['nb','Norsk Bokmål'],['da','Dansk'],
-  ['ar','العربية'],['sk','Slovenčina'],['sl','Slovenščina'],['sv','Svenska'],
-  ['uk','Українська'],['lv','Latviešu'],['et','Eesti'],['bg','Български']
- ];
- const language=byId('lp-language');
- for(const [code,label] of languages){
-  const option=document.createElement('option');option.value=code;option.textContent=label;language.append(option);
- }
- const readPrefs=()=>{try{const p=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}');return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}catch{return{}}};
- const old=readPrefs();
- const theme=byId('lp-theme');
- theme.value=['dark','light','system'].includes(old.theme)?old.theme:'dark';
- const preferredLang=new URLSearchParams(location.search).get('lang')||localStorage.getItem('loox-language')||'en';
- language.value=languages.some(([code])=>code===preferredLang)?preferredLang:'en';
- byId('lp-accent').value=/^#[0-9a-f]{6}$/i.test(old.accent||'')?old.accent:'#3b82f6';
- byId('lp-password-length').value=Number.isFinite(Number(old.passwordLength))?Math.max(12,Math.min(128,Number(old.passwordLength))):24;
- byId('lp-image-format').value=['image/png','image/jpeg','image/webp'].includes(old.imageFormat)?old.imageFormat:'image/png';
- byId('lp-live-preview').checked=old.livePreview!==false;
- byId('lp-preferences-form').addEventListener('submit',event=>{
-  event.preventDefault();
-  const values={
-   theme:theme.value,
-   accent:byId('lp-accent').value,
-   livePreview:byId('lp-live-preview').checked,
-   passwordLength:Math.max(12,Math.min(128,Number(byId('lp-password-length').value)||24)),
-   imageFormat:byId('lp-image-format').value
-  };
-  const status=byId('lp-theme-status');
-  try{
-   localStorage.setItem('loox-platform-prefs',JSON.stringify(values));
-   localStorage.setItem('loox-language',language.value);
-   const light=values.theme==='light'||(values.theme==='system'&&matchMedia('(prefers-color-scheme:light)').matches);
-   localStorage.setItem('loox-theme-v1',light?'white':'dark');
-   document.documentElement.dataset.lxTheme=light?'light':'dark';
-   document.documentElement.style.setProperty('--lx-accent',values.accent);
-   if(typeof window.LOOXApplyTheme==='function')window.LOOXApplyTheme(light?'white':'dark');
-   window.dispatchEvent(new CustomEvent('looxpreferenceschange',{detail:values}));
-   setStatus(status,'Preferences saved. Your supported LOOX pages will use them.');
-  }catch{setStatus(status,'Unable to save your preferences on this device.',true);}
- });
  byId('lp-password-reset').addEventListener('click',()=>auth('forgot'));
  byId('lp-mfa-enable').addEventListener('click',async()=>{
-  const {dialog,field,msg}=await import('./account.js?v=security-20261121-1');
+  const {dialog,field,msg}=await import('./account.js?v=settings-2-20261124');
   const owner=state.user?.id,user=state.user;if(!owner)return;
   const {box,d}=dialog('Set up authenticator');
   box.append(elem('p','','Keep access to your verified recovery email. Use a trusted authenticator app and keep its backup securely. Do not share the setup code.'));
@@ -301,7 +257,7 @@ if(document.body.hasAttribute('data-settings-page')){
   };
  });
  byId('lp-data-export').addEventListener('click',async()=>{
-  const {dialog,field,msg}=await import('./account.js?v=security-20261121-1');
+  const {dialog,field,msg}=await import('./account.js?v=settings-2-20261124');
   const owner=state.user?.id;if(!owner)return;
   const {box,d}=dialog('Download personal data');
   box.append(elem('p','','Verify your password to collect account, credit, conversation, creator and social records. Download the JSON and every media part for your content. Links expire after five minutes; verify again for fresh links. Keep downloads private. Very large exports require Support.'));
@@ -340,25 +296,20 @@ if(document.body.hasAttribute('data-settings-page')){
   };
  });
  byId('lp-sign-out').addEventListener('click',signOut);
- byId('lp-sign-out-others').addEventListener('click',async()=>{
-  const {dialog,field,button,msg}=await import('./account.js?v=security-20261121-1');
-  const owner=state.user?.id,email=state.user?.email;if(!owner)return;
-  const {box,d}=dialog('Verify your password');
-  const form=document.createElement('form');form.className='lx-stack';
-  const password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
-  const submit=document.createElement('button');submit.type='submit';submit.className='lx-button lx-primary';submit.textContent='Sign out other devices';
-  const note=document.createElement('p');note.setAttribute('role','status');form.append(submit,note);box.append(form);
-  form.onsubmit=async event=>{event.preventDefault();submit.disabled=true;let proof;
-   try{
-    const cfg=await config();proof=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-    const verified=await proof.auth.signInWithPassword({email,password:password.value});password.value='';
-    if(verified.error||verified.data?.user?.id!==owner)throw Error('Password verification failed.');
-    if(state.user?.id!==owner)throw Error('Account changed. Please retry.');
-    const result=await state.client.auth.signOut({scope:'others'});if(result.error)throw result.error;
-    byId('lp-security-status').textContent='Other sessions revoked. Existing access tokens may remain valid until expiry.';d.close();loadSecurity(true);
-   }catch(error){msg(note,error.message||'Unable to revoke sessions.');}finally{submit.disabled=false;if(proof)await proof.auth.signOut({scope:'local'}).catch(()=>{});}
+ async function revoke(scope){
+  const {dialog,field,msg}=await import('./account.js?v=settings-2-20261124');
+  const owner=state.user?.id;if(!owner)return;
+  const {box,d}=dialog(scope==='global'?'Sign out all devices':'Sign out other devices');
+  box.append(elem('p','','Verify your password to revoke sign-ins on the server. Previously issued access tokens may remain valid until expiry. Accounts with MFA must have completed authenticator verification.'));
+  const form=elem('form','lx-stack'),password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
+  const submit=elem('button','lx-button lx-primary','Verify and sign out'),note=elem('p');submit.type='submit';note.role='status';form.append(submit,note);box.append(form);
+  let pending=false;form.onsubmit=async event=>{event.preventDefault();if(pending)return;pending=true;submit.disabled=true;const value=password.value;password.value='';
+   try{await api('revoke_sessions',{password:value,scope});if(state.user?.id!==owner)return;d.close();if(scope==='global'){await signOut();return;}byId('lp-security-status').textContent='Other sessions revoked. Access tokens expire at their normal expiry.';loadSecurity(true);}
+   catch{msg(note,'Unable to revoke sessions. Check your password and authenticator sign-in, then retry.');}finally{pending=false;submit.disabled=false;}
   };
- });
+ }
+ byId('lp-sign-out-others').addEventListener('click',()=>revoke('others'));
+ byId('s2-sign-out-all').addEventListener('click',()=>revoke('global'));
  const deleteDialog=byId('lp-delete-dialog');
  byId('lp-delete-open').addEventListener('click',()=>{if(!byId('lp-delete-open').disabled)deleteDialog.showModal();});
  byId('lp-delete-cancel').addEventListener('click',()=>deleteDialog.close());

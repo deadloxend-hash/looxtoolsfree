@@ -1,0 +1,1 @@
+const target=new URL('settings.html',location.href);target.search=location.search;target.hash=({profile:'profile',settings:'general',credits:'billing',subscription:'billing',history:'billing'})[location.hash.slice(1)]||'billing';location.replace(target.href);

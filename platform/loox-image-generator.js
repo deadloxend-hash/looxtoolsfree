@@ -1,8 +1,9 @@
+import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=2';
 import {Community} from './community.js?v=security-20261121-1';
 import {mountModelPicker} from './loox-model-picker.js?v=9';
 import {MediaSessions} from './loox-image-sessions.js?v=security-20261121-1';
 
-import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=security-20261121-1';
+import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
 
 const byId=id=>document.getElementById(id);
 const create=(tag,cls,text)=>{
@@ -667,6 +668,8 @@ async function initWorkspace(){
   }
   selectView('generate');
   setMessage(resumeId?'Restoring your pending image…':'Preparing a new generation…');
+  if(!resumeId&&!await confirmGenerationCost(modelCost))return;
+  if(isBusy)return;
   isBusy=true;generateButton.disabled=true;ratioField.disabled=true;modelField.disabled=true;
   let view=null;
   try{
@@ -880,6 +883,7 @@ async function initWorkspace(){
  document.body.classList.add('loox-generator-ready');
  try{await initialize();}catch{}
  await config().catch(()=>{});
+ if(!launch)applyGenerationPreferences('image',{model:modelField,ratio:ratioField});
  await sessions.init().catch(e=>setMessage(e.message,true));
  await refreshUser();
  updateAccount();

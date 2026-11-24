@@ -1,5 +1,5 @@
 import {openSheet} from './workspace-sheet.js';
-import {state,auth,initialize} from './account.js?v=security-20261121-1';
+import {state,auth,initialize} from './account.js?v=settings-2-20261124';
 import {element as e,action as a,result,rpc} from './community.js?v=security-20261121-1';
 const root=document.getElementById('template-library'),workflow=location.pathname.endsWith('workflows.html');
 let kind=root.dataset.generatorKind||'image',category='',query='',offset=0,epoch=0;const selectedStyles=new Set();

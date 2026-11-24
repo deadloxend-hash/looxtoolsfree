@@ -37,6 +37,9 @@
  function preferences(){try{const p=JSON.parse(localStorage.getItem('loox-platform-prefs')||'{}');return p&&typeof p==='object'&&!Array.isArray(p)?p:{}}catch{return{}}}
  function applyPreferences(){
   const p=preferences();
+  document.documentElement.dataset.looxMotion=p.reducedMotion?'reduce':'system';
+  if(!document.getElementById('loox-motion-preference')){const style=document.createElement('style');style.id='loox-motion-preference';style.textContent='[data-loox-motion=reduce] *,[data-loox-motion=reduce] *::before,[data-loox-motion=reduce] *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}';document.head.append(style);}
+  document.documentElement.style.setProperty('--loox-text-scale',String(['1','1.125','1.25'].includes(String(p.fontScale))?p.fontScale:1));
   const theme=p.theme||(read('loox-theme-v1','dark')==='white'?'light':'dark');
   const light=theme==='light'||theme==='system'&&matchMedia('(prefers-color-scheme:light)').matches;
   document.documentElement.dataset.lxTheme=light?'light':'dark';

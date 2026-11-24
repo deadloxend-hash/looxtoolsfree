@@ -53,7 +53,7 @@
    const i=items.indexOf(document.activeElement),n=e.key==='Home'?0:e.key==='End'?items.length-1:(i+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;
    e.preventDefault();items[n].focus();
   };
-  search.oninput=()=>{options();position();};select.addEventListener('change',sync);
+  search.oninput=()=>{options();position();};select.addEventListener('change',sync);select.addEventListener('loox-select-sync',sync);
   new MutationObserver(sync).observe(select,{subtree:true,childList:true,attributes:true,attributeFilter:['disabled','selected','hidden','label']});sync();
  }
  function init(){document.querySelectorAll('select').forEach(enhance);}
