@@ -62,7 +62,7 @@ async function client(){
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
   const {data,error}=await Promise.race([api.auth.getSession(),new Promise((_,reject)=>setTimeout(()=>reject(Error('Session restoration timed out. Check your connection and retry.')),15000))]);if(error)throw error;
-  state.user=data.session?.user||null;return api;
+  state.user=data.session?.user||null;previousIdentity=state.user?.id||null;return api;
  })().catch(e=>{clientReady=null;throw e;});
  return clientReady;
 }
@@ -140,6 +140,8 @@ export function auth(mode='login',options={}){
    // An isolated client keeps failed credentials and MFA challenges from replacing the active account.
    const cfg=await config();
    const candidate=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+   let committed=false;
+   d.addEventListener('close',()=>{if(!committed)candidate.auth.signOut?.({scope:'local'})?.catch(()=>{});},{once:true});
    result=await candidate.auth.signInWithPassword({email:email.value.trim(),password:pass.value});
    if(result.error)throw result.error;
    if(!result.data?.session)throw Error('Sign-in did not return a session.');
@@ -150,6 +152,7 @@ export function auth(mode='login',options={}){
     if(factors.error)throw factors.error;
     const factor=factors.data?.totp?.find(f=>f.status==='verified');
     if(!factor)throw Error('Use your account recovery method to complete two-factor sign-in.');
+    const verificationTitle=d.querySelector?.('h2');if(verificationTitle)verificationTitle.textContent='Two-step verification';
     form.replaceChildren();
     form.append(el('p','Verify your sign-in with the six-digit code from your authenticator app.'));
     submit.textContent='Verify and sign in';
@@ -172,6 +175,7 @@ export function auth(mode='login',options={}){
     if(remember)localStorage.setItem(rememberKey,remember.checked?'local':'session');
     const installed=await c.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
     if(installed.error)throw installed.error;
+    committed=true;
    }catch(error){if(before===null)localStorage.removeItem(rememberKey);else localStorage.setItem(rememberKey,before);throw error;}
   }
   if(result.error)throw result.error;

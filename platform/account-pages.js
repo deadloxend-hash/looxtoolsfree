@@ -252,7 +252,7 @@ if(document.body.hasAttribute('data-settings-page')){
       operation=(async()=>{try{
        const result=await state.client.auth.mfa.challengeAndVerify({factorId:factor,code:entered});if(result.error)throw result.error;
        complete=true;factor=null;if(state.user?.id!==owner||!d.open)return;
-       d.close();renderSettings();byId('lp-security-status').textContent='Authenticator enabled. Your next sign-in will request a code.';loadSecurity(true);
+       form.replaceChildren();d.close();renderSettings();byId('lp-security-status').textContent='Authenticator enabled. Your next sign-in will request a code.';loadSecurity(true);
       }catch(error){msg(note,error.message||'Code verification failed. Try the latest code.');confirm.disabled=false;}})();
      };
     }catch(error){msg(note,error.message||'Unable to start authenticator setup.');submit.disabled=false;}
