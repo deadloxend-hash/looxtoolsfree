@@ -155,7 +155,10 @@ function renderSettings(){
  if(!document.body.hasAttribute('data-settings-page'))return;
  const guest=byId('lp-settings-guest'),loading=byId('lp-settings-loading'),content=byId('lp-settings-content');
  if(!state.user){
-  guest.hidden=false;loading.hidden=true;content.hidden=true;securityOwner=null;securityLoaded=0;return;
+  guest.hidden=false;loading.hidden=true;content.hidden=true;securityOwner=null;securityLoaded=0;
+  for(const id of ['lp-billing-balance','lp-billing-plan','lp-billing-allocation'])byId(id).textContent='Sign in';
+  byId('lp-billing-plan-status').textContent='Sign in to view your plan.';byId('lp-billing-status').textContent='Sign in to view your balance and credit history. Payments are coming soon.';
+  historyRows('lp-billing-credit-history',[],'Sign in to view credit history.');historyRows('lp-billing-transaction-history',[],'Sign in to view transactions.');return;
  }
  guest.hidden=true;
  if(!state.account){
@@ -304,7 +307,7 @@ if(document.body.hasAttribute('data-settings-page')){
   const form=elem('form','lx-stack'),password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
   const submit=elem('button','lx-button lx-primary','Verify and sign out'),note=elem('p');submit.type='submit';note.role='status';form.append(submit,note);box.append(form);
   let pending=false;form.onsubmit=async event=>{event.preventDefault();if(pending)return;pending=true;submit.disabled=true;const value=password.value;password.value='';
-   try{await api('revoke_sessions',{password:value,scope});if(state.user?.id!==owner)return;d.close();if(scope==='global'){await signOut();return;}byId('lp-security-status').textContent='Other sessions revoked. Access tokens expire at their normal expiry.';loadSecurity(true);}
+   try{await api('revoke_sessions',{password:value,scope});if(state.user?.id!==owner)return;d.close();if(scope==='global'){await signOut();return;}byId('s2-session-status').textContent='Other sessions revoked. Access tokens expire at their normal expiry.';loadSecurity(true);}
    catch{msg(note,'Unable to revoke sessions. Check your password and authenticator sign-in, then retry.');}finally{pending=false;submit.disabled=false;}
   };
  }

@@ -27,7 +27,7 @@ export function setupSettings(){
  moveRow('lp-data-export','data-controls');moveRow('lp-delete-open','data-controls');moveRow('lp-sign-out-others','devices');
  const all=document.createElement('button');all.id='s2-sign-out-all';all.type='button';all.className='lp-btn lp-btn-secondary';all.textContent='Sign out all devices';panels.get('devices').append(all);
  const records=document.querySelector('.lp-security-records');if(records)panels.get('devices').append(records);
- panels.get('devices').append($('lp-security-status'));const retrySessions=node('button','Retry session information','lp-btn lp-btn-secondary');retrySessions.type='button';retrySessions.onclick=()=>document.dispatchEvent(new Event('loox-security-retry'));panels.get('devices').append(retrySessions);
+ const sessionStatus=node('p');sessionStatus.id='s2-session-status';sessionStatus.role='status';panels.get('devices').append(sessionStatus);const retrySessions=node('button','Retry session information','lp-btn lp-btn-secondary');retrySessions.type='button';retrySessions.onclick=()=>document.dispatchEvent(new Event('loox-security-retry'));panels.get('devices').append(retrySessions);
  const cookies=document.querySelector('#security [data-loox-privacy-open]');if(cookies)panels.get('privacy').append(cookies.closest('.lp-setting-row'));
  $('lp-password-length').closest('label').remove();$('lp-live-preview').closest('label').remove();
  const lang=$('lp-language');lang.replaceChildren(new Option('English','en'));lang.disabled=true;
