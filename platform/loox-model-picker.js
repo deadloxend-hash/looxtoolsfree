@@ -84,7 +84,8 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
  const known=new Set(modelOptions.map(o=>o.value));
  const readFavorites=()=>{try{const list=JSON.parse(localStorage.getItem(storageKey)||'[]');return Array.isArray(list)?list.filter(id=>known.has(id)):[]}catch{return []}};
  let favorites=readFavorites();
- const info=id=>getInfo(id)||{};
+ const verificationLabels={ideogram_p_image:'Pricing Unverified',openai_gpt_image:'Pricing Unverified',byteplus_50_flash:'No Verified Model',stability_ultra:'No Verified Model',flux3_video:'No Verified Model',sora_2:'No Verified Model'};
+ const info=id=>{const m=getInfo(id)||{};const label=m.available===true?null:(m.verificationLabel||verificationLabels[id]);return label?{...m,available:false,verificationLabel:label}:m;};
  root.classList.add('loox-model-picker');root.dataset.modelPicker=mode;
  const trigger=node('button','loox-model-trigger');trigger.type='button';
  trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
@@ -134,13 +135,13 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const description=node('span','loox-model-description',model.description||(mode==='video'?'Creative video generation':'AI image generation'));
   main.append(description);
   const labels={available:'Available',coming_soon:'Coming soon',temporarily_unavailable:'Temporarily unavailable',local_offline:'Local server offline',maintenance:'Maintenance',provider_balance_insufficient:'Temporarily unavailable',spending_limit_reached:'Generation limit reached'};
-  if(model.status&&labels[model.status]){
-   const statusLabel=labels[model.status];
+  if(model.verificationLabel||model.status&&labels[model.status]){
+   const statusLabel=model.verificationLabel||labels[model.status];
    main.append(node('span','loox-model-status',statusLabel));
   }
   const price=node('span','loox-model-cost',(model.cost??'—')+' credits');
   const state=model.status||'';
-  if(state==='coming_soon'||state==='temporarily_unavailable')price.classList.add('is-muted');
+  if(model.verificationLabel||state==='coming_soon'||state==='temporarily_unavailable')price.classList.add('is-muted');
   const specs=[...(model.capabilities?.schemaVerified===false?[]:model.resolutions||model.capabilities?.resolutions||[]),...(model.capabilities?.schemaVerified===false?[]:model.durationOptions||model.durations||[]).map(v=>v+'s'),...(model.minimumPlan?[model.minimumPlan==='pro'?'Pro / Business':'Creator+']:[])];
   if(specs.length)main.append(node('small','loox-model-specs',specs.join(' · ')));
   select.disabled=model.available===false||['coming_soon','temporarily_unavailable','local_offline','maintenance','provider_balance_insufficient','spending_limit_reached'].includes(model.status);
@@ -171,7 +172,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   const query=search.value.trim().toLowerCase();list.replaceChildren();
   const matches=id=>{
    const m=info(id);const g=grouped.find(g=>g.ids.includes(id));
-   return !query||[describe(id),m.description,g?.name,g?.provider].join(' ').toLowerCase().includes(query);
+   return !query||[describe(id),m.description,m.verificationLabel,g?.name,g?.provider].join(' ').toLowerCase().includes(query);
   };
   const fav=favorites.filter(matches);
   if(fav.length)section('Favorites','Your saved models',fav,'loox-model-favorites');
