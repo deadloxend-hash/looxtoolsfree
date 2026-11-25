@@ -42,7 +42,7 @@ async function audit(width){
   window.__replies=[
    {id:'cccccccc-cccc-4ccc-8ccc-cccccccccccc',post_id:postId,user_id:me,body:'This is a reply',parent_id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',created_at:stamp}
   ];
-  const {installSocial}=await import('/platform/community-social.js?v=settings-2-20261124');
+  const {installSocial}=await import('/platform/community-social.js?v=ui-20261125');
   const e=(tag,cls='',text)=>{const node=document.createElement(tag);node.className=cls;if(text!==undefined)node.textContent=text;return node;};
   const a=(text,fn,cls='',onError=console.error)=>{
    const btn=e('button',cls,text);btn.type='button';

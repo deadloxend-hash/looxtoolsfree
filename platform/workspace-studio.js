@@ -1,3 +1,4 @@
+import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {mountAspectControls} from './aspect-controls.js?v=settings-2-20261124';
 import {mountVideoControls} from './video-controls.js?v=settings-2-20261124';
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
@@ -141,7 +142,7 @@ async function stylesSheet(initialTab='explore'){
       catch(error){notify(error.message);}
      },'studio-button'),
      button('Delete',async()=>{
-      if(!confirm('Delete “'+s.name+'”?'))return;
+      if(!await confirmDialog('Delete “'+s.name+'”?'))return;
       try{await persist(saved().filter(x=>x.id!==s.id));if(selectedStyle?.id===s.id)selectedStyle=null;await showTab(tab);}
       catch(error){notify(error.message);}
      },'studio-button')

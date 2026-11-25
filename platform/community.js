@@ -1,5 +1,6 @@
+import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {cropAvatar} from './avatar-crop.js?v=settings-2-20261124';
-import {installSocial,installPrivacy} from './community-social.js?v=settings-2-20261124';
+import {installSocial,installPrivacy} from './community-social.js?v=ui-20261125';
 import {api,refresh} from './account.js?v=settings-2-20261124';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=settings-2-20261124';
 // Shared community UI. Only Supabase publishable credentials enter the browser.
@@ -462,10 +463,10 @@ export class Community {
      for(const [label,act] of [[p.visible?'Hide':'Show',p.visible?'hide':'show'],['Edit title','edit'],['Post permissions','permissions'],['Delete post','delete']]){
       const button=action(label,async()=>{
        if(act==='permissions'){await self.postPermissions(p);return;}
-       if(act==='delete'&&!confirm('Delete this Community post? Its comments, likes and saves will be removed. Your private AI generation stays saved.'))return;
+       if(act==='delete'&&!await confirmDialog('Delete this Community post? Its comments, likes and saves will be removed. Your private AI generation stays saved.'))return;
        let caption=null,share=null;
        if(act==='edit'){
-        caption=window.prompt('Edit post title (1–300 characters). Changes require approval.',p.caption);
+        caption=await promptDialog('Edit post title (1–300 characters). Changes require approval.',p.caption);
         if(caption===null)return;
         caption=caption.trim();
         if(!caption||caption.length>300)throw Error('Enter a title between 1 and 300 characters.');

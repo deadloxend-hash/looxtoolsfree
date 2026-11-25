@@ -1,6 +1,7 @@
+import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {state,auth,initialize} from './account.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
-import {Community,element,action,result,mediaURL} from './community.js?v=settings-2-20261124';
+import {Community,element,action,result,mediaURL} from './community.js?v=ui-20261125';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
 // Lock the underlying feed while a post or comments dialog is open.
@@ -182,7 +183,7 @@ if(page==='community.html'){
   if(post.allow_download!==false)menuButton('Download original',download);
   if(self.state.user?.id===post.creator_id){
    menuButton('Edit title',async()=>{
-    const value=window.prompt('Edit post title (1–300 characters). Changes require approval.',post.caption);
+    const value=await promptDialog('Edit post title (1–300 characters). Changes require approval.',post.caption);
     if(value===null)return;
     const title=value.trim();
     if(!title||title.length>300)throw Error('Enter a title between 1 and 300 characters.');
@@ -192,7 +193,7 @@ if(page==='community.html'){
     feedback.textContent='Title saved. Your post is awaiting review.';
    });
    menuButton('Delete post',async()=>{
-    if(!window.confirm('Delete this Community post? Comments, likes and saves will be removed. Your original AI generation will stay private in your library.'))return;
+    if(!await confirmDialog('Delete this Community post? Comments, likes and saves will be removed. Your original AI generation will stay private in your library.'))return;
     await cloudRequest(self.state,'manage',{method:'POST',data:{id:post.id,action:'delete'}});
     await self.load(true);
     feedback.textContent='Community post deleted.';

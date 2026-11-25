@@ -1,3 +1,4 @@
+import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {trackMeaningfulView} from './community-watch.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
 // Persistent social controls. User-generated text is always rendered as textContent.
@@ -40,7 +41,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
      },'community-button',fail));
      row.append(
       a('Rename',async()=>{
-       const value=prompt('Collection name',c.name);
+       const value=await promptDialog('Collection name',c.name);
        if(!value?.trim())return;
        await cloudRequest(this.state,'collections',{method:'PATCH',data:{id:c.id,name:value.trim()}});
        await load();
@@ -50,7 +51,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
        await load();
       },'community-button',fail),
       a('Delete',async()=>{
-       if(!confirm('Delete this collection? Original posts stay saved.'))return;
+       if(!await confirmDialog('Delete this collection? Original posts stay saved.'))return;
        await cloudRequest(this.state,'collections',{method:'DELETE',data:{id:c.id}});
        await load();
       },'community-button',fail));
@@ -157,7 +158,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
       controls.append(a('Reply',()=>setReply(c),'loox-comment-action',err=>status.textContent=err.message));
     if(self.state.user?.id===c.user_id||self.state.user?.id===post.creator_id)
       controls.append(a('Delete',async()=>{
-       if(!confirm('Delete this comment?'))return;
+       if(!await confirmDialog('Delete this comment?'))return;
        await cloudRequest(self.state,'comments',{method:'DELETE',query:{id:c.id}});
        post.comments=Math.max(0,(Number(post.comments)||0)-1);
        document.dispatchEvent(new CustomEvent('loox:post-comment-count',{detail:{postId:post.id,count:post.comments}}));
@@ -448,7 +449,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    if(index>=0&&index<this.posts.length-1)addAction('right','Next post',()=>next(1));
    if(this.state.user?.id===post.creator_id){
     addAction('edit','Edit title',async()=>{
-     const caption=window.prompt('Edit post title (1–300 characters). Changes require approval.',post.caption);
+     const caption=await promptDialog('Edit post title (1–300 characters). Changes require approval.',post.caption);
      if(caption===null)return;
      const title=caption.trim();
      if(!title||title.length>300){status.textContent='Enter a title between 1 and 300 characters.';return;}
@@ -457,7 +458,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
      d.close();await this.load(true);this.note('Title saved. Your post is awaiting review.');
     });
     addAction('trash','Delete post',async()=>{
-     if(!window.confirm('Delete this Community post? Comments, likes and saves will be deleted. Your original AI generation stays private in your library.'))return;
+     if(!await confirmDialog('Delete this Community post? Comments, likes and saves will be deleted. Your original AI generation stays private in your library.'))return;
      await cloudRequest(this.state,'manage',{method:'POST',data:{id:post.id,action:'delete'}});
      d.close();
      const params=new URLSearchParams(location.search);

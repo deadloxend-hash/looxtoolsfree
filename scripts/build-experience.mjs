@@ -105,7 +105,7 @@ for(const name of fs.readdirSync('.').filter(n=>n.endsWith('.html'))){
  html=html.replace(/<script[^>]+src="loox-navigation\.js[^"]*"[^>]*><\/script>/g,'').replace(/<script[^>]+src="loox-tool-guides\.js[^"]*"[^>]*><\/script>/g,'');
  html=html.replace(/<link[^>]+href="loox-experience\.css[^"]*"[^>]*>/g,'').replace(/<script[^>]+src="loox-experience\.js[^"]*"[^>]*><\/script>/g,'');
  html=html.replace('</head>','<link rel="stylesheet" href="loox-experience.css?v=40">\n</head>');
- html=html.replace(/loox-crop-controls\.js\?v=\d+/g,'loox-crop-controls.js?v=settings-2-20261124').replace(/loox-photo-studio\.js\?v=\d+/g,'loox-photo-studio.js?v=settings-2-20261124').replace(/loox-video-studio\.js\?v=\d+/g,'loox-video-studio.js?v=settings-2-20261124').replace(/loox-tool-ui\.js\?v=\d+/g,'loox-tool-ui.js?v=settings-2-20261124');
+ html=html.replace(/loox-crop-controls\.js\?v=\d+/g,'loox-crop-controls.js?v=settings-2-20261124').replace(/loox-photo-studio\.js\?v=\d+/g,'loox-photo-studio.js?v=ui-20261125').replace(/loox-video-studio\.js\?v=\d+/g,'loox-video-studio.js?v=ui-20261125').replace(/loox-tool-ui\.js\?v=\d+/g,'loox-tool-ui.js?v=settings-2-20261124');
  const item=manifest.find(t=>t.url===name);
  // The marked section makes rebuilding safe and avoids duplicating article content.
  html=html.replace(/<!-- LOOX ORIGINAL GUIDE START -->[\s\S]*?<!-- LOOX ORIGINAL GUIDE END -->/g,'');

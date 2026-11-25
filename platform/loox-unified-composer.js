@@ -98,14 +98,14 @@
     count.textContent=selected.length+' reference image'+(selected.length===1?'':'s');
     if(!has)checkbox.checked=false;
    };
-   input.addEventListener('change',()=>{
+   input.addEventListener('change',async()=>{
     const incoming=Array.from(input.files||[]);input.value='';
     if(selected.length+incoming.length>MAX_REFERENCES){
-     window.alert('You can add up to '+MAX_REFERENCES+' reference images per generation.');return;
+     await (await import('../platform/loox-ui.js?v=ui-20261125')).alertDialog('You can add up to '+MAX_REFERENCES+' reference images per generation.');return;
     }
     for(const file of incoming){
      if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>2400000){
-      window.alert('Each reference must be a JPG, PNG or WebP under 2.4 MB.');continue;
+      await (await import('../platform/loox-ui.js?v=ui-20261125')).alertDialog('Each reference must be a JPG, PNG or WebP under 2.4 MB.');continue;
      }
      selected.push({file,url:URL.createObjectURL(file)});
     }
@@ -158,7 +158,7 @@
   form.classList.add('loox-uc-card');
   const send=document.getElementById('aiSend');
   if(send){
-   send.textContent='Send';
+   import('./loox-ui.js?v=ui-20261125').then(({icon})=>send.replaceChildren(icon('send')));
    send.setAttribute('aria-label','Send message');
   }
   wrap.prepend(links('agent'));

@@ -132,7 +132,7 @@ function showInspector(){
   root.innerHTML='<p class="studio-section-note">Resize the output canvas. Existing layers scale proportionally with it.</p>'+
   '<div class="studio-field-grid">'+field('Width px','cw',canvas.width,'number',32,8192)+field('Height px','ch',canvas.height,'number',32,8192)+'</div>'+
   '<div class="studio-button-row"><button class="studio-btn" id="resizeCanvas">Resize</button><button class="studio-btn secondary" data-preset="1920,1080">16:9</button><button class="studio-btn secondary" data-preset="1080,1920">9:16</button><button class="studio-btn secondary" data-preset="1080,1080">Square</button></div>';
-  const doResize=(w,h)=>{w=clamp(Math.round(w),32,8192);h=clamp(Math.round(h),32,8192);if(w*h>20000000&&!confirm('Very large canvas dimensions may use a lot of memory. Continue?'))return;remember();canvas.width=w;canvas.height=h;refresh();activate('move');say('Canvas resized to '+w+' × '+h)};
+  const doResize=async(w,h)=>{w=clamp(Math.round(w),32,8192);h=clamp(Math.round(h),32,8192);if(w*h>20000000&&!await (await import('./platform/loox-ui.js?v=ui-20261125')).confirmDialog('Very large canvas dimensions may use a lot of memory. Continue?'))return;remember();canvas.width=w;canvas.height=h;refresh();activate('move');say('Canvas resized to '+w+' × '+h)};
   root.querySelector('#resizeCanvas').onclick=()=>doResize(Number(root.querySelector('[data-prop=cw]').value),Number(root.querySelector('[data-prop=ch]').value));
   root.querySelectorAll('[data-preset]').forEach(b=>b.onclick=()=>doResize(...b.dataset.preset.split(',').map(Number)));return
  }

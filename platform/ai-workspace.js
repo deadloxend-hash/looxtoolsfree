@@ -1,3 +1,5 @@
+import {dialog,confirmDialog,toast,icon} from './loox-ui.js?v=ui-20261125';
+import {renderMarkdown} from './safe-markdown.js?v=ui-20261125';
 import {auth,state,initialize,pricing} from './account.js?v=settings-2-20261124';
 
 const $=id=>document.getElementById(id);
@@ -12,6 +14,9 @@ const draftsKey='loox-ai-start-v1', historyURL='https://looxtoolfree-backend.ver
 const chatURL='https://looxtoolfree-backend.vercel.app/api/loox-chat';
 let model='free',busy=false,currentThreadId=null,messages=[],recentOffset=0;
 let usage={free:null,premium:null},activeAnimation=0,knownUser=null,loadingRecent=false;
+let stopDisplay=false;
+const stopButton=document.createElement('button');stopButton.type='button';stopButton.className='ai-send';stopButton.hidden=true;stopButton.setAttribute('aria-label','Stop response display');stopButton.append(icon('stop'));send?.after(stopButton);send?.replaceChildren(icon('send'));toolsButton?.replaceChildren(icon('plus'));
+stopButton.onclick=()=>{stopDisplay=true;activeAnimation++;stopButton.hidden=true;note('Response display stopped. Any saved reply remains in history.');};
 let openingThread=0,openingAttachments=0,attachments=[];
 const attachmentURL='https://looxtoolfree-backend.vercel.app/api/loox';
 async function attachmentRequest(action,options={}){
@@ -39,7 +44,7 @@ function attachmentBubble(item){
  remove.setAttribute('aria-label','Delete chat image');remove.style.cssText='font:inherit;font-size:12px;color:#f2d9ff;background:#45275a;border:1px solid #76548d;border-radius:6px;cursor:pointer';
  remove.addEventListener('click',async()=>{
   if(busy)return note('Finish the current reply first.');
-  const id=currentThreadId;if(!id||!confirm('Delete this chat image?'))return;
+  const id=currentThreadId;if(!id||!await confirmDialog('Delete this chat image?'))return;
   remove.disabled=true;
   try{await attachmentRequest('delete',{method:'POST',body:{id:item.id}});
    if(currentThreadId===id)await loadAttachments(id);
@@ -52,7 +57,7 @@ async function loadAttachments(id){
  const seq=++openingAttachments,owner=state.user?.id;
  const data=await attachmentRequest('list',{thread_id:id});
  if(seq!==openingAttachments||id!==currentThreadId||owner!==state.user?.id)return;
- attachments=data.items||[];drawThread();
+ attachments=data.items||[];drawThread(true);
 }
 const sessionPreview=title=>String(title||'Untitled session').trim().split(/\s+/u).slice(0,3).join(' ');
 let mobile=window.matchMedia('(max-width:760px)');
@@ -121,7 +126,7 @@ function selectModel(choice){
   newChat(false);
  }
  model=choice;
- modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
+ modelName.textContent=model==='free'?'LOOX Free':'LOOX Pro';
  quotaNote();
 }
 modelMenu?.addEventListener('click',event=>{
@@ -142,20 +147,10 @@ function addBubble(text,role,error=false){
  return el;
 }
 function setBubbleText(el,text){
- const base='https://deadloxend-hash.github.io/looxtoolsfree/';
- const urls=/(https:\/\/deadloxend-hash\.github\.io\/looxtoolsfree\/[a-z0-9-]+\.html(?:\?[a-z0-9%=&_-]+)?)/gi;
- let last=0;
- el.replaceChildren();
- for(const match of String(text).matchAll(urls)){
-  el.append(document.createTextNode(text.slice(last,match.index)));
-  const link=document.createElement('a');
-  link.href=match[0];link.textContent=match[0].slice(base.length);
-  link.rel='noopener';link.style.cssText='color:#d5aaff;text-decoration:underline;text-underline-offset:3px';
-  el.append(link);last=match.index+match[0].length;
- }
- el.append(document.createTextNode(String(text).slice(last)));
+ if(el.classList.contains('assistant'))renderMarkdown(el,text);else el.textContent=text;
 }
-function drawThread(){
+function drawThread(preserve=false){
+ const oldTop=thread?.scrollTop||0,atEnd=nearBottom();
  activeAnimation++;
  if(!thread)return;
  thread.replaceChildren();
@@ -163,6 +158,7 @@ function drawThread(){
  // Messages appear only after the user starts the conversation.
  for(const msg of messages)addBubble(msg.text,msg.role,Boolean(msg.error));
  for(const item of attachments)attachmentBubble(item);
+ if(thread)thread.scrollTop=preserve&&!atEnd?oldTop:thread.scrollHeight;
 }
 function showThinking(){
  const el=document.createElement('div');
@@ -189,14 +185,14 @@ async function animateReply(reply,targetThread){
   function tick(){
    if(seq!==activeAnimation||!el.isConnected){resolve();return;}
    i=Math.min(pieces.length,i+chunk);
-   const near=nearBottom();el.textContent=pieces.slice(0,i).join('');
+   const near=nearBottom();el.classList.remove('loox-markdown');el.textContent=pieces.slice(0,i).join('');
    followBottom(near);
    if(i>=pieces.length){resolve();return;}
    setTimeout(tick,interval);
   }
   tick();
  });
- if(seq===activeAnimation&&el.isConnected)setBubbleText(el,reply);
+ if(el.isConnected){const near=nearBottom();setBubbleText(el,stopDisplay?el.textContent:reply);followBottom(near);}
 }
 function resize(){
  // Shared generator styles use !important; update inline height at the same priority
@@ -296,14 +292,7 @@ function createRecentRow(t){
  del.title='Delete conversation';del.textContent='×';
  del.addEventListener('click',async()=>{
   if(busy){note('Finish the reply before deleting conversations.');return;}
-  if(!confirm('Permanently delete this conversation and its messages?'))return;
-  del.disabled=true;
-  try{
-   await historyRequest('delete',{method:'POST',body:{id:t.id}});
-   if(currentThreadId===t.id)newChat(false);
-   await loadRecent(true);
-   note('Conversation deleted.');
-  }catch(error){del.disabled=false;note(error.message);}
+  await dialog({title:'Delete session?',message:'This removes the conversation, its messages and chat attachments. Your original generated media and credit records remain in your account.',confirmText:'Delete',danger:true,onSubmit:async()=>{if(busy)throw Error('Wait for the current reply.');await historyRequest('delete',{method:'POST',body:{id:t.id}});if(currentThreadId===t.id)newChat(false);row.remove();toast('Session deleted.');}});
  });
  const pin=document.createElement('button');pin.type='button';pin.className='loox-session-pin';pin.innerHTML=pinSvg;pin.title='Pin chat';pin.setAttribute('aria-label','Pin chat');pin.setAttribute('aria-pressed','false');pin.addEventListener('click',()=>toggleChatPin(t.id));
  const menu=document.createElement('details');menu.className='loox-session-menu';
@@ -311,8 +300,7 @@ function createRecentRow(t){
  const rename=document.createElement('button');rename.type='button';rename.textContent='Rename';
  rename.addEventListener('click',async()=>{
   if(busy){note('Wait for the current reply.');return;}
-  const title=window.prompt('Session name',t.title)?.trim();if(!title)return;
-  try{const result=await state.client.from('loox_chat_threads').update({title:title.slice(0,120)}).eq('id',t.id);if(result.error)throw result.error;await loadRecent(true);}catch(error){note(error.message);}
+  await dialog({title:'Rename session',message:'Enter a new name for this session.',value:t.title||'',confirmText:'Save',onSubmit:async title=>{if(busy)throw Error('Wait for the current reply.');const result=await state.client.from('loox_chat_threads').update({title}).eq('id',t.id).eq('user_id',state.user.id);if(result.error)throw result.error;t.title=title;excerpt.textContent=sessionPreview(title);open.title=title;toast('Session renamed.');}});
  });
  del.textContent='Delete';menu.append(summary,rename,del);row.append(open,pin,menu);
  return row;
@@ -344,7 +332,7 @@ async function openThread(id){
   if(seq!==openingThread||user!==state.user?.id)return;
   currentThreadId=result.thread.id;
   model=result.thread.model; // Keep legacy conversations readable without sending paid requests.
-  modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
+  modelName.textContent=model==='free'?'LOOX Free':'LOOX Pro';
   messages=result.messages.map(m=>({role:m.role,text:m.content}));
   attachments=[];drawThread();chatURLState(id);renderSelectedThread();quotaNote();
   await loadAttachments(id).catch(error=>{if(id===currentThreadId)note('Images: '+error.message);});
@@ -356,11 +344,11 @@ async function sendMessage(message){
  if(!state.user){prompt.value=message;auth('login');note('Sign in to send your message.');return;}
  if(model!=='free'){note('This conversation is archived. Start a new chat to use the free AI Assistant.');return;}
  const chosen=model,generationUser=state.user.id;
- busy=true;send.disabled=true;
+ busy=true;stopDisplay=false;send.disabled=true;stopButton.hidden=false;
  prompt.value='';resize();
  messages.push({role:'user',text:message});
  addBubble(message,'user');
- const thinking=showThinking();note('LOOX AI is preparing your reply…');
+ const thinking=showThinking();thread.scrollTop=thread.scrollHeight;note('LOOX AI is preparing your reply…');
  let id=currentThreadId;
  try{
   const token=await sessionToken();
@@ -385,8 +373,8 @@ async function sendMessage(message){
   thinking.remove();
   note('LOOX AI is typing…');
   void loadRecent(true);
-  await animateReply(reply,id);
-  quotaNote();
+  if(!stopDisplay)await animateReply(reply,id);
+  if(stopDisplay)note('Response display stopped. Reopen this session to read the saved reply.');else quotaNote();
  }catch(error){
   thinking.remove();
   const text=error.message||'LOOX AI is temporarily unavailable.';
@@ -396,7 +384,7 @@ async function sendMessage(message){
   await loadRecent(true);
   await refreshQuota();
  }finally{
-  thinking.remove();busy=false;send.disabled=false;
+  thinking.remove();busy=false;send.disabled=false;stopButton.hidden=true;
   if(!landing&&matchMedia('(pointer:fine)').matches)prompt.focus({preventScroll:true});
  }
 }
@@ -440,7 +428,7 @@ async function start(){
  try{draft=JSON.parse(sessionStorage.getItem(draftsKey)||'null');sessionStorage.removeItem(draftsKey);}catch{}
  if(draft&&typeof draft.message==='string'&&draft.message.trim()){
   model='free';
-  modelName.textContent=model==='free'?'✦ LOOX Free':'♛ LOOX Pro';
+  modelName.textContent=model==='free'?'LOOX Free':'LOOX Pro';
   if(state.user)await sendMessage(draft.message.trim().slice(0,1800));
   else{
    prompt.value=draft.message.trim().slice(0,1800);resize();
@@ -458,7 +446,7 @@ if(!landing&&toolsButton?.parentElement){
  const upload=document.createElement('input');upload.type='file';upload.accept='image/png,image/jpeg,image/webp';
  upload.hidden=true;upload.setAttribute('aria-label','Choose a private chat image');
  const attach=document.createElement('button');attach.type='button';attach.className='ai-round';
- attach.textContent='📎';attach.title='Attach an image to this saved chat';
+ attach.append(icon('clip'));attach.title='Attach an image to this saved chat';
  attach.setAttribute('aria-label','Attach image');toolsButton.parentElement.insertBefore(attach,toolsButton.nextSibling);
  toolsButton.parentElement.append(upload);
  attach.addEventListener('click',()=>{

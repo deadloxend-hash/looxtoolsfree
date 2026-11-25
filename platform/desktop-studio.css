@@ -24,7 +24,7 @@
  body.loox-studio .studio-creations-empty{position:relative;isolation:isolate;overflow:hidden;min-height:140px;padding:30px!important;border:1px solid #a6ccff35!important;background:linear-gradient(90deg,#101a2be8,#101a2b66),url('../assets/loox-studio-orbit.png') center/cover!important}
  body.loox-studio .studio-creations-empty strong,body.loox-studio .studio-creations-empty p{position:relative;text-shadow:0 2px 12px #000}
  body.loox-studio .lig-output{animation:loox-result-arrive .28s ease both}
- body.loox-studio.ai-chat .ai-chat-stage,body.loox-studio.ai-chat .ai-chat-layout,body.loox-studio.ai-chat .ai-chat-body{height:calc(100dvh - 64px)!important;min-height:0!important;overflow:hidden!important}
+ body.loox-studio.ai-chat .ai-chat-stage{flex:1 1 0!important;height:auto!important;min-height:0!important;overflow:hidden!important}
  body.loox-studio.ai-chat .ai-thread{flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;padding-bottom:24px!important}
  body.loox-studio.ai-chat .ai-composer-wrap{position:relative!important;bottom:auto!important;flex:none!important}
 }

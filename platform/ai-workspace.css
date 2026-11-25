@@ -57,3 +57,8 @@ body.ai-chat.ai-agent-permanent-sessions .ai-recent-scrim{display:none!important
  }
  body.ai-chat .ai-chat-layout{isolation:isolate!important}
 }
+
+/* Markdown content stays inside the message viewport. */
+.ai-msg.loox-markdown{white-space:normal}.loox-markdown>:first-child{margin-top:0}.loox-markdown>:last-child{margin-bottom:0}
+.loox-markdown p{margin:0 0 12px}.loox-markdown :is(ul,ol){padding-left:24px;margin:10px 0}.loox-markdown li{margin:5px 0}.loox-markdown :is(h1,h2,h3,h4){font-size:1.2em;line-height:1.4;margin:18px 0 10px}.loox-markdown a{color:#a6ccff;text-decoration:underline;overflow-wrap:anywhere}.loox-markdown code{font:13px/1.6 ui-monospace,monospace;background:#142033;padding:2px 5px;border-radius:4px}.loox-markdown pre{max-width:100%;overflow:auto;margin:0;padding:14px;background:#0b1220;border-radius:0 0 10px 10px;white-space:pre;overscroll-behavior:contain}.loox-markdown pre code{padding:0;background:none;white-space:pre}.loox-code-block{min-width:0;max-width:100%;margin:12px 0;border:1px solid #2a405c;border-radius:10px;overflow:hidden}.loox-copy-code{display:block;margin:6px 8px 6px auto;padding:7px 12px;border:1px solid #2a405c;border-radius:7px;background:#142033;color:#d9eaff;min-height:36px;cursor:pointer}.loox-table-scroll{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior:contain;margin:12px 0}.loox-markdown table{border-collapse:collapse;min-width:100%;font-size:13px}.loox-markdown :is(th,td){border:1px solid #2a405c;padding:9px;text-align:left;min-width:90px}.loox-markdown blockquote{border-left:3px solid #487bb5;margin:12px 0;padding-left:15px;color:#afc4df}
+.ai-chat [hidden]{display:none!important}

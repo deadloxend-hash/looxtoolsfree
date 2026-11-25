@@ -719,7 +719,7 @@ const next=new Image();next.onload=()=>{img=next;canvas.width=next.width;canvas.
 };
 })();
 
-    function confirmNewImage(){if(!window.confirm('Open another photo? Your current unsaved crop will be lost.'))return;chooseNewImage();fileInput.click()}
+    async function confirmNewImage(){if(!await (await import('./platform/loox-ui.js?v=ui-20261125')).confirmDialog('Open another photo? Your current unsaved crop will be lost.'))return;chooseNewImage();fileInput.click()}
     function chooseNewImage() {
       window.resetCropHistory?.();
       setCropEditing(false);

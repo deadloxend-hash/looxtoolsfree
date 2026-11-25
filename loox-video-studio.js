@@ -506,7 +506,7 @@ async function exportVideo(){
  const mime=selectMime();if(!mime)return status('WebM export codec unavailable in this browser.');
  const seconds=total();if(seconds<=.1)return status('Timeline is too short.');
  const [w,h]=dimension(aspect,Number($('resolution').value));const fps=Number($('fps').value);
- if(w*h>8300000&&!confirm('4K projects can be very demanding and may fail on this device. Try 720p first. Continue?'))return;
+ if(w*h>8300000&&!await (await import('./platform/loox-ui.js?v=ui-20261125')).confirmDialog('4K projects can be very demanding and may fail on this device. Try 720p first. Continue?'))return;
  pause();seek(0);const original=[canvas.width,canvas.height];canvas.width=w;canvas.height=h;exporting=true;exportCanceled=false;
  exportUI(true);$('exportResult').replaceChildren();$('exportProgress').value=0;
  try{

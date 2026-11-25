@@ -39,7 +39,7 @@ document.querySelectorAll('[data-size]').forEach(b=>b.onclick=()=>{const [w,h]=b
 c.onclick=e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;let best=-1,dist=Infinity;items.forEach((o,i)=>{const d=Math.hypot(o.x-x,o.y-y);if(d<dist){dist=d;best=i}});selected=dist<.2?best:-1;sync();draw()};
 document.getElementById('download').onclick=()=>{const a=document.createElement('a');a.download='loox-design.png';a.href=c.toDataURL('image/png');a.click()};draw();
 </script>  
-  <script src="design-studio-pro-v2.js?v=settings-2-20261124"></script>
+  <script src="design-studio-pro-v2.js?v=ui-20261125"></script>
   <script src="loox-tool-ui.js?v=settings-2-20261124"></script>
 
 

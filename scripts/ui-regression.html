@@ -1,0 +1,49 @@
+<!doctype html><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>LOOX UI regression checks</title>
+<style>body{font:14px system-ui;background:#080d16;color:#e6edf7}iframe{display:block;border:1px solid #365477;height:740px;max-width:none}button{padding:12px;background:#24486c;color:white}pre{white-space:pre-wrap}</style>
+<h1>LOOX UI regression checks</h1><button id="run">Run isolated UI checks</button><pre id="results" role="status"></pre><iframe id="frame" title="LOOX responsive fixture"></iframe>
+<script type="module">
+const frame=document.querySelector('iframe'),out=document.querySelector('#results');let passed=0,failed=0;
+function check(ok,text){out.textContent+=(ok?'PASS ':'FAIL ')+text+'\n';if(ok)passed++;else failed++;}
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function load(path,width){frame.style.width=width+'px';await new Promise(r=>{frame.onload=r;frame.src='../'+path;});for(let i=0;i<100;i++){if(frame.contentDocument.querySelector(path.startsWith('settings')?'.s2-category':'.loox-uc'))break;await delay(50);}await delay(350);return frame.contentWindow;}
+document.querySelector('#run').onclick=async()=>{out.textContent='';passed=failed=0;try{
+for(const width of [320,360,390,412,768,1024,1440]){
+ let w=await load('settings.html#security',width),d=w.document;
+ // Reveal the existing guest-hidden settings as a layout fixture, without signing in.
+ for(const n of d.querySelectorAll('#security,[data-auth-only]'))n.hidden=false;
+ for(const n of d.querySelectorAll('#security .lp-setting-row')){const copy=n.querySelector('div');check((!copy||copy.getBoundingClientRect().height<=[...copy.children].reduce((n,c)=>n+c.getBoundingClientRect().height,0)+parseFloat(getComputedStyle(copy).rowGap||0)+5),'Security row compact '+width+' '+n.querySelector('strong')?.textContent+' '+Math.round(n.getBoundingClientRect().height)+'px');}
+ check(d.documentElement.scrollWidth<=width+1,'Settings horizontal bounds '+width);
+ for(const a of d.querySelectorAll('.s2-category')){a.click();await delay(35);const panel=d.querySelector('#s2-'+a.dataset.category);check(!!panel&&!panel.hidden,'Settings category '+a.dataset.category+' '+width);}
+ w=await load('ai-chat.html',width);d=w.document;const thread=d.querySelector('#aiThread');
+ thread.replaceChildren();for(let i=0;i<20;i++){const n=d.createElement('div');n.className='ai-msg assistant';n.textContent=('Long response '+i+' with explanations. ').repeat(30);thread.append(n);}await delay(100);
+ const composer=d.querySelector('.ai-composer-wrap').getBoundingClientRect(),t=thread.getBoundingClientRect();
+ check(t.height>50&&thread.scrollHeight>thread.clientHeight,'Assistant has bounded scroller '+width);
+ thread.scrollTop=thread.scrollHeight;check(thread.scrollTop>0,'Previous messages scroll '+width);
+ check(t.bottom<=composer.top+1&&composer.bottom<=w.innerHeight+1,'Composer separate from messages '+width);
+ check(d.documentElement.scrollWidth<=width+1,'Assistant horizontal bounds '+width);
+ const input=d.querySelector('#aiPrompt');input.value='Multi line\n'.repeat(25);input.dispatchEvent(new w.Event('input'));check(input.getBoundingClientRect().height<=134,'Composer max height '+width);
+ for(const path of ['ai-text-to-image.html#generate','ai-video-generator.html#generate']){w=await load(path,width);d=w.document;check(d.documentElement.scrollWidth<=width+1,path+' horizontal bounds '+width);const scroll=d.querySelector('.lig-content-scroll');check(!!scroll,'Generator content exists '+width);}
+}
+const d=document,{dialog}=await import('../platform/loox-ui.js?v=ui-20261125'),{renderMarkdown,safeLink}=await import('../platform/safe-markdown.js?v=ui-20261125');
+const box=d.createElement('div');d.body.append(box);renderMarkdown(box,'# Heading\n\n**Bold** and *italic* and `inline`\n\n- One\n- Two\n\n1. First\n2. Second\n\n| A | B |\n|---|---|\n|1|2|\n\n[Settings](settings.html) [bad](javascript:alert(1))\n\n```js\nconst value = "<script>bad()<\/script>";\n```\n\n<img src=x onerror=alert(1)>');
+for(const selector of ['h1','strong','em','code','ul','ol','table','a','.loox-copy-code'])check(!!box.querySelector(selector),'Markdown '+selector);
+check(!box.querySelector('img,script,[onerror],[onclick]')&&!safeLink('javascript:alert(1)')&&!safeLink('data:text/html,bad'),'Unsafe content blocked');
+check(box.querySelector('a').href==='https://deadloxend-hash.github.io/looxtoolsfree/settings.html','Relative links resolved');
+let writes=0;const result=dialog({title:'Rename session',message:'Enter a new name for this session.',value:'Original',confirmText:'Save',onSubmit:async()=>{writes++;await delay(100);}});await delay(30);const modal=d.querySelector('dialog.loox-dialog');check(modal.open,'Dialog opens');modal.querySelector('input').value=' ';modal.querySelector('form').requestSubmit();await delay(10);check(writes===0&&!!modal.querySelector('[role=alert]').textContent,'Empty rename blocked');modal.querySelector('input').value='Renamed';modal.querySelector('form').requestSubmit();modal.querySelector('form').requestSubmit();check(modal.getAttribute('aria-busy')==='true','Dialog loading state');await result;check(writes===1&&!modal.isConnected,'Duplicate submit blocked and dialog closes');
+const errorResult=dialog({title:'Rename session',value:'Name',onSubmit:async()=>{throw Error('Offline fixture');}});await delay(10);d.querySelector('dialog.loox-dialog form').requestSubmit();await delay(10);check(d.querySelector('.loox-dialog-error').textContent==='Offline fixture','Save errors remain in dialog');d.querySelector('.loox-dialog-actions button').click();await errorResult;
+}catch(e){check(false,e.stack||e.message);}out.textContent+='\nTOTAL '+passed+' passed, '+failed+' failed';};
+</script>
+<button id="session-check">Run session action checks</button><pre id="session-results" role="status"></pre>
+<script type="module">
+import {MediaSessions} from '../platform/loox-image-sessions.js?v=ui-20261125';
+const output=document.querySelector('#session-results');const wait=ms=>new Promise(r=>setTimeout(r,ms));
+document.querySelector('#session-check').onclick=async()=>{output.textContent='';let failed=0;const check=(ok,text)=>{output.textContent+=(ok?'PASS ':'FAIL ')+text+'\n';if(!ok)failed++;};try{
+ let updates=0,deletes=0;const record={id:'fixture-session',title:'Original session',created_at:new Date().toISOString(),updated_at:new Date().toISOString()};
+ const client={from(table){if(table!=='loox_media_sessions')throw Error('Unexpected table '+table);let mode='select';const query={select(){return query},order(){return query},range(){return Promise.resolve({data:[record]})},update(value){mode='update';record.title=value.title;return query},delete(){mode='delete';return query},eq(){return query},then(resolve){if(mode==='update')updates++;if(mode==='delete')deletes++;return Promise.resolve({data:[],error:null}).then(resolve)}};return query;}};
+ const list=document.createElement('div');document.body.append(list);const media=Object.assign(Object.create(MediaSessions.prototype),{state:{user:{id:'isolated-fixture-owner'},client},list,more:document.createElement('button'),id:null,isBusy:()=>false,notice:text=>{throw Error(text)},loadThumbnails:async()=>{}});
+ await media.loadList();list.querySelector('details').open=true;[...list.querySelectorAll('button')].find(b=>b.textContent==='Rename').click();await wait(20);const rename=document.querySelector('.loox-dialog');check(rename.querySelector('input').value==='Original session','Session rename prefills existing name');rename.querySelector('input').value='Changed session';rename.querySelector('form').requestSubmit();await wait(30);check(updates===1&&list.querySelector('.loox-session-entry').textContent==='Changed session','Session rename updates immediately after save');
+ [...list.querySelectorAll('button')].find(b=>b.textContent==='Delete session').click();await wait(20);let modal=document.querySelector('.loox-dialog');modal.querySelector('.loox-dialog-actions button').click();await wait(20);check(deletes===0&&list.children.length===1,'Cancel never deletes session');
+ [...list.querySelectorAll('button')].find(b=>b.textContent==='Delete session').click();await wait(20);modal=document.querySelector('.loox-dialog');modal.querySelector('form').requestSubmit();modal.querySelector('form').requestSubmit();await wait(40);check(deletes===1&&list.children.length===0,'Confirmed session delete runs once and removes history row');
+ check(document.querySelectorAll('dialog[open]').length===0,'Dialogs leave no active scroll lock');list.remove();
+}catch(e){check(false,e.stack||e.message)}output.textContent+='TOTAL failures: '+failed;};
+</script>
