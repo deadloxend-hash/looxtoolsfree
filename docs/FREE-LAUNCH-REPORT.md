@@ -85,7 +85,7 @@ All models below and the local Wan 2.1 model are locked. Existing video historie
 
 ## SEO
 
-`docs/launch-indexing.json` contains every exact indexable and noindex URL. `scripts/launch-seo.py` is the reviewable release allowlist; update it when held tools launch. The sitemap contains only selected canonical public pages and localized guides for selected tools. The homepage uses the canonical trailing-slash URL. Private studios/account pages and unavailable tools/guides are noindex,follow. robots.txt permits crawling so these directives remain visible.
+`docs/launch-indexing.json` contains every exact indexable and noindex URL. `scripts/launch-seo.py` is the reviewable release allowlist; update it when held tools launch. The sitemap contains 493 selected canonical public pages and localized guides for selected tools; 147 held/private pages carry noindex. All selected URLs were checked for HTTP 200. The homepage uses the canonical trailing-slash URL. Private studios/account pages and unavailable tools/guides are noindex,follow. robots.txt permits crawling so these directives remain visible.
 
 Priority public URLs:
 
@@ -115,12 +115,20 @@ Search Console: the connected account exposes MediaGrab only. LOOX sitemap was n
 - Frontend: 23 regression tests passed, including account/session handling and private media export.
 - Browser QA: desktop Settings preference survived refresh. 390-pixel mobile iframe checks covered Settings, image model grouping/locks, Video Studio and Upgrade. Public catalog fixtures were used for local UI QA because the production backend does not allow preview origins. This does not verify an authenticated production session.
 - Public feed inspection returned 9 items; database inspection found 14 active templates with media. Public content was not modified.
-- Syntax checks passed for changed JavaScript; final SEO/HTTP/deployment results are appended below.
+- Syntax checks passed for changed JavaScript; the static audit passed on all 640 pages and 18,851 references (zero broken references, duplicate IDs or unbound anchors). All 493 selected public URLs returned HTTP 200.
 
 ## Remaining launch checks
 
-Authenticated end-to-end image generation, real worker online/offline transitions, cross-page production sign-in retention and account privacy save/reload require a signed-in acceptance session. The GPU was offline during inspection. No real transaction or paid model test was performed. Browser rendering and static review do not constitute a full performance benchmark or exhaustive tool export test.
+Authenticated end-to-end image generation, real worker online/offline transitions, cross-page production sign-in retention and account privacy save/reload require a signed-in acceptance session. The GPU was offline during inspection. The live browser was signed out, so no authenticated production generation was submitted. No real transaction or paid model test was performed. Browser rendering and static review do not constitute a full performance benchmark or exhaustive tool export test.
 
 ## Deployment
 
-Pending final publication verification.
+Backend commit `1fd27f2fd3bbfae2532269118958863dee185556` is deployed and READY in Vercel production. Frontend application commit `857f92a76924222bc05d84eca83983a8f4de8bbc` completed GitHub Pages deployment successfully. Production Upgrade content and noindex were fetched and verified. The live image picker shows FLUX Available, local-only models Temporarily Offline, and premium models locked.
+
+Live POST probes for checkout, recharge_checkout, portal, cloud_video_job and video_quote each returned HTTP 503 with the intended public launch message. Production configuration reports payments/subscriptions/credit purchases/premium images/video OFF, zero available video models, and FLUX on the Cloudflare A8 route.
+
+Desktop browser CI passed at 1280×720, 1365×900 and 1920×1080 after correcting notice placement. The first CI run caught the notice/composer regression; it was fixed and the updated run passed. Homepage and creator-profile CI passed. The full UI CI completed successfully: authenticated security/export fixtures, Settings persistence and search, responsive layouts, privacy consent, disabled billing/recharge flows, and frontend regression tests.
+
+The final presentation adjustment keeps the video notice sticky inside the results scroll area, preserving the composer viewport. A final documentation/presentation commit follows the application commit above. The sticky notice was separately verified in a 1280×720 browser viewport; both notice and composer fit within their intended regions.
+
+Final CI evidence: https://github.com/deadloxend-hash/looxtoolsfree/actions/runs/45657184558 (both site-audit and desktop-studio succeeded).
