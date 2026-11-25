@@ -20,9 +20,15 @@ try{
     return {feed:r('.lig-content-scroll:not([hidden])'),compose:r('.lig-compose-wrap'),search:r('.loox-chat-header-search'),menu:r('.studio-menu-host'),account:r('.lig-header-user'),width:document.documentElement.scrollWidth,viewport:innerWidth};
    });
    assert.ok(geometry.feed.bottom<=geometry.compose.top+2,'Results must stop above the composer');assert.ok(geometry.compose.bottom<=viewport.height+2,'Composer must fit viewport');assert.ok(geometry.menu.left-geometry.search.right<25,'Header controls must stay together');assert.ok(geometry.account.left-geometry.menu.right>=8&&geometry.account.left-geometry.menu.right<25,'Header account must not overlap menu');assert.ok(geometry.width<=geometry.viewport+2);
-   await page.locator('.studio-model-trigger').click();await page.getByRole('button',{name:/Close Choose/}).waitFor();
-   if(prefix==='lvg'){assert.equal(await page.locator('[data-model-value="kling_40"]').count(),1);assert.equal(await page.locator('[data-model-value="grok_video"]').count(),1);}
-   const close=page.getByRole('button',{name:/Close Choose/});const size=await close.boundingBox();assert.ok(Math.abs(size.width-size.height)<1);assert.ok(size.width>=32);await close.click();
+   if(prefix==='lvg'){
+    await page.waitForFunction(()=>document.querySelector('.studio-model-trigger')?.disabled===true);
+    assert.equal(await page.locator('#lvg-model').isEnabled(),false);
+    assert.equal(await page.locator('#lvg-generate').isEnabled(),false);
+    assert.match(await page.locator('.loox-launch-notice').innerText(),/AI Video is coming soon/);
+   }else{
+    await page.locator('.studio-model-trigger').click();await page.getByRole('button',{name:/Close Choose/}).waitFor();
+    const close=page.getByRole('button',{name:/Close Choose/});const size=await close.boundingBox();assert.ok(Math.abs(size.width-size.height)<1);assert.ok(size.width>=32);await close.click();
+   }
    await page.evaluate(prefix=>{
     const feed=document.getElementById(prefix+'-results');
     const svg='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1400"><rect width="800" height="1400" fill="#372249"/><circle cx="400" cy="700" r="240" fill="#ad7ce7"/></svg>');

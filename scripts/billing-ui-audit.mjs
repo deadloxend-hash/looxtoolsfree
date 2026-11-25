@@ -38,17 +38,9 @@ try{for(const width of [360,390,768,1440]){
  assert.equal(await page.getByRole('button',{name:/Yearly|Annual/}).count(),0);checks++;
  assert.equal(await page.locator('.lp-plan button:disabled').count(),3);checks++;
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Pricing overflow at '+width);checks++;
- await page.locator('#lp-buy-credits').click();
- await page.locator('.recharge-package').last().waitFor();
- assert.equal(await page.locator('.recharge-package').count(),4);checks++;
- await page.getByRole('button',{name:/Power Pack/}).click();
- assert.equal(await page.getByRole('button',{name:/Power Pack/}).getAttribute('aria-pressed'),'true');checks++;
- assert.equal(await page.locator('.recharge-checkout').isEnabled(),false);checks++;
- assert.equal(await page.locator('.loox-recharge').evaluate(e=>e.scrollWidth<=e.clientWidth+2),true,'Dialog overflow at '+width);checks++;
- assert.equal(await page.evaluate(()=>getComputedStyle(document.body).overflow),'hidden');checks++;
- await page.locator('.recharge-package').first().press('Escape');
- assert.equal(await page.locator('dialog[open]').count(),0);checks++;
- assert.notEqual(await page.evaluate(()=>getComputedStyle(document.body).overflow),'hidden');checks++;
+ assert.equal(await page.locator('#lp-buy-credits').isEnabled(),false,'Recharge must be locked during the free launch');checks++;
+ assert.equal(await page.locator('#lp-buy-credits').innerText(),'Coming Soon');checks++;
+ assert.equal(await page.locator('dialog.loox-recharge[open]').count(),0);checks++;
  assert.deepEqual(errors,[]);checks++;
  await context.close();
  }
