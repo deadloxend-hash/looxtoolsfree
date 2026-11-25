@@ -85,7 +85,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
  const readFavorites=()=>{try{const list=JSON.parse(localStorage.getItem(storageKey)||'[]');return Array.isArray(list)?list.filter(id=>known.has(id)):[]}catch{return []}};
  let favorites=readFavorites();
  const verificationLabels={ideogram_p_image:'Pricing Unverified',openai_gpt_image:'Pricing Unverified',byteplus_50_flash:'No Verified Model',stability_ultra:'No Verified Model',flux3_video:'No Verified Model',sora_2:'No Verified Model'};
- const info=id=>{const m=getInfo(id)||{};const label=m.available===true?null:(m.verificationLabel||verificationLabels[id]);return label?{...m,available:false,verificationLabel:label}:m;};
+ const info=id=>{const m=getInfo(id)||{};const label=m.status==='coming_soon'||m.available===true?null:(m.verificationLabel||verificationLabels[id]);return label?{...m,available:false,verificationLabel:label}:m;};
  root.classList.add('loox-model-picker');root.dataset.modelPicker=mode;
  const trigger=node('button','loox-model-trigger');trigger.type='button';
  trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
@@ -134,7 +134,7 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   main.append(nameLine);
   const description=node('span','loox-model-description',model.description||(mode==='video'?'Creative video generation':'AI image generation'));
   main.append(description);
-  const labels={available:'Available',coming_soon:'Coming soon',temporarily_unavailable:'Temporarily unavailable',local_offline:'Local server offline',maintenance:'Maintenance',provider_balance_insufficient:'Temporarily unavailable',spending_limit_reached:'Generation limit reached'};
+  const labels={available:'Available',coming_soon:'Coming soon',temporarily_offline:'Temporarily Offline',temporarily_unavailable:'Temporarily Offline',local_offline:'Local server offline',maintenance:'Maintenance',provider_balance_insufficient:'Temporarily unavailable',spending_limit_reached:'Generation limit reached'};
   if(model.verificationLabel||model.status&&labels[model.status]){
    const statusLabel=model.verificationLabel||labels[model.status];
    main.append(node('span','loox-model-status',statusLabel));
@@ -144,7 +144,8 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
   if(model.verificationLabel||state==='coming_soon'||state==='temporarily_unavailable')price.classList.add('is-muted');
   const specs=[...(model.capabilities?.schemaVerified===false?[]:model.resolutions||model.capabilities?.resolutions||[]),...(model.capabilities?.schemaVerified===false?[]:model.durationOptions||model.durations||[]).map(v=>v+'s'),...(model.minimumPlan?[model.minimumPlan==='pro'?'Pro / Business':'Creator+']:[])];
   if(specs.length)main.append(node('small','loox-model-specs',specs.join(' · ')));
-  select.disabled=model.available===false||['coming_soon','temporarily_unavailable','local_offline','maintenance','provider_balance_insufficient','spending_limit_reached'].includes(model.status);
+  select.disabled=model.available===false||['coming_soon','temporarily_offline','temporarily_unavailable','local_offline','maintenance','provider_balance_insufficient','spending_limit_reached'].includes(model.status);
+  if(model.available!==true){const lock=svgIcon('flux',16);lock.innerHTML='<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>';price.prepend(lock);row.classList.add('is-unavailable');}
   select.append(icon(id),main,price);
   select.addEventListener('click',()=>{if(native.disabled)return;native.value=id;native.dispatchEvent(new Event('change',{bubbles:true}));sync();close();trigger.focus()});
   const favorite=node('button','loox-model-favorite');favorite.type='button';favorite.append(starIcon());
@@ -174,14 +175,10 @@ export function mountModelPicker({native,root,mode='image',getInfo=()=>({})}){
    const m=info(id);const g=grouped.find(g=>g.ids.includes(id));
    return !query||[describe(id),m.description,m.verificationLabel,g?.name,g?.provider].join(' ').toLowerCase().includes(query);
   };
-  const fav=favorites.filter(matches);
-  if(fav.length)section('Favorites','Your saved models',fav,'loox-model-favorites');
-  for(const group of grouped){
-   const ids=group.ids.filter(id=>known.has(id)&&matches(id));
-   section(group.name,group.provider,ids);
-  }
-  const groupedIds=new Set(grouped.flatMap(g=>g.ids));
-  const extra=modelOptions.map(o=>o.value).filter(id=>!groupedIds.has(id)&&matches(id));if(extra.length)section('More models','LOOX catalog',extra);
+  const ids=modelOptions.map(o=>o.value).filter(matches);
+  section('Available Models','Ready to create',ids.filter(id=>info(id).available===true));
+  section('Temporarily Offline','Local models return when the service is online',ids.filter(id=>['temporarily_offline','temporarily_unavailable','maintenance','local_offline'].includes(info(id).status)));
+  section('Coming Soon','More models in future updates',ids.filter(id=>info(id).available!==true&&!['temporarily_offline','temporarily_unavailable','maintenance','local_offline'].includes(info(id).status)));
   if(!list.children.length)list.append(node('p','loox-model-empty','No matching models'));
   sync();
  }

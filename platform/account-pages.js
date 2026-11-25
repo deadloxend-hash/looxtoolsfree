@@ -1,4 +1,4 @@
-import {setupSettings} from './settings-2.js?v=settings-2-20261124';
+import {setupSettings} from './settings-2.js?v=launch-20261125';
 import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=settings-2-20261124';
 import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
@@ -39,7 +39,7 @@ function renderPlans(cfg,failed=false){
   const button=elem('button','lp-btn '+(featured?'lp-btn-primary':'lp-btn-secondary')),note=elem('p','lp-plan-small');button.type='button';note.setAttribute('role','status');
   if(state.user&&current===(id==='free'?'basic':id)){button.textContent='Your current plan';button.disabled=true;}
   else if(id==='free'){button.textContent=state.user?'Basic included':'Start creating free';button.disabled=Boolean(state.user);button.onclick=()=>auth('register');}
-  else{const configured=live&&(!Array.isArray(cfg.checkoutPlans)||cfg.checkoutPlans.includes(key));button.textContent=configured?'Choose '+copy.name:'Secure checkout coming soon';button.disabled=!configured;planAction(button,note,key);}
+  else{const configured=live&&(!Array.isArray(cfg.checkoutPlans)||cfg.checkoutPlans.includes(key));button.textContent=configured?'Choose '+copy.name:'Coming Soon';button.disabled=!configured;planAction(button,note,key);}
   card.append(elem('div','lp-plan-grow'),button,note);host.append(card);
  }
  renderEstimates(cfg);
@@ -62,7 +62,7 @@ function renderEstimates(cfg){
  byId('lp-estimate-note').textContent=model?'Counts are alternatives from the same balance, not combined allowances. '+model.name+': '+videoCost+' credits per '+duration.value+'s clip at '+model.capabilities.resolution+'. Local generation depends on GPU availability.':'Counts use the same shared credit balance. Live video prices could not be loaded.';
 }
 if(document.body.hasAttribute('data-account-upgrade')){
- const buy=byId('lp-buy-credits');if(buy)buy.onclick=buyCredits;
+ const buy=byId('lp-buy-credits');if(buy){buy.disabled=true;buy.textContent='Coming Soon';}
  renderPlans(null);config().then(c=>{plansConfig=c;renderPlans(c);}).catch(()=>{plansError=true;renderPlans(null,true);});
  for(const name of ['loox-user','loox-account'])document.addEventListener(name,()=>renderPlans(plansConfig,plansError));
  for(const id of ['lp-estimate-model','lp-estimate-duration'])byId(id)?.addEventListener('change',()=>renderEstimates(plansConfig));

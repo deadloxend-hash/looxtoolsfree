@@ -27,7 +27,7 @@
     if(option.hidden||!option.textContent.toLocaleLowerCase().includes(search.value.toLocaleLowerCase()))continue;
     const b=document.createElement('button');b.type='button';b.className='loox-dropdown-option';b.role='option';
     b.setAttribute('aria-selected',String(option.selected));b.disabled=option.disabled;
-    b.textContent=option.textContent+(option.selected?' ✓':'');
+    b.textContent=option.textContent;if(option.selected){const check=document.createElement('span');check.className='loox-option-check';check.innerHTML="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 4 4L19 6\"/></svg>";b.append(check);}
     b.onclick=e=>{e.preventDefault();select.value=option.value;select.dispatchEvent(new Event('input',{bubbles:true}));select.dispatchEvent(new Event('change',{bubbles:true}));close(true);sync();};list.append(b);
    }
    if(!list.children.length)list.textContent='No matching options.';

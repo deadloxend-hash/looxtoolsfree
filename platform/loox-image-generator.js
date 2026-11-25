@@ -1,6 +1,6 @@
 import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=settings-2-20261124';
 import {Community} from './community.js?v=settings-2-20261124';
-import {mountModelPicker} from './loox-model-picker.js?v=engine-2-20261124';
+import {mountModelPicker} from './loox-model-picker.js?v=launch-20261125';
 import {MediaSessions} from './loox-image-sessions.js?v=settings-2-20261124';
 
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
@@ -54,10 +54,10 @@ async function initWorkspace(){
  const availableModels=new Map([...allModels].filter(([,m])=>m.available));
  const modelNote=document.querySelector('.lig-model-note');
  function modelStatus(id){
-   if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'Ready to create.'}:{label:'Temporarily Unavailable',reason:'A8 server is temporarily unavailable. Please try again later.'};
+   if(id==='flux')return state.config?.local?.available?{label:'Available',reason:'Ready to create.'}:{label:'Temporarily Offline',reason:'A8 server is temporarily unavailable. Please try again later.'};
   const m=allModels.get(id);
-  return {label:m?.status==='available'?'Available':m?.status==='temporarily_unavailable'?'Temporarily Unavailable':'Coming Soon',
-   reason:m?.status==='temporarily_unavailable'?'This model is temporarily unavailable. Please try again later.':m?.status==='coming_soon'?'Coming soon.':'This model is not available right now. Please try again later.'};
+  return {label:m?.status==='available'?'Available':['temporarily_offline','temporarily_unavailable'].includes(m?.status)?'Temporarily Offline':'Coming Soon',
+   reason:['temporarily_offline','temporarily_unavailable'].includes(m?.status)?'This model is temporarily unavailable. Please try again later.':m?.status==='coming_soon'?'Coming soon.':'This model is not available right now. Please try again later.'};
  }
  const generateButton=byId('lig-generate'),message=byId('lig-message');
  const credits=byId('lig-credits'),creditCost=byId('lig-credit-cost');
@@ -104,7 +104,7 @@ async function initWorkspace(){
    item.disabled=option.disabled;
    item.setAttribute('role','option');item.dataset.value=option.value;
    const label=document.createElement('span');label.className='lig-model-choice-name';label.textContent=option.textContent;
-   const check=document.createElement('span');check.className='lig-select-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
+   const check=document.createElement('span');check.className='lig-select-check';check.innerHTML="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 4 4L19 6\"/></svg>";check.setAttribute('aria-hidden','true');
    if(isModel){
     const m=allModels.get(option.value);
     const detail=create('small','lig-model-choice-detail',option.value==='flux'?'Fast, high-quality image generation':option.value==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable');
@@ -171,9 +171,9 @@ async function initWorkspace(){
   native:modelField,root:document.querySelector('[data-custom-select="lig-model"]'),
   mode:'image',getInfo:id=>{
    const m=allModels.get(id),status=modelStatus(id);
-   return {...m,description:id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable',code:id==='flux'?state.config?.local?.code:id==='z_image_turbo'?m?.code:null,
+   return {...m,available:id==='flux'?Boolean(state.config?.local?.available):Boolean(m?.available),description:id==='flux'?'Fast, high-quality image generation':id==='z_image_turbo'?'Fast, expressive image generation':m?.description||'Model details unavailable',code:id==='flux'?state.config?.local?.code:id==='z_image_turbo'?m?.code:null,
     cost:id==='flux'?(state.config?.operations?.find(op=>op.id==='generate')?.cost??3):(m?.cost??'—'),
-    status:m?.status||status.label.toLowerCase().replaceAll(' ','_')};
+    status:(id==='flux'?state.config?.local?.status:m?.status)||status.label.toLowerCase().replaceAll(' ','_')};
   }
  });
  const composeWrap=byId('lig-compose-wrap');
@@ -254,7 +254,7 @@ async function initWorkspace(){
    const description=create('p','lig-template-confirm-description','Share your creation with the LOOX community. Your image and prompt will only become public after an administrator approves them.');
    description.id='lig-template-confirm-description';
    const note=create('div','lig-template-confirm-note');
-   const noteIcon=create('span',null,'✓');noteIcon.setAttribute('aria-hidden','true');
+   const noteIcon=create('span');noteIcon.innerHTML="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 4 4L19 6\"/></svg>";noteIcon.setAttribute('aria-hidden','true');
    note.append(noteIcon,create('span',null,'Please submit only images and prompts you have the rights to share.'));
    const actions=create('div','lig-template-confirm-actions');
    const cancel=create('button','lig-template-confirm-cancel','Cancel');cancel.type='button';
@@ -385,16 +385,16 @@ async function initWorkspace(){
  }
 
  const price=()=>modelField.value==='flux'?(state.config?.operations?.find(o=>o.id==='generate')?.cost||3):(allModels.get(modelField.value)?.cost||0);
- const quotaLabel=create('small','lig-daily-quota','Daily generation limit disabled during testing');
+ const quotaLabel=create('small','lig-daily-quota','25 daily generations');
  creditCost.insertAdjacentElement('afterend',quotaLabel);
  let remainingImages=null;
  async function refreshQuota(){
-  if(!state.user){remainingImages=null;quotaLabel.textContent='Daily generation limit disabled during testing';return;}
+  if(!state.user){remainingImages=null;quotaLabel.textContent='25 daily generations';return;}
   try{
    const data=await api('quota');
    remainingImages=data.remaining.generate;
-   quotaLabel.textContent='Daily generation limit disabled during testing';
-  }catch{quotaLabel.textContent='Daily generation limit disabled during testing';}
+   quotaLabel.textContent=remainingImages+' of '+data.limit+' daily generations remaining';
+  }catch{quotaLabel.textContent='25 daily generations';}
  }
 
 
@@ -468,17 +468,11 @@ async function initWorkspace(){
    const fluxChanged=current.code!==live.code||current.available!==live.available||current.referenceAvailable!==Boolean(live.referenceAvailable);
    // Z-Image Turbo is PC-only; never infer its availability from cloud tokens.
    const z=allModels.get('z_image_turbo');
-   const zAvailable=live.zImage?.available===true&&live.zImage?.code==='B8';
-   const zStatus=zAvailable?'available':'coming_soon';
-   const zCode=zAvailable?'B8':null;
-   const zChanged=Boolean(z&&(z.available!==zAvailable||z.status!==zStatus||z.code!==zCode));
-   if(!fluxChanged&&!zChanged)return;
-   if(fluxChanged)state.config.local={...current,code:live.code,available:live.available,referenceAvailable:Boolean(live.referenceAvailable)};
-   if(zChanged){
-    const next={...z,available:zAvailable,status:zStatus,code:zCode,reason:zAvailable?'Ready to create.':'Coming soon.'};
-    allModels.set('z_image_turbo',next);
-    if(zAvailable)availableModels.set('z_image_turbo',next);
-    else availableModels.delete('z_image_turbo');
+   if(fluxChanged)state.config.local={...current,code:live.code,available:live.available,status:live.status,referenceAvailable:Boolean(live.referenceAvailable)};
+   for(const [id,health] of [['z_image_turbo',live.zImage],['flux2_klein_local_edit',live.klein]]){
+    const previous=allModels.get(id);if(!previous||!health)continue;
+    const next={...previous,...health,reason:health.available?'Ready to create.':health.status==='maintenance'?'Maintenance. Please try again later.':'Temporarily Offline.'};
+    allModels.set(id,next);if(health.available)availableModels.set(id,next);else availableModels.delete(id);
    }
    imageModelPicker?.render();
    updateAccount();

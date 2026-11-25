@@ -1,6 +1,6 @@
 import {applyGenerationPreferences,confirmGenerationCost} from './generation-preferences.js?v=settings-2-20261124';
 import {Community} from './community.js?v=settings-2-20261124';
-import {mountModelPicker} from './loox-model-picker.js?v=engine-2-20261124';
+import {mountModelPicker} from './loox-model-picker.js?v=launch-20261125';
 import {MediaSessions} from './loox-image-sessions.js?v=settings-2-20261124';
 import {state,config,api,auth,refresh,pricing,initialize} from './account.js?v=settings-2-20261124';
 
@@ -163,7 +163,7 @@ sessions.completed=(view,id)=>{
 
 let serverQuote=null,quoteEpoch=0;
 const quoteInputs=()=>({model:modelField.value,duration:isCloud()?Number(durationField.value):2,ratio:ratioField.value});
-async function updateQuote(){const epoch=++quoteEpoch;if(!state.user){serverQuote=null;accountInfo();return null;}const input=quoteInputs();try{const q=await api('video_quote',input);if(epoch!==quoteEpoch||JSON.stringify(input)!==JSON.stringify(quoteInputs()))return null;serverQuote=q;accountInfo();refreshButton();return q;}catch(error){if(epoch===quoteEpoch){serverQuote=null;notice(error.message,true);accountInfo();}return null;}}
+async function updateQuote(){if(state.config?.launch?.video!==true){serverQuote=null;refreshButton();return null;}const epoch=++quoteEpoch;if(!state.user){serverQuote=null;accountInfo();return null;}const input=quoteInputs();try{const q=await api('video_quote',input);if(epoch!==quoteEpoch||JSON.stringify(input)!==JSON.stringify(quoteInputs()))return null;serverQuote=q;accountInfo();refreshButton();return q;}catch(error){if(epoch===quoteEpoch){serverQuote=null;notice(error.message,true);accountInfo();}return null;}}
 const cost=()=>serverQuote&&serverQuote.model===modelField.value&&serverQuote.duration===(isCloud()?Number(durationField.value):2)&&serverQuote.ratio===ratioField.value?serverQuote.credits:isCloud()?(modelInfo()?.creditCosts?.[durationField.value]??modelInfo()?.cost??99):(state.config?.operations?.find(v=>v.id==='generate_video')?.cost??8);
 const quotaLabel=make('small','lvg-daily-quota','Daily videos: 30/day · sign in to view');
 costLabel.insertAdjacentElement('afterend',quotaLabel);
@@ -219,10 +219,9 @@ if(window.ResizeObserver){
 }
 syncHeader();
 function refreshButton(){
-  const rank={basic:0,free:0,creator:1,pro:2},required=modelInfo()?.minimumPlan;const locked=Boolean(state.user&&required&&(rank[state.account?.plan]||0)<rank[required]);
-  generateButton.disabled=busy || Boolean(state.user&&!online)||locked;
-  generateButton.textContent=locked?'Requires LOOX '+(required==='pro'?'Pro':'Creator'):busy?'Generating…':state.user&&!online?(isCloud()?'Model unavailable':'B8 offline'):'Generate video';
+ modelField.disabled=true;generateButton.disabled=true;generateButton.textContent='Coming Soon';
 }
+
 let gpuCheckVersion=0;
 async function checkGPU(){
   // Ignore slow responses for a model that the user has already switched away from.
@@ -346,6 +345,7 @@ async function poll(id,view){
   throw Error('Your video is still processing. Check recent AI jobs in your LOOX account.');
 }
 async function submit(promptText,ratio=ratioField.value,resumeId=null){
+ if(!resumeId){notice("AI Video is coming soon. We're preparing a powerful video creation experience for you.");return;}
   if(busy)return;
   const prompt=String(promptText||'').trim();
   if(!prompt||prompt.length>800){notice('Write a video prompt of 1–800 characters.',true);return;}
@@ -471,7 +471,7 @@ document.body.classList.add('loox-generator-ready');
   applyGenerationPreferences('video',{model:modelField,ratio:ratioField,duration:durationField});
   const picker=mountModelPicker({
    native:modelField,root:pickerRoot,mode:'video',getInfo:id=>{
-    if(id==='wan21')return {name:'Wan 2.1',description:'LOOX B8 · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:online?'available':'temporarily_unavailable'};
+    if(id==='wan21')return {available:false,name:'Wan 2.1',description:'LOOX B8 · text to video · about 2 seconds',cost:state.config?.operations?.find(x=>x.id==='generate_video')?.cost??8,status:'coming_soon'};
     const m=state.config?.videoModels?.find(x=>x.id===id);
     return {...m,name:m?.name||id,cost:m?.creditCosts?.[durationField.value]??m?.cost??'—',description:!m?.available&&m?.reason?m.reason:(m?.minimumPlan==='pro'?'Pro · ':'Creator · ')+(m?.capabilities?.resolution||'720p')+' · '+(m?.imageRequired?'Reference image required':m?.capabilities?.imageReference===false?'Text to video only':'Text or image to video'),status:m?.status};
    }
