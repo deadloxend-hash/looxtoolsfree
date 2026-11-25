@@ -65,9 +65,9 @@ All models below and the local Wan 2.1 model are locked. Existing video historie
 
 ## Cost and credit protections
 
-- Legacy payment/provider approval environment flags cannot override the committed release locks.
+- Legacy payment/provider approval environment flags cannot override the committed release locks. Payment, subscription, recharge, premium image, video and per-model policies remain independent for future server-side releases; the existing provider verification and pricing approvals remain additional gates.
 - New Replicate prediction submissions are blocked at the provider transport layer as well as the engine. Historical status/cancellation is retained.
-- Local video submissions fail before input processing, reservation or queue insertion.
+- Local video submissions fail before input processing, reservation or queue insertion. Worker claims also exclude video while the launch lock is active, so pending pre-launch video tasks cannot start through that route. GPU availability never advertises video as enabled during the lock.
 - Existing SQL reservations serialize wallet access and enforce request ID uniqueness; duplicate submissions do not deduct twice. Existing tests cover concurrent failure refunds and reward claims.
 - Failed Cloudflare generation releases the reservation. Unavailable local models are rejected before reservation.
 - Existing Cloudflare cap: 100 attempts per UTC day, with an atomic database counter. This is a platform cap, not a live measurement of all usage elsewhere on the Cloudflare account.
@@ -111,7 +111,7 @@ Search Console: the connected account exposes MediaGrab only. LOOX sitemap was n
 
 ## Verification and limits
 
-- Backend: 79 tests passed, including direct API purchase/video rejection, legacy flag bypass prevention, heartbeat/quota/maintenance routing, credit idempotency, refund concurrency, private media and security protections.
+- Backend: 80 tests passed, including direct API purchase/video rejection, legacy flag bypass prevention, heartbeat/quota/maintenance routing, credit idempotency, refund concurrency, private media and security protections.
 - Frontend: 23 regression tests passed, including account/session handling and private media export.
 - Browser QA: desktop Settings preference survived refresh. 390-pixel mobile iframe checks covered Settings, image model grouping/locks, Video Studio and Upgrade. Public catalog fixtures were used for local UI QA because the production backend does not allow preview origins. This does not verify an authenticated production session.
 - Public feed inspection returned 9 items; database inspection found 14 active templates with media. Public content was not modified.
@@ -123,11 +123,11 @@ Authenticated end-to-end image generation, real worker online/offline transition
 
 ## Deployment
 
-Backend commit `1fd27f2fd3bbfae2532269118958863dee185556` is deployed and READY in Vercel production. Frontend application commit `857f92a76924222bc05d84eca83983a8f4de8bbc` completed GitHub Pages deployment successfully. Production Upgrade content and noindex were fetched and verified. The live image picker shows FLUX Available, local-only models Temporarily Offline, and premium models locked.
+Backend commit `390abebc2b9bdfa71e28a56928010969724b40d8` is deployed and READY in Vercel production. Frontend application commit `857f92a76924222bc05d84eca83983a8f4de8bbc` and presentation/report commit `0cf3e448fdcda9016a989c9bedccc990a08bbd64` completed GitHub Pages deployment successfully. Production Upgrade content and noindex were fetched and verified. The live image picker shows FLUX Available, local-only models Temporarily Offline, and premium models locked.
 
 Live POST probes for checkout, recharge_checkout, portal, cloud_video_job and video_quote each returned HTTP 503 with the intended public launch message. Production configuration reports payments/subscriptions/credit purchases/premium images/video OFF, zero available video models, and FLUX on the Cloudflare A8 route.
 
-Desktop browser CI passed at 1280×720, 1365×900 and 1920×1080 after correcting notice placement. The first CI run caught the notice/composer regression; it was fixed and the updated run passed. Homepage and creator-profile CI passed. The full UI CI completed successfully: authenticated security/export fixtures, Settings persistence and search, responsive layouts, privacy consent, disabled billing/recharge flows, and frontend regression tests.
+Desktop browser CI passed at 1280×720, 1365×900 and 1920×1080 after correcting notice placement. The first CI run caught the notice/composer regression; it was fixed and the updated run passed. Homepage and creator-profile CI passed. The full UI CI completed successfully, with 110 responsive scenarios and 89 billing/generator assertions: authenticated security/export fixtures, Settings persistence and search, responsive layouts, privacy consent, disabled billing/recharge flows, and frontend regression tests.
 
 The final presentation adjustment keeps the video notice sticky inside the results scroll area, preserving the composer viewport. A final documentation/presentation commit follows the application commit above. The sticky notice was separately verified in a 1280×720 browser viewport; both notice and composer fit within their intended regions.
 
