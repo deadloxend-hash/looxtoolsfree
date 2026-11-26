@@ -433,7 +433,7 @@
   }
  },4500);
  const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
- const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';
+ const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';dockToggle.id='loox-sidebar-edge-handle';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
  dockToggle.setAttribute('aria-controls','loox-sitewide-drawer');dockToggle.setAttribute('aria-expanded','false');
  dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
@@ -520,12 +520,7 @@
   node.title=label;node.setAttribute('aria-label',label);node.innerHTML=pict(kind);
   sideActions.append(node);sidebarIcons[kind]=node;return node;
  }
- function openCommunityNotifications(){
-  if(typeof window.__looxOpenCommunityNotifications==='function'){
-   window.__looxOpenCommunityNotifications();return;
-  }
-  location.assign(url('community.html?notifications=1'));
- }
+ function openCommunityNotifications(){import(url('platform/notifications.js?v=20261126')).then(m=>m.openNotifications());}
  const bell=makeSideAction('notifications','Notifications');
  makeSideAction('settings','Account settings','settings.html#workspace-preferences');
  const globe=makeSideAction('language','Change language');
@@ -812,6 +807,7 @@
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=upgrade-20261119-1');document.head.append(style);
  }
+ import(url('platform/notifications.js?v=20261126')).then(m=>m.mountNotifications()).catch(()=>{});
  import(url('platform/mobile-viewport.js?v=settings-2-20261124'));
  import(url('platform/account.js?v=settings-2-20261124')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();

@@ -1,0 +1,20 @@
+name: Social notifications and category directories
+on:
+  push:
+    paths: ['platform/notifications*', 'platform/utility-directories*', 'platform/community*', 'scripts/build-utility-directories.cjs', 'all-*-tools.html', 'all-everyday-utilities.html', 'loox-sitewide-nav.js', 'tests/notifications*', 'tests/utility-directories*', '.github/workflows/social-directories-check.yml']
+  pull_request:
+    paths: ['platform/notifications*', 'platform/utility-directories*', 'platform/community*', 'scripts/build-utility-directories.cjs', 'all-*-tools.html', 'all-everyday-utilities.html', 'loox-sitewide-nav.js', 'tests/notifications*', 'tests/utility-directories*', '.github/workflows/social-directories-check.yml']
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --input-type=module --check < platform/notifications.js
+      - run: node --input-type=module --check < platform/community-social.js
+      - run: node --check loox-sitewide-nav.js && node --check platform/utility-directories.js && node --check tests/notifications-browser.mjs
+      - run: node --test tests/notifications-core.test.mjs tests/utility-directories.test.cjs tests/utilities-core.test.cjs
+      - run: node scripts/build-utility-directories.cjs && git diff --exit-code -- index.html all-*-tools.html all-everyday-utilities.html sitemap.xml
+      - run: node scripts/audit-utilities.cjs

@@ -200,6 +200,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
      more.hidden=rows.length<pageSize;
      await fetchPeople(rows.map(c=>c.user_id));
      for(const c of rows){
+      if([...list.querySelectorAll('[data-comment-id]')].some(n=>n.dataset.commentId===c.id))continue;
       const thread=e('div','loox-comment-thread'),replies=e('div','loox-thread-replies');
       replies.dataset.repliesFor=c.id;
       thread.append(render(c),replies);
@@ -252,59 +253,19 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     });
    }else section.append(e('p','community-note','Comments are turned off for this post.'));
    await loadPage();
-  },
-  async notifications(){
-   if(!this.state.user)return this.auth('login');
-   const d=modal('Notifications'),list=e('div','loox-notification-list'),status=e('p','community-note');
-   const markAll=a('Mark all read',async()=>{
-    await cloudRequest(this.state,'notifications',{method:'PATCH',data:{all:true}});
-    list.querySelectorAll('.is-unread').forEach(el=>el.classList.remove('is-unread'));
-   },'community-button loox-notification-markall',err=>status.textContent=err.message);
-   const more=a('Load more',()=>load(),'community-button',err=>status.textContent=err.message);
-   more.hidden=true;d.append(markAll,list,more,status);
-   let offset=0,busy=false;
-   const load=async()=>{
-    if(busy)return;busy=true;more.disabled=true;
+   const focusId=new URLSearchParams(location.search).get('comment');
+   if(focusId&&new URLSearchParams(location.search).get('post')===String(post.id)){
     try{
-     const data=await cloudRequest(this.state,'notifications',{query:{offset}});
-     const rows=data.items||[];
-     for(const n of rows){
-      const name=n.display_name||n.username||'Someone';
-      const row=e('article','community-notification loox-notification'+(n.is_read?'':' is-unread'));
-      const avatarLink=e('a','loox-notification-avatar',(name||'L').charAt(0).toUpperCase());
-      avatarLink.href=n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
-      if(n.actor_id)mediaURL(this.state,n.avatar_path,'loox-avatars',{type:'avatar',id:n.actor_id}).then(url=>{
-       if(!avatarLink.isConnected)return;const img=e('img');img.src=url;img.alt='';
-       img.onerror=()=>img.remove();avatarLink.replaceChildren(img);
-      }).catch(()=>{});
-      const mark=()=>{if(n.is_read)return;n.is_read=1;row.classList.remove('is-unread');
-       cloudRequest(this.state,'notifications',{method:'PATCH',data:{id:n.id}}).catch(()=>{});
-      };
-      const content=e('a','loox-notification-content');
-      content.href=n.post_id?'community.html?post='+encodeURIComponent(n.post_id):
-       n.actor_id?'creator.html?id='+encodeURIComponent(n.actor_id):'community.html';
-      const labels={comment:' commented on your post',reply:' replied to your comment',like:' liked your post',follow:' started following you',approved:'Your creation was approved',rejected:'Your submission was rejected'};
-      const heading=['approved','rejected'].includes(n.kind)?labels[n.kind]:name+(labels[n.kind]||' sent an update');
-      content.append(e('strong','loox-notification-heading',heading));
-      if(n.comment_body)content.append(e('span','loox-notification-message','“'+n.comment_body+'”'));
-      if(n.post_caption)content.append(e('small','loox-notification-post','On: '+n.post_caption));
-      content.append(e('time','loox-notification-time',new Date(n.created_at).toLocaleString()));
-      content.addEventListener('click',mark);avatarLink.addEventListener('click',mark);
-      row.append(avatarLink,content);
-      if(n.post_media_path&&n.post_media_type!=='video'){
-       const thumb=e('a','loox-notification-thumb');thumb.href=content.href;thumb.setAttribute('aria-label','Open post');
-       const img=e('img');img.alt='Post preview';img.loading='lazy';thumb.append(img);
-       mediaURL(this.state,n.post_media_path,'loox-results',{type:'post',id:n.post_id}).then(url=>{if(img.isConnected)img.src=url;}).catch(()=>thumb.remove());
-       thumb.addEventListener('click',mark);row.append(thumb);
-      }
-      list.append(row);
+     let target=[...list.querySelectorAll('[data-comment-id]')].find(n=>n.dataset.commentId===focusId);
+     if(!target){const data=await cloudRequest(self.state,'comments',{query:{post_id:post.id,kind:'focus',id:focusId}});await fetchPeople((data.items||[]).map(c=>c.user_id));
+      for(const c of data.items||[]){if([...list.querySelectorAll('[data-comment-id]')].some(n=>n.dataset.commentId===c.id))continue;const thread=e('div','loox-comment-thread');thread.append(render(c,Boolean(c.parent_id)));list.prepend(thread);}
+      target=[...list.querySelectorAll('[data-comment-id]')].find(n=>n.dataset.commentId===focusId);
      }
-     offset+=rows.length;more.hidden=!data.has_more;
-     status.textContent=offset?'':'No notifications yet. Likes, comments, replies and follows appear here.';
-    }catch(err){status.textContent=err.message;}finally{busy=false;more.disabled=false;}
-   };
-   await load();
+     if(target){target.classList.add('is-notification-target');requestAnimationFrame(()=>target.scrollIntoView({block:'nearest',behavior:'instant'}));}else status.textContent='This comment is no longer available.';
+    }catch(error){status.textContent=error.message;}
+   }
   },
+  async notifications(){const m=await import('./notifications.js?v=20261126');m.openNotifications();},
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
    const fresh=await cloudRequest(this.state,'post',{query:{id:post.id}});if(!fresh)throw Error('This post is no longer public.');
@@ -493,8 +454,9 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
    panel.append(status);panel.hidden=true;d.append(stage,panel);
    // Open in artwork-only mode. Metadata and conversation are explicitly requested
    // from the three-dot menu, rather than filling the initial post viewer.
-   d.scrollTop=0;
-   requestAnimationFrame(()=>{if(d.open){d.scrollTop=0;stage.scrollTop=0;}});
+   const focusedComment=new URLSearchParams(location.search).get('comment');
+   if(focusedComment&&new URLSearchParams(location.search).get('post')===String(post.id))await showComments();
+   else{d.scrollTop=0;requestAnimationFrame(()=>{if(d.open){d.scrollTop=0;stage.scrollTop=0;}});}
    }catch(error){
     // A failed media/profile request must never strand an empty modal/backdrop.
     if(d.open)d.close();

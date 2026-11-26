@@ -1,7 +1,7 @@
 import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {state,auth,initialize} from './account.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
-import {Community,element,action,result,mediaURL} from './community.js?v=ui-20261125';
+import {Community,element,action,result,mediaURL} from './community.js?v=notifications-20261126';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();
 const discoveryPage=page==='community.html'||page==='trending.html';
 // Lock the underlying feed while a post or comments dialog is open.
@@ -68,7 +68,7 @@ if(page==='community.html'){
   d.addEventListener('click',event=>{if(event.target===d)d.close();});
   try{
    await this.comments(post,d);
-   if(d.open)d.scrollTop=0;
+   if(d.open&&!new URLSearchParams(location.search).has('comment'))d.scrollTop=0;
   }catch(error){d.append(element('p','community-note',error.message||'Comments unavailable.'));}
  };
  Community.prototype.mobileDetails=function(post){
