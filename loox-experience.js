@@ -1,6 +1,27 @@
 /* Original LOOX navigation and language layer. Does not replace editing state. */
 (() => {
  'use strict';
+ // Keep Settings in a dismissible overlay so the workspace stays mounted.
+ if(!window.__looxOpenSettings&&!location.pathname.endsWith('/settings.html')){
+  window.__looxOpenSettings=(target='settings.html')=>{
+   if(document.getElementById('loox-settings-overlay'))return;
+   const trigger=document.activeElement,dialog=document.createElement('dialog'),frame=document.createElement('iframe');
+   dialog.id='loox-settings-overlay';dialog.setAttribute('aria-label','Settings');
+   Object.assign(dialog.style,{position:'fixed',inset:'0',margin:'auto',padding:'0',border:'0',background:'#0c111b',width:'min(1120px, 100vw)',height:'100dvh',maxWidth:'100vw',maxHeight:'100dvh',overflow:'hidden',borderRadius:'14px'});
+   frame.title='LOOX Settings';frame.src=new URL(target,location.href).href;
+   Object.assign(frame.style,{width:'100%',height:'100%',border:'0',display:'block'});
+   dialog.append(frame);document.body.append(dialog);
+   const overflow=document.body.style.overflow;document.body.style.overflow='hidden';
+   dialog.addEventListener('close',()=>{dialog.remove();document.body.style.overflow=overflow;delete window.__looxCloseSettings;trigger?.focus?.({preventScroll:true})},{once:true});
+   window.__looxCloseSettings=()=>dialog.close();dialog.showModal();
+  };
+  document.addEventListener('click',event=>{
+   const a=event.target.closest?.('a[href]');if(!a||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;
+   const target=new URL(a.href,location.href);
+   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')){event.preventDefault();event.stopImmediatePropagation();window.__looxOpenSettings(target.href);}
+  },true);
+ }
+
  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const read=(key,fallback)=>{try{return localStorage.getItem(key)||fallback}catch{return fallback}};
  const save=(key,value)=>{try{localStorage.setItem(key,value)}catch{}};
@@ -183,7 +204,7 @@
  }
  function openSettings(){
   const here=(location.pathname.split('/').pop()||'index.html')+location.search+location.hash;
-  location.assign('settings.html?from='+encodeURIComponent(here));
+  if(window.__looxOpenSettings)window.__looxOpenSettings('settings.html?from='+encodeURIComponent(here));else location.assign('settings.html?from='+encodeURIComponent(here));
  }
  function chooseToolbox(){
   if(file!=='toolbox.html')return;
