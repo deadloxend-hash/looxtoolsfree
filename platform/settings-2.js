@@ -15,6 +15,13 @@ export function setupSettings(){
  const search=node('input');search.type='search';search.placeholder='Search settings';search.setAttribute('aria-label','Search settings');side.append(search);
  const nav=node('nav');nav.setAttribute('aria-label','Settings categories');side.append(nav);
  const close=$('lp-back');close.textContent='Close settings';close.className='s2-close';side.append(close);
+ close.addEventListener('click',event=>{
+  if(window.parent!==window&&typeof window.parent.__looxCloseSettings==='function'){
+   event.preventDefault();window.parent.__looxCloseSettings();
+  }else{
+   event.preventDefault();location.replace(close.href);
+  }
+ });
  const content=node('div',null,'s2-content'),top=node('header',null,'s2-top'),back=node('button','‹ Settings','s2-mobile-back');back.type='button';const title=node('h1','General');title.tabIndex=-1;top.append(back,title);content.append(top);
  const feedback=node('p',null,'s2-save-status');feedback.role='status';content.append(feedback);
  const guest=$('lp-settings-guest');content.append(guest);
