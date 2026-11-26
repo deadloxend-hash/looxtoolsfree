@@ -27,7 +27,15 @@ try{for(const width of [360,390,768,1440]){
  assert.equal(await modelPopup.isVisible(),true,'Themed model list not open at '+width);checks++;
  await page.keyboard.press('Escape');
  assert.equal(await modelPopup.isVisible(),false);checks++;
- if(width<901){
+ if(width<=600){
+  const toggle=page.locator('body > button.loox-sitewide-dock-toggle');
+  await page.locator('.loox-notification-bell').waitFor({state:'visible'});
+  await toggle.waitFor({state:'hidden'});
+  assert.equal(await toggle.isVisible(),false,'Unintended edge handle must stay hidden on phones');checks++;
+  await page.getByRole('button',{name:'Open LOOX apps',exact:true}).click();
+  assert.equal(await page.locator('dialog.loox-mobile-app-layer').isVisible(),true,'Apps navigation must remain reachable');checks++;
+  await page.getByRole('button',{name:'Close apps',exact:true}).click();
+ }else if(width<901){
   const toggle=page.locator('body > button.loox-sitewide-dock-toggle');
   await toggle.waitFor({state:'visible'});
   assert.equal(await toggle.isVisible(),true,'Sidebar toggle hidden on upgrade at '+width);checks++;
