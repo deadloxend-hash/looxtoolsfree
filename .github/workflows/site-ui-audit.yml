@@ -79,8 +79,6 @@ jobs:
           node scripts/site-responsive-audit.mjs
       - name: Verify privacy choices and mobile consent dialogs
         run: node scripts/privacy-consent-audit.mjs
-      - name: Verify monthly billing and disabled recharge at phone, tablet and desktop widths
-        run: node scripts/billing-ui-audit.mjs
       - name: Run frontend regression tests
         run: node --test tests/*.test.mjs
       - name: Upload report and failure screenshots
@@ -110,3 +108,17 @@ jobs:
         with:
           name: loox-desktop-studio-audit
           path: desktop-audit-artifacts/
+
+  billing-ui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.58.2
+      - name: Verify monthly billing, disabled recharge and retained mobile apps navigation
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-billing-server.log 2>&1 &
+          node scripts/billing-ui-audit.mjs

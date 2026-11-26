@@ -29,7 +29,7 @@ try{for(const width of [360,390,768,1440]){
  assert.equal(await modelPopup.isVisible(),false);checks++;
  if(width<=600){
   const toggle=page.locator('body > button.loox-sitewide-dock-toggle');
-  await page.locator('.loox-notification-bell').waitFor({state:'visible'});
+  await page.locator('.loox-notification-bell:visible').waitFor({state:'visible'});
   await toggle.waitFor({state:'hidden'});
   assert.equal(await toggle.isVisible(),false,'Unintended edge handle must stay hidden on phones');checks++;
   await page.getByRole('button',{name:'Open LOOX apps',exact:true}).click();
