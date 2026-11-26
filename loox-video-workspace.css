@@ -90,3 +90,74 @@
  .video-studio-page .studio-clip{min-height:44px!important}
  .video-studio-page .clip-trim{width:14px!important}
 }
+
+/* Studio 2: compact editing workspace, independent from the guide below. */
+.video-studio-page .studio-main{grid-template-rows:42px minmax(240px,1fr) minmax(210px,31vh);padding:8px;gap:8px}
+.video-studio-page .studio-top{gap:12px;min-height:66px;padding:8px 16px}
+.video-project-name{display:grid;grid-template-columns:auto minmax(120px,230px);align-items:center;gap:3px 8px;min-width:0}
+.video-project-name label{font-size:9px;letter-spacing:1.5px;color:#91add0}
+.video-project-name input{width:100%;border:0;background:transparent;color:#f0f5ff;font:600 14px system-ui;padding:3px 5px;border-radius:4px}
+.video-project-name input:focus{outline:1px solid #65a2ff}
+#saveState{grid-column:2;font-size:10px;color:#94b5d8}
+.video-project-bar{display:flex;align-items:center;gap:5px;overflow-x:auto;min-width:0;padding:4px 0;white-space:nowrap}
+.video-project-bar button,.video-file-button,.video-advanced button,#fullscreenPreview,#recentProjects button{background:#142238;color:#dae9ff;border:1px solid #2a405c;border-radius:6px;padding:7px 9px;font:11px system-ui;cursor:pointer}
+.video-project-bar button:hover,.video-advanced button:hover,#recentProjects button:hover{background:#243e61;border-color:#70aaff}
+.video-file-button{position:relative;display:inline-flex;align-items:center}
+.video-file-button input{position:absolute;inset:0;width:100%;opacity:0;cursor:pointer}
+.video-bar-spacer{flex:1}
+.video-studio-page .studio-brand{font-size:15px;flex-shrink:0}
+.video-studio-page .studio-brand small{font-size:8px}
+.video-studio-page .studio-top-actions .studio-pill{display:none}
+.video-studio-page #mediaSearch{width:100%;background:#0c1626;border:1px solid #2b4464;border-radius:6px;padding:8px;color:#eef5ff}
+.video-studio-page .studio-workspace{grid-template-columns:62px minmax(165px,210px) minmax(180px,1fr) minmax(230px,290px);min-height:0}
+.video-studio-page .studio-panel{border-color:#263c56;background:#101b2c}
+.video-studio-page .studio-assets,.video-studio-page .studio-inspector{resize:horizontal;min-width:140px;max-width:430px;overflow:auto}
+.video-studio-page.hide-video-library .studio-assets{display:none!important}
+.video-studio-page.hide-video-library .studio-workspace{grid-template-columns:62px minmax(180px,1fr) minmax(230px,290px)}
+.video-studio-page.hide-video-inspector .studio-inspector{display:none!important}
+.video-studio-page.hide-video-inspector .studio-workspace{grid-template-columns:62px minmax(165px,210px) minmax(180px,1fr)}
+.video-studio-page.hide-video-library.hide-video-inspector .studio-workspace{grid-template-columns:62px 1fr}
+.video-studio-page .studio-stage-top{font-size:11px;gap:8px}
+.video-safe-toggle{display:flex;gap:4px;align-items:center;font-size:10px;color:#a5bbd6}
+#previewShell:fullscreen{background:#080d16;width:100vw;height:100dvh}
+#previewShell.show-safe-zones::after{content:'';position:absolute;inset:10% 15% 16%;border:1px dashed #e2eaff88;pointer-events:none;z-index:3}
+.video-advanced{border-top:1px solid #2a405c;margin-top:16px;padding-top:6px}
+.video-advanced h3{font-size:12px;color:#b3ccec}
+.video-advanced .studio-button-row{gap:5px;flex-wrap:wrap}
+#motionKeyList{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0}
+#motionKeyList button{font-size:10px;padding:4px}
+.video-marker{position:absolute;top:0;background:transparent;border:0;color:#f4c477;padding:0;cursor:pointer;font-size:13px}
+#recentProjects{display:grid;gap:8px;max-height:55dvh;overflow:auto;margin:15px 0}
+.video-studio-page dialog{max-height:90dvh;overflow:auto;color:#edf4ff;background:#101b2c;border:1px solid #3a5577;border-radius:12px}
+.video-studio-page dialog::backdrop{background:#040911bc}
+.video-studio-page .studio-timeline{display:flex;flex-direction:column;padding:8px;resize:vertical;min-height:180px;max-height:55vh}
+.video-studio-page .studio-timeline-head{flex-shrink:0}
+.video-studio-page .studio-timeline-head h2{font-size:12px}
+.video-studio-page #tracks{flex:1;min-height:60px}
+.video-studio-page .studio-scrub{flex-shrink:0}
+.video-studio-page .studio-clip.active{outline:2px solid #9bc6ff}
+.video-studio-page .studio-field [data-prop]{max-width:100%}
+.video-studio-page .loox-guide-host{display:none}
+@media(max-width:1100px){.video-project-name{grid-template-columns:minmax(100px,180px)}.video-project-name label{display:none}#saveState{grid-column:1}.video-studio-page .studio-top{flex-wrap:wrap}.video-studio-page .studio-workspace{grid-template-columns:54px 165px minmax(170px,1fr) 230px}}
+@media(max-width:900px){.video-studio-page .studio-workspace{grid-template-columns:56px minmax(0,1fr)}.video-project-name{flex:1}.video-studio-page .studio-assets,.video-studio-page .studio-inspector{resize:none;max-width:none}.video-studio-page .studio-main{display:flex;flex-direction:column}.video-studio-page .studio-top{height:auto}.video-studio-page .studio-workspace{flex-shrink:0}.video-project-bar{min-height:40px;flex-shrink:0}.video-studio-page.hide-video-library .studio-workspace,.video-studio-page.hide-video-inspector .studio-workspace{grid-template-columns:56px minmax(0,1fr)}}
+@media(max-width:700px){.video-studio-page .studio-brand small,.video-studio-page .studio-brand-mark{display:none}.video-studio-page .studio-brand{font-size:13px}.video-studio-page .studio-top{padding:8px;gap:6px}.video-project-name{min-width:90px;max-width:50vw}.video-studio-page .studio-top-actions{width:100%;justify-content:flex-end}.video-project-bar button,.video-file-button{min-height:40px}.video-studio-page .studio-timeline{height:250px!important;min-height:220px!important}.video-studio-page #tracks{max-height:none!important}.video-studio-page .studio-timeline-head .studio-button-row{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;max-width:100%}.video-studio-page .studio-timeline-head{display:block}.video-studio-page .studio-timeline-head button{white-space:nowrap}.video-studio-page .studio-timeline-head h2{margin:0 0 4px}.video-studio-page .studio-preview-shell{height:36dvh!important}.video-studio-page .studio-transport button{font-size:11px;min-width:36px!important}.video-studio-page dialog{width:calc(100vw - 20px);padding:12px}.video-studio-page .studio-clip{padding-left:16px}.video-studio-page .studio-inspector{max-height:60dvh!important}.video-studio-page #properties input,.video-studio-page #properties select{min-height:38px}}
+@media(max-height:500px) and (orientation:landscape){.video-studio-page .studio-preview-shell{height:60dvh!important}.video-studio-page .studio-top-actions{width:auto}.video-studio-page .studio-stage{max-height:none!important}}
+
+.video-studio-page .studio-main{height:calc(100dvh - 66px)}
+@media(max-width:900px){.video-studio-page .studio-main{height:auto}}
+.video-studio-page .studio-stage-top .loox-dropdown{width:auto;flex:0 1 110px;min-width:80px}
+.video-studio-page .studio-stage-top .loox-dropdown-trigger{padding:6px 9px;min-height:30px;font-size:11px;border-radius:6px}
+.video-studio-page .studio-stage-top{justify-content:flex-start}
+.video-studio-page #canvasInfo{margin-left:auto}
+.video-studio-page .studio-main{height:calc(100dvh - 130px)}
+@media(max-width:900px){.video-studio-page .studio-main{height:auto}}
+.video-studio-page .audio-waveform{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;fill:none;stroke:#b6ffed;stroke-width:1.5;opacity:.5}
+.video-studio-page #mediaBin img{object-fit:cover;border-radius:4px;flex-shrink:0;margin-right:6px}
+@media(min-width:901px){body.video-studio-page{display:flex;flex-direction:column;height:100dvh;overflow:hidden}.video-studio-page .studio-main{flex:1;min-height:0;height:auto!important}.video-studio-page .studio-top,.video-studio-page .loox-sitewide-header{flex-shrink:0}}
+@media(min-width:901px){
+ body.video-studio-page.experience-studio{display:flex;height:100dvh!important;min-height:0!important;overflow:hidden!important}
+ body.video-studio-page.experience-studio .studio-main{height:auto!important;min-height:0!important;flex:1;grid-template-rows:42px minmax(220px,1fr) minmax(180px,29dvh);overflow:hidden!important}
+ body.video-studio-page.experience-studio .studio-top{min-height:58px;height:58px}
+}
+@media(max-width:900px){body.video-studio-page.experience-studio{display:block;height:auto!important;overflow-y:auto!important}}
+body.video-studio-page.experience-studio.loox-sitewide-active .studio-main{height:auto!important;min-height:0!important}

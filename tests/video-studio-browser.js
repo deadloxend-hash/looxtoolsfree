@@ -1,0 +1,41 @@
+'use strict';
+const embedded=!!document.getElementById('editor'),frame=document.getElementById('editor')||{contentWindow:window,style:{}},out=document.getElementById('results');let pass=0,fail=0;
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function check(ok,label){ok?pass++:fail++;out.textContent+=(ok?'\nPASS ':'\nFAIL ')+label}
+async function until(fn,ms=12000){const start=performance.now();while(!fn()){if(performance.now()-start>ms)throw new Error('Timed out: '+fn);await wait(50)}}
+document.getElementById('mobile').onclick=()=>{frame.style.width='390px';frame.style.height='1100px'};
+document.getElementById('run').onclick=async()=>{
+ document.getElementById('run').disabled=true;out.textContent='Running…';pass=fail=0;
+ try{
+ const w=frame.contentWindow,d=w.document,$=id=>d.getElementById(id),errors=[];w.addEventListener('error',e=>errors.push(e.message));
+ const click=id=>$(id).click();const input=(key,value)=>{const el=d.querySelector('[data-prop="'+key+'"]');if(!el)throw new Error('Missing property '+key);el.focus();el.value=String(value);el.dispatchEvent(new w.Event(el.tagName==='SELECT'?'change':'input',{bubbles:true}));el.blur()};
+ async function project(){click('downloadProject');await wait(20);return JSON.parse(await (await fetch(projectLink.href)).text())}
+ // Intercept only automatic anchor clicks to inspect genuine downloaded blobs; rendering and recording stay real.
+ let projectLink,videoLink;const originalClick=w.HTMLAnchorElement.prototype.click;w.HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json'))projectLink=this;else if(/\.(mp4|webm)$/.test(this.download))videoLink=this;};
+ const files=await Promise.all(['one','two'].map(async name=>{const r=await fetch((embedded?'':'tests/')+'video-samples/'+name+'.mp4');if(!r.ok)throw new Error('Generate sample clips first');return new w.File([await r.blob()],name+'.mp4',{type:'video/mp4'})}));
+ const transfer=new w.DataTransfer();files.forEach(f=>transfer.items.add(f));$('fileVideo').files=transfer.files;$('fileVideo').dispatchEvent(new w.Event('change',{bubbles:true}));
+ await until(()=>d.querySelectorAll('#layerList button').length===2);let data=await project();check(data.clips.length===2,'multi-import');check(Math.abs(data.clips[1].start-3)<.1,'main clips append without moving unrelated clips');
+ const first=data.clips[0];d.querySelector('[data-clip="'+first.id+'"]').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+ input('trimStart',.2);input('duration',2.5);$('scrub').value=1;$('scrub').dispatchEvent(new w.Event('input'));click('split');data=await project();check(data.clips.length===3,'split at playhead');check(Math.abs(data.clips.find(c=>c.name.includes('part 2')).trimStart-1.2)<.05,'split preserves source in');
+ input('rate',2);data=await project();check(Math.abs(data.clips.find(c=>c.id!==first.id&&c.kind==='video'&&c.name.includes('part 2')).duration-.75)<.05,'speed change retimes duration');
+ d.querySelector('[data-inspector="audio"]').click();click('detachAudio');data=await project();check(data.clips.some(c=>c.kind==='audio')&&data.clips.find(c=>c.name.includes('part 2')&&c.kind==='video').volume===0,'detach audio preserves a muted video');
+ d.querySelector('[data-inspector="audio"]').click();input('audioFadeIn',.2);input('audioFadeOut',.2);input('volume',65);data=await project();check(data.clips.find(c=>c.kind==='audio').audioFadeIn===.2,'audio envelope saved');
+ click('addTitle');d.querySelector('[data-inspector="basic"]').click();input('text','LOOX regression');input('duration',2);input('x',30);click('setMotionKey');$('scrub').value=2;$('scrub').dispatchEvent(new w.Event('input'));input('x',70);click('setMotionKey');data=await project();const title=data.clips.find(c=>c.kind==='text');check(title.animation.x.length===2,'two transform keys');check(w.LOOXVideoCore.evaluated(title,.5).x>.3,'transform interpolates');
+ input('mask','circle');input('blend','screen');click('flipHorizontal');data=await project();check(data.clips.find(c=>c.kind==='text').flipX===-1,'flip and compositing values serialize');
+ d.querySelector('[data-inspector="color"]').click();input('brightness',1.2);input('blur',2);data=await project();check(data.clips.find(c=>c.kind==='text').brightness===1.2,'color adjustment');click('undo');data=await project();check(data.clips.find(c=>c.kind==='text').blur!==2,'undo color edit');click('redo');
+ click('addMarker');check(d.querySelectorAll('.video-marker').length===1,'timeline marker');
+ $('projectName').value='Browser regression '+Date.now();$('projectName').dispatchEvent(new w.Event('change'));click('saveProject');await until(()=>$('saveState').textContent==='Saved on this device');const savedName=$('projectName').value;
+ click('newProject');await until(()=>d.querySelectorAll('#layerList button').length===0);click('recentButton');await until(()=>[...d.querySelectorAll('#recentProjects button')].some(b=>b.textContent.includes(savedName)));[...d.querySelectorAll('#recentProjects button')].find(b=>b.textContent.includes(savedName)).click();await until(()=>d.querySelectorAll('#layerList button').length===5);data=await project();check(data.name===savedName&&data.clips.length===5,'IndexedDB recovery includes clips and media');
+ await until(()=>d.querySelectorAll('#mediaBin img').length===2);let draws=0;const proto=w.CanvasRenderingContext2D.prototype,original=proto.fillRect;proto.fillRect=function(...a){draws++;return original.apply(this,a)};await wait(1800);const baseline=draws;await wait(1000);check(draws-baseline===0,'idle preview: '+(draws-baseline)+' redraws / second');proto.fillRect=original;
+ frame.style.width='390px';await wait(150);if(embedded)check(d.documentElement.scrollWidth<=410,'390px layout has no page overflow');frame.style.width='1280px';
+ click('exportTop');$('resolution').value='480';$('fps').value='30';const format=[...$('exportFormat').options].find(o=>o.value.includes('vp8'));if(format)$('exportFormat').value=format.value;click('export');await until(()=>videoLink,20000);
+ const exported=await (await fetch(videoLink.href)).blob();const video=d.createElement('video');video.src=URL.createObjectURL(exported);video.preload='auto';await new Promise((r,j)=>{video.onloadedmetadata=r;video.onerror=j});check(video.videoWidth===854&&video.videoHeight===480,'actual export metadata: '+video.videoWidth+'×'+video.videoHeight);check(exported.type.includes('webm'),'actual container is WebM');
+ const a=document.createElement('a');a.href=URL.createObjectURL(exported);a.download='video-studio-regression.webm';a.textContent='Download verified regression export';document.getElementById('downloads').append(a);
+ // Exercise effects, a real overlapping dissolve, and a decoded still-frame asset.
+ const second=data.clips.find(c=>c.name==='two.mp4');d.querySelector('[data-clip="'+second.id+'"]').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));d.querySelector('[data-inspector="basic"]').click();input('start',1.75);click('joinDissolve');let extras=await project();check(extras.clips.find(c=>c.id===second.id).start<1.75,'dissolve creates real source overlap');
+ $('scrub').value=1.5;$('scrub').dispatchEvent(new w.Event('input'));await wait(300);click('freezeFrame');await until(()=>d.querySelectorAll('#layerList button').length===6);extras=await project();check(extras.clips.some(c=>c.kind==='image'&&c.name.includes('freeze')),'freeze frame is an imported image asset');
+ d.querySelector('[data-clip="'+second.id+'"]').dispatchEvent(new w.KeyboardEvent('keydown',{key:'Enter',bubbles:true}));d.querySelector('[data-inspector="color"]').click();input('visualEffect','pixelate');extras=await project();check(extras.clips.find(c=>c.id===second.id).visualEffect==='pixelate','original pixelation effect serializes');
+ w.HTMLAnchorElement.prototype.click=originalClick;
+ check(errors.length===0,'no application errors: '+errors.join('; '));out.textContent+='\nComplete: '+pass+' passed, '+fail+' failed. Export '+exported.size+' bytes.';
+ }catch(e){out.textContent+='\nERROR '+e.stack;fail++}finally{document.getElementById('run').disabled=false}
+};

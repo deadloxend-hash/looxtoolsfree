@@ -1,9 +1,9 @@
 name: Editor JavaScript check
 on:
   push:
-    paths: ['loox-video-studio.js', 'loox-crop-controls.js', '.github/workflows/editor-check.yml']
+    paths: ['loox-video-studio.js', 'loox-video-core.js', 'tests/video-core.test.cjs', 'loox-crop-controls.js', '.github/workflows/editor-check.yml']
   pull_request:
-    paths: ['loox-video-studio.js', 'loox-crop-controls.js', '.github/workflows/editor-check.yml']
+    paths: ['loox-video-studio.js', 'loox-video-core.js', 'tests/video-core.test.cjs', 'loox-crop-controls.js', '.github/workflows/editor-check.yml']
 jobs:
   syntax:
     runs-on: ubuntu-latest
@@ -12,4 +12,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node --check loox-video-studio.js && node --check loox-crop-controls.js
+      - run: node --check loox-video-studio.js && node --check loox-video-core.js && node --check loox-crop-controls.js
+      - run: node --test tests/video-core.test.cjs
