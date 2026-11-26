@@ -18,23 +18,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Validate landing JavaScript and preserve cover assets
+      - name: Validate Utilities discovery and preserve editing assets
         run: |
           node --check scripts/tools-landing-audit.mjs
+          node --check platform/utilities.js
+          node --test tests/utilities-core.test.cjs
+          node scripts/audit-utilities.cjs
+          node scripts/build-utilities.cjs
+          git diff --exit-code -- index.html
           node --input-type=module <<'JS'
           import fs from 'node:fs';
           import assert from 'node:assert/strict';
-          const html=fs.readFileSync('index.html','utf8');
-          const start=html.indexOf('<script>\nconst tools=[');
-          assert.ok(start>=0,'Homepage catalog JavaScript not found');
-          const end=html.indexOf('</script>',start);
-          assert.ok(end>start);
-          new Function(html.slice(start+8,end));
-          assert.ok(!html.includes('id="searchForm"'),'Duplicate hero search must remain removed');
-          assert.ok(html.includes('src="assets/tool-art/photo-editor.webp"'),'Editor cover must stay on homepage');
           for(const cover of ['photo-editor.webp','video-editor.webp','bg-remove.webp'])
-            assert.ok(fs.existsSync('assets/tool-art/'+cover),'Missing featured tool artwork: '+cover);
-          console.log('Inline catalog JS and original editing artwork passed');
+            assert.ok(fs.existsSync('assets/tool-art/'+cover),'Preserve editing tool artwork: '+cover);
           JS
       - name: Check static links and duplicated IDs
         run: python3 scripts/site-ui-static-audit.py
@@ -47,7 +43,7 @@ jobs:
           else
             npx playwright install --with-deps chromium
           fi
-      - name: Test the All Tools landing at mobile, tablet and desktop widths
+      - name: Test Utilities at all eight requested viewport widths
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/loox-tools-audit.log 2>&1 &
           sleep 2
