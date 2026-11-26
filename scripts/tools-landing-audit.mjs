@@ -18,6 +18,8 @@ async function test(width){
  assert.equal(await page.locator('[data-tool-id]').count(),122);checks++;
  assert.equal(await page.locator(visibleCards).count(),24);checks++;
  assert.equal(await page.locator('#comingGrid .ut-card').count(),8);checks++;
+ assert.equal(await page.locator('.ut-cover').count(),122,'Keep the tool cover photos');checks++;
+ const firstCover=page.locator(visibleCards+' .ut-cover').first();await firstCover.evaluate(img=>img.decode());assert.ok(await firstCover.evaluate(img=>img.naturalWidth>0));checks++;
  assert.equal(await page.locator('.ut-studio').count(),5);checks++;
  assert.equal(await page.locator('#toolSearchForm').count(),1);checks++;
  assert.ok(await page.locator('.ut-hero').evaluate(el=>el.getBoundingClientRect().height<340));checks++;
