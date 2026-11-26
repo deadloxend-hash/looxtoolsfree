@@ -34,7 +34,7 @@ document.querySelector('#run').onclick=async()=>{
   await check('Photo drag cancellation and proportional corner resize',async()=>{
    await tool('tools');const canvas=id('canvas'),r=canvas.getBoundingClientRect(),x=r.left+r.width*.4,y=r.top+r.height*.4;
    const event=(type,target,px,py)=>target.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:31,pointerType:'mouse',clientX:px,clientY:py,buttons:type==='pointerup'?0:1}));
-   const original=pixels().slice();id('movePhoto').click();await idle();event('pointerdown',canvas,x,y);event('pointermove',canvas,x+30,y+20);event('pointercancel',canvas,x+30,y+20);await idle();assert(equalPixels(original,pixels()),'Cancelled drag changed photo');
+   const original=pixels().slice();event('pointerdown',canvas,x,y);event('pointermove',canvas,x+30,y+20);event('pointercancel',canvas,x+30,y+20);await idle();assert(equalPixels(original,pixels()),'Cancelled drag changed photo');
    event('pointerdown',canvas,x,y);event('pointerup',canvas,x,y);await idle();const h=doc.querySelector('[data-photo-handle="se"]'),box=h.getBoundingClientRect(),hx=box.x+box.width/2,hy=box.y+box.height/2;
    event('pointerdown',h,hx,hy);event('pointermove',h,hx-45,hy-30);event('pointerup',h,hx-45,hy-30);await idle();const dims=id('photoSizeBadge').textContent.match(/(\d+) × (\d+)/);assert(Math.abs(Number(dims[1])/Number(dims[2])-1.5)<.02,'Corner resize distorted aspect');id('undo').click();await idle();assert(equalPixels(original,pixels()),'Resize undo lost original quality');return 'Simulated pointer events; cancellation, ratio and undo checked';
   });
@@ -50,12 +50,17 @@ document.querySelector('#run').onclick=async()=>{
    const c=doc.createElement('canvas');c.width=60;c.height=40;const cx=c.getContext('2d');cx.fillStyle='#6080a0';cx.fillRect(0,0,60,40);const blob=await new Promise(r=>c.toBlob(r));const dt=new win.DataTransfer();dt.items.add(new win.File([blob],'overlay.png',{type:'image/png'}));id('overlayInput').files=dt.files;id('overlayInput').dispatchEvent(new win.Event('change'));await until(()=>id('status').textContent==='Photo layer added');await idle();
    const before=pixels().slice();await tool('adjust');await number('Brightness',40);const after=pixels().slice();assert(!equalPixels(before,after),'Photo overlay adjustment not visible');const offset=(130*240+200)*4;assert(before[offset]===after[offset],'Photo adjustment changed main layer');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Overlay effect undo failed');await tool('layers');await clickText('Delete layer');
   });
-  await check('Main photo stays fixed until movement is explicitly enabled',async()=>{
-   await tool('tools');if(id('movePhoto').getAttribute('aria-pressed')==='true')id('movePhoto').click();
+  await check('Imported main photo drags directly and can optionally be locked',async()=>{
+   await tool('tools');assert(id('movePhoto').getAttribute('aria-pressed')==='true','Imported image movement is disabled by default');
    const c=id('canvas'),r=c.getBoundingClientRect(),before=pixels().slice();
    const pointer=(type,x,y)=>c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:71,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*y,button:0}));
-   pointer('pointerdown',.4,.4);pointer('pointermove',.5,.5);pointer('pointerup',.5,.5);await idle();assert(equalPixels(before,pixels()),'Ordinary click/drag moved the main photo');
-   id('movePhoto').click();await idle();pointer('pointerdown',.4,.4);pointer('pointermove',.5,.5);pointer('pointerup',.5,.5);await idle();assert(!equalPixels(before,pixels()),'Explicit Move main photo does not work');id('undo').click();await idle();id('movePhoto').click();
+   pointer('pointerdown',.4,.4);pointer('pointermove',.5,.5);pointer('pointerup',.5,.5);await idle();assert(!equalPixels(before,pixels()),'Dragging the imported photo had no effect');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Photo drag undo failed');
+   id('movePhoto').click();await idle();pointer('pointerdown',.4,.4);pointer('pointermove',.5,.5);pointer('pointerup',.5,.5);await idle();assert(equalPixels(before,pixels()),'Position lock did not prevent movement');id('movePhoto').click();
+  });
+  await check('Drawing and retouch panels prevent photo dragging without disabling normal movement',async()=>{
+   const c=id('canvas'),before=pixels().slice();
+   for(const name of ['draw','retouch']){await tool(name);const r=c.getBoundingClientRect();for(const [type,x] of [['pointerdown',.4],['pointermove',.6],['pointerup',.6]])c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:79,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*.4,button:0}));await idle();assert(equalPixels(before,pixels()),name+' moved the photo')}
+   await tool('tools');assert(id('movePhoto').getAttribute('aria-pressed')==='true','Returning to Tools disabled photo dragging');
   });
   await check('Drawing uses a display-sized preview and hides transformation handles',async()=>{
    await tool('draw');await clickText('Draw mode');assert(id('photoSelection').hidden,'Photo resize handles are active over drawing');

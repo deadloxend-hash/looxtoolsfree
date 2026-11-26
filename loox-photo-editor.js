@@ -4,7 +4,7 @@ const core=window.LOOXPhotoCore;
 const keys=['brightness','contrast','exposure','highlights','shadows','saturation','vibrance','temperature','tint','fade','gamma','vignette','grain','sharpen'];
 const definitions={brightness:['Brightness',-100,100,0],contrast:['Contrast',-100,100,0],saturation:['Saturation',-100,100,0],vibrance:['Vibrance',-100,100,0],highlights:['Highlights',-100,100,0],shadows:['Shadows',-100,100,0],exposure:['Exposure',-3,3,0],temperature:['Temperature',-100,100,0],tint:['Tint',-100,100,0],fade:['Fade',0,100,0],gamma:['Gamma',-100,100,0],vignette:['Vignette',0,100,0],grain:['Grain',0,100,0],sharpen:['Sharpen',0,100,0]};
 let overlays=[],selectedOverlay=-1,overlayDrag=null,cropRatio='free',frame={style:'none',color:'#ffffff',width:20},drawColor='#ff52ad',drawSize=16,resizeMode='fit',resizeBackground='#ffffff',canvasBackground=null;let cropTarget='canvas',cropIndex=-1,photoBounds=null,selectedPhoto=null,photoResizeDrag=null;let photoTransformSource=null,photoTransformMask=null,photoTransformSourceRect=null;let resizeAnchor=null,resizePlacement=null,resizeLast=null;let source=null,base=null,mask=null,filename='photo',tab='tools',brushSize=44,intensity=85,brushActive=false,zoom=1,fitScale=1,crop=null,drag=null,history=[],future=[],busy=false,renderToken=0;
-let photoMoveEnabled=false;
+let photoMoveEnabled=true;
 let filterAmount=1,drawOpacity=1,dirty=false,documentVersion=0,maskRevision=0,baseCache=null,loadingToken=0;
 const adjustments=()=>Object.fromEntries(keys.map(k=>[k,definitions[k][3]]));let values=adjustments(),preset='original';
 let statusTimer=0;
@@ -693,7 +693,7 @@ function clearGesturePreview(){
 const gesturePoint=e=>pointerPosition(e);
 const pointerDistance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function startPhotoPointer(e,keepSelection=false){
- if(!base||crop||brushActive||!selectedPhoto||(selectedPhoto.kind==='base'&&!photoMoveEnabled))return false;
+ if(!base||crop||brushActive||tab==='draw'||tab==='retouch'||!selectedPhoto||(selectedPhoto.kind==='base'&&!photoMoveEnabled))return false;
  const existing=activePhotoPointers.size;
  // Invalidate a pending full-quality render before making the preview visible.
  ++renderToken;
@@ -770,7 +770,7 @@ function finishPhotoPointer(e){
  return true;
 }
 
-function load(file){if(!file)return;if(dirty&&!confirm('Replace this photo and discard unsaved edits?'))return;const loadToken=++loadingToken;if(filterSession)finishFilters(false);if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(loadToken!==loadingToken)return;if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;selectedTextIndex=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;setPhotoMove(false);filterAmount=1;dirty=false;documentVersion++;baseCache=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();$('recoveryBanner').hidden=true;setStatus('Image loaded · full resolution');scheduleAutosave()};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
+function load(file){if(!file)return;if(dirty&&!confirm('Replace this photo and discard unsaved edits?'))return;const loadToken=++loadingToken;if(filterSession)finishFilters(false);if(!file.type.startsWith('image/')){setStatus('Please choose an image file');return}if(file.size>80*1024*1024){setStatus('Image is larger than 80 MB');return}const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{URL.revokeObjectURL(url);if(loadToken!==loadingToken)return;if(img.naturalWidth*img.naturalHeight>24000000){setStatus('Image exceeds the 24-megapixel editor limit');return}source=makeCanvas(img.naturalWidth,img.naturalHeight);source.getContext('2d').drawImage(img,0,0);base=clone(source);mask=makeCanvas(base.width,base.height);values=adjustments();preset='original';frame={style:'none',color:'#ffffff',width:20};overlays=[];selectedOverlay=-1;selectedTextIndex=-1;history=[];future=[];resizeAnchor=null;resizePlacement=null;resizeLast=null;canvasBackground=null;resizeBackground='#ffffff';crop=null;cropTarget='canvas';cropIndex=-1;photoBounds=null;selectedPhoto=null;photoResizeDrag=null;photoTransformSource=null;photoTransformMask=null;photoTransformSourceRect=null;setPhotoMove(true);filterAmount=1;dirty=false;documentVersion++;baseCache=null;zoom=1;filename=file.name.replace(/\.[^.]+$/,'').replace(/[^a-z0-9-_ ]/gi,'_').slice(0,80)||'photo';$('fileName').textContent=file.name;syncCanvas();render();showPanel();updateHistory();$('recoveryBanner').hidden=true;setStatus('Image loaded · full resolution');scheduleAutosave()};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Could not decode image')};img.src=url}
 function triggerUpload(){$('fileInput').click()}
 function button(label,fn){const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',fn);return b}
 function heading(s){const h=document.createElement('h3');h.textContent=s;panel.append(h)}
@@ -836,7 +836,7 @@ function showPanel(){
  panel.replaceChildren();$('panelTitle').textContent=tab==='crop'?'Crop Photo':tab.charAt(0).toUpperCase()+tab.slice(1);if(!base&&tab!=='tools'){hint('Open a photo to use these editing controls.');actions([['Open image',triggerUpload]]);return}if(['adjust','filters','retouch'].includes(tab)){if(selectedOverlay>=0&&!selectedImage()){hint('Select the main photo or a photo layer in Layers to edit its light, color or blur.');return}hint('Editing: '+(selectedImage()?.name||'Background photo'));if(selectedImage()?.locked||selectedImage()?.visible===false){hint('Unlock and show this layer in Layers before editing it.');return}}
  if(tab==='tools'){
   if(selectedPhoto&&!crop)photoSizeFields();
-  heading('Transform');actions([[(photoMoveEnabled?'Stop moving photo':'Move main photo'),()=>{setPhotoMove(!photoMoveEnabled);showPanel()}]]);hint('The main photo stays fixed until Move main photo is enabled. Drag added shapes, text and photo layers directly.');hint('Use Crop in the main toolbar to trim the photo. Crop canvas trims the full design, including overlays.');actions([['＋ Open photo',triggerUpload],['⌗ Crop canvas',()=>beginCrop('canvas')],['↻ Rotate 90°',()=>rotate(1)],['↺ Rotate −90°',()=>rotate(-1)],['⇄ Flip H',()=>flip(true)],['⇅ Flip V',()=>flip(false)]]);
+  heading('Transform');actions([[(photoMoveEnabled?'Lock photo position':'Unlock photo position'),()=>{setPhotoMove(!photoMoveEnabled);showPanel()}]]);hint('Drag the imported photo directly to reposition it. Lock photo position to prevent movement. Drawing and retouching always keep the photo fixed.');hint('Use Crop in the main toolbar to trim the photo. Crop canvas trims the full design, including overlays.');actions([['＋ Open photo',triggerUpload],['⌗ Crop canvas',()=>beginCrop('canvas')],['↻ Rotate 90°',()=>rotate(1)],['↺ Rotate −90°',()=>rotate(-1)],['⇄ Flip H',()=>flip(true)],['⇅ Flip V',()=>flip(false)]]);
   if(selectedImage()&&!selectedImage().locked&&selectedImage().visible!==false)actions([['⌗ Crop selected photo layer',()=>beginCrop('overlay')]]);
   if(crop)showCropControls();
   recoveryControls();heading('Quick actions');actions([['Fit canvas',()=>{zoom=1;layoutCanvas()}],['Reset photo',resetImage]]);hint('The image remains centered in a fixed editing workspace. Zoom only changes the preview.');
@@ -1342,7 +1342,6 @@ $('filterApply').addEventListener('click',()=>finishFilters(true));
 $('filterCancel').addEventListener('click',()=>finishFilters(false));
 
 function selectTab(t){
- if(t!=='tools')setPhotoMove(false);
  if(!inlineTextInput.hidden)closeInlineTextEditor();
  if(filterSession){if(t==='filters')return;finishFilters(false)}
  if(sliderPreviewActive)stopQuickPreview();

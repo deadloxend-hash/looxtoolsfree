@@ -106,3 +106,10 @@ To reproduce the browser suite, serve the repository over HTTP and open `tests/p
 - Final editor browser checks: **40/40 passed in Chrome**, including the new drawing-preview, cancellation, rectangle-path, explicit photo movement and cross-removal regressions, plus all previously listed 12 viewport sizes. Pointer events are simulated; no physical-device performance benchmark was conducted.
 - Automated geometry and Community interaction tests: **9/9 passed**. Syntax and whitespace checks passed.
 - Community search was visually inspected locally with a 42px text inset and both icon parts above the input. Community media API requests failed from the local preview; no media-fetch behavior was changed.
+
+
+## Follow-up: restore direct imported-photo dragging
+
+The first movement fix locked the main photo by default, which prevented normal direct dragging. New imports now start with movement enabled. Opening other tools preserves the user's optional position lock. Drawing and retouching block image transformations at gesture entry, even before their brushes are activated, so returning to Tools immediately restores normal direct movement. The position-lock labels and guide now describe this behavior.
+
+Validation: **41/41 Chrome browser checks passed**, including direct import dragging, one-step undo, optional locking, draw/retouch protection and all 12 responsive viewports. **5/5 geometry tests passed**; JavaScript syntax and whitespace checks passed. Pointer tests use the existing simulated PointerEvent fixture; physical touch hardware was not tested.
