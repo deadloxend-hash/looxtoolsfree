@@ -113,3 +113,11 @@ body.utilities-page.loox-sitewide-active.loox-sitewide-home>button.loox-sitewide
  .ut-studio-coming>span:nth-child(2){flex-direction:column;align-items:flex-start;gap:2px}
  .ut-studio-coming em{display:block!important}
 }
+
+/* Retain the original tool cover artwork in every discovery card. */
+.ut-cover{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:7px;margin:0 0 12px;background:var(--ut-raised)}
+.ut-card .ut-icon{height:20px;margin-bottom:8px}.ut-card .ut-icon svg{width:20px;height:20px}
+.ut-card .ut-save{background:#0b152cde;color:#eaf2ff;box-shadow:0 1px 5px #0003;right:12px;top:12px}
+.ut-card .ut-save:hover,.ut-card .ut-save[aria-pressed=true]{background:#233e61;color:#c9e1ff}
+.ut-card .ut-remove{background:#0b152cde;color:#eaf2ff;right:12px;top:55px}
+@media(max-width:767px){.ut-card .ut-save{right:7px;top:7px}.ut-card .ut-remove{right:7px;top:54px}.ut-cover{margin-bottom:11px}}
