@@ -517,6 +517,16 @@ if(discoveryPage){
   menu.style.top=Math.max(top+8,openBelow?rect.bottom+6:rect.top-height-6)+'px';
  };
  for(const select of selects){
+  // Discovery controls own their native selects; do not allow the sitewide
+  // enhancer to create a second trigger, regardless of script load order.
+  const generic=select.parentElement?.classList.contains('loox-dropdown')?select.parentElement:null;
+  if(generic){
+   document.getElementById(select.id+'-options')?.remove();
+   generic.replaceWith(select);
+  }
+  select.dataset.looxDropdown='discovery';
+  select.tabIndex=-1;
+  select.setAttribute('aria-hidden','true');
   const wrap=element('span','loox-discovery-select-wrap');
   const button=element('button','loox-discovery-select-trigger');
   button.type='button';button.setAttribute('aria-haspopup','listbox');
