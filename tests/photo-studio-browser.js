@@ -46,9 +46,28 @@ document.querySelector('#run').onclick=async()=>{
    for(const [type,dx] of [['pointerdown',-.04],['pointermove',.04],['pointerup',.04]])canvas.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:42,pointerType:'mouse',clientX:rr.left+rr.width*(.5+dx),clientY:rr.top+rr.height*.5,buttons:type==='pointerup'?0:1}));
    await idle();assert(!equalPixels(before,pixels()),'Blur mask had no effect');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Retouch undo failed');return 'Simulated pointer strokes restore exact original pixels';
   });
+  await check('Blur brush and eraser use bounded previews, preserve undo and cancel cleanly',async()=>{
+   await tool('layers');await clickText('Main photo');await tool('retouch');await clickText('Blur brush');
+   const c=id('canvas'),before=pixels().slice();let r=c.getBoundingClientRect();
+   const pointer=(type,x,y,ident=91)=>c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:ident,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*y,button:0}));
+   let largeReads=0,largeFilters=0;const proto=win.CanvasRenderingContext2D.prototype,read=proto.getImageData,descriptor=Object.getOwnPropertyDescriptor(proto,'filter');
+   proto.getImageData=function(x,y,w,h,...args){if(w*h>640*640)largeReads++;return read.call(this,x,y,w,h,...args)};
+   if(descriptor?.set)Object.defineProperty(proto,'filter',{...descriptor,set(value){if(value.includes('blur')&&this.canvas.width*this.canvas.height>640*640)largeFilters++;descriptor.set.call(this,value)}});
+   try{
+    pointer('pointerdown',.46,.35);const startedReads=largeReads,startedFilters=largeFilters;
+    for(let n=0;n<90;n++)pointer('pointermove',.46+n*.001,.35+n*.003);await idle();
+    assert(equalPixels(before,pixels()),'Full-resolution canvas changed before stroke completion');assert(!doc.querySelector('.photo-gesture-preview').hidden,'Blur live preview missing');
+    assert(largeReads===startedReads&&largeFilters===startedFilters,'Blur reprocessed full-resolution pixels while moving');
+    pointer('pointerup',.55,.62);await idle();const blurred=pixels().slice();assert(!equalPixels(before,blurred),'Blur final result missing');
+    await clickText('Erase blur');r=c.getBoundingClientRect();pointer('pointerdown',.5,.5,92);for(let n=0;n<60;n++)pointer('pointermove',.46+n*.0015,.35+n*.004,92);await idle();assert(equalPixels(blurred,pixels()),'Eraser repainted native canvas during movement');pointer('pointerup',.55,.59,92);await idle();assert(!equalPixels(blurred,pixels()),'Blur eraser had no effect');
+    id('undo').click();await idle();assert(equalPixels(blurred,pixels()),'Eraser undo failed');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Blur undo failed');
+    await tool('retouch');await clickText('Blur brush');r=c.getBoundingClientRect();pointer('pointerdown',.5,.4,93);pointer('pointermove',.5,.6,93);pointer('pointercancel',.5,.6,93);await idle();assert(equalPixels(before,pixels()),'Cancelled blur persisted');
+   }finally{proto.getImageData=read;if(descriptor)Object.defineProperty(proto,'filter',descriptor)}
+   return 'Both retouch brushes preview during movement; native pixels commit on release';
+  });
   await check('Photo overlays keep adjustments isolated from the main photo',async()=>{
    const c=doc.createElement('canvas');c.width=60;c.height=40;const cx=c.getContext('2d');cx.fillStyle='#6080a0';cx.fillRect(0,0,60,40);const blob=await new Promise(r=>c.toBlob(r));const dt=new win.DataTransfer();dt.items.add(new win.File([blob],'overlay.png',{type:'image/png'}));id('overlayInput').files=dt.files;id('overlayInput').dispatchEvent(new win.Event('change'));await until(()=>id('status').textContent==='Photo layer added');await idle();
-   const before=pixels().slice();await tool('adjust');await number('Brightness',40);const after=pixels().slice();assert(!equalPixels(before,after),'Photo overlay adjustment not visible');const offset=(130*240+200)*4;assert(before[offset]===after[offset],'Photo adjustment changed main layer');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Overlay effect undo failed');await tool('layers');await clickText('Delete layer');
+   const before=pixels().slice();await tool('adjust');await number('Brightness',40);const after=pixels().slice();assert(!equalPixels(before,after),'Photo overlay adjustment not visible');const offset=(130*240+200)*4;assert(before[offset]===after[offset],'Photo adjustment changed main layer');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Overlay effect undo failed');await tool('retouch');await clickText('Blur brush');const cmain=id('canvas'),rect=cmain.getBoundingClientRect(),clean=pixels().slice();for(const [type,x]of [['pointerdown',.25],['pointermove',.4],['pointerup',.4]])cmain.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:95,pointerType:'mouse',clientX:rect.left+rect.width*x,clientY:rect.top+rect.height*.28,button:0}));await idle();assert(clean[offset]===pixels()[offset],'Overlay blur affected the main photo');id('undo').click();await idle();assert(equalPixels(clean,pixels()),'Overlay retouch undo failed');await tool('layers');await clickText('Delete layer');
   });
   await check('Imported main photo drags directly and can optionally be locked',async()=>{
    await tool('tools');assert(id('movePhoto').getAttribute('aria-pressed')==='true','Imported image movement is disabled by default');
@@ -110,6 +129,18 @@ document.querySelector('#run').onclick=async()=>{
     if(w===320)assert(canvas.height>=90,'Small-phone preview too short');return `Canvas ${Math.round(canvas.width)} × ${Math.round(canvas.height)}, controls in bounds`;
    });
   }
+  await check('Large-photo blur and eraser avoid full-resolution processing during movement',async()=>{
+   const fixture=doc.createElement('canvas');fixture.width=2400;fixture.height=1600;const fc=fixture.getContext('2d');for(let y=0;y<1600;y+=20){fc.fillStyle=y%40?'#16465f':'#ef9768';fc.fillRect(0,y,2400,20)}
+   const blob=await new Promise(resolve=>fixture.toBlob(resolve)),dt=new win.DataTransfer();dt.items.add(new win.File([blob],'large-brush-test.png',{type:'image/png'}));id('fileInput').files=dt.files;id('fileInput').dispatchEvent(new win.Event('change'));await until(()=>id('dimensions').textContent==='2400 × 1600');await idle();
+   await tool('retouch');let heavyReads=0,heavyBlur=0;const proto=win.CanvasRenderingContext2D.prototype,originalRead=proto.getImageData,descriptor=Object.getOwnPropertyDescriptor(proto,'filter');
+   proto.getImageData=function(x,y,w,h,...args){if(w*h>640*640)heavyReads++;return originalRead.call(this,x,y,w,h,...args)};
+   if(descriptor?.set)Object.defineProperty(proto,'filter',{...descriptor,set(value){if(value.includes('blur')&&this.canvas.width*this.canvas.height>640*640)heavyBlur++;descriptor.set.call(this,value)}});
+   try{for(const [mode,ident]of [['Blur brush',101],['Erase blur',102]]){
+    await clickText(mode);const c=id('canvas'),r=c.getBoundingClientRect(),pointer=(type,n)=>c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:ident,pointerType:'mouse',clientX:r.left+r.width*(.3+n*.002),clientY:r.top+r.height*(.4+Math.sin(n/8)*.06),button:0}));
+    pointer('pointerdown',0);const reads=heavyReads,blurs=heavyBlur;for(let n=1;n<=120;n++)pointer('pointermove',n);await idle();assert(heavyReads===reads,'Large photo reread during '+mode);assert(heavyBlur===blurs,'Large photo reblurred during '+mode);pointer('pointerup',120);await idle();
+   }}finally{proto.getImageData=originalRead;if(descriptor)Object.defineProperty(proto,'filter',descriptor)}
+   await loadFixture();return '3.84-megapixel source; no native-sized pixel reads or blur filters during either stroke';
+  });
   await check('Optional local recovery restores composition',async()=>{
    frame.width=390;frame.height=844;await idle();await tool('tools');const checkbox=doc.querySelector('.autosave-option input');checkbox.checked=true;checkbox.dispatchEvent(new win.Event('change'));await until(()=>id('saveState').textContent==='Saved on this device','Project did not autosave');
    const expected=pixels().slice();frame.src='../photo-editor.html?recovery-test';await new Promise(r=>frame.onload=r);await init();await until(()=>!id('recoveryBanner').hidden,'Recovery banner missing');id('restoreProject').click();await until(()=>id('status').textContent.includes('recovered'));await idle();assert(equalPixels(expected,pixels()),'Recovered pixels differ');await tool('tools');const off=doc.querySelector('.autosave-option input');off.checked=false;off.dispatchEvent(new win.Event('change'));await clickText('Clear saved project');

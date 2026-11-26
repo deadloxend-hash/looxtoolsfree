@@ -329,7 +329,7 @@ function stopQuickPreview(){
  render();
 }
 let lastRenderedComposite=null;
-function render(){if(!base)return;if(dirty){$('saveState').textContent=autosaveEnabled?'Saving on this device…':'Unsaved edits';scheduleAutosave()}if(painting&&activeStroke){queueStrokePreview();return}if(sliderPreviewActive){++renderToken;queueQuickPreview();return}let token=++renderToken;requestAnimationFrame(()=>{
+function render(){if(!base)return;if(dirty){$('saveState').textContent=autosaveEnabled?'Saving on this device…':'Unsaved edits';scheduleAutosave()}if(painting&&activeStroke){queueStrokePreview();return}if(painting&&retouchPreview){queueRetouchPreview();return}if(sliderPreviewActive){++renderToken;queueQuickPreview();return}let token=++renderToken;requestAnimationFrame(()=>{
  if(token!==renderToken||!base)return;
  // Do not interrupt a live photo drag or pinch with an older heavy redraw.
  // A new full-quality frame is requested once all pointers are released.
@@ -1532,6 +1532,54 @@ function appendStrokePoint(e){
 }
 function clearStrokePreview(){if(strokePreviewFrame)cancelAnimationFrame(strokePreviewFrame);strokePreviewFrame=0;strokeBackground=null;strokeFrameOverlay=null}
 
+// Retouch shares the bounded brush-preview path: cache tone/blur once per stroke,
+// update only the mask while moving, and process native pixels on release.
+let retouchPreview=null,retouchPreviewFrame=0;
+function startRetouchPreview(){
+ ++renderToken;positionGestureCanvas();
+ const target=activePaintTarget,image=target?.image||base,m=target?.blurMask||mask;
+ const iw=image.naturalWidth||image.width,ih=image.naturalHeight||image.height,scale=Math.min(1,640/Math.max(iw,ih));
+ const w=Math.max(1,Math.round(iw*scale)),h=Math.max(1,Math.round(ih*scale));
+ const small=makeCanvas(w,h),c=small.getContext('2d',{willReadFrequently:true});c.drawImage(image,0,0,w,h);
+ const v=target?{...adjustments(),...(target.values||{})}:effective();
+ const name=target?(target.preset||'original'):preset,amount=target?(target.filterAmount??1):filterAmount;
+ if(target)for(const [key,n]of Object.entries(presets[name]||{}))v[key]+=n*amount;
+ const input=c.getImageData(0,0,w,h),clean=c.createImageData(w,h);tone(input.data,clean.data,v);c.putImageData(clean,0,0);
+ const blurred=makeCanvas(w,h),bc=blurred.getContext('2d',{willReadFrequently:true});
+ const radius=Math.max(12,Math.round(Math.min(iw,ih)*(target ? .025 : .018)))*scale;
+ bc.filter='blur('+radius+'px)';bc.drawImage(small,0,0);bc.filter='none';
+ const previewMask=makeCanvas(w,h);previewMask.getContext('2d',{willReadFrequently:true}).drawImage(m,0,0,w,h);
+ const downsample=img=>{const out=makeCanvas(gestureCanvas.width,gestureCanvas.height);out.getContext('2d').drawImage(img,0,0,out.width,out.height);return out};
+ retouchPreview={target,image:small,mask:previewMask,clean:clean.data,blurred:bc.getImageData(0,0,w,h).data,output:c.createImageData(w,h),values:v,name,amount,sx:w/m.width,sy:h/m.height,
+  under:target?downsample(compose({toLayer:overlays.indexOf(target),drawFrame:false})):null,
+  frame:frame.style==='none'?null:downsample(compose({skipBase:true,fromLayer:overlays.length}))};
+ canvas.style.opacity='0';gestureCanvas.hidden=false;
+}
+function queueRetouchPreview(){
+ if(retouchPreviewFrame||!painting||!retouchPreview)return;
+ retouchPreviewFrame=requestAnimationFrame(()=>{
+  retouchPreviewFrame=0;const p=retouchPreview;if(!p||!painting)return;
+  const alpha=p.mask.getContext('2d',{willReadFrequently:true}).getImageData(0,0,p.mask.width,p.mask.height).data,d=p.output.data;
+  d.set(p.clean);
+  for(let i=0;i<d.length;i+=4){const mix=alpha[i+3]/255;for(let j=0;j<3;j++)d[i+j]=p.clean[i+j]*(1-mix)+p.blurred[i+j]*mix}
+  p.image.getContext('2d').putImageData(p.output,0,0);applySpecial(p.image,p.name,p.amount);applyDetail(p.image,p.values);
+  const c=gestureContext;c.setTransform(1,0,0,1,0,0);c.clearRect(0,0,gestureCanvas.width,gestureCanvas.height);
+  if(p.under)c.drawImage(p.under,0,0);
+  else c.drawImage(p.image,0,0,gestureCanvas.width,gestureCanvas.height);
+  c.save();c.scale(gestureCanvas.width/base.width,gestureCanvas.height/base.height);
+  const index=p.target?overlays.indexOf(p.target):-1;
+  for(let i=Math.max(0,index);i<overlays.length;i++)drawLayer(c,i===index?{...overlays[i],cache:p.image}:overlays[i]);
+  c.restore();if(p.frame)c.drawImage(p.frame,0,0);
+ });
+}
+function clearRetouchPreview(){if(retouchPreviewFrame)cancelAnimationFrame(retouchPreviewFrame);retouchPreviewFrame=0;retouchPreview=null}
+function stampBlurMask(c,from,to,size,erase,opacity){
+ c.lineCap='round';c.lineJoin='round';c.lineWidth=size;c.globalCompositeOperation=erase?'destination-out':'source-over';
+ c.strokeStyle='rgba(255,255,255,'+opacity+')';c.fillStyle=c.strokeStyle;
+ c.beginPath();c.moveTo(from?.x??to.x,from?.y??to.y);c.lineTo(to.x,to.y);c.stroke();
+ c.beginPath();c.arc(to.x,to.y,size/2,0,Math.PI*2);c.fill();c.globalCompositeOperation='source-over';
+}
+
 function hitOverlay(p,imagesOnly=false){
  for(let i=overlays.length-1;i>=0;i--){const o=overlays[i];if(o.visible===false||o.locked||o.type==='stroke'||(imagesOnly&&o.type!=='image'))continue;
  const rect=o.type==='text'?textLayerBounds(o):
@@ -1546,7 +1594,14 @@ function paint(p){
  if(target&&(local.x<target.x||local.x>target.x+target.w||local.y<target.y||local.y>target.y+target.h)){lastPoint=null;return}
  const q=target?{x:(local.x-target.x)*m.width/target.w,y:(local.y-target.y)*m.height/target.h}:p;
  const scale=canvas.width/Math.max(1,canvas.getBoundingClientRect().width),s=Math.max(3,brushSize*scale*(target?m.width/base.width*base.width/target.w:1));
- const c=m.getContext('2d');c.lineCap='round';c.lineJoin='round';c.lineWidth=s;c.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';c.strokeStyle='rgba(255,255,255,'+(intensity/100)+')';c.beginPath();c.moveTo(lastPoint?.x??q.x,lastPoint?.y??q.y);c.lineTo(q.x,q.y);c.stroke();c.beginPath();c.arc(q.x,q.y,s/2,0,Math.PI*2);c.fillStyle=c.strokeStyle;c.fill();c.globalCompositeOperation='source-over';if(!target&&resizeAnchor&&resizePlacement){const r=resizePlacement,a={x:(q.x-r.dx)/r.scale,y:(q.y-r.dy)/r.scale},b=lastPoint?{x:(lastPoint.x-r.dx)/r.scale,y:(lastPoint.y-r.dy)/r.scale}:a;const ac=resizeAnchor.mask.getContext('2d');ac.lineCap='round';ac.lineJoin='round';ac.lineWidth=s/r.scale;ac.globalCompositeOperation=brushActive==='erase'?'destination-out':'source-over';ac.strokeStyle=c.strokeStyle;ac.fillStyle=c.fillStyle;ac.beginPath();ac.moveTo(b.x,b.y);ac.lineTo(a.x,a.y);ac.stroke();ac.beginPath();ac.arc(a.x,a.y,ac.lineWidth/2,0,Math.PI*2);ac.fill();ac.globalCompositeOperation='source-over'}lastPoint=q;if(target)target.cache=null
+ const erase=brushActive==='erase',opacity=intensity/100;
+ stampBlurMask(m.getContext('2d'),lastPoint,q,s,erase,opacity);
+ if(retouchPreview){const p=retouchPreview;stampBlurMask(p.mask.getContext('2d'),lastPoint?{x:lastPoint.x*p.sx,y:lastPoint.y*p.sy}:null,{x:q.x*p.sx,y:q.y*p.sy},s*p.sx,erase,opacity)}
+ if(!target&&resizeAnchor&&resizePlacement){
+  const r=resizePlacement,a={x:(q.x-r.dx)/r.scale,y:(q.y-r.dy)/r.scale},b=lastPoint?{x:(lastPoint.x-r.dx)/r.scale,y:(lastPoint.y-r.dy)/r.scale}:null;
+  stampBlurMask(resizeAnchor.mask.getContext('2d'),b,a,s/r.scale,erase,opacity);
+ }
+ lastPoint=q;if(target)target.cache=null;
 }
 // Drag shapes/elements at display resolution. Commit once on release.
 let overlayDragFrame=0,overlayDragBackground=null;
@@ -1616,7 +1671,7 @@ canvas.addEventListener('pointerdown',e=>{
  if(!brushActive)return;
  e.preventDefault();if(painting||e.button>0)return;if(brushActive==='draw'&&!requireRoom('drawing'))return;saveHistory();painting=true;paintPointerId=e.pointerId;lastPoint=null;try{canvas.setPointerCapture(e.pointerId)}catch{};
  if(brushActive==='draw'){activeStroke={type:'stroke',points:[p],size:drawSize*base.width/Math.max(1,canvas.getBoundingClientRect().width),color:drawColor,opacity:drawOpacity,visible:true,locked:false};overlays.push(activeStroke);selectedOverlay=overlays.length-1;selectedPhoto=null;selectedTextIndex=-1;positionPhotoSelection();positionTextSelection();startStrokePreview()}
- else{activePaintTarget=paintSelection>=0?overlays[paintSelection]:null;if(activePaintTarget&&(activePaintTarget.type!=='image'||activePaintTarget.locked||activePaintTarget.visible===false)){painting=false;history.pop();updateHistory();return}if(!activePaintTarget&&resizeAnchor)resizeAnchor={...resizeAnchor,mask:clone(resizeAnchor.mask)};paint(p)}
+ else{activePaintTarget=paintSelection>=0?overlays[paintSelection]:null;if(activePaintTarget&&(activePaintTarget.type!=='image'||activePaintTarget.locked||activePaintTarget.visible===false)){painting=false;history.pop();updateHistory();return}if(!activePaintTarget&&resizeAnchor)resizeAnchor={...resizeAnchor,mask:clone(resizeAnchor.mask)};startRetouchPreview();paint(p)}
  render();
 });
 canvas.addEventListener('pointermove',e=>{
@@ -1626,14 +1681,14 @@ canvas.addEventListener('pointermove',e=>{
   e.preventDefault();progressPhotoGesture();return;
  }
  if(progressOverlayDrag(e))return;
- if(!painting||!base||e.pointerId!==paintPointerId)return;e.preventDefault();if(activeStroke){const samples=e.getCoalescedEvents?.()||[];for(const sample of samples.length?samples:[e])appendStrokePoint(sample);queueStrokePreview()}else{paint(pointerPosition(e));render()}
+ if(!painting||!base||e.pointerId!==paintPointerId)return;e.preventDefault();if(activeStroke){const samples=e.getCoalescedEvents?.()||[];for(const sample of samples.length?samples:[e])appendStrokePoint(sample);queueStrokePreview()}else{const samples=e.getCoalescedEvents?.()||[];for(const sample of samples.length?samples:[e])paint(pointerPosition(sample));queueRetouchPreview()}
 });
 const endPaint=e=>{
  if(finishTextGesture(e,e.type==='pointercancel'))return;if(finishPhotoPointer(e))return;if(finishOverlayDrag(e,e.type==='pointercancel'))return;
  if(!painting||e.pointerId!==paintPointerId)return;
- const cancelled=e.type==='pointercancel';if(activeStroke&&!cancelled)appendStrokePoint(e);
+ const cancelled=e.type==='pointercancel';if(!cancelled){if(activeStroke)appendStrokePoint(e);else paint(pointerPosition(e))}
  if(!activeStroke&&!activePaintTarget&&photoTransformSource&&photoTransformMask&&photoBounds&&photoTransformSourceRect){const nextMask=clone(photoTransformMask),r=photoTransformSourceRect,b=photoBounds,mc=nextMask.getContext('2d');mc.clearRect(r.x,r.y,r.w,r.h);mc.drawImage(mask,b.x,b.y,b.w,b.h,r.x,r.y,r.w,r.h);photoTransformMask=nextMask}
- painting=false;paintPointerId=null;activeStroke=null;activePaintTarget=null;lastPoint=null;clearStrokePreview();
+ painting=false;paintPointerId=null;activeStroke=null;activePaintTarget=null;lastPoint=null;clearStrokePreview();clearRetouchPreview();
  if(cancelled){const previous=history.pop();if(previous)restore(previous);setStatus('Stroke cancelled');return}
  render();if(tab==='draw'||tab==='layers')showPanel();setStatus('Edit applied');
 };
