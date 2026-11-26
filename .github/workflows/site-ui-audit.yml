@@ -8,6 +8,7 @@ on:
       - "scripts/site-responsive-audit.mjs"
       - "scripts/privacy-consent-audit.mjs"
       - "scripts/account-security-audit.mjs"
+      - "platform/notifications*"
       - "platform/privacy-data.js"
       - "platform/account-security.js"
       - "tests/account-security.test.mjs"

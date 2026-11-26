@@ -14,3 +14,4 @@ html[data-loox-motion=reduce] .ln-panel,html[data-loox-motion=reduce] .ln-skelet
 @media(max-width:600px){html body.loox-sitewide-active.loox-workspace-sidebar>button.loox-sitewide-dock-toggle,html body.loox-sitewide-active>button.loox-sitewide-dock-toggle{display:none!important}}
 
 @media(max-width:600px){html body #loox-sidebar-edge-handle{display:none!important}}
+@media(min-width:901px){html body.loox-studio>header.lig-header>.lig-head-start{order:-2!important}html body.loox-studio>header.lig-header .ln-native-bell{order:-1!important}}
