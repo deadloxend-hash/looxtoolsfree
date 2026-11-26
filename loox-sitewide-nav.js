@@ -4,6 +4,27 @@
  */
 (() => {
  'use strict';
+ // Keep Settings in a dismissible overlay so the workspace stays mounted.
+ if(!window.__looxOpenSettings&&!location.pathname.endsWith('/settings.html')){
+  window.__looxOpenSettings=(target='settings.html')=>{
+   if(document.getElementById('loox-settings-overlay'))return;
+   const trigger=document.activeElement,dialog=document.createElement('dialog'),frame=document.createElement('iframe');
+   dialog.id='loox-settings-overlay';dialog.setAttribute('aria-label','Settings');
+   Object.assign(dialog.style,{position:'fixed',inset:'0',margin:'auto',padding:'0',border:'0',background:'#0c111b',width:'min(1120px, 100vw)',height:'100dvh',maxWidth:'100vw',maxHeight:'100dvh',overflow:'hidden',borderRadius:'14px'});
+   frame.title='LOOX Settings';frame.src=new URL(target,location.href).href;
+   Object.assign(frame.style,{width:'100%',height:'100%',border:'0',display:'block'});
+   dialog.append(frame);document.body.append(dialog);
+   const overflow=document.body.style.overflow;document.body.style.overflow='hidden';
+   dialog.addEventListener('close',()=>{dialog.remove();document.body.style.overflow=overflow;delete window.__looxCloseSettings;trigger?.focus?.({preventScroll:true})},{once:true});
+   window.__looxCloseSettings=()=>dialog.close();dialog.showModal();
+  };
+  document.addEventListener('click',event=>{
+   const a=event.target.closest?.('a[href]');if(!a||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;
+   const target=new URL(a.href,location.href);
+   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')){event.preventDefault();event.stopImmediatePropagation();window.__looxOpenSettings(target.href);}
+  },true);
+ }
+
  // Keep standard selects consistent with the LOOX Obsidian Blue design on every
  // page using the shared navigation. Already enhanced pages retain one instance.
  if(!document.querySelector('script[src*="loox-dropdowns.js"]')){
@@ -592,7 +613,7 @@
   else if(identity)identity.after(actions);
   else menu.prepend(actions);
   actions.after(options,notificationsPanel);
-  settings.addEventListener('click',()=>location.assign(url('settings.html#workspace-preferences')));
+  settings.addEventListener('click',()=>window.__looxOpenSettings?window.__looxOpenSettings(url('settings.html#workspace-preferences')):location.assign(url('settings.html#workspace-preferences')));
   languages.addEventListener('click',()=>{
    options.hidden=!options.hidden;notificationsPanel.hidden=true;
    languages.setAttribute('aria-expanded',String(!options.hidden));notifications.setAttribute('aria-expanded','false');
