@@ -67,12 +67,18 @@ try{for(const width of [360,390,768,1440]){
    await page.locator('body.loox-studio').waitFor({timeout:20000});
    assert.equal(await page.locator('button.lx-buy-credits,button.studio-budget-link').count(),0,'Unexpected Buy Credits button in '+route+' at '+width);checks++;
    const dock=page.locator('body > button.loox-sitewide-dock-toggle');
-   await dock.waitFor({state:'visible'});
-   await dock.click();
-   assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),true,'Sidebar inaccessible in '+route+' at '+width);checks++;
-   await dock.click();
    const sidebar=page.locator('button.studio-sidebar-menu-action');
+   await sidebar.waitFor({state:'attached'});
    assert.equal(await sidebar.count(),1,'Sidebar menu fallback is missing in '+route);checks++;
+   if(width<=600){
+    await page.locator('.loox-notification-bell:visible').waitFor({state:'visible'});
+    await dock.waitFor({state:'hidden'});
+    await page.getByRole('button',{name:'More workspace actions',exact:true}).click();
+    await sidebar.click();
+   }else{await dock.waitFor({state:'visible'});await dock.click();}
+   assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),true,'Sidebar inaccessible in '+route+' at '+width);checks++;
+   await page.keyboard.press('Escape');
+   assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),false,'Sidebar must close on Escape');checks++;
    if(route==='ai-video-generator.html'){
     await page.locator('.studio-frame-strip').waitFor({timeout:15000});
     const nativeVisible=await page.locator('#lvg-image-block').evaluate(element=>getComputedStyle(element).display!=='none');
