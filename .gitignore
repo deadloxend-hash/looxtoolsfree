@@ -1,0 +1,5 @@
+# Generated local preview and regression media
+.openai/
+dist/
+tests/video-samples/
+tests/video-studio-fixture.html
