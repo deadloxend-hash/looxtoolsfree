@@ -113,3 +113,10 @@ To reproduce the browser suite, serve the repository over HTTP and open `tests/p
 The first movement fix locked the main photo by default, which prevented normal direct dragging. New imports now start with movement enabled. Opening other tools preserves the user's optional position lock. Drawing and retouching block image transformations at gesture entry, even before their brushes are activated, so returning to Tools immediately restores normal direct movement. The position-lock labels and guide now describe this behavior.
 
 Validation: **41/41 Chrome browser checks passed**, including direct import dragging, one-step undo, optional locking, draw/retouch protection and all 12 responsive viewports. **5/5 geometry tests passed**; JavaScript syntax and whitespace checks passed. Pointer tests use the existing simulated PointerEvent fixture; physical touch hardware was not tested.
+
+
+## Follow-up: smooth selective blur and blur erasing
+
+Blur and erase no longer render full-resolution pixels on pointer movement. At stroke start, the editor prepares a bounded (640px maximum edge) source, tone-adjusted pixels, blurred pixels and mask. Pointer/coalesced input updates the mask and schedules one preview per animation frame. Layer rotation, opacity, blending, upper layers and frames retain their normal renderer. On release the editor commits the original-resolution mask and final effects; undo/cancellation remain one logical stroke. Preview buffers and pending frames are cleared when the stroke ends.
+
+All three implemented brushes were checked: drawing, selective blur and blur eraser. **43/43 Chrome browser regression checks passed**, including 12 viewports and a **2400 × 1600 (3.84 MP)** source. Instrumentation confirmed no native-sized pixel reads or blur filtering during either retouch stroke on that large source. Tests also cover preview visibility, eraser/blur undo, cancellation, isolation of photo-layer effects and drawing preview behavior. **5/5 geometry tests passed**, plus JavaScript syntax and whitespace checks. These are simulated pointer/browser checks; no claim of a particular FPS on physical Android/iOS hardware is made.
