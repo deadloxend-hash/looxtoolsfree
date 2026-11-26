@@ -1,4 +1,4 @@
-import {setupSettings} from './settings-2.js?v=launch-20261125';
+import {setupSettings} from './settings-2.js?v=close-overlay-20261126';
 import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=settings-2-20261124';
 import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
