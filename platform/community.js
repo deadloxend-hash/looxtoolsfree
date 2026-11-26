@@ -1,6 +1,6 @@
 import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {cropAvatar} from './avatar-crop.js?v=settings-2-20261124';
-import {installSocial,installPrivacy} from './community-social.js?v=ui-20261125';
+import {installSocial,installPrivacy} from './community-social.js?v=notifications-20261126';
 import {api,refresh} from './account.js?v=settings-2-20261124';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=settings-2-20261124';
 // Shared community UI. Only Supabase publishable credentials enter the browser.

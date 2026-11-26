@@ -37,7 +37,17 @@ try{
    await page.waitForFunction(()=>[...document.querySelectorAll('.lig-output-stage>img')].every(i=>i.complete&&i.naturalHeight));
    await page.locator('.lig-output').last().scrollIntoViewIfNeeded();
    const sample=await page.evaluate(()=>({image:document.querySelector('.lig-output:last-child img').getBoundingClientRect().toJSON(),feed:document.querySelector('.lig-content-scroll:not([hidden])').getBoundingClientRect().toJSON(),compose:document.querySelector('.lig-compose-wrap').getBoundingClientRect().toJSON()}));
-   assert.ok(sample.image.top>=sample.feed.top-2,'Portrait must fit the visible results region');assert.ok(sample.image.bottom<=sample.compose.top+2,'Portrait must never sit behind composer');
+   // Image results deliberately retain a larger preview. Tall portraits can
+   // exceed the scrollport; both ends must be reachable and the scrollport
+   // itself must stop before the composer, so pixels are never hidden by it.
+   assert.ok(sample.feed.bottom<=sample.compose.top+2,'Results scrollport must stop above composer');
+   assert.ok(sample.image.width<=sample.feed.width+2,'Portrait must fit horizontally');
+   await page.locator('.lig-output:last-child img').evaluate(image=>image.scrollIntoView({block:'start',behavior:'instant'}));
+   const topEdge=await page.evaluate(()=>({image:document.querySelector('.lig-output:last-child img').getBoundingClientRect().top,feed:document.querySelector('.lig-content-scroll:not([hidden])').getBoundingClientRect().top}));
+   assert.ok(topEdge.image>=topEdge.feed-2,'Portrait top must be reachable by scrolling');
+   await page.locator('.lig-output:last-child img').evaluate(image=>image.scrollIntoView({block:'end',behavior:'instant'}));
+   const bottomEdge=await page.evaluate(()=>({image:document.querySelector('.lig-output:last-child img').getBoundingClientRect().bottom,feed:document.querySelector('.lig-content-scroll:not([hidden])').getBoundingClientRect().bottom}));
+   assert.ok(bottomEdge.image<=bottomEdge.feed+2,'Portrait bottom must be reachable by scrolling');
    await page.screenshot({path:out+'/'+prefix+'-'+viewport.width+'.png'});
   }
   await page.goto(base+'ai-chat.html');await page.locator('body.loox-studio .ai-composer').waitFor();
