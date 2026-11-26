@@ -258,10 +258,10 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     try{
      let target=[...list.querySelectorAll('[data-comment-id]')].find(n=>n.dataset.commentId===focusId);
      if(!target){const data=await cloudRequest(self.state,'comments',{query:{post_id:post.id,kind:'focus',id:focusId}});await fetchPeople((data.items||[]).map(c=>c.user_id));
-      for(const c of data.items||[]){if([...list.querySelectorAll('[data-comment-id]')].some(n=>n.dataset.commentId===c.id))continue;const thread=e('div','loox-comment-thread');thread.append(render(c,Boolean(c.parent_id)));list.prepend(thread);}
+      for(const c of [...(data.items||[])].reverse()){if([...list.querySelectorAll('[data-comment-id]')].some(n=>n.dataset.commentId===c.id))continue;const thread=e('div','loox-comment-thread');thread.append(render(c,Boolean(c.parent_id)));list.prepend(thread);}
       target=[...list.querySelectorAll('[data-comment-id]')].find(n=>n.dataset.commentId===focusId);
      }
-     if(target){target.classList.add('is-notification-target');requestAnimationFrame(()=>target.scrollIntoView({block:'nearest',behavior:'instant'}));}else status.textContent='This comment is no longer available.';
+     if(target){status.textContent='';target.classList.add('is-notification-target');requestAnimationFrame(()=>target.scrollIntoView({block:'nearest',behavior:'instant'}));}else status.textContent='This comment is no longer available.';
     }catch(error){status.textContent=error.message;}
    }
   },

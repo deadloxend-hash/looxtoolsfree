@@ -29,7 +29,7 @@ Date: 27 November 2026 (Pakistan)
 
 - Frontend: 15 Node regression tests passed (search/catalog/covers, notification dates/routing/deduplication, directory metadata, preserved links and sitemap/schema rules).
 - Backend: eight regression tests passed, including anonymous denial, owner-scoped mutations/counts, bounded stable pagination, focused comment visibility and prior like behavior.
-- Browser: notification/category fixture and real page checks at 320, 360, 390, 430, 768, 1024, 1440 and 1920 CSS pixels; separate existing dashboard suite: 66 passed, zero failed. Notification fixtures are isolated test data and make no production writes.
+- Browser: 296 notification/category fixture and real page checks passed with zero failures at 320, 360, 390, 430, 768, 1024, 1440 and 1920 CSS pixels; separate existing dashboard suite: 66 passed, zero failed. Notification fixtures are isolated test data and make no production writes.
 - Live API health: HTTP 200, canonical Cloudflare D1/R2 service. Anonymous notification summary: HTTP 401. Backend GitHub security/platform/profile workflows passed.
 - Full static audit: 646 HTML pages, 19,229 references, zero broken references or unbound anchors. Utility audit: 122 catalog tools, 141 distinct internal links, ten fragments and 498 sitemap entries passed.
 - Browser category link audit: 139 destinations returned 2xx. Outside click and Escape were manually exercised.
