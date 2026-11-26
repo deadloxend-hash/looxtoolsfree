@@ -9,7 +9,7 @@ function assert(condition,message){if(!condition)throw Error(message)}
 async function check(name,fn){checks++;const row=document.createElement('tr');try{const detail=await fn();row.innerHTML='<td></td><td class="pass">PASS</td><td></td>';row.children[2].textContent=detail||''}catch(e){failures++;row.innerHTML='<td></td><td class="fail">FAIL</td><td></td>';row.children[2].textContent=e.message}row.children[0].textContent=name;results.append(row);summary.textContent=`${checks-failures}/${checks} passed${failures?' · '+failures+' failed':''}`}
 const id=name=>doc.getElementById(name);
 async function clickText(text){const b=[...doc.querySelectorAll('#panelContent button')].find(b=>b.textContent.trim()===text);assert(b,'Missing button '+text);b.click();await idle()}
-async function tool(name){doc.querySelector(`.rail [data-tab="${name}"]`).click();await idle()}
+async function tool(name){if(win.innerWidth<768&&id('inspector').classList.contains('open')&&id('panelTitle').textContent.toLowerCase()===name)return;doc.querySelector(`.rail [data-tab="${name}"]`).click();await idle()}
 async function number(name,value){const input=doc.querySelector(`input[aria-label="${name} value"]`);assert(input,'Missing control '+name);input.value=value;input.dispatchEvent(new win.Event('change',{bubbles:true}));await idle()}
 const pixels=()=>id('canvas').getContext('2d').getImageData(0,0,id('canvas').width,id('canvas').height).data;
 const equalPixels=(a,b)=>a.length===b.length&&a.every((v,i)=>Math.abs(v-b[i])<=1);
@@ -34,7 +34,7 @@ document.querySelector('#run').onclick=async()=>{
   await check('Photo drag cancellation and proportional corner resize',async()=>{
    await tool('tools');const canvas=id('canvas'),r=canvas.getBoundingClientRect(),x=r.left+r.width*.4,y=r.top+r.height*.4;
    const event=(type,target,px,py)=>target.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:31,pointerType:'mouse',clientX:px,clientY:py,buttons:type==='pointerup'?0:1}));
-   const original=pixels().slice();event('pointerdown',canvas,x,y);event('pointermove',canvas,x+30,y+20);event('pointercancel',canvas,x+30,y+20);await idle();assert(equalPixels(original,pixels()),'Cancelled drag changed photo');
+   const original=pixels().slice();id('movePhoto').click();await idle();event('pointerdown',canvas,x,y);event('pointermove',canvas,x+30,y+20);event('pointercancel',canvas,x+30,y+20);await idle();assert(equalPixels(original,pixels()),'Cancelled drag changed photo');
    event('pointerdown',canvas,x,y);event('pointerup',canvas,x,y);await idle();const h=doc.querySelector('[data-photo-handle="se"]'),box=h.getBoundingClientRect(),hx=box.x+box.width/2,hy=box.y+box.height/2;
    event('pointerdown',h,hx,hy);event('pointermove',h,hx-45,hy-30);event('pointerup',h,hx-45,hy-30);await idle();const dims=id('photoSizeBadge').textContent.match(/(\d+) × (\d+)/);assert(Math.abs(Number(dims[1])/Number(dims[2])-1.5)<.02,'Corner resize distorted aspect');id('undo').click();await idle();assert(equalPixels(original,pixels()),'Resize undo lost original quality');return 'Simulated pointer events; cancellation, ratio and undo checked';
   });
@@ -50,6 +50,35 @@ document.querySelector('#run').onclick=async()=>{
    const c=doc.createElement('canvas');c.width=60;c.height=40;const cx=c.getContext('2d');cx.fillStyle='#6080a0';cx.fillRect(0,0,60,40);const blob=await new Promise(r=>c.toBlob(r));const dt=new win.DataTransfer();dt.items.add(new win.File([blob],'overlay.png',{type:'image/png'}));id('overlayInput').files=dt.files;id('overlayInput').dispatchEvent(new win.Event('change'));await until(()=>id('status').textContent==='Photo layer added');await idle();
    const before=pixels().slice();await tool('adjust');await number('Brightness',40);const after=pixels().slice();assert(!equalPixels(before,after),'Photo overlay adjustment not visible');const offset=(130*240+200)*4;assert(before[offset]===after[offset],'Photo adjustment changed main layer');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Overlay effect undo failed');await tool('layers');await clickText('Delete layer');
   });
+  await check('Main photo stays fixed until movement is explicitly enabled',async()=>{
+   await tool('tools');if(id('movePhoto').getAttribute('aria-pressed')==='true')id('movePhoto').click();
+   const c=id('canvas'),r=c.getBoundingClientRect(),before=pixels().slice();
+   const pointer=(type,x,y)=>c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:71,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*y,button:0}));
+   pointer('pointerdown',.4,.4);pointer('pointermove',.5,.5);pointer('pointerup',.5,.5);await idle();assert(equalPixels(before,pixels()),'Ordinary click/drag moved the main photo');
+   id('movePhoto').click();await idle();pointer('pointerdown',.4,.4);pointer('pointermove',.5,.5);pointer('pointerup',.5,.5);await idle();assert(!equalPixels(before,pixels()),'Explicit Move main photo does not work');id('undo').click();await idle();id('movePhoto').click();
+  });
+  await check('Drawing uses a display-sized preview and hides transformation handles',async()=>{
+   await tool('draw');await clickText('Draw mode');assert(id('photoSelection').hidden,'Photo resize handles are active over drawing');
+   const c=id('canvas'),r=c.getBoundingClientRect(),before=pixels().slice();
+   const pointer=(type,x,y)=>c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:72,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*y,button:0}));
+   pointer('pointerdown',.1,.3);for(let n=0;n<120;n++)pointer('pointermove',.1+n*.006,.3+Math.sin(n/12)*.1);await idle();
+   assert(equalPixels(before,pixels()),'Full-resolution canvas was repainted during an unfinished stroke');const preview=doc.querySelector('.photo-gesture-preview');assert(!preview.hidden,'Live stroke preview is missing');assert(Math.max(preview.width,preview.height)<=1000,'Stroke preview exceeds bounded resolution');
+   pointer('pointerup',.82,.3);await idle();assert(!equalPixels(before,pixels()),'Final drawing was not committed');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Stroke did not undo as one operation');
+  });
+  await check('Cancelled strokes leave no pixels or unwanted photo movement',async()=>{
+   await tool('draw');await clickText('Draw mode');const c=id('canvas'),r=c.getBoundingClientRect(),before=pixels().slice();
+   for(const [type,x] of [['pointerdown',.2],['pointermove',.7],['pointercancel',.7]])c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:73,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*.4,button:0}));
+   await idle();assert(equalPixels(before,pixels()),'Cancelled stroke persisted');assert(id('photoSelection').hidden,'Cancelled drawing exposed photo handles');
+  });
+  await check('Rectangle path does not refill an earlier brush stroke',async()=>{
+   await tool('draw');await clickText('Draw mode');const c=id('canvas'),r=c.getBoundingClientRect();
+   for(const [type,x] of [['pointerdown',.1],['pointermove',.8],['pointerup',.8]])c.dispatchEvent(new win.PointerEvent(type,{bubbles:true,pointerId:74,pointerType:'mouse',clientX:r.left+r.width*x,clientY:r.top+r.height*.85,button:0}));await idle();
+   const before=pixels().slice();await tool('elements');await clickText('▢ Rectangle');await number('Horizontal position',20);await number('Vertical position',20);await number('Width',35);await number('Height',25);
+   // A contaminated path also fills around the old round brush dot, far outside this rectangle.
+   const after=pixels();for(let y=100;y<160;y++)for(let x=0;x<240;x++){const i=(y*240+x)*4;for(let ch=0;ch<4;ch++)assert(Math.abs(before[i+ch]-after[i+ch])<=1,'Rectangle filled pixels outside its bounds')}
+   id('undo').click();await idle();id('undo').click();await idle();id('undo').click();await idle();id('undo').click();await idle();id('undo').click();await idle();id('undo').click();await idle();
+  });
+  await check('Unused inspector cross has been removed',async()=>{assert(!id('closeDrawer'),'Inspector cross is still present')});
   await check('Adjustment, undo and redo',async()=>{await tool('adjust');const before=pixels().slice();await number('Brightness',15);const after=pixels().slice();assert(!equalPixels(before,after),'Brightness had no effect');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Undo did not restore pixels');id('redo').click();await idle();assert(equalPixels(after,pixels()),'Redo did not restore effect')});
   await check('Individual adjustment reset',async()=>{doc.querySelector('[aria-label="Reset Brightness"]').click();await idle();assert(doc.querySelector('[aria-label="Brightness value"]').value==='0','Brightness reset is not zero')});
   await check('Filter preview cancel and intensity undo',async()=>{const before=pixels().slice();await tool('filters');doc.querySelector('.filter-choice[aria-label="Clean filter"]').click();await idle();id('filterIntensity').value=30;id('filterIntensity').dispatchEvent(new win.Event('input'));await idle();id('filterCancel').click();await idle();assert(equalPixels(before,pixels()),'Cancelled preview changed pixels');await tool('filters');doc.querySelector('.filter-choice[aria-label="Clean filter"]').click();id('filterIntensity').value=35;id('filterIntensity').dispatchEvent(new win.Event('input'));id('filterApply').click();await idle();assert(!equalPixels(before,pixels()),'Confirmed filter has no effect');id('undo').click();await idle();assert(equalPixels(before,pixels()),'Filter undo failed')});

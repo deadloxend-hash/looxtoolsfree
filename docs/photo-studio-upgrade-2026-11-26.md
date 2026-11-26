@@ -1,6 +1,6 @@
 # LOOX Photo Studio upgrade — 26 November 2026
 
-Implemented on `codex/photo-studio-upgrade`. This change is prepared for review; it does not deploy to GitHub Pages or modify MediaGrab, AI generation, authentication, billing or backend services.
+Implemented on `codex/photo-studio-upgrade`. See PR #8 for the current merge and release status. This change does not modify MediaGrab, AI generation, authentication, billing or backend services.
 
 ## Functionality bugs fixed
 
@@ -94,3 +94,15 @@ To reproduce the browser suite, serve the repository over HTTP and open `tests/p
 | `tests/photo-studio-browser.html` | Local browser-test runner and viewport chooser |
 | `tests/photo-studio-browser.js` | Real-editor workflow and responsive regression suite |
 | `docs/photo-studio-upgrade-2026-11-26.md` | Implementation, verification and limitations report |
+
+
+## Follow-up: drawing, shape paths, photo movement and search alignment
+
+- Removed the inspector cross button. Desktop options remain collapsible with the toolbar control; on mobile, tapping the active tool closes its tray.
+- Started every shape with a new Canvas 2D path. Rectangles cannot fill paths left by earlier brush strokes or shapes.
+- Drawing now caches the underlying composition once at stroke start. Pointer updates paint a display-sized preview (longest edge capped at 1000px) rather than rebuilding a full-resolution composition. The full-quality stroke commits on release as one undo entry. Cancelled or interrupted strokes restore their starting state; unrelated pointers do not add stroke segments.
+- Photo movement is off by default. Enable **Move main photo** to reposition it. Drawing/retouch modes hide photo selection handles and cannot move the underlying photo.
+- Fixed Community's magnifying-glass stacking and its input's left padding on desktop/mobile so it neither disappears behind the field nor overlaps placeholder text. Bumped the affected asset URLs.
+- Final editor browser checks: **40/40 passed in Chrome**, including the new drawing-preview, cancellation, rectangle-path, explicit photo movement and cross-removal regressions, plus all previously listed 12 viewport sizes. Pointer events are simulated; no physical-device performance benchmark was conducted.
+- Automated geometry and Community interaction tests: **9/9 passed**. Syntax and whitespace checks passed.
+- Community search was visually inspected locally with a 42px text inset and both icon parts above the input. Community media API requests failed from the local preview; no media-fetch behavior was changed.

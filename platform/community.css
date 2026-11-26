@@ -71,12 +71,12 @@ body.loox-discovery-gallery .loox-discovery-search-wrap{
 body.loox-discovery-gallery .loox-discovery-search-wrap::before{
  content:"";position:absolute;left:14px;top:50%;width:12px;height:12px;
  border:1.8px solid #a6ccff;border-radius:50%;transform:translateY(-63%);
- pointer-events:none;
+ pointer-events:none;z-index:1;
 }
 body.loox-discovery-gallery .loox-discovery-search-wrap::after{
  content:"";position:absolute;left:26px;top:calc(50% + 5px);
  width:6px;height:1.8px;background:#a6ccff;transform:rotate(45deg);
- border-radius:2px;pointer-events:none;
+ border-radius:2px;pointer-events:none;z-index:1;
 }
 body.loox-discovery-gallery .community-search{
  width:100%!important;max-width:none!important;min-width:0!important;
@@ -2459,7 +2459,7 @@ body.community-page.loox-community-photo-wall .community-dialog .loox-comment-ac
   padding:8px 0 12px!important;margin-bottom:10px!important;
  }
  body.community-page.loox-community-photo-wall #community-root .loox-discovery-search-wrap{flex:1 1 280px!important;max-width:480px!important}
- body.community-page.loox-community-photo-wall #community-root .community-search{width:100%!important;height:42px!important;padding:10px 14px!important;font-size:14px!important}
+ body.community-page.loox-community-photo-wall #community-root .community-search{width:100%!important;height:42px!important;padding:10px 14px 10px 42px!important;font-size:14px!important}
  body.community-page.loox-community-photo-wall #community-root .community-filters{display:flex!important;flex:1 1 auto!important;justify-content:flex-end!important;flex-wrap:wrap!important;margin:0!important;overflow:visible!important}
  body.community-page.loox-community-photo-wall #community-root .community-tools{display:flex!important;margin:0!important;gap:8px!important}
  body.community-page.loox-community-photo-wall .loox-community-date-filter{display:none!important}
@@ -2525,7 +2525,7 @@ body.community-page.loox-community-photo-wall .community-dialog .loox-comment-ac
  }
  body.community-page.loox-community-photo-wall #community-root .community-search{
   width:100%!important;max-width:100%!important;height:40px!important;
-  padding:9px 13px!important;font-size:16px!important;
+  padding:9px 13px 9px 42px!important;font-size:16px!important;
  }
  body.community-page.loox-community-photo-wall #community-root .community-filters{
   display:flex!important;flex-wrap:wrap!important;gap:6px!important;
