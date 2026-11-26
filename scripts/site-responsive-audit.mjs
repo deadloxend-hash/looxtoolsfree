@@ -62,12 +62,15 @@ for(const viewport of widths){
      if(style.visibility==='hidden'||style.display==='none'||rect.width<8||rect.height<8)continue;
      if(rect.right>width+6&&rect.left<width&&rect.top>=0&&rect.top<innerHeight){
       const parent=el.closest('.community-filters,.creative-examples,.studio-quick,.studio-tabs,.loox-sitewide-sidebar');
-      const editorRail=el.closest('.ds-rail,.ds-toolbar,.mobile-bar,.filter-categories,.studio-toolrail');
-      const intentionallyScrollable=editorRail&&
-       ['auto','scroll'].includes(getComputedStyle(editorRail).overflowX)&&
-       editorRail.scrollWidth>editorRail.clientWidth+2;
-      // Editor toolbars are intentionally horizontally scrollable; their
-      // offscreen buttons are reachable with a swipe, not misaligned.
+      // A control can extend outside the viewport while still being reachable
+      // inside a bounded horizontal rail. Require a real scroll range and a
+      // fully visible rail; page overflow and unscrollable clipping still fail.
+      let intentionallyScrollable=false;
+      for(let rail=el.parentElement;rail&&rail!==body;rail=rail.parentElement){
+       const overflow=getComputedStyle(rail).overflowX,bounds=rail.getBoundingClientRect();
+       if(['auto','scroll'].includes(overflow)&&rail.scrollWidth>rail.clientWidth+2&&
+          bounds.left>=-6&&bounds.right<=width+6){intentionallyScrollable=true;break;}
+      }
       if(!parent&&!intentionallyScrollable)bad.push({tag:el.tagName,text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,38),right:Math.round(rect.right)});
      }
     }

@@ -31,6 +31,7 @@ Date: 27 November 2026 (Pakistan)
 - Backend: eight regression tests passed, including anonymous denial, owner-scoped mutations/counts, bounded stable pagination, focused comment visibility and prior like behavior.
 - Browser: 296 notification/category fixture and real page checks passed with zero failures at 320, 360, 390, 430, 768, 1024, 1440 and 1920 CSS pixels; separate existing dashboard suite: 66 passed, zero failed. Notification fixtures are isolated test data and make no production writes.
 - Live API health: HTTP 200, canonical Cloudflare D1/R2 service. Anonymous notification summary: HTTP 401. Backend GitHub security/platform/profile workflows passed.
+- Responsive audit now recognizes controls inside bounded, genuinely scrollable horizontal rails; page overflow and unscrollable clipping remain failures.
 - Desktop generator controls retain 12px gaps from search to menu and menu to account after adding the bell. The existing desktop regression remains unchanged. Notification changes now trigger that broader workflow.
 - Full static audit: 646 HTML pages, 19,229 references, zero broken references or unbound anchors. Utility audit: 122 catalog tools, 141 distinct internal links, ten fragments and 498 sitemap entries passed.
 - Browser category link audit: 139 destinations returned 2xx. Outside click and Escape were manually exercised.
@@ -92,5 +93,6 @@ No MediaGrab files, payment activation, database schema or provider spending cha
 - `tests/notifications-fixture.mjs`
 - `tests/notifications-panel.html`
 - `tests/utility-directories.test.cjs`
+- `scripts/site-responsive-audit.mjs`
 - `.github/workflows/site-ui-audit.yml`
 - `docs/notifications-directories-release-2026-11-27.md`
