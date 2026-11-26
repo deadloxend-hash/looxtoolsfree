@@ -1,0 +1,18 @@
+name: Utilities discovery checks
+on:
+  push:
+    paths: ['index.html', 'platform/utilities*', 'scripts/*utilities*', 'tests/utilities*', 'assets/utilities/**', '.github/workflows/utilities-check.yml']
+  pull_request:
+    paths: ['index.html', 'platform/utilities*', 'scripts/*utilities*', 'tests/utilities*', 'assets/utilities/**', '.github/workflows/utilities-check.yml']
+jobs:
+  discovery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check platform/utilities.js && node --check platform/utilities-core.js && node --check tests/utilities-browser.js
+      - run: node --test tests/utilities-core.test.cjs
+      - run: node scripts/audit-utilities.cjs
+      - run: node scripts/build-utilities.cjs && git diff --exit-code -- index.html
