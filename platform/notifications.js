@@ -48,6 +48,6 @@ export function mountNotifications(){
  host.insertBefore(bell(),host.querySelector('.loox-sitewide-search'));
  const native=document.querySelector('body>header.lig-header,body>header.lx-header');if(native){const b=bell();b.classList.add('ln-native-bell');let anchor=native.querySelector('.loox-mobile-app-native-trigger,.lig-header-user,[data-loox-account]');while(anchor&&anchor.parentElement!==native)anchor=anchor.parentElement;native.insertBefore(b,anchor||null);}
  document.body.classList.add('loox-notifications-ready');let pending=false;
- async function refresh(){if(pending||document.hidden)return;if(!state.user){countUpdate(0);return;}pending=true;const id=state.user.id;try{const data=await cloudRequest(state,'notifications',{query:{summary:1}});if(state.user?.id===id)countUpdate(data.unread_count);}catch{}finally{pending=false;}}
- document.addEventListener('loox-user',refresh);document.addEventListener('visibilitychange',refresh);refresh();setInterval(refresh,60000);
+ async function refresh(){if(pending||document.hidden)return;if(!state.user){countUpdate(0);return;}pending=true;const id=state.user.id;try{const data=await cloudRequest(state,'notifications',{query:{summary:1}});if(state.user?.id===id)countUpdate(data.unread_count);}catch{}finally{pending=false;if(state.user?.id!==id)refresh();}}
+ document.addEventListener('loox-user',()=>{countUpdate(0);refresh();});document.addEventListener('visibilitychange',refresh);refresh();setInterval(refresh,60000);
 }
