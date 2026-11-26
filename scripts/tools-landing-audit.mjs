@@ -1,4 +1,4 @@
-/* LOOX All Tools landing: non-destructive responsive and interaction regression. */
+/* CI responsive regression for the Utilities discovery dashboard. */
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdirSync} from 'node:fs';
@@ -8,86 +8,41 @@ let browser;
 try{browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});}
 catch{browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});}
 let checks=0;
-async function test(width,height,screenName){
- const ctx=await browser.newContext({viewport:{width,height},reducedMotion:'reduce',deviceScaleFactor:1});
- const page=await ctx.newPage(),errors=[];
- page.on('pageerror',e=>errors.push(String(e.message)));
+async function test(width){
+ const ctx=await browser.newContext({viewport:{width,height:900},reducedMotion:'reduce',deviceScaleFactor:1});
+ const page=await ctx.newPage(),errors=[];page.on('pageerror',e=>errors.push(String(e.message)));
+ try{
  await page.goto(ROOT+'index.html',{waitUntil:'domcontentloaded',timeout:25000});
- await page.locator('.tool-card').first().waitFor({timeout:18000});
- const hero=page.locator('.hero');
- assert.equal(await page.locator('h1').count(),1,'Landing must have one primary heading');checks++;
- assert.match(await hero.locator('h1').innerText(),/Big ideas\.[\s\S]*Better tools\.[\s\S]*All in one place\./);checks++;
- assert.equal(await page.locator('#searchForm,.search-panel').count(),0,'Redundant Find a tool bar was not removed');checks++;
- assert.equal(await page.locator('.lt-action-primary').getAttribute('href'),'#tools');checks++;
- assert.equal(await page.locator('.lt-action-secondary').getAttribute('href'),'photo-editor.html');checks++;
- const mainCover=page.locator('.lt-showcase-main img');
- await mainCover.scrollIntoViewIfNeeded();
- await mainCover.evaluate(img=>img.decode());
- assert.ok(await mainCover.evaluate(img=>img.naturalWidth>0),'Hero photo editor cover must load');checks++;
- assert.match(await page.locator('.lt-showcase-main').getAttribute('href'),/photo-editor\.html/);checks++;
- const covers=page.locator('.loox-featured-card .loox-featured-art img');
- assert.equal(await covers.count(),3,'Preserve image-based editing tool covers');checks++;
- for(let i=0;i<3;i++){
-  const cover=covers.nth(i);await cover.scrollIntoViewIfNeeded();
-  await cover.evaluate(img=>img.decode());
-  assert.ok(await cover.evaluate(img=>img.naturalWidth>0),'Featured cover '+i+' broken');checks++;
- }
- assert.equal(await page.locator('#favorites').isHidden(),true,'Empty favorites should not create page gap');checks++;
- assert.equal(await page.locator('#recent').isHidden(),true,'Empty recent list should not create page gap');checks++;
- assert.equal(await page.locator('.quick-card').count(),6);checks++;
- let cardCount=await page.locator('#toolGrid .tool-card').count();
- assert.equal(cardCount,15,'All category should initially show 15 tools, got '+cardCount);checks++;
- assert.ok(await page.locator('#toolGrid .loox-card-cover').count()>=6,'Tool catalog should preserve artwork previews');checks++;
- // Browse from a category tile; there should be no dead navigation or filter.
- console.log('LANDING NAV BEFORE QUICK',JSON.stringify(await page.evaluate(()=>({
- width:innerWidth,drawer:document.querySelector('#loox-sitewide-drawer')?.className,
- burger:document.querySelector('.loox-sitewide-burger')?.getAttribute('aria-expanded'),
- matchesDesktop:matchMedia('(min-width:901px)').matches,
- bodyClasses:document.body.className
-}))));
- await page.locator('.quick-card[data-quick-cat="Video"]').click();
- console.log('LANDING NAV AFTER QUICK',JSON.stringify(await page.evaluate(()=>({
- width:innerWidth,drawer:document.querySelector('#loox-sitewide-drawer')?.className,
- burger:document.querySelector('.loox-sitewide-burger')?.getAttribute('aria-expanded'),
- matchesDesktop:matchMedia('(min-width:901px)').matches,
- bodyClasses:document.body.className
-}))));
- await page.locator('#filters [data-cat="Video"].active').waitFor({timeout:7000});
- assert.ok((await page.locator('#toolGrid .tool-card').count())>0,'Video category is empty');checks++;
+ const visibleCards='#toolGrid .ut-card:not([hidden])';await page.locator(visibleCards).first().waitFor({timeout:18000});
+ assert.equal(await page.locator('h1').count(),1);checks++;
+ assert.equal(await page.locator('[data-tool-id]').count(),122);checks++;
+ assert.equal(await page.locator(visibleCards).count(),24);checks++;
+ assert.equal(await page.locator('#comingGrid .ut-card').count(),8);checks++;
+ assert.equal(await page.locator('.ut-studio').count(),5);checks++;
+ assert.equal(await page.locator('#toolSearchForm').count(),1);checks++;
+ assert.ok(await page.locator('.ut-hero').evaluate(el=>el.getBoundingClientRect().height<340));checks++;
+ assert.ok(await page.locator('#toolSearch').evaluate(el=>el.getBoundingClientRect().top<360));checks++;
+ assert.ok(await page.locator('.ut-hero-art').evaluate(img=>img.complete&&img.naturalWidth>0)||width<768);checks++;
+ assert.ok(await page.locator('.loox-sitewide-dock-toggle').isHidden(),'Blue edge grip should be hidden');checks++;
+ await page.locator('#toolSearch').fill('remove background');
+ await page.waitForFunction(()=>document.querySelectorAll('#toolGrid .ut-card:not([hidden])').length===1);
+ assert.equal(await page.locator(visibleCards+' .ut-tool-link').getAttribute('href'),'bg-remove.html');checks++;
+ await page.locator('#toolSearch').press('ArrowDown');assert.equal(await page.evaluate(()=>document.activeElement.getAttribute('href')),'bg-remove.html');checks++;
+ await page.locator('#clearSearch').click();
+ await page.locator('[data-category="Video Utilities"]').click();assert.ok(await page.locator(visibleCards).count()>0);checks++;
  assert.match(page.url(),/category=Video/);checks++;
- await page.locator('#filters [data-cat="All"]').click();
- await page.locator('#loadMore').waitFor({state:'visible'});
- await page.locator('#loadMore').click();
- assert.ok(await page.locator('#toolGrid .tool-card').count()>15,'Load more failed');checks++;
- await page.locator('#toolGrid .favorite-btn').first().click();
- assert.equal(await page.locator('#favorites').isVisible(),true,'Favorites not revealed after saving');checks++;
- assert.ok(await page.locator('#favGrid .personal-card').count()>0,'Saved favorite not shown');checks++;
- assert.equal(await page.locator('a.loox-featured-card[href="photo-editor.html"]').count(),1,'Editor cover card missing');checks++;
- const overflow=await page.evaluate(()=>({page:document.documentElement.scrollWidth,body:document.body.scrollWidth,viewport:window.innerWidth}));
- if(Math.max(overflow.page,overflow.body)>overflow.viewport+7){
- const offenders=await page.evaluate(()=>[...document.querySelectorAll('body *')].filter(el=>{
-  const r=el.getBoundingClientRect(),css=getComputedStyle(el);
-  return r.right>innerWidth+10&&r.width>30&&css.display!=='none'&&css.visibility!=='hidden';
- }).slice(0,25).map(el=>({tag:el.tagName,class:el.className?.toString().slice(0,100),width:Math.round(el.getBoundingClientRect().width),right:Math.round(el.getBoundingClientRect().right),position:getComputedStyle(el).position})));
- console.log('OVERFLOW DEBUG',JSON.stringify({width,overflow,offenders}));
+ await page.locator('[data-category="All"]').click();await page.locator('#loadMoreTools').click();assert.equal(await page.locator(visibleCards).count(),48);checks++;
+ await page.locator('[data-save="photo-editor.html"]').click();await page.locator('[data-view="favorites"]').click();assert.equal(await page.locator(visibleCards).count(),1);checks++;
+ await page.locator('[data-save="photo-editor.html"]').click();assert.ok(await page.locator('#emptyResults').isVisible());checks++;
+ await page.locator('#resetDiscovery').click();
+ const overflow=await page.evaluate(()=>({page:document.documentElement.scrollWidth,body:document.body.scrollWidth,viewport:innerWidth}));assert.ok(Math.max(overflow.page,overflow.body)<=width+1,JSON.stringify({width,overflow}));checks++;
+ await page.goto(ROOT+'index.html?category=PDF#tools',{waitUntil:'domcontentloaded'});await page.locator('[data-category="PDF & Documents"][aria-pressed="true"]').waitFor();assert.equal(await page.locator(visibleCards).count(),4);checks++;
+ await page.goto(ROOT+'index.html?q=compress',{waitUntil:'domcontentloaded'});await page.locator(visibleCards).first().waitFor();assert.ok(await page.locator('#clearSearch').isVisible());checks++;
+ await page.locator('#clearSearch').click();
+ assert.deepEqual(errors,[],'Dashboard page errors');checks++;
+ if([390,768,1440].includes(width))await page.screenshot({path:'audit-artifacts/tools-home-'+width+'.png',fullPage:true,animations:'disabled'});
+ }finally{await ctx.close()}
 }
- assert.ok(Math.max(overflow.page,overflow.body)<=overflow.viewport+7,'Horizontal page overflow: '+JSON.stringify(overflow));checks++;
- assert.deepEqual(errors,[],'Page JS errors');checks++;
- await page.goto(ROOT+'index.html?category=PDF#tools',{waitUntil:'domcontentloaded'});
- await page.locator('#filters [data-cat="PDF"].active').waitFor({timeout:7000});
- assert.ok((await page.locator('#toolGrid .tool-card').count())>0,'Category deep linking not working');checks++;
- await page.goto(ROOT+'index.html?q=compress',{waitUntil:'domcontentloaded'});
- await page.locator('#toolGrid .tool-card').first().waitFor();
- assert.match(await page.locator('#toolsTitle').innerText(),/Search results/);checks++;
- await page.goto(ROOT+'index.html',{waitUntil:'domcontentloaded'});
- await page.locator('.lt-showcase-main img').waitFor({state:'visible'});
- await page.screenshot({path:'audit-artifacts/tools-home-'+screenName+'.png',fullPage:true,animations:'disabled'});
- await ctx.close();
-}
-try{
- await test(393,850,'mobile');
- await test(768,1024,'tablet');
- await test(1365,900,'desktop');
- console.log('TOOLS LANDING AUDIT PASS: '+checks+' assertions across phone, tablet and desktop; gallery artwork preserved.');
-}catch(error){console.error('TOOLS LANDING AUDIT FAILED:',error);process.exitCode=1;}
+try{for(const width of [320,360,390,430,768,1024,1440,1920])await test(width);console.log('UTILITIES DASHBOARD AUDIT PASS: '+checks+' assertions at eight native viewport widths.');}
+catch(error){console.error('UTILITIES DASHBOARD AUDIT FAILED:',error);process.exitCode=1;}
 finally{await browser.close();}
