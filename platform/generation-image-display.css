@@ -1,0 +1,59 @@
+/* Image results own their aspect ratio. Loading/error stages keep their existing
+   layout; video and Assistant workspaces do not load this stylesheet. */
+body.lig-body #lig-results{
+ width:min(100%,1120px)!important;
+ max-width:100%!important;
+ gap:28px!important;
+}
+body.lig-body #lig-results>.lig-output:has(.lig-output-stage>img){
+ width:fit-content!important;
+ max-width:100%!important;
+ min-width:0!important;
+ margin:0 auto 24px!important;
+ padding:0!important;
+ border:0!important;
+ border-radius:0!important;
+ background:transparent!important;
+ box-shadow:none!important;
+}
+body.lig-body #lig-results .lig-output-stage:has(>img){
+ display:block!important;
+ width:fit-content!important;
+ max-width:100%!important;
+ height:auto!important;
+ min-height:0!important;
+ max-height:none!important;
+ aspect-ratio:auto!important;
+ margin:0 auto!important;
+ padding:0!important;
+ border:0!important;
+ border-radius:12px!important;
+ background:transparent!important;
+ overflow:hidden!important;
+}
+body.lig-body #lig-results .lig-output-stage>img{
+ display:block!important;
+ width:auto!important;
+ height:auto!important;
+ max-width:100%!important;
+ max-height:min(74dvh,960px)!important;
+ margin:0!important;
+ object-fit:contain!important;
+ background:transparent!important;
+}
+body.lig-body #lig-results>.lig-output:has(.lig-output-stage>img) .lig-output-top{
+ padding:0 0 2px!important;
+}
+body.lig-body #lig-results>.lig-output:has(.lig-output-stage>img) .loox-generation-meta{
+ margin:4px 0 10px!important;
+ overflow-wrap:anywhere;
+}
+body.lig-body #lig-results>.lig-output:has(.lig-output-stage>img) .loox-generation-actions{
+ max-width:100%;
+ flex-wrap:wrap!important;
+}
+@media(max-width:600px){
+ body.lig-body #lig-results{gap:22px!important}
+ body.lig-body #lig-results .lig-output-stage>img{max-height:72dvh!important}
+ body.lig-body #lig-results .lig-output-stage:has(>img){border-radius:10px!important}
+}
