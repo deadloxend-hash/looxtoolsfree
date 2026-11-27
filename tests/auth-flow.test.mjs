@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {authEventApplies,safeAuthReturn,newOAuthAttempt,readOAuthAttempt,oauthVerifierStorage,googleOAuthOptions,trustedOAuthURL,cleanOAuthSession,googleAvailable} from '../platform/auth-flow.js';
+import {rememberChoice,authEventApplies,safeAuthReturn,newOAuthAttempt,readOAuthAttempt,oauthVerifierStorage,googleOAuthOptions,trustedOAuthURL,cleanOAuthSession,googleAvailable} from '../platform/auth-flow.js';
 import {createAuthStorage} from '../platform/auth-storage.js';
 const base='https://deadloxend-hash.github.io/looxtoolsfree/index.html',nonce='11111111-1111-4111-8111-111111111111';
 test('cross-tab events cannot replace a tab identity that disagrees with its own credential storage',()=>{
@@ -30,3 +30,5 @@ test('Google requests only identity scopes, online access and account selection 
  assert.equal(await googleAvailable(cfg,{request:async()=>({ok:true,json:async()=>({external:{google:false}})})}),false);
  assert.deepEqual(cleanOAuthSession({access_token:'a',refresh_token:'r',provider_token:'must-not-save',user:{id:'fixture'}}),{access_token:'a',refresh_token:'r'});
 });
+
+test('security reauthentication preserves a session-only choice unless the user explicitly changes it',()=>{assert.equal(rememberChoice(undefined,'session'),false);assert.equal(rememberChoice(undefined,'local'),true);assert.equal(rememberChoice(false,'local'),false);assert.equal(rememberChoice(true,'session'),true);});

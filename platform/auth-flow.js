@@ -1,6 +1,7 @@
 // Google credentials stay on Google's origin. Supabase owns OAuth state and PKCE.
 export const oauthAttemptKey='loox-oauth-attempt-v1';
 export const attemptLifetime=10*60*1000;
+export function rememberChoice(explicit,stored){return typeof explicit==='boolean'?explicit:stored!=='session';}
 export function authEventApplies(event,session,stored,localCommit=false){
  if(event==='INITIAL_SESSION'||localCommit)return true;
  let current;try{current=JSON.parse(stored||'null');}catch{}

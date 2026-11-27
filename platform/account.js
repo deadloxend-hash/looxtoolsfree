@@ -1,4 +1,4 @@
-import {authEventApplies,newOAuthAttempt,oauthAttemptKey,oauthVerifierStorage,googleAvailable,googleOAuthOptions,trustedOAuthURL,safeAuthReturn} from './auth-flow.js';
+import {rememberChoice,authEventApplies,newOAuthAttempt,oauthAttemptKey,oauthVerifierStorage,googleAvailable,googleOAuthOptions,trustedOAuthURL,safeAuthReturn} from './auth-flow.js';
 import {createAuthStorage} from './auth-storage.js';
 import {billingURL} from './billing-url.js';
 import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
@@ -230,10 +230,10 @@ export function emailCallbackClient(cfg){const memory=new Map(),key=sessionKey+'
 export async function installVerifiedSession(session,remember){state.identityCommit=true;state.account=null;state.accountError='';try{if(typeof remember==='boolean')authStorage.setItem(rememberKey,remember?'local':'session');const c=await client();const r=await c.auth.setSession(session);if(r.error)throw r.error;if(remember)rememberRecentAccount(state.user?.email);return c;}finally{state.identityCommit=false;}}
 
 export function isolatedOAuthClient(cfg,nonce){return window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:oauthVerifierStorage(nonce),storageKey:'loox-oauth-'+nonce,persistSession:true,autoRefreshToken:false,detectSessionInUrl:false,flowType:'pkce'}});}
-export async function startGoogleSignIn({remember=true,reauth=false,returnTo=location.href}={}){
+export async function startGoogleSignIn({remember,reauth=false,returnTo=location.href}={}){
  if(!await googleAvailability())throw Error('Google sign-in is not configured yet. Use email sign-in.');
  await loadAuthSDK();const cfg=await config();
- const attempt=newOAuthAttempt({base:new URL('../index.html',import.meta.url).href,returnTo,owner:state.user?.id||null,remember,reauth});
+ const attempt=newOAuthAttempt({base:new URL('../index.html',import.meta.url).href,returnTo,owner:state.user?.id||null,remember:rememberChoice(remember,authStorage.getItem(rememberKey)),reauth});
  // Same-tab, short-lived correlation state. If storage is blocked, do not begin a broken redirect flow.
  try{sessionStorage.setItem(oauthAttemptKey,JSON.stringify(attempt));if(!sessionStorage.getItem(oauthAttemptKey))throw Error();}catch{throw Error('Google sign-in needs temporary browser storage. Allow site storage or use email sign-in.');}
  const callback=new URL('../auth-callback.html',import.meta.url);callback.searchParams.set('flow','google');callback.searchParams.set('attempt',attempt.nonce);

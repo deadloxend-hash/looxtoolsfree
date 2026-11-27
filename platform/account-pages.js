@@ -321,7 +321,7 @@ if(document.body.hasAttribute('data-settings-page')){
   const submit=elem('button','lx-button lx-primary','Verify and sign out'),note=elem('p');submit.type='submit';note.role='status';form.append(submit,note);box.append(form);
   let pending=false;form.onsubmit=async event=>{event.preventDefault();if(pending)return;pending=true;submit.disabled=true;const value=password.value;password.value='';
    try{await api('revoke_sessions',{password:value,scope});if(state.user?.id!==owner)return;d.close();if(scope==='global'){await signOut();return;}byId('s2-session-status').textContent='Other sessions revoked. Access tokens expire at their normal expiry.';loadSecurity(true);}
-   catch{msg(note,'Unable to revoke sessions. Check your password and authenticator sign-in, then retry.');}finally{pending=false;submit.disabled=false;}
+   catch{msg(note,googleOnly()?'Verification could not be used. Verify with Google again, then retry.':'Unable to revoke sessions. Check your LOOX password and authenticator sign-in, then retry.');}finally{pending=false;submit.disabled=false;}
   };
  }
  byId('lp-sign-out-others').addEventListener('click',()=>revoke('others'));
