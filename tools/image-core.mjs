@@ -35,10 +35,14 @@ const crcTable=Uint32Array.from({length:256},(_,n)=>{let c=n;for(let k=0;k<8;k++
 function crc(data){let c=0xffffffff;for(const b of data)c=crcTable[(c^b)&255]^(c>>>8);return (c^0xffffffff)>>>0}
 function chunk(type,body){const a=new Uint8Array(body.length+12),v=new DataView(a.buffer);v.setUint32(0,body.length);a.set(new TextEncoder().encode(type),4);a.set(body,8);v.setUint32(a.length-4,crc(a.subarray(4,a.length-4)));return a}
 function pngChunks(bytes){if(bytes.length<20||bytes[0]!==137||String.fromCharCode(...bytes.slice(1,4))!=='PNG')throw Error('Choose a valid PNG file.');const parts=[];for(let p=8;p<bytes.length;){if(p+12>bytes.length)throw Error('The PNG is truncated.');const n=new DataView(bytes.buffer,bytes.byteOffset+p,4).getUint32(0);if(n>bytes.length-p-12)throw Error('The PNG chunk is incomplete.');const type=String.fromCharCode(...bytes.subarray(p+4,p+8));parts.push({type,body:bytes.subarray(p+8,p+8+n),raw:bytes.subarray(p,p+n+12)});p+=n+12;if(type==='IEND')break}return parts}
+export async function boundedBlob(stream,maxBytes){
+ const reader=stream.getReader(),chunks=[];let size=0;
+ try{for(;;){const part=await reader.read();if(part.done)break;size+=part.value.byteLength;if(size>maxBytes){await reader.cancel();throw Error('This PNG is too large for browser recompression.');}chunks.push(part.value);}return new Blob(chunks);}finally{reader.releaseLock();}
+}
 export async function losslessPng(file){
  if(!globalThis.CompressionStream||!globalThis.DecompressionStream)throw Error('Lossless PNG recompression needs a browser with CompressionStream support.');
  const bytes=new Uint8Array(await file.arrayBuffer()),parts=pngChunks(bytes),idat=parts.filter(p=>p.type==='IDAT');if(!idat.length)throw Error('No PNG image data was found.');
- const decompressed=await new Response(new Blob(idat.map(p=>p.body)).stream().pipeThrough(new DecompressionStream('deflate'))).blob();if(decompressed.size>180000000)throw Error('This PNG is too large for browser recompression.');
+ const decompressed=await boundedBlob(new Blob(idat.map(p=>p.body)).stream().pipeThrough(new DecompressionStream('deflate')),180000000);
  const compressed=new Uint8Array(await new Response(decompressed.stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer());let inserted=false;
  const output=[bytes.slice(0,8)];for(const p of parts){if(p.type==='IDAT'){if(!inserted){output.push(chunk('IDAT',compressed));inserted=true}}else output.push(p.raw)}const result=new Blob(output,{type:'image/png'});return result.size<file.size?result:file;
 }
