@@ -1,4 +1,4 @@
-import {newOAuthAttempt,oauthAttemptKey,oauthVerifierStorage,googleAvailable,googleOAuthOptions,trustedOAuthURL,safeAuthReturn} from './auth-flow.js';
+import {authEventApplies,newOAuthAttempt,oauthAttemptKey,oauthVerifierStorage,googleAvailable,googleOAuthOptions,trustedOAuthURL,safeAuthReturn} from './auth-flow.js';
 import {createAuthStorage} from './auth-storage.js';
 import {billingURL} from './billing-url.js';
 import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
@@ -49,6 +49,7 @@ async function client(){
   await loadAuthSDK();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
   state.client=api;
   api.auth.onAuthStateChange((event,session)=>{
+   if(!authEventApplies(event,session,authStorage.getItem(sessionKey),Boolean(state.identityCommit)))return;
    const changed=state.user?.id!==session?.user?.id;
    state.user=session?.user||null;
    if(changed){

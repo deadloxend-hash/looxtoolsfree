@@ -1,7 +1,10 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {safeAuthReturn,newOAuthAttempt,readOAuthAttempt,oauthVerifierStorage,googleOAuthOptions,trustedOAuthURL,cleanOAuthSession,googleAvailable} from '../platform/auth-flow.js';
+import {authEventApplies,safeAuthReturn,newOAuthAttempt,readOAuthAttempt,oauthVerifierStorage,googleOAuthOptions,trustedOAuthURL,cleanOAuthSession,googleAvailable} from '../platform/auth-flow.js';
 import {createAuthStorage} from '../platform/auth-storage.js';
 const base='https://deadloxend-hash.github.io/looxtoolsfree/index.html',nonce='11111111-1111-4111-8111-111111111111';
+test('cross-tab events cannot replace a tab identity that disagrees with its own credential storage',()=>{
+ const stored=JSON.stringify({user:{id:'A'}});assert.equal(authEventApplies('SIGNED_IN',{user:{id:'B'}},stored),false);assert.equal(authEventApplies('SIGNED_OUT',null,stored),false);assert.equal(authEventApplies('SIGNED_IN',{user:{id:'A'}},stored),true);assert.equal(authEventApplies('SIGNED_OUT',null,null),true);assert.equal(authEventApplies('INITIAL_SESSION',{user:{id:'A'}},stored),true);
+});
 test('authentication returns stay inside the LOOX project and remove secret-bearing parameters',()=>{
  const fallback=new URL('settings.html#general',base).href;
  for(const value of ['https://evil.example/x.html','//evil.example/x.html','https://user:pass@deadloxend-hash.github.io/looxtoolsfree/x.html','../other-project/x.html','auth-callback.html?code=secret','javascript:alert(1)','\\evil.example\\x.html'])assert.equal(safeAuthReturn(value,base),fallback);
