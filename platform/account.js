@@ -1,3 +1,4 @@
+import {createAuthStorage} from './auth-storage.js';
 import {billingURL} from './billing-url.js';
 import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
@@ -36,9 +37,7 @@ function rememberRecentAccount(email){
  catch{/* Blocked storage must not prevent a login. */}
 }
 
-function store(){return localStorage.getItem(rememberKey)==='session'?sessionStorage:localStorage;}
-function hasStoredSession(){return Boolean(localStorage.getItem(sessionKey)||sessionStorage.getItem(sessionKey));}
-const authStorage={getItem:k=>localStorage.getItem(k)??sessionStorage.getItem(k),setItem:(k,v)=>{const target=store();target.setItem(k,v);(target===localStorage?sessionStorage:localStorage).removeItem(k);},removeItem:k=>{localStorage.removeItem(k);sessionStorage.removeItem(k);}};
+const {storage:authStorage,hasStoredSession}=createAuthStorage();
 async function sdk(){
  if(!library)library=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('../vendor/supabase-2.118.0.js',import.meta.url);const timer=setTimeout(()=>{library=null;s.remove();reject(Error('Account library timed out. Check your connection and retry.'));},15000);s.onload=()=>{clearTimeout(timer);resolve();};s.onerror=()=>{clearTimeout(timer);library=null;reject(Error('Account library could not load.'));};document.head.append(s);});
  await library;

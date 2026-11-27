@@ -16,6 +16,7 @@
   localStorage.setItem(KEY,JSON.stringify(v));choice=v;window.dispatchEvent(new CustomEvent('looxconsentchange',{detail:{...v}}));return v;
  }
  function settings(){
+  choice=read();
   document.getElementById('loox-privacy-dialog')?.remove();
   const d=node('dialog');d.id='loox-privacy-dialog';d.className='loox-privacy';d.setAttribute('aria-labelledby','loox-privacy-title');
   const h=node('h2','Privacy & storage preferences');h.id='loox-privacy-title';d.append(h,node('p','Sign-in and security storage keep your account working. Requested workspace preferences are saved on this device. No analytics or advertising trackers are configured in this release.'));
@@ -35,8 +36,8 @@
  }
  const scriptURL=document.currentScript.src;
  const css=node('link');css.rel='stylesheet';css.href=new URL('privacy.css?v=1',scriptURL).href;document.head.append(css);
- window.LOOXPrivacy=Object.freeze({open:settings,preferences:()=>choice?{...choice}:null,permits:category=>category==='essential'||inventory[category]===true&&choice?.[category]===true});
- window.addEventListener('storage',event=>{if(event.key===KEY){choice=read();window.dispatchEvent(new CustomEvent('looxconsentchange',{detail:choice}));}});
+ window.LOOXPrivacy=Object.freeze({open:settings,preferences:()=>{choice=read();return choice?{...choice}:null;},permits:category=>{choice=read();return category==='essential'||inventory[category]===true&&choice?.[category]===true;}});
+ window.addEventListener('storage',event=>{if(event.key===KEY||event.key===null){choice=read();window.dispatchEvent(new CustomEvent('looxconsentchange',{detail:choice}));}});
  function start(){
   document.querySelectorAll('[data-loox-privacy-open]').forEach(b=>b.addEventListener('click',settings));
   // Show a consent banner only when optional integrations actually require a choice.
