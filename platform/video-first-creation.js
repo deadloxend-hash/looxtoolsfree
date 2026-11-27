@@ -12,7 +12,7 @@ const form=document.getElementById('creative-landing-form'),prompt=document.getE
 const model=document.getElementById('creative-model'),trigger=document.getElementById('video-landing-model-trigger');
 const menu=document.getElementById('video-landing-model-options'),name=document.getElementById('video-landing-model-name');
 const lengthBox=document.getElementById('video-landing-durations'),status=document.getElementById('creative-landing-status');
-const ratioInputs=[...form.querySelectorAll('[name="creative-video-ratio"]')];
+const ratioInputs=[...form.querySelectorAll('[name="creative-video-ratio"]:not([value="custom"])')];
 const ratioNote=document.getElementById('video-ratio-hint');
 const catalog=[
  ['wan21','Wan 2.1 · Local PC',[2],[],false,true],
@@ -87,7 +87,7 @@ function syncModel(){
   input.disabled=!allowed.includes(input.value);
   input.closest('label')?.setAttribute('aria-disabled',String(input.disabled));
  }
- if(!ratioInputs.some(x=>x.checked&&!x.disabled)){
+ if(!form.querySelector('[name="creative-video-ratio"][value="custom"]:checked')&&!ratioInputs.some(x=>x.checked&&!x.disabled)){
   const available=ratioInputs.find(x=>!x.disabled);if(available)available.checked=true;
  }
  syncRatio();if(open)renderMenu();
@@ -136,7 +136,7 @@ try{
   }
  }
  model.replaceChildren(...catalog.map(x=>{
-  const option=new Option(x.label+(' · Coming Soon'),x.id);
+  const option=new Option(x.label.replace(' · Local PC','')+' · Coming Soon',x.id);
   option.disabled=!x.local&&!x.available;return option;
  }));
  model.value=catalog.find(x=>x.available&&!x.needsImage)?.id||'wan21';
