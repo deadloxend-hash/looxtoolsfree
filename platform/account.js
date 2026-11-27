@@ -1,3 +1,4 @@
+import {billingURL} from './billing-url.js';
 import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
@@ -368,7 +369,7 @@ function drawDashboard(){
  for(const j of a.jobs){const row=el('div',null,'lx-row');row.append(el('span',labels[j.operation]+' · '+j.state));
  if(j.state!=='failed')row.append(button(j.state==='succeeded'?'Open result':'Check status',async()=>{try{const result=await api('status',null,{id:j.id});if(result.url){const d=dialog('Your private result');d.box.append(link('Open PNG',result.url));}await refresh();}catch(e){msg(document.querySelector('[data-account-note]'),e.message);}},'lx-link'));jobs.append(row);}
  const sub=section('subscription','Subscription');sub.append(el('p',a.subscriptions.map(s=>s.status+(s.ends_at?' · ends '+new Date(s.ends_at).toLocaleDateString():'')).join(', ')||planName[a.plan]),button('Upgrade',pricing));
- if(a.subscriptions.length)sub.append(button('Manage or cancel subscription',async()=>{try{location.assign((await api('portal',{})).url);}catch(e){msg(document.querySelector('[data-account-note]'),e.message);}}));
+ if(a.subscriptions.length)sub.append(button('Manage or cancel subscription',async()=>{try{location.assign(billingURL((await api('portal',{})).url));}catch(e){msg(document.querySelector('[data-account-note]'),e.message);}}));
  const history=section('history','Transaction history');
  for(const item of a.credits)history.append(el('p',new Date(item.created_at).toLocaleString()+' · '+item.reason+' · '+(item.amount>0?'+':'')+item.amount+' credits'));
  for(const p of a.payments)history.append(el('p',planName[p.plan]+' · '+money(p.amount_cents)+' · '+p.status));

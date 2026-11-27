@@ -1,4 +1,5 @@
-import {setupSettings} from './settings-2.js?v=close-overlay-20261126';
+import {billingURL} from './billing-url.js';
+import {setupSettings} from './settings-2.js?v=billing-security-20261127';
 import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=settings-2-20261124';
 import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
@@ -9,11 +10,11 @@ const proposedPlans=[{id:'free',price_cents:0,credits:25,cadence:'signup'},{id:'
 const presentation={business:{name:'LOOX Business',icon:'◆',eyebrow:'FOR TEAMS & HIGHER VOLUME',description:'For teams and power users who need higher creative volume.'},free:{name:'LOOX Basic',icon:'◇',eyebrow:'YOUR FIRST IDEAS',description:'Free forever. Try AI images and basic creative tools.'},creator:{name:'LOOX Creator',icon:'✦',eyebrow:'FOR YOUR CREATIVE ROUTINE',description:'For everyday creators. Make more images and explore motion.'},pro:{name:'LOOX Pro',icon:'♛',eyebrow:'FOR YOUR BIGGEST IDEAS',description:'A bigger creative allowance and premium video models.'}};
 let cadence='month',plansConfig=null,plansError=false;
 const money=c=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(c/100);
-function sameSiteReturn(){try{const raw=new URLSearchParams(location.search).get('from')||document.referrer;const target=new URL(raw,location.href);if(target.origin===location.origin&&target.pathname!==location.pathname)return target.pathname+target.search+target.hash;}catch{}return 'ai-home.html';}
+function sameSiteReturn(){try{const raw=new URLSearchParams(location.search).get('from')||document.referrer;const target=new URL(raw,location.href);if(target.origin===location.origin&&target.pathname!==location.pathname&&!/\/(?:account|settings)\.html$/.test(target.pathname))return target.pathname+target.search+target.hash;}catch{}return 'ai-home.html';}
 const back=byId('lp-back');if(back)back.href=sameSiteReturn();
 function setStatus(node,text,error=false){if(node){node.textContent=text;node.dataset.error=String(error);}}
 function addNotice(text,tone){const n=byId('lp-billing-notice');if(n){n.textContent=text;n.dataset.tone=tone;}}
-function planAction(button,notice,id){button.addEventListener('click',async()=>{if(!state.user){auth('login');return;}button.disabled=true;setStatus(notice,'Opening secure checkout…');try{const r=await api('checkout',{plan:id});const url=new URL(r.url);if(url.protocol!=='https:'||!url.hostname.endsWith('.lemonsqueezy.com'))throw Error('Invalid checkout URL.');location.assign(url.href);}catch(e){setStatus(notice,e.message||'Checkout is unavailable.',true);button.disabled=false;}});}
+function planAction(button,notice,id){button.addEventListener('click',async()=>{if(!state.user){auth('login');return;}button.disabled=true;setStatus(notice,'Opening secure checkout…');try{const r=await api('checkout',{plan:id});location.assign(billingURL(r.url));}catch(e){setStatus(notice,e.message||'Checkout is unavailable.',true);button.disabled=false;}});}
 function renderPlans(cfg,failed=false){
  const host=byId('lp-plan-grid');if(!host)return;
  if(cfg?.annualBillingEnabled!==true)cadence='month';
@@ -197,9 +198,8 @@ if(document.body.hasAttribute('data-settings-page')){
   if(trigger.disabled||!state.config?.billing)return;
   trigger.disabled=true;setStatus(status,'Opening your secure subscription portal…');
   try{
-   const result=await api('portal',{}),url=new URL(result.url);
-   if(url.protocol!=='https:'||!(url.hostname==='lemonsqueezy.com'||url.hostname.endsWith('.lemonsqueezy.com')))throw Error('Unexpected billing portal address.');
-   location.assign(url.href);
+   const result=await api('portal',{});
+   location.assign(billingURL(result.url));
   }catch(error){setStatus(status,error.message||'The subscription portal is unavailable.',true);renderBilling();}
   finally{trigger.disabled=!(state.config?.billing&&state.account?.subscriptions?.some(s=>['active','trialing','past_due'].includes(s.status)));}
  });

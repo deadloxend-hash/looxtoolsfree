@@ -9,12 +9,24 @@
  if(!window.__looxOpenSettings&&!location.pathname.endsWith('/settings.html')){
   window.__looxOpenSettings=(target='settings.html')=>{
    if(document.getElementById('loox-settings-overlay'))return;
+   const destination=new URL(target,location.href),settingsURL=new URL('settings.html',location.href);
+   if(destination.origin!==settingsURL.origin||destination.pathname!==settingsURL.pathname||destination.username||destination.password)return;
    const trigger=document.activeElement,dialog=document.createElement('dialog'),frame=document.createElement('iframe');
    dialog.id='loox-settings-overlay';dialog.setAttribute('aria-label','Settings');
    Object.assign(dialog.style,{position:'fixed',inset:'0',margin:'auto',padding:'0',border:'0',background:'#0c111b',width:'min(1120px, 100vw)',height:'100dvh',maxWidth:'100vw',maxHeight:'100dvh',overflow:'hidden',borderRadius:'14px'});
-   frame.title='LOOX Settings';frame.src=new URL(target,location.href).href;
+   const loading=document.createElement('p'),close=document.createElement('button');
+   loading.textContent='Loading Settings…';loading.setAttribute('role','status');
+   Object.assign(loading.style,{position:'absolute',inset:'40% 20px auto',textAlign:'center',color:'#e6edf7'});
+   close.type='button';close.textContent='Close settings';close.setAttribute('aria-label','Close settings');
+   Object.assign(close.style,{position:'absolute',right:'16px',top:'16px',zIndex:'1',padding:'12px',background:'#172337',color:'#e6edf7',border:'1px solid #2d3d54',borderRadius:'8px'});
+   close.onclick=()=>dialog.close();
+   frame.title='LOOX Settings';frame.src=destination.href;frame.style.visibility='hidden';
+   frame.addEventListener('load',()=>{loading.remove();close.remove();frame.style.visibility='visible';},{once:true});
+   const timeout=setTimeout(()=>{loading.textContent='Settings are taking longer to load. Close and try again.';},15000);
+   frame.addEventListener('load',()=>clearTimeout(timeout),{once:true});
+   dialog.addEventListener('close',()=>clearTimeout(timeout),{once:true});
    Object.assign(frame.style,{width:'100%',height:'100%',border:'0',display:'block'});
-   dialog.append(frame);document.body.append(dialog);
+   dialog.append(loading,close,frame);document.body.append(dialog);
    const overflow=document.body.style.overflow;document.body.style.overflow='hidden';
    dialog.addEventListener('close',()=>{dialog.remove();document.body.style.overflow=overflow;delete window.__looxCloseSettings;trigger?.focus?.({preventScroll:true})},{once:true});
    window.__looxCloseSettings=()=>dialog.close();dialog.showModal();
@@ -722,7 +734,7 @@
    existingLinks.classList.add('loox-popover-links');
    const items=[
     ['Profile','profile','creator.html'],
-    ['Subscriptions','subscription','account.html#subscription'],
+    ['Subscriptions','subscription','settings.html#billing'],
     ['Usage','usage','account.html#usage'],
     ['Settings','settings','settings.html#workspace-preferences'],
     ['FAQs','faq','help.html'],

@@ -1,3 +1,4 @@
+import {billingURL} from '../billing-url.js';
 // Shared dialog. Prices are fetched from the backend; offline state has no prices.
 export async function openRecharge({state,api,config,auth,dialog,el,button,refresh}){
  const {box,d}=dialog('Buy Credits');d.classList.add('loox-recharge');
@@ -29,7 +30,7 @@ export async function openRecharge({state,api,config,auth,dialog,el,button,refre
   checkout.onclick=async()=>{
    if(!state.user){d.close();auth('login');return;}
    checkout.disabled=true;status.textContent='Preparing secure checkout…';
-   try{const result=await api('recharge_checkout',{package:selected.id});const target=new URL(result.url);if(target.protocol!=='https:'||!target.hostname.endsWith('.lemonsqueezy.com'))throw Error('Checkout is unavailable.');location.assign(target.href);}
+   try{const result=await api('recharge_checkout',{package:selected.id});location.assign(billingURL(result.url));}
    catch(e){status.textContent=e.message;checkout.disabled=false;}
   };
  }catch(e){status.textContent=e.message;}

@@ -31,3 +31,9 @@
 .settings-v2 .lp-setting-row>div{align-content:start}
 .settings-v2 input[type=file]::file-selector-button{padding:9px 12px;background:#192436;border:1px solid #2a3b54;border-radius:7px;color:#e6edf7;margin-right:8px}
 @media(max-width:420px){.settings-v2 #security .lp-setting-row>div{flex-basis:100%}.settings-v2 #security .lp-setting-row .lp-btn{max-width:100%;min-height:44px}}
+
+/* Keep the legacy account markup out of the first Settings paint. */
+body[data-settings-page]:not(.settings-v2) > header,body[data-settings-page]:not(.settings-v2) > main{display:none}
+body[data-settings-page]{background:#080d16;color:#e6edf7}
+#loox-settings-startup{padding:32px;font:16px system-ui;text-align:center}
+#loox-settings-startup a{color:#93baff}
