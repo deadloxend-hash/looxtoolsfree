@@ -12,7 +12,7 @@ const form=document.getElementById('creative-landing-form'),prompt=document.getE
 const model=document.getElementById('creative-model'),trigger=document.getElementById('video-landing-model-trigger');
 const menu=document.getElementById('video-landing-model-options'),name=document.getElementById('video-landing-model-name');
 const lengthBox=document.getElementById('video-landing-durations'),status=document.getElementById('creative-landing-status');
-const ratioInputs=[...form.querySelectorAll('[name="creative-video-ratio"]')];
+const ratioInputs=[...form.querySelectorAll('[name="creative-video-ratio"]:not([value="custom"])')];
 const ratioNote=document.getElementById('video-ratio-hint');
 const catalog=[
  ['wan21','Wan 2.1 · Local PC',[2],[],false,true],
@@ -44,10 +44,10 @@ form.querySelectorAll('[data-example]').forEach(btn=>btn.addEventListener('click
  requestAnimationFrame(updatePrompt);
 }));
 function syncRatio(){
- const selected=ratioInputs.find(x=>x.checked)?.value||'16:9';
- ratioNote.textContent=({'16:9':'Wide scenes and films','9:16':'Shorts and mobile stories','1:1':'Square video posts'})[selected];
+ const selected=form.querySelector('[name="creative-video-ratio"]:checked')?.value||'16:9';
+ ratioNote.textContent=({'16:9':'Wide scenes and films','9:16':'Shorts and mobile stories','1:1':'Square video posts','custom':'Choose a compatible preset below'})[selected];
 }
-ratioInputs.forEach(x=>x.addEventListener('change',syncRatio));
+form.addEventListener('change',e=>{if(e.target.name==='creative-video-ratio')syncRatio();});
 function closeMenu(focus=false){open=false;menu.hidden=true;trigger.setAttribute('aria-expanded','false');if(focus)trigger.focus({preventScroll:true});}
 function renderMenu(){
  menu.replaceChildren();
@@ -57,7 +57,7 @@ function renderMenu(){
   const item=el('button','video-model-option');item.type='button';item.disabled=opt.disabled;
   item.setAttribute('role','option');item.setAttribute('aria-selected',String(opt.value===model.value));
   item.append(el('span','',candidate?.label||opt.textContent),
-   el('small','',candidate?.local?'Check PC':opt.disabled?'Unavailable':'Available'),
+   el('small','',candidate?.local?'Preview':'Coming Soon'),
    el('span','video-model-check',opt.value===model.value?'✓':''));
   item.addEventListener('click',()=>{
    model.value=opt.value;model.dispatchEvent(new Event('change',{bubbles:true}));closeMenu(true);
@@ -67,11 +67,11 @@ function renderMenu(){
 }
 function syncModel(){
  choice=byId.get(model.value)||catalog[0];
- name.textContent=choice.label;
- trigger.title=choice.label+(choice.needsImage?' · Add a start image in Studio':choice.local?' · Check PC availability in Studio':'');
+ name.textContent=choice.label.replace(' · Local PC','')+' · Coming Soon';
+ trigger.title=choice.label+(choice.needsImage?' · Add a start image in Studio':choice.local?' · Preview only':'');
  lengthBox.replaceChildren();
  if(choice.local){
-  duration=null;lengthBox.append(el('span','video-duration-loading','≈2s · Local PC'));
+  duration=null;lengthBox.append(el('span','video-duration-loading','≈2s · Preview'));
  }else{
   if(!choice.lengths.includes(duration))duration=choice.lengths[0];
   for(const seconds of choice.lengths){
@@ -87,7 +87,7 @@ function syncModel(){
   input.disabled=!allowed.includes(input.value);
   input.closest('label')?.setAttribute('aria-disabled',String(input.disabled));
  }
- if(!ratioInputs.some(x=>x.checked&&!x.disabled)){
+ if(!form.querySelector('[name="creative-video-ratio"][value="custom"]:checked')&&!ratioInputs.some(x=>x.checked&&!x.disabled)){
   const available=ratioInputs.find(x=>!x.disabled);if(available)available.checked=true;
  }
  syncRatio();if(open)renderMenu();
@@ -127,7 +127,7 @@ try{
  for(const server of cfg?.videoModels||[]){if(!byId.has(server.id)){const candidate={id:server.id,label:server.name,lengths:server.durationOptions||[],ratios:server.capabilities?.ratios||[],needsImage:Boolean(server.imageRequired),local:false,available:Boolean(server.available)};catalog.push(candidate);byId.set(candidate.id,candidate);}}
  for(const candidate of catalog){
   const server=fetched.get(candidate.id);
-  candidate.available=!candidate.local&&Boolean(server?.available);
+  candidate.available=false; // Video generation is locked during the free launch.
   candidate.needsImage=Boolean(server?.imageRequired??candidate.needsImage);
   if(server?.capabilities?.ratios)candidate.ratios=server.capabilities.ratios;
   if(Array.isArray(server?.durationOptions)&&server.durationOptions.length){
@@ -136,18 +136,15 @@ try{
   }
  }
  model.replaceChildren(...catalog.map(x=>{
-  const option=new Option(x.label+(x.local?' · check GPU':x.available?'':' · unavailable'),x.id);
+  const option=new Option(x.label.replace(' · Local PC','')+' · Coming Soon',x.id);
   option.disabled=!x.local&&!x.available;return option;
  }));
  model.value=catalog.find(x=>x.available&&!x.needsImage)?.id||'wan21';
  syncModel();
- const available=catalog.filter(x=>x.available).length;
- status.textContent=available?
-  available+' cloud video model'+(available===1?'':'s')+' available · Review final settings and credits in Studio.':
-  'Cloud video models are unavailable. Wan 2.1 requires your local GPU; check it in Studio.';
+ status.textContent='Video generation is Coming Soon. Explore Studio and prepare your draft without using credits.';
 }catch{
- model.replaceChildren(new Option('Wan 2.1 · Check in Studio','wan21'));model.value='wan21';
- syncModel();status.textContent='Could not verify video model availability. Prepare your scene and check models in Studio.';
+ model.replaceChildren(new Option('Wan 2.1 · Coming Soon','wan21'));model.value='wan21';
+ syncModel();status.textContent='Video generation is Coming Soon. You can still prepare a draft and explore Studio.';
 }
 }
 hydrateVideoModels();

@@ -29,8 +29,9 @@ window.addEventListener('pageshow',()=>{
 });
 function enter(event){
  event.preventDefault();
- // Studio is always accessible, including when a model is offline or a draft is blank.
- if(!video&&aspectControls&&!aspectControls.validate())return;
+ if(video){status.textContent='Video Studio is locked until launch. No credits will be used.';return;}
+ // Image Studio is always accessible, including when a model is offline or a draft is blank.
+ if(aspectControls&&!aspectControls.validate())return;
  const launch={kind,prompt:prompt.value.trim(),model:model.value};
  if(video){
   // Keep video-only staging separate from the Image landing implementation.
@@ -62,6 +63,6 @@ if(motion&&toggle){
  if(managed)document.addEventListener('visibilitychange',()=>{if(document.hidden)motion.pause();else if(wanted&&visible)play();});
 }
 
-try{await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available){model.value=available.id;const count=models.filter(m=>m.available).length;status.textContent=count+' image model'+(count===1?'':'s')+' available · Your prompt is prepared here; generation and credit cost are confirmed in Studio.';}else{model.value='flux';status.textContent='Image models are temporarily unavailable. You can still prepare your idea and explore the Studio.';}}}catch{status.textContent='Model availability could not load. You can still explore Studio.';}
+try{await config();if(!video){const models=[{id:'flux',name:'FLUX.1 Schnell',available:state.config?.local?.available},...(state.config?.models||[])];model.replaceChildren(...models.map(m=>{const o=new Option(m.name+(m.available?'':' · unavailable'),m.id);o.disabled=!m.available;return o;}));const available=models.find(m=>m.available);if(available){model.value=available.id;const count=models.filter(m=>m.available).length;status.textContent=count+' image model'+(count===1?'':'s')+' available · Your prompt is prepared here; generation and credit cost are confirmed in Studio.';}else{model.value='flux';status.textContent='Image models are temporarily unavailable. You can still prepare your idea and explore the Studio.';}}}catch{if(!video)status.textContent='Model availability could not load. You can still explore Studio.';}
 
 })();

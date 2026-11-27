@@ -434,3 +434,35 @@ body[data-creative-mode="video"] #video-hero #video-landing-model-options[hidden
 body[data-creative-mode="video"] #video-hero .video-duration-options .video-duration-loading{
  color:#a6ccff!important;
 }
+
+/* Match the image landing's guided composer while preserving video-only controls. */
+body[data-creative-mode="video"] #video-hero .video-hero-poster{z-index:-3}
+body[data-creative-mode="video"] #video-hero .video-hero-motion{opacity:0;transition:opacity .4s}
+body[data-creative-mode="video"] #video-hero .video-hero-motion.is-playing{opacity:1}
+body[data-creative-mode="video"] #video-hero .video-ratio-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+body[data-creative-mode="video"] #video-hero .video-ratio-choice{min-height:52px}
+body[data-creative-mode="video"] #video-hero .video-ratio-choice:has(input:checked){border-color:#60a5fa;background:linear-gradient(115deg,#2a405c,#3b82f6);box-shadow:inset 0 0 0 1px #a6ccff2b}
+body[data-creative-mode="video"] #video-hero .video-composer-footer{grid-template-columns:minmax(0,1fr) auto;gap:9px 12px}
+body[data-creative-mode="video"] #video-hero .video-length-control{grid-row:1;grid-column:1/-1}
+body[data-creative-mode="video"] #video-hero .video-model-control{grid-row:2;grid-column:1}
+body[data-creative-mode="video"] #video-hero .video-landing-submit{grid-row:2;grid-column:2;width:auto;min-height:43px}
+body[data-creative-mode="video"] #video-hero .video-model-options{max-width:100%;min-width:0;overflow-x:hidden}
+body[data-creative-mode="video"] #video-hero .video-model-option{display:grid;grid-template-columns:minmax(0,1fr) max-content 12px;gap:5px;min-width:0}
+body[data-creative-mode="video"] #video-hero .video-model-option>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-creative-mode="video"] .video-home-intro{text-align:center;max-width:760px;margin:0 auto 64px}
+body[data-creative-mode="video"] .video-home-intro small,body[data-creative-mode="video"] .video-home-faq small{font:700 10px/1.7 Inter,system-ui,sans-serif;letter-spacing:.2em;color:#a6ccff}
+body[data-creative-mode="video"] .video-home-intro h2{font-size:clamp(34px,4.2vw,58px)!important;line-height:1.12;letter-spacing:-.045em}
+body[data-creative-mode="video"] .video-home-intro em{font-style:normal;color:#a6ccff}
+body[data-creative-mode="video"] .video-home-intro p,body[data-creative-mode="video"] .video-home-faq p{color:#a9b9cd;font:400 14px/1.8 Inter,system-ui,sans-serif}
+body[data-creative-mode="video"] .video-home-intro>span{display:block;width:1px;height:50px;background:linear-gradient(#7d9bbd,transparent);margin:28px auto 0}
+body[data-creative-mode="video"] .video-home-faq{max-width:1100px;margin:70px auto 0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:40px;text-align:left}
+body[data-creative-mode="video"] .video-home-faq-list details{border-bottom:1px solid #2a405c;padding:17px 0}
+body[data-creative-mode="video"] .video-home-faq-list summary{cursor:pointer;color:#e1eafa;font-weight:600}
+body[data-creative-mode="video"] .video-home-footer{padding:35px max(20px,6vw);border-top:1px solid #243247;background:#080d16;color:#a6b6cc;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;font-size:13px}
+body[data-creative-mode="video"] .video-home-footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+body[data-creative-mode="video"] .video-home-footer a{color:#d9eaff;text-decoration:none}
+body[data-creative-mode="video"] .video-home-footer a:focus-visible,body[data-creative-mode="video"] .video-home-faq summary:focus-visible{outline:2px solid #a6ccff;outline-offset:4px}
+@media(max-width:720px){body[data-creative-mode="video"] #video-hero .video-ratio-choice{min-height:48px}body[data-creative-mode="video"] #video-hero .video-landing-submit{min-height:43px;padding:10px 12px;font-size:11px}body[data-creative-mode="video"] .video-home-faq{grid-template-columns:1fr;gap:12px}body[data-creative-mode="video"] .video-home-intro{margin-bottom:40px}}
+@media(prefers-reduced-motion:reduce){body[data-creative-mode="video"] #video-hero .video-hero-motion{transition:none}}
+
+body[data-creative-mode="video"] #video-hero .video-landing-submit:disabled{background:#182438!important;border-color:#34465d!important;color:#aabbd1!important;box-shadow:none!important;cursor:not-allowed;filter:none!important;transform:none!important}

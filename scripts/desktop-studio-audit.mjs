@@ -12,7 +12,9 @@ try{
   const page=await browser.newPage({viewport,reducedMotion:'reduce'});
   await page.route('https://looxtoolfree-backend.vercel.app/api/loox?*',route=>route.fulfill({json:new URL(route.request().url()).searchParams.get('action')==='config'?config:{error:'Disabled in UI test'}}));
   for(const file of ['ai-text-to-image.html','ai-video-generator.html']){
-   await page.goto(base+file);await page.locator('.studio-content-switcher').waitFor();
+   await page.goto(base+file);
+   if(file==='ai-video-generator.html'){await page.getByRole('heading',{name:'AI Video Studio is locked'}).waitFor();assert.equal(await page.locator('#lvg-generate,.lig-compose-wrap').count(),0);assert.equal(await page.locator('script[src*="loox-video-generator.js"]').count(),0);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2));await page.screenshot({path:out+'/video-locked-'+viewport.width+'.png'});continue;}
+   await page.locator('.studio-content-switcher').waitFor();
    await page.locator('.studio-model-trigger').waitFor();
    await page.locator('#loox-header-actions .loox-notification-bell').waitFor();
    await page.locator('#loox-header-actions .lx-profile-trigger').waitFor();
