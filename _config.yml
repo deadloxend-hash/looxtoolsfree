@@ -1,0 +1,25 @@
+# Publishing policy: application assets remain public; engineering material does not deploy.
+exclude:
+  - docs
+  - database
+  - scripts
+  - tests
+  - node_modules
+  - dist
+  - audit-artifacts
+  - desktop-audit-artifacts
+  - site-audit-results.json
+  - AI-UPDATE-REPORT.md
+  - PLATFORM.md
+  - package.json
+  - package-lock.json
+  - AGENTS.md
+  - README.md
+  - .env
+  - .env.local
+  - .env.production
+  - .env.example
+  - "**/*.map"
+  - "**/*.sql"
+  - "**/*.log"
+  - "**/*.looxbackup"

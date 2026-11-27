@@ -1,9 +1,5 @@
 name: Apply LOOX Obsidian Blue theme sitewide
 on:
-  push:
-    paths:
-      - ".github/workflows/loox-obsidian-blue.yml"
-      - "scripts/apply-obsidian-blue.py"
   workflow_dispatch:
 permissions:
   contents: write
@@ -15,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: true
       - name: Apply shared blue palette to every stylesheet and page

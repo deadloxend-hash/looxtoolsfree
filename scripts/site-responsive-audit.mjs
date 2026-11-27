@@ -15,11 +15,15 @@ const pages=[
  'settings.html','toolbox.html'
 ];
 const widths=[
+ {name:'phone-320',width:320,height:740},
  {name:'android-small',width:360,height:800},
- {name:'android',width:393,height:873},
+ {name:'android',width:390,height:844},
+ {name:'phone-430',width:430,height:932},
  {name:'android-landscape',width:873,height:393},
  {name:'tablet',width:768,height:1024},
- {name:'desktop',width:1365,height:900}
+ {name:'laptop',width:1024,height:768},
+ {name:'desktop',width:1440,height:900},
+ {name:'desktop-wide',width:1920,height:1080}
 ];
 const outDir=path.resolve('audit-artifacts');
 fs.mkdirSync(outDir,{recursive:true});
@@ -41,8 +45,8 @@ for(const viewport of widths){
   viewport:{width:viewport.width,height:viewport.height},
   reducedMotion:'reduce',
   deviceScaleFactor:1,
-  isMobile:viewport.name!=='desktop',
-  hasTouch:viewport.name!=='desktop'
+  isMobile:viewport.width<1024,
+  hasTouch:viewport.width<1024
  });
  const page=await context.newPage();
  page.setDefaultTimeout(6000);

@@ -1,15 +1,17 @@
 name: Social notifications and category directories
 on:
   push:
-    paths: ['platform/notifications*', 'platform/utility-directories*', 'platform/community*', 'scripts/build-utility-directories.cjs', 'all-*-tools.html', 'all-everyday-utilities.html', 'loox-sitewide-nav.js', 'tests/notifications*', 'tests/utility-directories*', '.github/workflows/social-directories-check.yml']
+    paths: ['platform/notifications*', 'platform/utility-directories*', 'platform/community*', '_config.yml', 'scripts/audit-public-surface.mjs', 'scripts/build-utility-directories.cjs', 'all-*-tools.html', 'all-everyday-utilities.html', 'loox-sitewide-nav.js', 'tests/notifications*', 'tests/utility-directories*', '.github/workflows/social-directories-check.yml']
   pull_request:
-    paths: ['platform/notifications*', 'platform/utility-directories*', 'platform/community*', 'scripts/build-utility-directories.cjs', 'all-*-tools.html', 'all-everyday-utilities.html', 'loox-sitewide-nav.js', 'tests/notifications*', 'tests/utility-directories*', '.github/workflows/social-directories-check.yml']
+    paths: ['platform/notifications*', 'platform/utility-directories*', 'platform/community*', '_config.yml', 'scripts/audit-public-surface.mjs', 'scripts/build-utility-directories.cjs', 'all-*-tools.html', 'all-everyday-utilities.html', 'loox-sitewide-nav.js', 'tests/notifications*', 'tests/utility-directories*', '.github/workflows/social-directories-check.yml']
+permissions:
+  contents: read
 jobs:
   verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 22
       - run: node --input-type=module --check < platform/notifications.js
@@ -18,3 +20,4 @@ jobs:
       - run: node --test tests/notifications-core.test.mjs tests/utility-directories.test.cjs tests/utilities-core.test.cjs
       - run: node scripts/build-utility-directories.cjs && git diff --exit-code -- index.html all-*-tools.html all-everyday-utilities.html sitemap.xml
       - run: node scripts/audit-utilities.cjs
+      - run: node scripts/audit-public-surface.mjs

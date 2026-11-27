@@ -1,9 +1,5 @@
 name: Publish consistent LOOX logo styling on every page
 on:
-  push:
-    paths:
-      - ".github/workflows/loox-logo-rollout.yml"
-      - "scripts/sync-logo-css-version.py"
   workflow_dispatch:
 permissions:
   contents: write
@@ -12,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: true
       - name: Refresh the shared logo stylesheet across all HTML pages
