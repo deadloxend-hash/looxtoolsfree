@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {cloudRequest,cloudImage} from '../platform/profile-cloudflare.js';
 const A='11111111-1111-4111-8111-111111111111',B='22222222-2222-4222-8222-222222222222';
-function account(){return {user:{id:A},client:{auth:{getSession:async()=>({data:{session:{access_token:'fixture-only-token'}}})}}};}
+function account(){const state={user:{id:A}};state.client={auth:{getSession:async()=>({data:{session:{access_token:'fixture-only-token',user:state.user}}})}};return state;}
 test('profile requests reject account changes and never follow redirects with a token',async t=>{
  const state=account();t.mock.method(globalThis,'fetch',async(url,options)=>{assert.equal(options.redirect,'error');assert.equal(options.credentials,'omit');state.user={id:B};return Response.json({display_name:'Previous user'});});
  await assert.rejects(cloudRequest(state,'profile'),/account changed/);

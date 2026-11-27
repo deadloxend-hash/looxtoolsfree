@@ -8,7 +8,7 @@ export const labels={fill:'Generative Fill',background:'Background removal',upsc
 const proposal=[{id:'free',price_cents:0,credits:25},{id:'creator',price_cents:1200,credits:500},{id:'pro',price_cents:2900,credits:1500},{id:'business',price_cents:6900,credits:4000}];
 const planName={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',creator_yearly:'LOOX Creator',pro:'LOOX Pro',pro_yearly:'LOOX Pro',business:'LOOX Business',business_yearly:'LOOX Business',lifetime:'Legacy Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
-let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='',googleCheck;
+let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='',googleCheck,refreshOwner;
 export function el(tag,text,cls){
  const node=document.createElement(tag);if(text!=null)node.textContent=text;if(cls)node.className=cls;return node;
 }
@@ -47,8 +47,9 @@ async function client(){
  const cfg=await config();if(!cfg.auth)throw Error('Account setup is pending. Free browser tools are available.');
  if(!clientReady)clientReady=(async()=>{
   await loadAuthSDK();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
-  state.client=api;
+  state.client=api;state.identityVerified=false;
   api.auth.onAuthStateChange((event,session)=>{
+   if(!state.identityVerified&&!state.identityCommit&&['INITIAL_SESSION','SIGNED_IN'].includes(event))return;
    if(!authEventApplies(event,session,authStorage.getItem(sessionKey),Boolean(state.identityCommit)))return;
    const changed=state.user?.id!==session?.user?.id;
    state.user=session?.user||null;
@@ -65,21 +66,27 @@ async function client(){
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
   const {data,error}=await Promise.race([api.auth.getSession(),new Promise((_,reject)=>setTimeout(()=>reject(Error('Session restoration timed out. Check your connection and retry.')),15000))]);if(error)throw error;
-  state.user=data.session?.user||null;previousIdentity=state.user?.id||null;return api;
+  let restored=null;if(data.session){const checked=await api.auth.getUser(data.session.access_token);if(checked.error||!checked.data?.user)throw Error('Your session could not be verified. Check your connection and sign in again if needed.');restored=checked.data.user;}state.user=restored;state.identityVerified=true;previousIdentity=state.user?.id||null;return api;
  })().catch(e=>{clientReady=null;throw e;});
  return clientReady;
 }
 export async function api(action,body,extra={}){
- const c=await client(),owner=state.user?.id,{data}=await c.auth.getSession();if(!data.session)throw Error('Sign in to continue.');
+ const c=await client(),owner=state.user?.id,{data}=await c.auth.getSession();if(!data.session)throw Error('Sign in to continue.');if(data.session.user?.id!==owner)throw Error('Account changed. Please retry.');
  const r=await fetch(endpoint+'?'+new URLSearchParams({action,...extra}),{method:body==null?'GET':'POST',credentials:'omit',
   headers:{Authorization:'Bearer '+data.session.access_token,...(body==null?{}:{'Content-Type':'application/json'})},body:body==null?undefined:JSON.stringify(body),signal:AbortSignal.timeout(action==='cloud_job'?115000:action==='account'?20000:60000)});
  const result=await r.json().catch(()=>({}));if(state.user?.id!==owner)throw Error('Account changed. Please retry.');if(!r.ok){const e=Error(result.error||'Request failed. Please retry.');e.status=r.status;throw e;}return result;
 }
 export async function refresh(){
  if(!state.user)return;
- if(!refreshTask){const id=state.user.id;refreshTask=(async()=>{try{return await api('account');}catch(error){if(state.user?.id!==id||error.status&&error.status<500||typeof navigator!=='undefined'&&!navigator.onLine)throw error;await new Promise(resolve=>setTimeout(resolve,600));return api('account');}})().then(data=>{if(state.user?.id!==id)return;state.account=data;accountError='';state.accountError='';renderHeader();document.dispatchEvent(new Event('loox-account'));}).catch(e=>{accountError=e.message||'Could not load your account.';state.accountError=accountError;renderHeader();document.dispatchEvent(new Event('loox-account'));throw e;}).finally(()=>{refreshTask=null;});}
- return refreshTask;
+ const id=state.user.id;if(refreshTask&&refreshOwner===id)return refreshTask;
+ refreshOwner=id;
+ const task=(async()=>{try{return await api('account');}catch(error){if(state.user?.id!==id||error.status&&error.status<500||typeof navigator!=='undefined'&&!navigator.onLine)throw error;await new Promise(resolve=>setTimeout(resolve,600));return api('account');}})()
+ .then(data=>{if(state.user?.id!==id)return;state.account=data;accountError='';state.accountError='';renderHeader();document.dispatchEvent(new Event('loox-account'));})
+ .catch(e=>{if(state.user?.id===id){accountError=e.message||'Could not load your account.';state.accountError=accountError;renderHeader();document.dispatchEvent(new Event('loox-account'));}throw e;})
+ .finally(()=>{if(refreshTask===task){refreshTask=null;refreshOwner=null;}});
+ refreshTask=task;return task;
 }
+
 export function dialog(title){
  modal?.close();const d=el('dialog',null,'lx lx-modal'),head=el('header',null,'lx-modal-head'),h=el('h2',title);h.id='lx-dialog-title';d.setAttribute('aria-labelledby',h.id);
  const close=button('×',()=>d.close(),'lx-close');close.setAttribute('aria-label','Close dialog');head.append(h,close);
@@ -441,3 +448,9 @@ if(typeof window!=='undefined'){
   if(!stored||stored.user?.id!==state.user?.id||Number(stored.expires_at)*1000<=Date.now()){location.reload();return;}document.body.hidden=wasHidden;
  });
 }
+
+if(typeof window!=='undefined')window.addEventListener('storage',event=>{
+ if((event.key!==sessionKey&&event.key!==null)||state.identityCommit||state.authRestoring)return;
+ let saved;try{saved=JSON.parse(authStorage.getItem(sessionKey)||'null');}catch{}
+ if((saved?.user?.id||null)!==(state.user?.id||null)){state.user=null;state.account=null;document.body.hidden=true;location.reload();}
+});

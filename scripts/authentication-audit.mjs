@@ -26,7 +26,7 @@ async function setup(width,{enabled=true,mfa=false,identity=A,termsAccepted=true
    if(grant==='pkce'){pkceCalls++;assert.equal(body.auth_code,'synthetic-auth-code');assert.ok(body.code_verifier?.length>=43);}
    return r.fulfill({headers,json:token('aal1')});
   }
-  if(path.endsWith('/user')){if(r.request().method()==='PUT'){assert.equal(r.request().postDataJSON().data.loox_terms,'2026-11');accepted=true;}return r.fulfill({headers,json:profile()});}
+  if(path.endsWith('/user')){if(r.request().method()==='PUT'){assert.equal(r.request().postDataJSON().data.loox_terms,'2026-11');accepted=true;}const bearer=r.request().headers().authorization||'';let who=identity;try{who=JSON.parse(Buffer.from(bearer.split('.')[1],'base64url')).sub;}catch{}const u=user(who,google,mfa);if(!accepted)delete u.user_metadata.loox_terms;return r.fulfill({headers,json:u});}
   if(path.endsWith('/challenge'))return r.fulfill({headers,json:{id:'challenge-fixture',expires_at:Math.floor(Date.now()/1000)+300}});
   if(path.endsWith('/verify')){assert.equal(r.request().postDataJSON().code,'123456');return r.fulfill({headers,json:token('aal2')});}
   if(path.endsWith('/logout'))return r.fulfill({headers,json:{}});

@@ -12,6 +12,7 @@ async function token(state){
  if(!state.user||!state.client)return null;
  const {data,error}=await state.client.auth.getSession();
  if(error)throw error;
+ if(data?.session&&data.session.user?.id!==state.user?.id)throw Error('Your account changed. Retry this action.');
  return data?.session?.access_token||null;
 }
 export async function cloudRequest(state,path,{method='GET',query=null,data=null,blob=null,media=false}={}){

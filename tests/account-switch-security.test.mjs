@@ -27,7 +27,7 @@ test('blocked draft storage cannot prevent clearing private account state on ide
  const end=source.indexOf('\n  });',start);
  const callback=source.slice(start,end+4);
  let reloads=0;
- const context={authEventApplies,authStorage:{getItem:()=>JSON.stringify({user:{id:'B'}})},sessionKey:'loox-account-v1',ensureAuthStyles(){},googleAvailability:async()=>false,startGoogleSignIn(){},state:{user:{id:'A'},account:{wallet:{balance:25}}},previousIdentity:'A',accountError:'',sessionStorage:{removeItem(){throw Error('Storage blocked')}},location:{reload(){reloads++}},renderHeader(){},document:{dispatchEvent(){}},Event:class{},setTimeout(){}};
+ const context={authEventApplies,authStorage:{getItem:()=>JSON.stringify({user:{id:'B'}})},sessionKey:'loox-account-v1',ensureAuthStyles(){},googleAvailability:async()=>false,startGoogleSignIn(){},state:{identityVerified:true,user:{id:'A'},account:{wallet:{balance:25}}},previousIdentity:'A',accountError:'',sessionStorage:{removeItem(){throw Error('Storage blocked')}},location:{reload(){reloads++}},renderHeader(){},document:{dispatchEvent(){}},Event:class{},setTimeout(){}};
  vm.runInNewContext('handler='+callback,context);
  context.handler('SIGNED_IN',{user:{id:'B'}});
  assert.equal(reloads,1);assert.equal(context.state.user.id,'B');assert.equal(context.state.account,null);
