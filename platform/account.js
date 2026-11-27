@@ -220,7 +220,7 @@ export function googleAvailability(){if(!googleCheck)googleCheck=config().then(c
 export const getAuthClient=()=>client();
 export function emailCallbackClient(cfg){const memory=new Map(),key=sessionKey+'-code-verifier';return window.supabase.createClient(cfg.url,cfg.key,{auth:{storageKey:'loox-email-callback-'+crypto.randomUUID(),storage:{getItem:k=>k.endsWith('-code-verifier')?authStorage.getItem(key):memory.get(k)??null,setItem:(k,v)=>k.endsWith('-code-verifier')?authStorage.setItem(key,v):memory.set(k,v),removeItem:k=>k.endsWith('-code-verifier')?authStorage.removeItem(key):memory.delete(k)},persistSession:true,autoRefreshToken:false,detectSessionInUrl:false,flowType:'pkce'}});}
 export function emailRecoveryPending(){return String(authStorage.getItem(sessionKey+'-code-verifier')||'').includes('/PASSWORD_RECOVERY');}
-export async function installVerifiedSession(session,remember){state.identityCommit=true;state.account=null;state.accountError='';try{if(typeof remember==='boolean')authStorage.setItem(rememberKey,remember?'local':'session');const c=await client();const r=await c.auth.setSession(session);if(r.error)throw r.error;return c;}finally{state.identityCommit=false;}}
+export async function installVerifiedSession(session,remember){state.identityCommit=true;state.account=null;state.accountError='';try{if(typeof remember==='boolean')authStorage.setItem(rememberKey,remember?'local':'session');const c=await client();const r=await c.auth.setSession(session);if(r.error)throw r.error;if(remember)rememberRecentAccount(state.user?.email);return c;}finally{state.identityCommit=false;}}
 
 export function isolatedOAuthClient(cfg,nonce){return window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:oauthVerifierStorage(nonce),storageKey:'loox-oauth-'+nonce,persistSession:true,autoRefreshToken:false,detectSessionInUrl:false,flowType:'pkce'}});}
 export async function startGoogleSignIn({remember=true,reauth=false,returnTo=location.href}={}){
@@ -433,3 +433,11 @@ window.addEventListener('storage',event=>{if(event.key==='loox-avatar-updated')s
 }
 
 if(typeof window!=='undefined')window.addEventListener('resize',()=>{document.querySelectorAll('.lx-profile-details[open]').forEach(details=>positionAccountMenu(details,details.querySelector('.lx-profile-menu')));});
+
+if(typeof window!=='undefined'){
+ let suspended=false,wasHidden=false;
+ window.addEventListener('pagehide',event=>{if(event.persisted&&state.user){suspended=true;wasHidden=document.body.hidden;document.body.hidden=true;}});
+ window.addEventListener('pageshow',event=>{if(!event.persisted||!suspended)return;suspended=false;let stored;try{stored=JSON.parse(authStorage.getItem(sessionKey)||'null');}catch{}
+  if(!stored||stored.user?.id!==state.user?.id||Number(stored.expires_at)*1000<=Date.now()){location.reload();return;}document.body.hidden=wasHidden;
+ });
+}
