@@ -107,6 +107,7 @@
   }
   nav.append(inner);
  document.body.prepend(nav);
+ nav.toggleAttribute('data-loox-sidebar-header-flow',getComputedStyle(nav).position!=='fixed');
  document.body.classList.add('loox-sitewide-active');
  // Retire the earlier navigation rail on EVERY page, including AI tools.
  // Older cached experience bundles can still create it before this script runs.
@@ -229,6 +230,7 @@
   native.querySelector('[data-loox-account]')?.remove();
   native.querySelectorAll('.loox-chat-header-search,.loox-mobile-app-native-trigger,.loox-community-notification,.loox-community-mobile-menu').forEach(n=>n.remove());
   native.classList.add('loox-navigation-header');native.id='loox-navigation-bar';
+  native.toggleAttribute('data-loox-sidebar-header-flow',getComputedStyle(native).position!=='fixed');
   native.prepend(burger);
   native.append(creditDock,actions);
  }else{inner.classList.add('loox-navigation-header');inner.id='loox-navigation-bar';}
