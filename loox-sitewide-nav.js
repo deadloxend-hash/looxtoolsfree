@@ -34,7 +34,7 @@
   document.addEventListener('click',event=>{
    const a=event.target.closest?.('a[href]');if(!a||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;
    const target=new URL(a.href,location.href);
-   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')){event.preventDefault();event.stopImmediatePropagation();if(matchMedia('(max-width:900px)').matches)document.dispatchEvent(new Event('loox:close-sidebar'));window.__looxOpenSettings(target.href);}
+   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')&&a.dataset.navigationLabel!=='Recent Activity'){event.preventDefault();event.stopImmediatePropagation();if(matchMedia('(max-width:900px)').matches)document.dispatchEvent(new Event('loox:close-sidebar'));window.__looxOpenSettings(target.href);}
   },true);
  }
 
