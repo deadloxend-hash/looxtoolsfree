@@ -1,4 +1,4 @@
-import {config,state,terms,getAuthClient,loadAuthSDK,isolatedOAuthClient,emailCallbackClient,emailRecoveryPending,installVerifiedSession,auth} from './account.js?v=auth-20261127';
+import {config,state,terms,getAuthClient,loadAuthSDK,isolatedOAuthClient,emailCallbackClient,installVerifiedSession,auth} from './account.js?v=auth-20261127';
 import {oauthAttemptKey,readOAuthAttempt,cleanOAuthSession,safeAuthReturn} from './auth-flow.js';
 const params=new URLSearchParams(location.search),fragment=new URLSearchParams(location.hash.slice(1));
 const code=params.get('code'),flow=params.get('flow'),nonce=params.get('attempt');
@@ -29,9 +29,8 @@ try{
  else if(flow!=='email')throw Error('Start a new sign-in request from LOOX.');
  await loadAuthSDK();const cfg=await config();await getAuthClient();
  if(attempt&&(state.user?.id||null)!==(attempt.owner||null))throw Error('The active account changed while signing in. Start again from LOOX.');
- const recovery=flow==='email'&&emailRecoveryPending();
  candidate=attempt?isolatedOAuthClient(cfg,attempt.nonce):emailCallbackClient(cfg);
- const result=await candidate.auth.exchangeCodeForSession(code);if(result.error)throw Error('This sign-in link is expired or was opened in a different browser. Request a new link in this browser.');
+ const result=await candidate.auth.exchangeCodeForSession(code);const recovery=flow==='email'&&result.data?.redirectType==='recovery';if(result.error)throw Error('This sign-in link is expired or was opened in a different browser. Request a new link in this browser.');
  const checked=await candidate.auth.getUser();if(checked.error||!checked.data?.user?.email_confirmed_at)throw Error('Your email identity could not be verified. Please sign in again.');
  if(attempt?.reauth&&checked.data.user.id!==attempt.owner)throw Error('Choose the same Google account to verify this security action.');
  await verifyMFA(candidate);
