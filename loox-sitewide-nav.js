@@ -34,7 +34,7 @@
   document.addEventListener('click',event=>{
    const a=event.target.closest?.('a[href]');if(!a||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;
    const target=new URL(a.href,location.href);
-   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')){event.preventDefault();event.stopImmediatePropagation();window.__looxOpenSettings(target.href);}
+   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')){event.preventDefault();event.stopImmediatePropagation();if(matchMedia('(max-width:900px)').matches)document.dispatchEvent(new Event('loox:close-sidebar'));window.__looxOpenSettings(target.href);}
   },true);
  }
 
@@ -51,6 +51,10 @@
    document.head.append(script);
  }
 
+ let savedSidebarMode='compact';try{savedSidebarMode=localStorage.getItem('loox-sidebar-mode-v1')||'compact';}catch{}
+ const initialDesktopSidebar=matchMedia('(min-width:901px)').matches;
+ document.documentElement.style.setProperty('--loox-sidebar-width',initialDesktopSidebar?(savedSidebarMode==='expanded'?'248px':'64px'):'0px');
+ document.body.classList.toggle('loox-sidebar-compact',initialDesktopSidebar&&savedSidebarMode!=='expanded');
  document.body.classList.add('loox-sidebar-premium');
  const page=location.pathname.split('/').pop()||'index.html';
  const pinnedWorkspace=['community.html','trending.html','templates.html','workflows.html','collections.html','creator.html','account.html'].includes(page);
@@ -58,9 +62,6 @@
  // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.
  // AI Audio currently links to the Audio-filtered tools listing, not an audio generator.
  const hasSessionHistory=['ai-chat.html','ai-text-to-image.html','ai-video-generator.html'].includes(page);
- // Marketing All Tools landing and creator tabs start with a closed sidebar;
- // whether opened by refresh, a tab switch, or a desktop breakpoint change.
- const closedByDefaultTabs=['index.html','ai-chat.html','ai-text-to-image.html','ai-video-generator.html','community.html','trending.html','templates.html'].includes(page);
  if(hasSessionHistory)document.body.classList.add('loox-ai-sessions-only');
  if(document.getElementById('loox-sitewide-header'))return;
  const isHome=['index.html','ai-home.html','ai-chat.html'].includes(page);
@@ -430,7 +431,7 @@
  const navStyle=el('link');navStyle.rel='stylesheet';
  navStyle.href=url('platform/workspace-navigation.css?v=sidebar-20261127');
  document.head.append(navStyle);
- const sidebarStyle=el('link');sidebarStyle.rel='stylesheet';sidebarStyle.href=url('platform/sidebar.css?v=sidebar-20261127');document.head.append(sidebarStyle);
+
  import(url('platform/workspace-navigation.js?v=sidebar-20261127')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
@@ -452,7 +453,7 @@
    sideContent.classList.add('loox-sidebar-ready');
   }
  },4500);
- const scrim=el('button','loox-sitewide-scrim');scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
+ const scrim=el('button','loox-sitewide-scrim');scrim.hidden=true;scrim.type='button';scrim.setAttribute('aria-label','Close navigation');
  const dockToggle=el('button','loox-sitewide-dock-toggle');dockToggle.type='button';dockToggle.id='loox-sidebar-edge-handle';
  dockToggle.setAttribute('aria-label','Open LOOX sidebar');
  dockToggle.setAttribute('aria-controls','loox-sitewide-drawer');dockToggle.setAttribute('aria-expanded','false');

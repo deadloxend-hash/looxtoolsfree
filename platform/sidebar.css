@@ -37,7 +37,7 @@ html body.loox-sidebar-premium>button.loox-sitewide-dock-toggle{display:none!imp
 .loox-sidebar-tooltip{position:fixed;left:72px;z-index:10040;max-width:220px;padding:8px 10px;border:1px solid #34445c;border-radius:7px;background:#172336;color:#f0f5fc;font:500 12px/1.4 system-ui,sans-serif;pointer-events:none;box-shadow:0 4px 14px #0003}
 .loox-sidebar-tooltip[hidden]{display:none}
 @media(min-width:901px){
- html body.loox-sidebar-premium.loox-sitewide-active{padding-left:var(--loox-sidebar-width)!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;transition:padding-left 180ms ease!important}
+ html body.loox-sidebar-premium.loox-sitewide-active:has(> #loox-sitewide-drawer){padding-left:var(--loox-sidebar-width)!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;transition:padding-left 180ms ease!important}
  html body.loox-sidebar-premium.loox-sitewide-active>aside#loox-sitewide-drawer{width:var(--loox-sidebar-width)!important;max-width:none!important;transform:none!important;visibility:visible!important;pointer-events:auto!important}
  html body.loox-sidebar-premium.loox-sitewide-active>main{margin-left:0!important;width:100%!important;min-width:0!important;box-sizing:border-box!important}
  html body.loox-sidebar-premium.loox-workspace-sidebar>main{padding-left:24px!important;padding-right:24px!important}
@@ -55,3 +55,10 @@ html body.loox-sidebar-premium>button.loox-sitewide-dock-toggle{display:none!imp
  #loox-sitewide-drawer .loox-workspace-link,#loox-sitewide-drawer .loox-workspace-group>summary{min-height:44px!important;height:44px!important}
 }
 @media(prefers-reduced-motion:reduce){html body.loox-sidebar-premium,#loox-sitewide-drawer,#loox-sitewide-drawer *{transition:none!important;animation:none!important}}
+
+@supports(interpolate-size:allow-keywords){
+ #loox-sitewide-drawer .loox-workspace-group{interpolate-size:allow-keywords}
+ #loox-sitewide-drawer .loox-workspace-group::details-content{block-size:0;overflow:clip;transition:block-size 180ms ease,content-visibility 180ms allow-discrete}
+ #loox-sitewide-drawer .loox-workspace-group[open]::details-content{block-size:auto}
+ #loox-sitewide-drawer .loox-workspace-group:not([open])>.loox-workspace-group-links{display:grid}
+}
