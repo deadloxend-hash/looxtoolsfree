@@ -29,7 +29,7 @@ export function mountSidebar({sidebar,content,burger,scrim,dockToggle,lock,unloc
   if(event.key==='Escape'){hideTip();if(mobileOpen)close();return;}
   if(event.key!=='Tab'||desktop.matches||!mobileOpen)return;
   const nodes=[burger,...sidebar.querySelectorAll('a[href],button:not([disabled]),input,summary')].filter(n=>n.getClientRects().length&&getComputedStyle(n).visibility!=='hidden');
-  const index=nodes.indexOf(document.activeElement);if(!event.shiftKey&&index===0){event.preventDefault();nodes[1]?.focus();}else if(event.shiftKey&&index<=0){event.preventDefault();nodes.at(-1)?.focus();}else if(!event.shiftKey&&index===nodes.length-1){event.preventDefault();burger.focus();}
+  const index=nodes.indexOf(document.activeElement);if(!event.shiftKey&&index===0){event.preventDefault();nodes[1]?.focus();}else if(event.shiftKey&&index<=1){event.preventDefault();(index===1?burger:nodes.at(-1))?.focus();}else if(!event.shiftKey&&index===nodes.length-1){event.preventDefault();burger.focus();}
  });
  function showTip(event){if(!desktop.matches||expanded)return;const target=event.target.closest('.loox-workspace-link,.loox-workspace-group>summary');if(!target)return;
   hideTip();tooltip.textContent=target.getAttribute('aria-label');const rect=target.getBoundingClientRect();tooltip.style.top=Math.max(70,Math.min(rect.top,innerHeight-40))+'px';tooltip.hidden=false;target.setAttribute('aria-describedby',tooltip.id);
