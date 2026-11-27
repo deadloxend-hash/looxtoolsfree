@@ -170,13 +170,13 @@ export function auth(mode='login',options={}){
      d.addEventListener('close',()=>reject(Error('Sign-in canceled.')),{once:true});
     });
    }
-   const before=localStorage.getItem(rememberKey);
+   const before=authStorage.getItem(rememberKey);
    try{
-    if(remember)localStorage.setItem(rememberKey,remember.checked?'local':'session');
+    if(remember)authStorage.setItem(rememberKey,remember.checked?'local':'session');
     const installed=await c.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
     if(installed.error)throw installed.error;
     committed=true;
-   }catch(error){if(before===null)localStorage.removeItem(rememberKey);else localStorage.setItem(rememberKey,before);throw error;}
+   }catch(error){if(before===null)authStorage.removeItem(rememberKey);else authStorage.setItem(rememberKey,before);throw error;}
   }
   if(result.error)throw result.error;
   if(forgot||reg){
