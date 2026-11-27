@@ -106,7 +106,7 @@ function withStatus(form,submit,status,call){
 export function auth(mode='login',options={}){
  if(mode==='reset'&&!state.recoveryReady){const {box}=dialog('Password recovery');box.append(el('p','Request a new recovery link to choose a password.'),button('Request recovery email',()=>auth('forgot')));return;}
  ensureAuthStyles();
- const titles={login:'Welcome back',register:'Create your LOOX account',forgot:'Forgot your password?',reset:'Choose a new password'};
+ const titles={login:'Welcome back',register:'Create your LOOX account',forgot:'Forgot your password?',reset:'Choose a new LOOX password'};
  const switching=mode==='login'&&Boolean(options.switching);
  const previousUserId=state.user?.id||null;
  const previousUserEmail=state.user?.email||null;
