@@ -19,7 +19,7 @@ export async function syncAccountAvatar(state,force=false){
  if(task){paintAccountAvatar();return task;}
  if(!force&&Date.now()-checked<300000){paintAccountAvatar();return;}
  const seq=++epoch;
- if(!force){const cached=cachedAvatar(id);if(cached){url=cached;paintAccountAvatar();}}
+ if(!force){const cached=cachedAvatar(id);if(cached){url=cached;paintAccountAvatar();return;}}
  if(force)invalidateCloudImage(state,id,'avatar');
  task=(async()=>{
   // References and optional small raster previews are tab-local, owner-scoped and expire in five minutes.
