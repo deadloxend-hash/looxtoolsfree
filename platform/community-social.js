@@ -1,11 +1,10 @@
-import {api as accountApi} from './account.js?v=settings-2-20261124';
 import {communityReportPayload} from './community-report.mjs';
 import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {trackMeaningfulView} from './community-watch.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
 // Persistent social controls. User-generated text is always rendered as textContent.
 // Helpers are injected to keep this module independent of the existing generator.
-export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,modal,field}){
+export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,modal,field,reportRequest}){
  Object.assign(Community.prototype,{
   async save(post,button){
    if(!this.state.user)return this.auth('login');if(button.disabled)return;button.disabled=true;
@@ -77,7 +76,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
   },
   async report(post,comment=null){
    if(!this.state.user)return this.auth('login');const d=modal(comment?'Report comment':'Report post'),form=e('form'),reason=field(form,'Tell us what is wrong','','textarea'),status=e('p','community-note');reason.required=true;reason.minLength=5;reason.maxLength=1000;
-   const requestId=crypto.randomUUID(),submit=e('button','community-primary','Send report');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{await accountApi('control_support_create',communityReportPayload({postId:post.id,commentId:comment,reason:reason.value.trim(),requestId}));status.textContent='Report received in your private support requests. LOOX support can review it.';submit.remove();}catch(error){status.textContent=error.message;submit.disabled=false;}});
+   const requestId=crypto.randomUUID(),submit=e('button','community-primary','Send report');submit.type='submit';form.append(submit,status);d.append(form);form.addEventListener('submit',async event=>{event.preventDefault();submit.disabled=true;try{await reportRequest(communityReportPayload({postId:post.id,commentId:comment,reason:reason.value.trim(),requestId}));status.textContent='Report received in your private support requests. LOOX support can review it.';submit.remove();}catch(error){status.textContent=error.message;submit.disabled=false;}});
   },
 
   async comments(post,container){

@@ -225,7 +225,7 @@
  const focusedHeader=document.body.classList.contains('loox-generator-no-topnav')&&native;
  if(focusedHeader){
   native.querySelector('[data-loox-account]')?.remove();
-  native.querySelectorAll('.loox-chat-header-search,.loox-mobile-app-native-trigger').forEach(n=>n.remove());
+  native.querySelectorAll('.loox-chat-header-search,.loox-mobile-app-native-trigger,.loox-community-notification,.loox-community-mobile-menu').forEach(n=>n.remove());
   native.classList.add('loox-navigation-header');native.id='loox-navigation-bar';
   native.prepend(burger);
   native.append(creditDock,actions);

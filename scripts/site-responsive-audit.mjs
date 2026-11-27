@@ -78,8 +78,9 @@ for(const viewport of widths){
       if(!parent&&!intentionallyScrollable)bad.push({tag:el.tagName,text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,38),right:Math.round(rect.right)});
      }
     }
-    return {horizontal,viewport:width,clippedButtons:bad.slice(0,8),title:document.title,nav:!!document.querySelector('#loox-sitewide-header')};
+    return {horizontal,viewport:width,clippedButtons:bad.slice(0,8),title:document.title,nav:!!document.querySelector('#loox-navigation-bar'),legacyHeaderControls:[...document.querySelectorAll('#loox-navigation-bar .loox-community-notification,#loox-navigation-bar .loox-community-mobile-menu,#loox-navigation-bar .studio-menu-host')].filter(e=>e.getBoundingClientRect().width>0).length};
    });
+   if(item.metrics.legacyHeaderControls)item.problems.push('Duplicate legacy header controls remain visible');
    if(item.metrics.horizontal>viewport.width+8)item.problems.push('Horizontal page overflow: '+item.metrics.horizontal+'px');
    if(item.metrics.clippedButtons.length)item.problems.push('Visible controls clipped: '+JSON.stringify(item.metrics.clippedButtons));
    if(['android','android-small','tablet'].includes(viewport.name)){

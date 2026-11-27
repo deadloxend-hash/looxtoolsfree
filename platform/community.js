@@ -489,6 +489,6 @@ export class Community {
 
 }
 
-installSocial(Community,{element,action,rpc,result,mediaURL,modal,field});
+installSocial(Community,{element,action,rpc,result,mediaURL,modal,field,reportRequest:data=>api('control_support_create',data)});
 
 installPrivacy(Community,{element,action,rpc,modal});

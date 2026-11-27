@@ -454,7 +454,7 @@ if(page==='community.html'){
  const buttons=[...tools?.querySelectorAll('button')||[]];
  const notify=buttons.find(button=>button.textContent.trim()==='Notifications');
  const collections=buttons.find(button=>button.textContent.trim()==='Collections');
- if(header&&notify){
+ if(header&&notify&&!header.classList.contains('loox-navigation-header')){
   notify.classList.add('loox-community-notification');
   notify.setAttribute('aria-label','Open notifications');
   notify.title='Notifications';
