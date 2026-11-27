@@ -1,4 +1,4 @@
-import {config,state,getAuthClient,loadAuthSDK,isolatedOAuthClient,emailCallbackClient,emailRecoveryPending,installVerifiedSession,auth} from './account.js?v=auth-20261127';
+import {config,state,terms,getAuthClient,loadAuthSDK,isolatedOAuthClient,emailCallbackClient,emailRecoveryPending,installVerifiedSession,auth} from './account.js?v=auth-20261127';
 import {oauthAttemptKey,readOAuthAttempt,cleanOAuthSession,safeAuthReturn} from './auth-flow.js';
 const params=new URLSearchParams(location.search),fragment=new URLSearchParams(location.hash.slice(1));
 const code=params.get('code'),flow=params.get('flow'),nonce=params.get('attempt');
@@ -35,6 +35,14 @@ try{
  const checked=await candidate.auth.getUser();if(checked.error||!checked.data?.user?.email_confirmed_at)throw Error('Your email identity could not be verified. Please sign in again.');
  if(attempt?.reauth&&checked.data.user.id!==attempt.owner)throw Error('Choose the same Google account to verify this security action.');
  await verifyMFA(candidate);
+ if(checked.data.user.user_metadata?.loox_terms!==terms){
+  tell('Review and accept the LOOX Terms and Privacy Policy before using your account.');
+  await new Promise(resolve=>{const form=document.createElement('form'),label=document.createElement('label'),check=document.createElement('input'),submit=document.createElement('button');check.type='checkbox';check.required=true;label.append(check,document.createTextNode('I accept the LOOX Terms and Privacy Policy.'));
+   const legal=document.createElement('p');for(const [text,file] of [['Terms','terms.html'],['Privacy Policy','privacy-policy.html']]){const link=document.createElement('a');link.textContent=text;link.href=file;link.target='_blank';link.rel='noopener noreferrer';legal.append(link,document.createTextNode(' '));}
+   submit.type='submit';submit.textContent='Accept and continue';form.append(legal,label,submit);controls.replaceChildren(form);form.onsubmit=async event=>{event.preventDefault();if(!check.checked||submit.disabled)return;submit.disabled=true;try{const result=await candidate.auth.updateUser({data:{loox_terms:terms}});if(result.error)throw result.error;controls.replaceChildren();resolve();}catch{tell('Your acceptance could not be saved. Please retry.');submit.disabled=false;}};
+  });
+ }
+
  const current=await candidate.auth.getSession();if(current.error)throw current.error;
  if(attempt){readOAuthAttempt(sessionStorage.getItem(oauthAttemptKey),nonce);if((state.user?.id||null)!==(attempt.owner||null))throw Error('The active account changed. Start again from LOOX.');}
  await installVerifiedSession(cleanOAuthSession(current.data.session),attempt?.remember);installed=true;

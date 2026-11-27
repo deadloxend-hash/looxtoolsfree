@@ -179,6 +179,7 @@ function renderSettings(){
  // Do not overwrite an in-progress edit during an incidental account refresh.
  if(document.activeElement!==name)name.value=state.account?.profile?.name||state.user.user_metadata?.full_name||'';
  byId('lp-email').value=state.user.email||'';
+ byId('lp-password-reset').textContent=googleOnly()?'Set or reset LOOX password':'Reset LOOX password';
  byId('lp-email-verification').textContent=state.user.email_confirmed_at?'Verified email address':'Email verification required';
  const factorOwner=state.user.id;
  state.client?.auth.mfa.listFactors().then(({data,error})=>{
