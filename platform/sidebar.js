@@ -7,7 +7,9 @@ export function mountSidebar({sidebar,content,burger,scrim,dockToggle,lock,unloc
  const tooltip=document.createElement('div');tooltip.className='loox-sidebar-tooltip';tooltip.id='loox-sidebar-tooltip';tooltip.role='tooltip';tooltip.hidden=true;document.body.append(tooltip);
  const hideTip=()=>{tooltip.hidden=true;sidebar.querySelectorAll('[aria-describedby="loox-sidebar-tooltip"]').forEach(n=>n.removeAttribute('aria-describedby'));};
  function render(){
-  const open=desktop.matches?expanded:mobileOpen;hideTip();sidebar.classList.toggle('is-open',open);sidebar.inert=!desktop.matches&&!open;
+  const open=desktop.matches?expanded:mobileOpen;hideTip();
+  const header=[...document.body.children].find(n=>['loox-sitewide-header','loox-navigation-bar'].includes(n.id)&&n.getClientRects().length);
+  if(header)header.toggleAttribute('data-loox-sidebar-header-flow',getComputedStyle(header).position!=='fixed');sidebar.classList.toggle('is-open',open);sidebar.inert=!desktop.matches&&!open;
   document.body.classList.toggle('loox-sidebar-compact',desktop.matches&&!expanded);document.body.classList.toggle('loox-sitewide-sidebar-open',open);
   scrim.hidden=desktop.matches||!open;scrim.classList.toggle('is-open',!desktop.matches&&open);burger.setAttribute('aria-expanded',String(open));burger.setAttribute('aria-label',desktop.matches?(open?'Collapse navigation':'Expand navigation'):(open?'Close navigation':'Open navigation'));
   dockToggle.setAttribute('aria-expanded',String(open));

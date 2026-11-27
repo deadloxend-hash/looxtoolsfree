@@ -68,3 +68,7 @@ html body.loox-sidebar-premium>button.loox-sitewide-dock-toggle{display:none!imp
  html body.loox-sidebar-premium.loox-sitewide-active #loox-sitewide-drawer :is(a,summary,.loox-workspace-group,.loox-workspace-group-links),
  html body.loox-sidebar-premium.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-group::details-content{transition:none!important;animation:none!important}
 }
+
+@media(min-width:901px){
+ html body.loox-sidebar-premium>[data-loox-sidebar-header-flow]{margin-left:calc(-1 * var(--loox-sidebar-width))!important;width:calc(100% + var(--loox-sidebar-width))!important;max-width:none!important;box-sizing:border-box!important}
+}
