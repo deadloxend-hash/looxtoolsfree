@@ -31,12 +31,13 @@ export const navigationGroups=[
  {id:'main',label:'Main navigation',items:[['home','Home','ai-image-landing.html'],['pen','AI Assistant','ai-chat.html'],['image','AI Image','ai-text-to-image.html#generate'],['video','AI Video','ai-video-landing.html','Coming Soon']]},
  {id:'discover',label:'Discover',icon:'globe',items:[['globe','Community','community.html'],['trending','Trending','trending.html'],['sparkles','Templates','templates.html']]},
  {id:'tools',label:'Tools',icon:'tools',items:[['grid','Utilities','index.html'],['tools','Creative Tools','index.html#tools'],['photo','Photo Editor','photo-editor.html'],['editvideo','Video Editor','video-editor.html'],['erase','Background Remover','bg-remove.html'],['upscale','AI Upscaler','ai-image-upscaler.html'],['face','Face Swap','faceswap.html']]},
- {id:'workspace',label:'My Workspace',icon:'folder',items:[['image','My Creations','creator.html'],['bookmark','Collections','collections.html'],['trending','Recent Activity','account.html#usage'],['workflow','Workflows','workflows.html']]}
+ {id:'workspace',label:'My Workspace',icon:'folder',items:[['image','My Creations','creator.html'],['bookmark','Collections','collections.html'],['trending','Recent Activity','settings.html#data-controls'],['workflow','Workflows','workflows.html']]}
 ];
 export const navigationFooter=[['settings','Settings','settings.html'],['help','Help and Support','help.html'],['feedback','Feedback','support.html']];
 export function activeNavigation(href){
  const active=new URL(href),page=active.pathname.split('/').pop()||'index.html';
  const aliases={'ai-home.html':'ai-image-landing.html','ai-video-generator.html':'ai-video-landing.html'};
+ if(page==='account.html'&&active.hash==='#usage')return 'Recent Activity';
  const current=aliases[page]||page;
  const all=[...navigationGroups.flatMap(g=>g.items),...navigationFooter];
  return all.find(i=>{const [file,hash='']=i[2].split('#');return file===current&&hash&&'#'+hash===active.hash;})?.[1]||all.find(i=>i[2].split('#')[0]===current&&!i[2].includes('#'))?.[1]||all.find(i=>i[2].split('#')[0]===current)?.[1]||null;
@@ -68,5 +69,5 @@ export function mountWorkspaceNavigation(host){
  const footer=document.createElement('div');footer.className='loox-workspace-footer';for(const item of navigationFooter)add(footer,item);nav.append(footer);
  const navigationLinks=[...nav.querySelectorAll('a')];
  function update(){const active=activeNavigation(location.href);for(const a of navigationLinks){if(a.dataset.navigationLabel===active)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}for(const g of groups)if(g.querySelector('[aria-current="page"]'))g.open=true;}
- host.prepend(nav);update();window.addEventListener('hashchange',update);window.addEventListener('popstate',update);
+ host.prepend(nav);update();window.addEventListener('hashchange',update);window.addEventListener('popstate',update);window.addEventListener('loox:navigation-change',update);
 }
