@@ -14,12 +14,14 @@ try{
   for(const file of ['ai-text-to-image.html','ai-video-generator.html']){
    await page.goto(base+file);await page.locator('.studio-content-switcher').waitFor();
    await page.locator('.studio-model-trigger').waitFor();
+   await page.locator('#loox-header-actions .loox-notification-bell').waitFor();
+   await page.locator('#loox-header-actions .lx-profile-trigger').waitFor();
    const prefix=file.includes('video')?'lvg':'lig';
    const geometry=await page.evaluate(()=>{
     const r=s=>document.querySelector(s).getBoundingClientRect().toJSON();
-    return {feed:r('.lig-content-scroll:not([hidden])'),compose:r('.lig-compose-wrap'),search:r('.loox-chat-header-search'),menu:r('.studio-menu-host'),account:r('.lig-header-user'),width:document.documentElement.scrollWidth,viewport:innerWidth};
+    return {feed:r('.lig-content-scroll:not([hidden])'),compose:r('.lig-compose-wrap'),search:r('#loox-header-actions .loox-sitewide-search'),utilities:r('#loox-header-actions .loox-mobile-app-trigger'),bell:r('#loox-header-actions .loox-notification-bell'),menu:r('.studio-menu-host'),account:r('#loox-header-actions .lx-profile-trigger'),width:document.documentElement.scrollWidth,viewport:innerWidth};
    });
-   assert.ok(geometry.feed.bottom<=geometry.compose.top+2,'Results must stop above the composer');assert.ok(geometry.compose.bottom<=viewport.height+2,'Composer must fit viewport');assert.ok(geometry.menu.left-geometry.search.right<25,'Header controls must stay together');assert.ok(geometry.account.left-geometry.menu.right>=8&&geometry.account.left-geometry.menu.right<25,'Header account must not overlap menu');assert.ok(geometry.width<=geometry.viewport+2);
+   assert.ok(geometry.feed.bottom<=geometry.compose.top+2,'Results must stop above the composer');assert.ok(geometry.compose.bottom<=viewport.height+2,'Composer must fit viewport');assert.ok(geometry.utilities.left>=geometry.search.right&&geometry.bell.left>=geometry.utilities.right,'Search, utilities and notifications must follow DOM order');assert.ok(geometry.account.left>=geometry.bell.right&&geometry.account.left-geometry.bell.right<15,'Bell must sit beside profile');assert.ok(geometry.menu.right<=geometry.search.left,'Workspace menu must not overlap header actions');assert.ok(geometry.width<=geometry.viewport+2);
    if(prefix==='lvg'){
     await page.waitForFunction(()=>document.querySelector('.studio-model-trigger')?.disabled===true);
     assert.equal(await page.locator('#lvg-model').isEnabled(),false);
@@ -51,8 +53,10 @@ try{
    await page.screenshot({path:out+'/'+prefix+'-'+viewport.width+'.png'});
   }
   await page.goto(base+'ai-chat.html');await page.locator('body.loox-studio .ai-composer').waitFor();
-  const assistant=await page.evaluate(()=>{const rect=s=>document.querySelector(s).getBoundingClientRect().toJSON();return {header:rect('header.lig-header'),search:rect('.loox-chat-header-search'),menu:rect('.studio-menu-host'),account:rect('.lig-header-user'),thread:rect('.ai-thread'),composer:rect('.ai-composer-wrap'),form:rect('.ai-composer'),toolbar:rect('.loox-uc-agent-toolbar')};});
-  assert.equal(assistant.header.height,64);assert.ok(assistant.menu.left-assistant.search.right<25);assert.ok(assistant.account.left-assistant.menu.right>=8&&assistant.account.left-assistant.menu.right<25,'Assistant account must not overlap menu');assert.ok(assistant.composer.bottom<=viewport.height+2);assert.ok(assistant.thread.bottom<=assistant.composer.top+2);assert.ok(Math.abs(assistant.toolbar.left-assistant.form.left)<3,'Assistant model must align with composer');
+  await page.locator('#loox-header-actions .loox-notification-bell').waitFor();
+  await page.locator('#loox-header-actions .lx-profile-trigger').waitFor();
+  const assistant=await page.evaluate(()=>{const rect=s=>document.querySelector(s).getBoundingClientRect().toJSON();return {header:rect('header.lig-header'),search:rect('#loox-header-actions .loox-sitewide-search'),utilities:rect('#loox-header-actions .loox-mobile-app-trigger'),bell:rect('#loox-header-actions .loox-notification-bell'),menu:rect('.studio-menu-host'),account:rect('#loox-header-actions .lx-profile-trigger'),thread:rect('.ai-thread'),composer:rect('.ai-composer-wrap'),form:rect('.ai-composer'),toolbar:rect('.loox-uc-agent-toolbar')};});
+  assert.equal(assistant.header.height,64);assert.ok(assistant.utilities.left>=assistant.search.right&&assistant.bell.left>=assistant.utilities.right);assert.ok(assistant.account.left>=assistant.bell.right&&assistant.account.left-assistant.bell.right<15,'Assistant bell must sit beside profile');assert.ok(assistant.menu.right<=assistant.search.left,'Assistant workspace menu must not overlap actions');assert.ok(assistant.composer.bottom<=viewport.height+2);assert.ok(assistant.thread.bottom<=assistant.composer.top+2);assert.ok(Math.abs(assistant.toolbar.left-assistant.form.left)<3,'Assistant model must align with composer');
   await page.screenshot({path:out+'/assistant-'+viewport.width+'.png'});
   await page.goto(base+'upgrade.html');await page.locator('#lp-estimate-model option[value="kling_40"]').waitFor({state:'attached'});
   const estimatorTrigger=page.locator('.lp-estimator .loox-dropdown-trigger').first();

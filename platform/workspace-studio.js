@@ -506,7 +506,25 @@ function run(){
  for(const [label,href] of [['My Creations','?view=creations#generate'],['Templates','templates.html'],['Help','help.html'],['Account','account.html'],['Billing & Credits','settings.html#billing']]){const a=node('a','',label);a.href=href;a.setAttribute('role','menuitem');if(label==='My Creations')a.onclick=e=>{e.preventDefault();close();const target=$('.lig-results')||$('#aiRecentPanel');target?.scrollIntoView({block:'start',behavior:'smooth'});};menu.append(a);}
  if(!document.body.classList.contains('ai-chat'))menu.prepend(button('Settings',()=>{close();settingsSheet(document.body.classList.contains('lvg-body')?'lvg':'lig');}),button('Saved Styles',()=>{close();stylesSheet('saved');}));
  menu.prepend(button('Toggle sidebar',()=>{close();const dock=document.querySelector('body > button.loox-sitewide-dock-toggle')||document.querySelector('.lig-main > button.loox-ai-dock-toggle, .ai-chat-layout > button.loox-ai-dock-toggle');if(dock)dock.click();else notify('Use the navigation menu to open your workspace.');},'studio-sidebar-menu-action'));
- menuHost.append(trigger,menu);header.insertBefore(menuHost,header.querySelector('#loox-header-actions'));document.addEventListener('pointerdown',e=>{if(!menuHost.contains(e.target))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+ menuHost.append(trigger,menu);
+ const compactNavigation=matchMedia('(max-width:790px)');
+ const dockWorkspaceMenu=()=>{
+  const sidebar=document.querySelector('#loox-sitewide-drawer');
+  if(compactNavigation.matches&&sidebar)sidebar.prepend(menuHost);
+  else header.insertBefore(menuHost,header.querySelector('#loox-header-actions'));
+ };
+ compactNavigation.addEventListener('change',dockWorkspaceMenu);dockWorkspaceMenu();
+ for(const action of menu.querySelectorAll('button,a')){
+  const perform=action.onclick;
+  action.onclick=event=>{
+   if(menuHost.closest('#loox-sitewide-drawer')){
+    document.querySelector('.loox-sitewide-scrim.is-open')?.click();
+    if(action.classList.contains('studio-sidebar-menu-action')){close();return;}
+   }
+   perform?.call(action,event);
+  };
+ }
+document.addEventListener('pointerdown',e=>{if(!menuHost.contains(e.target))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
  }
  const video=document.body.classList.contains('lvg-body'),chat=document.body.classList.contains('ai-chat'),prefix=video?'lvg':'lig';
  if(chat){const thread=$('#aiThread'),welcome=node('div','studio-heading studio-assistant-welcome');welcome.append(node('span','studio-eyebrow','LOOX AI ASSISTANT'),node('h1','','A little help. A bigger idea.'),node('p','','Write, explore, and work through your next idea.'));thread?.before(welcome);if(thread){const sync=()=>welcome.hidden=!!thread.querySelector('.ai-msg');new MutationObserver(sync).observe(thread,{childList:true,subtree:true});sync();}const trigger=$('#aiModelButton'),menu=$('#aiModelMenu');if(trigger&&menu){let modelSheet;menu.addEventListener('click',e=>{if(e.target.closest('[data-model]'))modelSheet?.close();});trigger.addEventListener('click',()=>{menu.hidden=false;modelSheet=moveIntoSheet('Assistant model',menu);modelSheet.addEventListener('close',()=>{menu.hidden=true;trigger.setAttribute('aria-expanded','false');});});}return;}

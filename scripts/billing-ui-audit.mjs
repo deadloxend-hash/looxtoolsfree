@@ -36,7 +36,7 @@ try{for(const width of [360,390,768,1440]){
   assert.equal(await page.locator('dialog.loox-mobile-app-layer').isVisible(),true,'Apps navigation must remain reachable');checks++;
   await page.getByRole('button',{name:'Close apps',exact:true}).click();
  }else if(width<901){
-  const toggle=page.locator('body > button.loox-sitewide-dock-toggle');
+  const toggle=page.locator('.loox-sitewide-burger');
   await toggle.waitFor({state:'visible'});
   assert.equal(await toggle.isVisible(),true,'Sidebar toggle hidden on upgrade at '+width);checks++;
   await toggle.click();
@@ -70,12 +70,9 @@ try{for(const width of [360,390,768,1440]){
    const sidebar=page.locator('button.studio-sidebar-menu-action');
    await sidebar.waitFor({state:'attached'});
    assert.equal(await sidebar.count(),1,'Sidebar menu fallback is missing in '+route);checks++;
-   if(width<=600){
-    await page.locator('.loox-notification-bell:visible').waitFor({state:'visible'});
-    await dock.waitFor({state:'hidden'});
-    await page.getByRole('button',{name:'More workspace actions',exact:true}).click();
-    await sidebar.click();
-   }else{await dock.waitFor({state:'visible'});await dock.click();}
+   await dock.waitFor({state:'hidden'});
+   const headerToggle=page.locator('.loox-sitewide-burger');
+   await headerToggle.waitFor({state:'visible'});await headerToggle.click();
    assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),true,'Sidebar inaccessible in '+route+' at '+width);checks++;
    await page.keyboard.press('Escape');
    assert.equal(await page.locator('#loox-sitewide-drawer').getAttribute('class').then(v=>v.includes('is-open')),false,'Sidebar must close on Escape');checks++;
