@@ -245,3 +245,6 @@ body.lp-page[data-account-upgrade] .lp-estimator .loox-dropdown-option>span:firs
 .lp-security-records{margin:20px 0;min-width:0}.lp-security-list{list-style:none;padding:0;margin:12px 0;max-height:300px;overflow:auto;overscroll-behavior:contain}.lp-security-list li{padding:12px;border-bottom:1px solid rgba(132,166,221,.14);overflow-wrap:anywhere}.lp-security-list small{display:block;line-height:1.6;color:var(--lp-muted,#a1afc6)}.lp-security-list summary{padding:10px 0;cursor:pointer;min-height:44px}.lp-export-parts{display:grid;gap:10px;max-height:40vh;overflow:auto;overscroll-behavior:contain;min-width:0}.lp-export-parts button{min-height:44px;white-space:normal;overflow-wrap:anywhere;text-align:left}.lp-btn:disabled{opacity:.55;cursor:not-allowed}
 
 .lp-mfa-qr{display:block;max-width:100%;height:auto;padding:8px;background:#fff;border-radius:12px;align-self:center}
+
+/* Hide unavailable estimates before scripts or model configuration arrive. */
+.lp-estimator[hidden]{display:none}

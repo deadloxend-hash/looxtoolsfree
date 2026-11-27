@@ -6,13 +6,27 @@ const plans=[{id:'free',price_cents:0,credits:25,cadence:'signup'},{id:'creator'
 const catalog={annualBillingEnabled:false,paymentsEnabled:false,creditTopupsEnabled:false,packages:[{id:'mini',name:'Mini Recharge',credits:100,price_cents:500,approved:false},{id:'creator_boost',name:'Creator Boost',credits:300,price_cents:1000,approved:false},{id:'power',name:'Power Pack',credits:750,price_cents:2500,approved:false},{id:'pro_recharge',name:'Pro Recharge',credits:1500,price_cents:4500,approved:false}],creditPolicy:{expiration:'Purchased credits do not expire.',refunds:'Verified refunds reverse credits.'}};
 let browser;try{browser=await chromium.launch({channel:'chrome',headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});}catch{browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});}
 let checks=0;
+// First paint must explain the disabled launch even without JavaScript.
+{const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:320,height:850}});
+ const page=await context.newPage();await page.goto(root+'upgrade.html');
+ assert.match(await page.locator('#lp-billing-notice').innerText(),/Coming Soon/);checks++;
+ assert.equal(await page.locator('.lp-estimator').isVisible(),false);checks++;
+ assert.match(await page.locator('#lp-plan-grid').innerText(),/Free tools are available now/);checks++;
+ await context.close();}
+// An empty production catalog keeps the unavailable estimator hidden after hydration.
+{const context=await browser.newContext();const page=await context.newPage();
+ await page.route('https://looxtoolfree-backend.vercel.app/api/**',r=>r.fulfill({json:{auth:false,billing:false,videoModels:[],plans}}));
+ await page.goto(root+'upgrade.html',{waitUntil:'networkidle'});
+ assert.equal(await page.locator('.lp-plan').count(),4);checks++;
+ assert.equal(await page.locator('.lp-estimator').isVisible(),false);checks++;await context.close();}
+const previewModels=[{id:'preview-video',name:'Preview model',available:true,minimumPlan:'creator',creditCosts:{5:15},durationOptions:[5],capabilities:{resolution:'720p'}}];
 try{for(const width of [360,390,768,1440]){
  const context=await browser.newContext({viewport:{width,height:850},reducedMotion:'reduce'}),page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('https://looxtoolfree-backend.vercel.app/api/loox?**',async route=>{
   const action=new URL(route.request().url()).searchParams.get('action');
   assert.equal(route.request().method(),'GET','UI preview must never submit a payment');
-  return route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify(action==='billing_catalog'?catalog:{auth:false,billing:false,annualBillingEnabled:false,plans,operations:[{id:'generate',cost:3}],videoModels:[]})});
+  return route.fulfill({status:200,contentType:'application/json',headers:{'Access-Control-Allow-Origin':'*'},body:JSON.stringify(action==='billing_catalog'?catalog:{auth:false,billing:false,annualBillingEnabled:false,plans,operations:[{id:'generate',cost:3}],videoModels:previewModels})});
  });
  await page.goto(root+'upgrade.html',{waitUntil:'networkidle'});
  assert.equal(await page.locator('.lp-plan').count(),4);checks++;

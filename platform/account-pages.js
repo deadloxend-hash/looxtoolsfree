@@ -48,6 +48,7 @@ function renderPlans(cfg,failed=false){
 function renderEstimates(cfg){
  const selector=byId('lp-estimate-model'),duration=byId('lp-estimate-duration');if(!selector||!duration)return;
  const models=cfg?.videoModels||[];
+ const estimator=byId('lp-credit-estimator');if(estimator)estimator.hidden=!models.some(model=>model.available===true);
  if(models.length&&selector.options.length===1&&!selector.options[0].value)selector.replaceChildren();
  if(!selector.options.length){for(const m of models.filter(m=>m.available)){const o=elem('option','',m.name+' · '+m.capabilities.resolution);o.value=m.id;selector.append(o);}if(!selector.options.length){const o=elem('option','','Video pricing unavailable');o.value='';selector.append(o);}}
  const model=models.find(m=>m.id===selector.value),previous=duration.value;duration.replaceChildren();
@@ -58,9 +59,9 @@ function renderEstimates(cfg){
   const credits=Number(target.dataset.credits),tier=target.dataset.tier,allowed=rank[tier]>=rank[model?.minimumPlan||'creator'];target.replaceChildren();
   target.append(elem('strong','','Spend the whole balance on one option:'),elem('p','',Math.floor(credits/op).toLocaleString()+' local images · '+op+' credits each'));
   if(cloudImage)target.append(elem('p','',Math.floor(credits/premiumImage)+' '+cloudImage.name+' images · '+premiumImage+' credits each'));
-  target.append(elem('p','',!model?'Video estimates load with live model prices':!allowed?'Selected video requires LOOX '+(model.minimumPlan==='pro'?'Pro':'Creator'):Math.floor(credits/videoCost)+' × '+duration.value+'s videos · '+videoCost+' credits each'));
+  target.append(elem('p','',!model?'Video generation is Coming Soon':!allowed?'Selected video requires LOOX '+(model.minimumPlan==='pro'?'Pro':'Creator'):Math.floor(credits/videoCost)+' × '+duration.value+'s videos · '+videoCost+' credits each'));
  }
- byId('lp-estimate-note').textContent=model?'Counts are alternatives from the same balance, not combined allowances. '+model.name+': '+videoCost+' credits per '+duration.value+'s clip at '+model.capabilities.resolution+'. Local generation depends on GPU availability.':'Counts use the same shared credit balance. Live video prices could not be loaded.';
+ byId('lp-estimate-note').textContent=model?'Counts are alternatives from the same balance, not combined allowances. '+model.name+': '+videoCost+' credits per '+duration.value+'s clip at '+model.capabilities.resolution+'. Local generation depends on GPU availability.':'Video generation is Coming Soon. Credit estimates appear when a model becomes available.';
 }
 if(document.body.hasAttribute('data-account-upgrade')){
  const buy=byId('lp-buy-credits');if(buy){buy.disabled=true;buy.textContent='Coming Soon';}
