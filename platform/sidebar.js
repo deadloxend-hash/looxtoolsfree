@@ -17,14 +17,14 @@ export function mountSidebar({sidebar,content,burger,scrim,dockToggle,lock,unloc
   window.dispatchEvent(new Event('loox:sidebar-layout'));
  }
  function toggle(){if(desktop.matches){expanded=!expanded;try{localStorage.setItem(preference,expanded?'expanded':'compact');}catch{}}else mobileOpen=!mobileOpen;render();}
- const close=()=>{if(desktop.matches){expanded=false;}else mobileOpen=false;render();};
+ const close=()=>{if(desktop.matches){expanded=false;try{localStorage.setItem(preference,'compact');}catch{}}else mobileOpen=false;render();};
  burger.addEventListener('click',toggle);dockToggle.addEventListener('click',toggle);scrim.addEventListener('click',close);
  document.addEventListener('loox:close-sidebar',close);
  document.addEventListener('loox:expand-sidebar',()=>{expanded=true;try{localStorage.setItem(preference,'expanded');}catch{}render();});
  desktop.addEventListener('change',()=>{mobileOpen=false;render();});
  window.addEventListener('storage',event=>{if(event.key===preference){expanded=event.newValue==='expanded';render();}});
  sidebar.addEventListener('click',event=>{if(event.target.closest('a[href]')&&!desktop.matches)close();});
- document.addEventListener('click',event=>{if(!desktop.matches&&event.target.closest('.loox-notification-bell,.loox-profile-trigger,a[href*="settings.html"]'))close();},true);
+ document.addEventListener('click',event=>{if(!desktop.matches&&mobileOpen&&!sidebar.contains(event.target)&&!burger.contains(event.target)&&!dockToggle.contains(event.target))close();},true);
  document.addEventListener('keydown',event=>{
   if(event.key==='Escape'){hideTip();if(mobileOpen)close();return;}
   if(event.key!=='Tab'||desktop.matches||!mobileOpen)return;

@@ -718,7 +718,7 @@
   filter=b.dataset.filter;dialog.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));paint();
  }));
  document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeLogo();closeDrawer();return;}
+  if(e.key==='Escape'){closeLogo();if(!document.querySelector('dialog[open]'))closeDrawer();return;}
   if((e.key==='/'||(e.key.toLowerCase()==='k'&&(e.ctrlKey||e.metaKey)))&&!e.altKey&&!e.target.closest('input,textarea,select,[contenteditable]')){
    e.preventDefault();e.stopImmediatePropagation();openFinder();
   }
