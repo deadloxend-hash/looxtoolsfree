@@ -28,6 +28,7 @@ try{
 {
  let calls=0;
  const context=await browser.newContext({viewport:{width:360,height:850}}),page=await context.newPage();
+ await page.addInitScript(()=>localStorage.setItem('loox-account-v1',JSON.stringify({access_token:'fixture-token',user:{id:'00000000-0000-4000-8000-000000000001',email:'fixture@example.com'},expires_at:Math.floor(Date.now()/1000)+3600})));
  await page.route('**/vendor/supabase-2.118.0.js',r=>r.fulfill({contentType:'application/javascript',body:`window.supabase={createClient(){const session={access_token:'fixture-token',user:{id:'00000000-0000-4000-8000-000000000001',email:'fixture@example.com',email_confirmed_at:'2026-11-01'}};return {auth:{onAuthStateChange(){return {}},getSession:async()=>({data:{session}}),getUser:async()=>({data:{user:session.user}}),mfa:{listFactors:async()=>({data:{totp:[]}})}}}}};`}));
  await page.route('https://loox-profile-api.looxai-studio.workers.dev/**',r=>r.fulfill({json:{username:'fixture',display_name:'Fixture',notifications_enabled:true,is_private:true}}));
  await page.route('https://looxtoolfree-backend.vercel.app/**',r=>{
