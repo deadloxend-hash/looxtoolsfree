@@ -1,14 +1,15 @@
+import {withDeadline,authFetch} from './auth-restoration.js';
 import {rememberChoice,authEventApplies,newOAuthAttempt,oauthAttemptKey,oauthVerifierStorage,googleAvailable,googleOAuthOptions,trustedOAuthURL,safeAuthReturn} from './auth-flow.js';
 import {createAuthStorage} from './auth-storage.js';
 import {billingURL} from './billing-url.js';
-import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
+import {syncAccountAvatar} from './account-avatar.js?v=restore-20261127';
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 export const terms='2026-11';
 export const labels={fill:'Generative Fill',background:'Background removal',upscale2:'2× upscale',upscale4:'4× upscale',erase:'Object eraser',generate:'Text to image',generate_video:'Text to video',enhance:'Image enhancer',uncrop:'Generative uncrop',restore:'Old photo restorer',retouch:'Skin retoucher',face_restore:'Face restoration',face_swap:'Face swap'};
 const proposal=[{id:'free',price_cents:0,credits:25},{id:'creator',price_cents:1200,credits:500},{id:'pro',price_cents:2900,credits:1500},{id:'business',price_cents:6900,credits:4000}];
 const planName={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',creator_yearly:'LOOX Creator',pro:'LOOX Pro',pro_yearly:'LOOX Pro',business:'LOOX Business',business_yearly:'LOOX Business',lifetime:'Legacy Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
-let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='',googleCheck,refreshOwner;
+let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='',googleCheck,refreshOwner,clientSetup,initializationTask,initialized=false;
 export function el(tag,text,cls){
  const node=document.createElement(tag);if(text!=null)node.textContent=text;if(cls)node.className=cls;return node;
 }
@@ -18,7 +19,7 @@ export function button(label,fn,cls='lx-button'){
 function link(label,href){const a=el('a',label);a.href=href;return a;}
 export function msg(node,text){if(!node)return;node.textContent=text;node.hidden=!text;}
 export async function config(){
- if(!loading)loading=fetch(endpoint+'?action=config',{signal:AbortSignal.timeout(20000),credentials:'omit'}).then(async r=>{
+ if(!loading)loading=fetch(endpoint+'?action=config',{signal:AbortSignal.timeout(8000),credentials:'omit'}).then(async r=>{
   if(!r.ok)throw Error();state.config=await r.json();if(typeof document!=='undefined')document.dispatchEvent(new Event('loox-config'));return state.config;
  }).catch(()=>{loading=null;throw Error('The LOOX account service is unavailable. Please try again later.');});
  return loading;
@@ -44,9 +45,9 @@ export async function loadAuthSDK(){
  await library;
 }
 async function client(){
- const cfg=await config();if(!cfg.auth)throw Error('Account setup is pending. Free browser tools are available.');
- if(!clientReady)clientReady=(async()=>{
-  await loadAuthSDK();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
+ const [cfg]=await Promise.all([config(),loadAuthSDK()]);if(!cfg.auth)throw Error('Account setup is pending. Free browser tools are available.');
+ if(!clientSetup)clientSetup=(()=>{
+  const api=window.supabase.createClient(cfg.url,cfg.key,{global:{fetch:authFetch},auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
   state.client=api;state.identityVerified=false;
   api.auth.onAuthStateChange((event,session)=>{
    if(!state.identityVerified&&!state.identityCommit&&['INITIAL_SESSION','SIGNED_IN'].includes(event))return;
@@ -65,8 +66,22 @@ async function client(){
    if(event==='PASSWORD_RECOVERY'){state.recoveryReady=true;setTimeout(()=>auth('reset'),0);}
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
-  const {data,error}=await Promise.race([api.auth.getSession(),new Promise((_,reject)=>setTimeout(()=>reject(Error('Session restoration timed out. Check your connection and retry.')),15000))]);if(error)throw error;
-  let restored=null;if(data.session){const checked=await api.auth.getUser(data.session.access_token);if(checked.error||!checked.data?.user)throw Error('Your session could not be verified. Check your connection and sign in again if needed.');restored=checked.data.user;}state.user=restored;state.identityVerified=true;previousIdentity=state.user?.id||null;return api;
+  return api;
+ })();
+ if(!clientReady)clientReady=(async()=>{
+  const api=clientSetup;
+  const {data,error}=await withDeadline(api.auth.getSession());if(error)throw error;
+  let restored=null;
+  if(data.session){
+   const token=data.session.access_token;
+   const checked=await withDeadline(api.auth.getUser(token));
+   if(checked.error||!checked.data?.user)throw Error('Your account could not be verified. Check your connection and retry.');
+   // A logout or account switch during verification must never install the old identity.
+   const saved=JSON.parse(authStorage.getItem(sessionKey)||'null');
+   if(saved?.access_token!==token||saved.user?.id!==checked.data.user.id)throw Error('Your account changed. Retry to restore the current account.');
+   restored=checked.data.user;
+  }
+  state.user=restored;state.identityVerified=true;previousIdentity=state.user?.id||null;return api;
  })().catch(e=>{clientReady=null;throw e;});
  return clientReady;
 }
@@ -310,7 +325,7 @@ export function renderHeader(){
   host.replaceChildren();
   host.classList.add('lx-controls','lx-account-header');
   const signedIn=Boolean(state.user);
-  const restoring=Boolean(state.authRestoring&&!signedIn);
+  const restoring=Boolean(state.authRestoring&&!signedIn),restoreError=Boolean(state.authRestoreError&&!signedIn);
   const balance=state.account?.wallet?.balance;
   const credit=el('span',null,'lx-credit-chip lx-credit-readonly');
   credit.setAttribute('aria-label',signedIn?'Available AI credits':'Sign in to view your credits');
@@ -350,7 +365,11 @@ export function renderHeader(){
    const signOutButton=button('Sign out',signOut,'lx-link lx-profile-signout');
    menu.append(signOutButton);
   }else if(restoring){
-   menu.append(el('div','Restoring your account…','lx-profile-identity'));
+   const skeleton=el('div',null,'lx-profile-loading');skeleton.setAttribute('role','status');skeleton.setAttribute('aria-label','Verifying your account');
+   skeleton.append(el('span',null,'lx-profile-skeleton-icon'),el('span',null,'lx-profile-skeleton-lines'));menu.append(skeleton);
+  }else if(restoreError){
+   menu.append(el('p','Account service is temporarily unavailable. Your saved session has been kept.','lx-note'));
+   menu.append(button('Retry',()=>initialize({publicAccess:true,retry:true}),'lx-button lx-profile-auth'));
   }else{
    menu.append(el('div','Welcome to LOOX','lx-profile-identity'));
    menu.append(button('Sign in',()=>{details.open=false;auth('login');},'lx-button lx-primary lx-profile-auth'));
@@ -391,19 +410,28 @@ export async function buyCredits(){
  const {openRecharge}=await import('./billing/recharge.js?v=settings-2-20261124');return openRecharge({state,api,config,auth,dialog,el,button,refresh});
 }
 export function pricing(){location.assign(nextAccountUrl('upgrade.html'));}
-export async function initialize({publicAccess=false,waitForAccount=true}={}){
- state.authRestoring=hasStoredSession();renderHeader();
+export async function initialize({publicAccess=false,waitForAccount=true,retry=false}={}){
  const accountPage=!!document.querySelector('[data-dashboard],[data-upgrade-page],[data-settings-page]');
- if(publicAccess||accountPage||hasStoredSession()||location.search.includes('code=')){
-  try{await client();state.authRestoring=false;renderHeader();if(state.user&&waitForAccount)await refresh();}catch(e){if(accountPage){accountError=e.message||'Unable to load your account.';state.accountError=accountError;msg(document.querySelector('[data-account-note]'),accountError);}}
+ const needsClient=publicAccess||accountPage||hasStoredSession()||location.search.includes('code=');
+ if(!initializationTask&&(!initialized||retry||needsClient&&!state.identityVerified)){
+  initializationTask=(async()=>{
+   state.authRestoring=hasStoredSession()&&!state.identityVerified;state.authRestoreError='';renderHeader();
+   try{if(needsClient)await client();initialized=true;}
+   catch(e){state.authRestoreError=e.message||'Account service unavailable.';if(accountPage){accountError=state.authRestoreError;state.accountError=accountError;msg(document.querySelector('[data-account-note]'),accountError);}}
+   finally{state.authRestoring=false;renderHeader();document.dispatchEvent(new Event('loox-user'));}
+  })().finally(()=>{initializationTask=null;});
  }
- state.authRestoring=false;renderHeader();
- if(accountPage){drawDashboard();document.dispatchEvent(new Event('loox-user'));}
+ if(initializationTask)await initializationTask;
+ if(needsClient&&!state.identityVerified&&!state.authRestoreError)return initialize({publicAccess,waitForAccount,retry});
+ // Identity is rendered before optional billing/history requests finish.
+ if(state.user&&waitForAccount&&!state.account)await refresh().catch(()=>{});
+ if(accountPage)drawDashboard();
  const planHost=document.querySelector('[data-pricing]');if(planHost)plans(planHost);
 }
+
 function drawDashboard(){
  const host=document.querySelector('[data-dashboard]');if(!host)return;host.replaceChildren();
- if(!state.user){host.append(el('p','Sign in to see your credits, AI jobs and billing history.'),button('Sign in',()=>auth()));return;}
+ if(!state.user){if(state.authRestoreError){host.append(el('p','Account verification is temporarily unavailable. Your saved session has been kept.'),button('Retry',()=>initialize({publicAccess:true,retry:true})));return;}host.append(el('p','Sign in to see your credits, AI jobs and billing history.'),button('Sign in',()=>auth()));return;}
  if(!state.account){host.append(el('p',accountError||'Loading your account…'),button('Retry',()=>{accountError='';drawDashboard();client().then(()=>refresh()).catch(e=>{accountError=e.message||'Unable to load account.';drawDashboard();});},'lx-button'));return;}
  const a=state.account;
  const nav=el('nav',null,'lx-tabs');for(const [id,label] of sections)nav.append(link(label,id==='settings'?nextAccountUrl('settings.html'):'#'+id));host.append(nav);

@@ -15,7 +15,7 @@ async function token(state){
  if(data?.session&&data.session.user?.id!==state.user?.id)throw Error('Your account changed. Retry this action.');
  return data?.session?.access_token||null;
 }
-export async function cloudRequest(state,path,{method='GET',query=null,data=null,blob=null,media=false}={}){
+export async function cloudRequest(state,path,{method='GET',query=null,data=null,blob=null,media=false,timeout=20000}={}){
  if(!/^[a-z][a-z-]{0,40}$/.test(path))throw Error('Invalid profile action.');
  const owner=state.user?.id||null;
  const url=new URL(PROFILE_API+'/'+path);
@@ -25,7 +25,7 @@ export async function cloudRequest(state,path,{method='GET',query=null,data=null
  if(data!==null)headers['Content-Type']='application/json';
  if(blob)headers['Content-Type']=blob.type||'image/webp';
  const response=await fetch(url.href,{method,mode:'cors',cache:'no-store',headers,
-  body:data!==null?JSON.stringify(data):blob||undefined,credentials:'omit',redirect:'error',signal:AbortSignal.timeout(20000)});
+  body:data!==null?JSON.stringify(data):blob||undefined,credentials:'omit',redirect:'error',signal:AbortSignal.timeout(timeout)});
  if((state.user?.id||null)!==owner)throw Error('Your account changed. Retry this action.');
  if(!response.ok){
   const body=await response.json().catch(()=>null);

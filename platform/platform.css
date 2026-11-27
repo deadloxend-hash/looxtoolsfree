@@ -390,3 +390,11 @@ html{scroll-padding-bottom:24px}textarea,input,select{scroll-margin-block:90px 2
 .loox-aspect-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.loox-aspect-fields label{display:grid;gap:7px;font-size:14px;min-width:0}.loox-aspect-fields input{width:100%;box-sizing:border-box;min-width:0;padding:11px;background:#080d16;border:1px solid #36577d;border-radius:9px;color:#fff;font:inherit;font-size:16px}.loox-aspect-presets{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}.loox-aspect-panel button{border:1px solid #36577d;background:#142033;color:#d9eaff;border-radius:9px;padding:8px 10px;min-height:40px;font:inherit;font-size:14px;cursor:pointer}.loox-aspect-panel button[aria-pressed=true]{background:#174c86;border-color:#60a5fa}.loox-aspect-preview{max-height:130px;border:2px solid #60a5fa;background:#174c8633;border-radius:5px;margin:14px auto}.loox-aspect-note{font-size:14px!important;line-height:1.6!important;white-space:normal!important}
 .image-ratio-options,.video-ratio-options{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 @media(max-width:480px){.image-ratio-options,.video-ratio-options{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* Compact restoration status, sized to the existing account menu. */
+.lx-profile-loading{display:flex;align-items:center;gap:12px;padding:12px;min-height:48px}
+.lx-profile-skeleton-icon{width:32px;height:32px;border-radius:50%;background:#23374e;flex:none}
+.lx-profile-skeleton-lines{width:140px;height:26px;border-radius:4px;background:linear-gradient(#23374e 0 9px,transparent 9px 16px,#23374e 16px 24px)}
+.lx-profile-loading{animation:loox-account-pulse 1.2s ease-in-out infinite alternate}
+@keyframes loox-account-pulse{to{opacity:.55}}
+@media(prefers-reduced-motion:reduce){.lx-profile-loading{animation:none}}

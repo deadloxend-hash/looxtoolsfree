@@ -2,9 +2,9 @@ name: Authentication and Google OAuth checks
 on:
   workflow_dispatch:
   push:
-    paths: ['platform/account*.js', 'platform/auth*', 'auth-callback.html', 'account.html', 'platform/settings-2.js', 'scripts/authentication-audit.mjs', 'tests/auth*.test.mjs', '.github/workflows/authentication-check.yml']
+    paths: ['platform/account*.js', 'platform/auth*', 'auth-callback.html', 'account.html', 'platform/settings-2.js', 'scripts/authentication-audit.mjs', 'scripts/account-restoration-audit.mjs', 'platform/avatar-cache.js', 'platform/profile-cloudflare.js', 'tests/auth*.test.mjs', '.github/workflows/authentication-check.yml']
   pull_request:
-    paths: ['platform/account*.js', 'platform/auth*', 'auth-callback.html', 'account.html', 'platform/settings-2.js', 'scripts/authentication-audit.mjs', 'tests/auth*.test.mjs', '.github/workflows/authentication-check.yml']
+    paths: ['platform/account*.js', 'platform/auth*', 'auth-callback.html', 'account.html', 'platform/settings-2.js', 'scripts/authentication-audit.mjs', 'scripts/account-restoration-audit.mjs', 'platform/avatar-cache.js', 'platform/profile-cloudflare.js', 'tests/auth*.test.mjs', '.github/workflows/authentication-check.yml']
 permissions:
   contents: read
 jobs:
@@ -13,6 +13,8 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 24
@@ -24,3 +26,4 @@ jobs:
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-auth-http.log 2>&1 &
           node scripts/authentication-audit.mjs
+          node scripts/account-restoration-audit.mjs
