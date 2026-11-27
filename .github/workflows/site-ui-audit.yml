@@ -12,6 +12,8 @@ on:
       - "platform/privacy-data.js"
       - "platform/account-security.js"
       - "tests/account-security.test.mjs"
+      - "tests/*.test.mjs"
+      - "platform/auth-storage.js"
       - "tests/privacy-data.test.mjs"
       - "settings.html"
       - "platform/settings-2.js"

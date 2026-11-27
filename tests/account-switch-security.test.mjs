@@ -1,9 +1,10 @@
+import {createAuthStorage} from '../platform/auth-storage.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 const source=fs.readFileSync(new URL('../platform/account.js',import.meta.url),'utf8');
-function fixture({failed=false,mfa=false}={}){
+function fixture({failed=false,mfa=false,blockedStorage=false}={}){
  let call,installed=0,reloads=0,remember='local',challenge;
  const fields=[];
  const element=()=>({append(){},replaceChildren(){},setAttribute(){},addEventListener(){},value:'',checked:true,focus(){}});
@@ -11,6 +12,8 @@ function fixture({failed=false,mfa=false}={}){
  const active={auth:{setSession:async session=>{installed++;assert.equal(session.access_token,mfa?'mfa-access':'candidate-access');return {data:{}};}}};
  const form=element();
  const context={state:{user:{id:'A',email:'a@example.com'}},localStorage:{getItem:()=>remember,setItem:(k,v)=>{remember=v},removeItem:()=>{remember=null}},store:()=>context.localStorage,rememberKey:'remember',config:async()=>({auth:true,url:'https://auth.example.com',key:'public'}),client:async()=>active,dialog:()=>({box:element(),d:{...element(),close(){}}}),el:(tag)=>tag==='form'?form:element(),field:(parent,label)=>{const field={...element(),value:label==='Email address'?'b@example.com':'test-password'};fields.push(field);return field;},button:()=>element(),link:()=>element(),msg(){},strong:()=>true,withStatus:(f,s,n,fn)=>{call=fn},document:{baseURI:'https://example.com/'},URL,window:{supabase:{createClient:()=>candidate}},location:{reload:()=>{reloads++}},refresh:async()=>{},rememberRecentAccount(){},terms:'test'};
+ if(blockedStorage)for(const key of ['getItem','setItem','removeItem'])context.localStorage[key]=()=>{throw Error('Storage blocked');};
+ context.authStorage=createAuthStorage({local:()=>context.localStorage,session:()=>context.localStorage}).storage;
  vm.runInNewContext(source.slice(source.indexOf('export function auth('),source.indexOf('function ensureSwitcherStyles')).replace('export function','function'),context);
  context.auth('login',{switching:true});
  return {run:()=>call(),get installed(){return installed},get remember(){return remember},get reloads(){return reloads},form};
@@ -28,3 +31,5 @@ test('blocked draft storage cannot prevent clearing private account state on ide
  context.handler('SIGNED_IN',{user:{id:'B'}});
  assert.equal(reloads,1);assert.equal(context.state.user.id,'B');assert.equal(context.state.account,null);
 });
+
+test('verified account switch still commits when persistent browser storage is blocked',async()=>{const f=fixture({blockedStorage:true});await f.run();assert.equal(f.installed,1);assert.equal(f.reloads,1);});
