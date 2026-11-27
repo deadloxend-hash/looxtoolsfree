@@ -44,7 +44,7 @@ export async function loadAuthSDK(){
  if(!library)library=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('../vendor/supabase-2.118.0.js',import.meta.url);const timer=setTimeout(()=>{library=null;s.remove();reject(Error('Account library timed out. Check your connection and retry.'));},15000);s.onload=()=>{clearTimeout(timer);resolve();};s.onerror=()=>{clearTimeout(timer);library=null;reject(Error('Account library could not load.'));};document.head.append(s);});
  await library;
 }
-async function client(){
+async function client(restore=true){
  const [cfg]=await Promise.all([config(),loadAuthSDK()]);if(!cfg.auth)throw Error('Account setup is pending. Free browser tools are available.');
  if(!clientSetup)clientSetup=(()=>{
   const api=window.supabase.createClient(cfg.url,cfg.key,{global:{fetch:authFetch},auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
@@ -68,6 +68,7 @@ async function client(){
   });
   return api;
  })();
+ if(!restore)return clientSetup;
  if(!clientReady)clientReady=(async()=>{
   const api=clientSetup;
   const {data,error}=await withDeadline(api.auth.getSession());if(error)throw error;
@@ -172,7 +173,7 @@ export function auth(mode='login',options={}){
  withStatus(form,submit,note,async()=>{
   if(confirm&&(!strong(pass.value)||pass.value!==confirm.value))throw Error('Use a stronger password and make sure both passwords match.');
   // Commit persistence preferences only after credentials have been verified.
-  const c=await client(),redirect=new URL('../account.html',import.meta.url);
+  const c=await client(mode==='reset'),redirect=new URL('../account.html',import.meta.url);
   let result;
   if(reg){result=await c.auth.signUp({email:email.value.trim(),password:pass.value,options:{emailRedirectTo:redirect.href,data:{full_name:full.value.trim(),loox_terms:terms}}});}
   else if(forgot){redirect.searchParams.set('flow','recovery');result=await c.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:redirect.href});}
@@ -214,9 +215,10 @@ export function auth(mode='login',options={}){
    const before=authStorage.getItem(rememberKey);
    try{
     if(remember)authStorage.setItem(rememberKey,remember.checked?'local':'session');
-    const installed=await c.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
-    if(installed.error)throw installed.error;
-    committed=true;
+    state.identityCommit=true;
+    try{const installed=await c.auth.setSession({access_token:result.data.session.access_token,refresh_token:result.data.session.refresh_token});
+     if(installed.error)throw installed.error;state.identityVerified=true;state.authRestoreError='';clientReady=Promise.resolve(c);committed=true;
+    }finally{state.identityCommit=false;}
    }catch(error){if(before===null)authStorage.removeItem(rememberKey);else authStorage.setItem(rememberKey,before);throw error;}
   }
   if(result.error&&!((forgot||reg)&&['email_exists','user_already_exists','user_not_found'].includes(result.error.code)))throw result.error;
@@ -370,6 +372,7 @@ export function renderHeader(){
   }else if(restoreError){
    menu.append(el('p','Account service is temporarily unavailable. Your saved session has been kept.','lx-note'));
    menu.append(button('Retry',()=>initialize({publicAccess:true,retry:true}),'lx-button lx-profile-auth'));
+   menu.append(button('Sign in again',()=>auth('login'),'lx-link'));
   }else{
    menu.append(el('div','Welcome to LOOX','lx-profile-identity'));
    menu.append(button('Sign in',()=>{details.open=false;auth('login');},'lx-button lx-primary lx-profile-auth'));
