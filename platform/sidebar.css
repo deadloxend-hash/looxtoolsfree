@@ -70,5 +70,5 @@ html body.loox-sidebar-premium>button.loox-sitewide-dock-toggle{display:none!imp
 }
 
 @media(min-width:901px){
- html body.loox-sidebar-premium>[data-loox-sidebar-header-flow]{margin-left:calc(-1 * var(--loox-sidebar-width))!important;width:calc(100% + var(--loox-sidebar-width))!important;max-width:none!important;box-sizing:border-box!important}
+ html body.loox-sidebar-premium>#loox-sitewide-header[data-loox-sidebar-header-flow],html body.loox-sidebar-premium>#loox-navigation-bar[data-loox-sidebar-header-flow]{margin-left:calc(-1 * var(--loox-sidebar-width))!important;width:calc(100% + var(--loox-sidebar-width))!important;max-width:none!important;box-sizing:border-box!important}
 }
