@@ -15,3 +15,12 @@ test('shared avatar deduplicates loads, survives header replacement and isolates
  const old=context.sync(a,true);const b={user:{id:'b'},account:{profile:{name:'Bob'}}};holders=[new Holder()];const current=context.sync(b);pending.get('b')({avatar_path:'b/avatar.webp'});await current;pending.get('a')({avatar_path:'a/changed.webp'});await old;await Promise.resolve();assert.match(holders[0].child.src,/blob:b:/);assert.equal(invalidations,1);
  for(const value of cache.values())assert.ok(!value.includes('blob:'));
 });
+
+test('verified owner preview avoids media requests and is removed from holders on logout',async()=>{
+ let requests=0,child=null;const host={isConnected:true,classList:{toggle(){},remove(){}},querySelector:()=>child,replaceChildren:img=>{child=img;},set textContent(v){child=null;}};
+ class Image{set src(v){this.value=v;queueMicrotask(()=>this.onload?.());}get src(){return this.value;}}
+ const context={Date,Promise,Image,URL:{revokeObjectURL(){}},document:{querySelectorAll:()=>[host]},cachedAvatar:id=>id==='A'?'data:image/png;base64,AAAA':null,saveAvatar:async()=>{},clearAvatarCache(){},cloudRequest:async()=>{requests++;throw Error('Must use valid preview');},invalidateCloudImage(){}};
+ const source=(await readFile(new URL('../platform/account-avatar.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'').replace(/export /g,'')+'\nthis.sync=syncAccountAvatar;';vm.runInNewContext(source,context);
+ await context.sync({user:{id:'A'}});await Promise.resolve();assert.equal(child.src,'data:image/png;base64,AAAA');assert.equal(requests,0);
+ await context.sync({user:null,authRestoring:false});assert.equal(child,null);
+});
