@@ -92,26 +92,8 @@ body.loox-sitewide-active > header.loox-sitewide-workspacebar [data-loox-account
 }
 body.loox-sitewide-active > header.loox-sitewide-workspacebar .lig-head-start{min-width:0}
 body.loox-sitewide-active > header.loox-sitewide-workspacebar .lig-page-name{font-size:13px}
-/* Shared category drawer and dimming overlay. */
-.loox-sitewide-scrim{display:none;position:fixed;inset:64px 0 0;width:100%;z-index:271;
- padding:0;border:0;background:#05080faf;cursor:pointer}
-.loox-sitewide-scrim.is-open{display:block}
-.loox-sitewide-drawer{
- position:fixed;top:64px;left:0;bottom:0;z-index:272;width:min(270px,88vw);
- overflow:auto;overscroll-behavior:contain;padding:17px 12px 30px;
- background:#101a2b;color:#d9eaff;border-right:1px solid #2a405c;
- box-shadow:16px 0 42px #0007;transform:translateX(-110%);
- transition:transform .26s cubic-bezier(.22,1,.36,1)
-}
-.loox-sitewide-drawer.is-open{transform:translateX(0)}
-.loox-sitewide-drawer-list{display:grid;gap:2px}
 .loox-sitewide-group{font:800 10px/1.5 system-ui;letter-spacing:.14em;text-transform:uppercase;
  color:#a6ccff;margin:19px 9px 6px}
-.loox-sitewide-drawer-link{display:flex;align-items:center;gap:12px;text-decoration:none;
- min-height:39px;padding:8px 11px;border-radius:9px;color:#a6ccff;font:650 12px/1.35 system-ui}
-.loox-sitewide-drawer-link:hover{background:#20314a;color:#fff}
-.loox-sitewide-drawer-link[aria-current=page]{color:#d9eaff}
-.loox-sitewide-drawer-icon{width:22px;min-width:22px;text-align:center;color:#a6ccff;font-size:15px}
 .loox-sitewide-more{margin:18px 1px 0}
 .loox-sitewide-more summary{cursor:pointer;padding:10px;border:1px solid #2a405c;border-radius:9px;
  list-style:none;font:700 12px system-ui;background:#142033;color:#f1f5f9}
@@ -168,8 +150,6 @@ body.loox-sitewide-active > header.loox-sitewide-workspacebar .lig-page-name{fon
  #loox-sitewide-header .loox-sitewide-logo img{width:clamp(90px,27vw,125px)}
  #loox-sitewide-header .loox-sitewide-account{margin-left:auto;max-width:58%}
  #loox-sitewide-header .loox-sitewide-inner .loox-sitewide-burger{width:35px;min-width:35px;height:35px;flex-basis:35px}
- .loox-sitewide-drawer{top:104px}
- .loox-sitewide-scrim{inset:104px 0 0}
  .loox-sitewide-finder-results{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(max-width:480px){
@@ -184,7 +164,7 @@ body.loox-sitewide-active > header.loox-sitewide-workspacebar .lig-page-name{fon
  .loox-sitewide-finder{width:98vw;max-height:90dvh;padding:13px}
  .loox-sitewide-finder-results{grid-template-columns:1fr}
 }
-@media(prefers-reduced-motion:reduce){.loox-sitewide-drawer{transition:none}}
+@media(prefers-reduced-motion:reduce){}
 
 
 /* Keep editor controls and canvas timelines inside the remaining viewport. */
@@ -246,9 +226,7 @@ body.loox-sitewide-active .loox-sitewide-simplebar:has(#loox-page-back) .loox-pa
 
 
 /* Critical: legacy .experience-shell>aside:not(.loox-rail) hides our new
-   directory drawer, leaving only a dark scrim after clicking ☰. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer,
-body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer{
+   directory drawer{
  display:block!important;
  visibility:visible!important;
  opacity:1!important;
@@ -265,20 +243,8 @@ body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer{
  transition:transform .26s cubic-bezier(.22,1,.36,1)!important;
  pointer-events:none!important
 }
-body.loox-sitewide-active > aside#loox-sitewide-drawer.is-open,
-body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer.is-open{
- transform:translate3d(0,0,0)!important;
- pointer-events:auto!important
-}
-body.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
- position:fixed!important;inset:var(--loox-sitewide-height,64px) 0 0!important;
- display:block!important;z-index:10001!important
-}
 body.loox-sitewide-active #loox-sitewide-header{z-index:10003!important}
-body.loox-sitewide-active .loox-sitewide-drawer-list{display:grid!important}
-body.loox-sitewide-active .loox-sitewide-drawer-link{display:flex!important}
 @media(prefers-reduced-motion:reduce){
- body.loox-sitewide-active > aside#loox-sitewide-drawer{transition:none!important}
 }
 
 
@@ -305,11 +271,6 @@ body.loox-sitewide-active .loox-sitewide-drawer-link{display:flex!important}
 @media(max-width:480px){
  #loox-sitewide-header .loox-sitewide-more-button{width:32px;height:34px;flex-basis:32px}
 }
-
-
-/* Unified home/AI pages: suppress the legacy navigation and legacy rail.
-   The site's one shared #loox-sitewide-header and #loox-sitewide-drawer are authoritative. */
-body.loox-sitewide-home > header.topbar,
 body.loox-sitewide-home > header.lx-header{
  display:none!important;
 }
@@ -339,8 +300,6 @@ body.loox-sitewide-home main{
 body.loox-sitewide-home.ai-home .ai-stage{
  height:calc(100dvh - var(--loox-sitewide-height,64px))!important;
 }
-body.loox-sitewide-home .loox-sitewide-drawer,
-body.loox-sitewide-home .loox-sitewide-drawer.is-open{visibility:visible!important}
 @media(max-width:790px){
  body.loox-sitewide-home.ai-home .ai-stage{
   height:calc(100dvh - var(--loox-sitewide-height,104px))!important;
@@ -348,39 +307,13 @@ body.loox-sitewide-home .loox-sitewide-drawer.is-open{visibility:visible!importa
 }
 
 
-/* The original LOOX Tools Home sidebar appearance, now shared everywhere.
-   Keep ONE sidebar implementation (#loox-sitewide-drawer), not another rail. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer{
+/* The original LOOX Tools Home sidebar appearance{
  --lx-rail-bg:#101a2b;--lx-rail-text:#f1f5f9;--lx-rail-muted:#b8bed1;
  width:240px!important;max-width:min(240px,88vw)!important;
  padding:7px 9px 24px!important;background:#101a2b!important;
  color:#f1f5f9!important;border-right:1px solid #20314a!important;
  box-shadow:8px 0 40px #0004!important;
  scrollbar-width:thin
-}
-body.loox-sitewide-active .loox-sitewide-drawer-list{display:grid!important;gap:1px!important;padding:0!important}
-body.loox-sitewide-active .loox-sitewide-drawer-list .loox-sitewide-group{
- margin:18px 11px 6px!important;padding:0!important;
- font:800 10px/1.35 system-ui!important;letter-spacing:.13em!important;
- text-transform:uppercase!important;color:#a6ccff!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-link{
- display:flex!important;align-items:center!important;justify-content:flex-start!important;
- min-height:37px!important;padding:7px 10px!important;margin:1px 0!important;
- gap:10px!important;border-radius:9px!important;
- background:transparent!important;border:0!important;text-decoration:none!important;
- font:600 12px/1.4 system-ui!important;color:#b8bed1!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-link:hover{
- background:#142033!important;color:#fff!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-link[aria-current=page]{
- background:transparent!important;color:#d9eaff!important;box-shadow:none!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-icon{
- width:22px!important;min-width:22px!important;height:22px!important;
- display:grid!important;place-items:center!important;
- color:#a6ccff!important;font:600 15px/1 system-ui!important
 }
 body.loox-sitewide-active .loox-sitewide-more{margin:13px 0 4px!important}
 body.loox-sitewide-active .loox-sitewide-more>summary{
@@ -417,21 +350,9 @@ body.loox-sitewide-active .loox-sitewide-secondary{
 /* Desktop navigation is a docked workspace sidebar, not a modal overlay.
    Prevent the darkened/disabled-looking content shown on Background Remover. */
 @media(min-width:901px){
- body.loox-sitewide-active > button.loox-sitewide-scrim,
- body.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
-  display:none!important;visibility:hidden!important;pointer-events:none!important
- }
- body.loox-sitewide-active > aside#loox-sitewide-drawer{
-  width:240px!important;max-width:240px!important;
-  scrollbar-width:none!important;
-  box-shadow:none!important;
- }
- body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
  /* Sidebar floats over the viewport: never reserve page width on open. */
 }
 @media(max-width:900px){
- body.loox-sitewide-active > aside#loox-sitewide-drawer{scrollbar-width:none!important}
- body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
 }
 
 
@@ -457,15 +378,6 @@ body.loox-sitewide-active .loox-sitewide-secondary{
 #loox-sitewide-header .loox-sitewide-links a[aria-current=page]{background:linear-gradient(135deg,#2a405c,#20314a);box-shadow:inset 0 0 0 1px #3b82f644}
 #loox-sitewide-header .loox-sitewide-search{min-width:210px;background:#142033;border-color:#2a405c;border-radius:12px}
 #loox-sitewide-header .loox-sitewide-more-button{background:#142033;border-color:#2a405c}
-body.loox-sitewide-active > aside#loox-sitewide-drawer{
- width:252px!important;max-width:min(252px,88vw)!important;
- background:linear-gradient(180deg,#101a2b 0%,#080d16 100%)!important;
- border-right:1px solid #2a405c!important;
- padding:12px 11px 28px!important;overflow-y:auto!important;
- scrollbar-width:none!important;
- transition:transform .3s cubic-bezier(.2,.83,.23,1)!important;
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
 body.loox-sitewide-active .loox-sitewide-workspace-card{
  display:flex;flex-direction:column;gap:4px;padding:12px 14px;
  min-height:75px;margin:2px 2px 12px;border-radius:14px;
@@ -475,29 +387,6 @@ body.loox-sitewide-active .loox-sitewide-workspace-card{
 body.loox-sitewide-active .loox-sitewide-workspace-card strong{font-size:13px;letter-spacing:-.2px}
 body.loox-sitewide-active .loox-sitewide-workspace-card small{font-size:10px;color:#a6ccff;line-height:1.4}
 body.loox-sitewide-active .loox-promo-sparkle{font-size:15px;color:#a6ccff;line-height:1}
-body.loox-sitewide-active .loox-sitewide-drawer-list{display:flex!important;flex-direction:column;gap:1px!important}
-body.loox-sitewide-active .loox-sitewide-drawer-list .loox-sitewide-group{
- margin:11px 12px 5px!important;color:#60a5fa!important;font-size:9px!important;
- letter-spacing:.17em!important;font-weight:800!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-link{
- min-height:35px!important;padding:7px 12px!important;
- border:1px solid transparent!important;color:#d9eaff!important;border-radius:10px!important;
- font-size:12px!important;transition:background .15s,color .15s,border-color .15s
-}
-body.loox-sitewide-active .loox-sitewide-drawer-link:hover{
- background:#20314a!important;color:#fff!important;border-color:#3b82f655!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-link[aria-current=page]{
- color:#f1f5f9!important;background:linear-gradient(100deg,#2a405c,#20314a)!important;
- border-color:#3b82f644!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-icon{
- display:inline-grid!important;place-items:center!important;width:20px!important;min-width:20px!important;height:20px!important;
- color:#a6ccff!important
-}
-body.loox-sitewide-active .loox-sitewide-drawer-icon svg{width:19px;height:19px}
-body.loox-sitewide-active .loox-sitewide-drawer-label{min-width:0;white-space:normal;line-height:1.3}
 body.loox-sitewide-active .loox-sitewide-more{margin:1px 0!important}
 body.loox-sitewide-active .loox-sitewide-more > summary{
  min-height:35px!important;background:transparent!important;color:#d9eaff!important;border-color:transparent!important;
@@ -521,154 +410,30 @@ body.loox-sitewide-active .loox-upgrade-cta{
  display:block;border-radius:8px;text-align:center;margin-top:5px;padding:8px;
  background:linear-gradient(90deg,#60a5fa,#60a5fa);font-weight:700;font-size:11px;
 }
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle{
- display:flex!important;position:fixed!important;z-index:10005!important;
- align-items:center;justify-content:center;top:50%;left:7px;
- transform:translateY(-50%);width:25px;height:70px;
- padding:0;border:1px solid #60a5fa;border-radius:0 11px 11px 0;
- background:linear-gradient(#20314a,#142033);color:#d9eaff;
- box-shadow:3px 2px 20px #0007;cursor:pointer;
- transition:left .3s cubic-bezier(.2,.83,.23,1),background .2s;
-}
-body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{left:242px}
-body.loox-sitewide-active .loox-sitewide-dock-toggle .loox-dock-bars{font:800 15px/1 system-ui;letter-spacing:-2px}
-body.loox-sitewide-active .loox-sitewide-dock-toggle .loox-dock-arrow{display:none;font:800 27px/1 system-ui}
-body.loox-sitewide-active .loox-sitewide-dock-toggle:hover,
-body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible{background:#3b82f6;border-color:#a6ccff}
-body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-bars,
-body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-bars{display:none}
-body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-arrow,
-body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-arrow{display:block}
 
 @media(max-width:1120px){#loox-sitewide-header .loox-sitewide-search{min-width:42px}}
 @media(max-width:900px){
- body.loox-sitewide-active > button.loox-sitewide-dock-toggle{left:0;top:54%;width:24px}
- body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{left:min(242px,calc(88vw - 10px))}
- body.loox-sitewide-active > aside#loox-sitewide-drawer{width:min(252px,88vw)!important;max-width:88vw!important}
  #loox-sitewide-header .loox-sitewide-logo img{max-height:39px;width:clamp(91px,22vw,126px)}
 }
 @media(max-width:480px){
  #loox-sitewide-header .loox-sitewide-logo img{width:98px}
  body.loox-sitewide-active .loox-sitewide-workspace-card{display:none}
- body.loox-sitewide-active .loox-sitewide-drawer-list .loox-sitewide-group{margin-top:9px!important}
 }
 @media(prefers-reduced-motion:reduce){
- body.loox-sitewide-active > button.loox-sitewide-dock-toggle{transition:none!important}
 }
 
-/* Minimal single-line sidebar grip, keeping a generous clickable hit area. */
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle{
+/* Minimal single-line sidebar grip{
  width:20px!important;height:64px!important;border:none!important;
  border-radius:0 9px 9px 0!important;background:transparent!important;
  box-shadow:none!important;color:#d9eaff!important;
 }
-body.loox-sitewide-active .loox-sitewide-dock-toggle .loox-dock-bars{
- display:block;width:2px;height:32px;line-height:0;font-size:0!important;
- background:#a6ccff;border-radius:6px;letter-spacing:0!important;
- box-shadow:0 0 7px #60a5fa6b;
-}
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:hover,
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:focus-visible{
- background:#2a405c!important;
-}
-body.loox-sitewide-active .loox-sitewide-dock-toggle:hover .loox-dock-bars,
-body.loox-sitewide-active .loox-sitewide-dock-toggle:focus-visible .loox-dock-bars{display:none}
 
-/* Unified sidebar: white labels and icons on every LOOX page. */
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link,
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-label,
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-more > summary,
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-icon{
- color:#ffffff!important;
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-group{
- color:#ffffff!important;
- opacity:.83;
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link:hover,
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{
- color:#ffffff!important;
-}
-
-/* Consistent sidebar styling across the Tools and AI dashboards. */
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-workspace-card,
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-upgrade-card{display:none!important}
-body.loox-sitewide-active #loox-sitewide-drawer{background:#080d16!important;border-right-color:#20314a!important}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{background:#20314a!important;color:#fff!important}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-list .loox-sitewide-group{color:#fff!important;opacity:.78}
-
-/* Shared LOOX sidebar design — identical on every page, no page-local variants. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer{
+/* Shared LOOX sidebar design — identical on every page{
  width:240px!important;max-width:min(240px,88vw)!important;
  padding:8px 9px 24px!important; background:#080d16!important;
  color:#fff!important;border-right:1px solid #20314a!important;
  font:500 12px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif!important;
  scrollbar-width:none!important;
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer::-webkit-scrollbar{display:none!important}
-body.loox-sitewide-active > aside#loox-sitewide-drawer *,
-body.loox-sitewide-active > aside#loox-sitewide-drawer *::before,
-body.loox-sitewide-active > aside#loox-sitewide-drawer *::after{box-sizing:border-box!important}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-list{
- display:flex!important;flex-direction:column!important;gap:1px!important;
- width:100%!important;padding:0!important;margin:0!important;
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-group{
- display:block!important;margin:16px 10px 5px!important;padding:0!important;
- color:#fff!important;opacity:.78!important;
- font:800 10px/1.35 system-ui!important;letter-spacing:.115em!important;
- text-transform:uppercase!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link{
- display:flex!important;align-items:center!important;justify-content:flex-start!important;
- gap:10px!important;width:100%!important;min-height:37px!important;
- padding:7px 10px!important;margin:0!important;
- background:transparent!important;border:0!important;border-radius:9px!important;
- color:#fff!important;opacity:1!important;text-decoration:none!important;
- font:600 12px/1.4 system-ui!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:hover{
- background:#142033!important;color:#fff!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link[aria-current="page"]{
- background:#20314a!important;color:#fff!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-icon{
- width:22px!important;min-width:22px!important;height:22px!important;
- display:grid!important;place-items:center!important;flex:none!important;
- color:#fff!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-icon svg{
- display:block!important;width:19px!important;height:19px!important;color:#fff!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-label{
- color:#fff!important;font:inherit!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more{
- width:100%!important;margin:4px 0 0!important;padding:0!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more>summary{
- display:flex!important;align-items:center!important;justify-content:flex-start!important;
- width:100%!important;min-height:37px!important;gap:10px!important;
- margin:0!important;padding:7px 10px!important;
- background:transparent!important;border:0!important;border-radius:9px!important;
- color:#fff!important;font:600 12px/1.4 system-ui!important;cursor:pointer
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more>summary:hover{
- background:#142033!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more-chevron{
- color:#fff!important;margin-left:auto!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more-links{
- margin-top:2px!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-more-links a{
- color:#fff!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-workspace-card,
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-upgrade-card{
- display:none!important
 }
 /* Older experience bundles must not create a second visible rail or offset. */
 body.loox-sitewide-active > #loox-home-rail,
@@ -682,8 +447,7 @@ body.loox-sitewide-active.experience-shell:not(.experience-studio) .experience-c
 }
 
 
-/* Explore All Tools is a navigation action, not a separate promo block. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-explore-link{margin:12px 0 5px!important;font-weight:750!important}
+/* Explore All Tools is a navigation action{margin:12px 0 5px!important;font-weight:750!important}
 
 
 /* Compact Search icon and subtle zoom interactions shared by every page. */
@@ -740,18 +504,6 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-explore-li
 #loox-sitewide-header .loox-sitewide-account button:active{
  transform:scale(.97)!important
 }
-/* Sidebar menu links share restrained hover motion without changing layout size. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link{
- transform:translateX(0);
- transition:transform .18s ease,background-color .18s ease!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:hover,
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:focus-visible{
- transform:translateX(3px)
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link:active{
- transform:translateX(1px) scale(.99)
-}
 @media(max-width:480px){
  #loox-sitewide-header .loox-sitewide-search{
   width:35px!important;min-width:35px!important;max-width:35px!important;
@@ -763,8 +515,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-lin
  #loox-sitewide-header .loox-sitewide-links>a,
  #loox-sitewide-header .loox-sitewide-more-button,
  #loox-sitewide-header .loox-sitewide-account a,
- #loox-sitewide-header .loox-sitewide-account button,
- body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-link{
+ #loox-sitewide-header .loox-sitewide-account button{
   transition:none!important;transform:none!important
  }
 }
@@ -885,102 +636,7 @@ body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-lin
 @media(prefers-reduced-motion:reduce){
  #loox-sitewide-header .loox-sitewide-account .loox-profile-action{transition:none!important;transform:none!important}
 }
-
-
-/* Compact account/quick actions anchored at the bottom of the ONE shared sidebar. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer,
-body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer{
- display:flex!important;flex-direction:column!important;
- overflow:hidden!important;padding-bottom:9px!important;
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-list{
- flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;
- overscroll-behavior-y:contain;
- scrollbar-width:none!important;padding-bottom:14px!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sitewide-drawer-list::-webkit-scrollbar{display:none!important}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-footer{
- display:flex!important;flex-direction:column!important;gap:7px!important;flex:0 0 auto!important;
- width:100%!important;position:relative!important;
- margin-top:auto!important;padding:11px 1px 1px!important;
- border-top:1px solid #20314a!important;color:#fff!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row{
- display:flex!important;align-items:center!important;gap:10px!important;
- width:100%!important;min-height:51px!important;padding:9px 11px!important;
- border-radius:10px!important;border:1px solid #20314a!important;
- background:#20314a!important;text-decoration:none!important;color:#fff!important;
- transition:background .18s ease,border-color .18s ease!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row:hover,
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row:focus-visible{
- background:#2a405c!important;border-color:#2a405c!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-avatar{
- display:grid!important;place-items:center!important;flex:0 0 25px!important;
- width:25px!important;height:25px!important;color:#c9c9d0!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-avatar svg{width:23px;height:23px}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-identity{
- display:flex!important;flex-direction:column!important;min-width:0!important;gap:2px!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-identity strong{
- color:#fff!important;font:750 12px/1.3 system-ui!important;
- text-overflow:ellipsis;white-space:nowrap;overflow:hidden
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-identity small{
- color:#a6ccff!important;font:11px/1.25 system-ui!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-actions{
- display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
- align-items:center!important;gap:8px!important;width:100%!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-action{
- display:grid!important;place-items:center!important;min-width:0!important;
- height:36px!important;width:100%!important;padding:6px!important;
- border:1px solid transparent!important;border-radius:9px!important;
- background:transparent!important;color:#b8b5bf!important;cursor:pointer!important;
- text-decoration:none!important;transition:background .18s ease,transform .18s ease,color .18s ease!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-action:hover,
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-action:focus-visible,
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-action[aria-expanded="true"]{
- color:#fff!important;background:#20314a!important;transform:scale(1.06)!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-action svg{
- width:19px!important;height:19px!important;display:block!important;pointer-events:none
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-utility-panel{
- position:absolute!important;bottom:calc(100% + 10px)!important;
- left:0!important;right:0!important;z-index:12!important;
- display:flex!important;flex-direction:column!important;gap:8px!important;
- background:#142033!important;border:1px solid #2a405c!important;border-radius:11px!important;
- padding:13px!important;box-shadow:0 12px 28px #0009!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-utility-panel[hidden]{display:none!important}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-panel-title{
- color:#fff!important;font:750 13px/1.3 system-ui!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-utility-panel p{
- margin:0!important;color:#a6ccff!important;font:11px/1.5 system-ui!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-utility-panel>a{
- display:block!important;color:#d9eaff!important;font:650 11px/1.4 system-ui!important;
- text-decoration:none!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-grid{
- display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-grid button{
- padding:7px 5px!important;border:1px solid #2a405c!important;border-radius:7px!important;
- background:#20314a!important;color:#fff!important;font:11px/1.3 system-ui!important;cursor:pointer!important
-}
-body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-language-grid button:hover{background:#2a405c!important}
 @media(prefers-reduced-motion:reduce){
- body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-action,
- body.loox-sitewide-active > aside#loox-sitewide-drawer .loox-sidebar-account-row{
-  transition:none!important;transform:none!important
- }
 }
 
 
@@ -996,13 +652,6 @@ body.loox-generator-no-topnav #loox-sitewide-header{
  min-height:0!important;
  padding:0!important;
  margin:0!important;
-}
-body.loox-generator-no-topnav.loox-sitewide-active > aside#loox-sitewide-drawer{
- top:0!important;
- max-height:100dvh!important;
-}
-body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
- inset:0!important;
 }
 
 
@@ -1496,14 +1145,9 @@ body.loox-generator-no-topnav.ai-chat .loox-ai-workspace-tabs .loox-ai-template-
  background:#142033!important;color:#fff!important;
 }
 
-/* Sidebar overlay mode: keep page sizing and centered AI switcher unchanged. */
-body.loox-sitewide-active > aside#loox-sitewide-drawer{position:fixed!important}
-
 /* Image generator sidebar overlay sizing lock: opening global navigation must
    never change the generator grid, settings column, canvas, or prompt composer. */
-body.lig-body.loox-sitewide-active > main.lig-workspace,
-body.lig-body.loox-sitewide-active.loox-sitewide-sidebar-open > main.lig-workspace,
-body.lig-body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main.lig-workspace{
+body.lig-body.loox-sitewide-active > main.lig-workspace{
  display:grid!important;
  margin-left:0!important;
  margin-right:0!important;
@@ -1518,9 +1162,6 @@ body.lig-body.loox-sitewide-active:has(> #loox-sitewide-drawer.is-open) > main.l
 body.lig-body.loox-sitewide-active > main.lig-workspace > .lig-settings,
 body.lig-body.loox-sitewide-active > main.lig-workspace > .lig-main{
  min-width:0!important;
-}
-body.lig-body.loox-sitewide-active > aside#loox-sitewide-drawer{
- position:fixed!important;
 }
 
 /* Shared AI mode navigation: chat uses the same centered workspace switcher as
@@ -1626,10 +1267,8 @@ body.ai-chat.loox-generator-no-topnav.loox-sitewide-active
 body.loox-sitewide-active .loox-sitewide-links a{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;font-size:12px;font-weight:550;letter-spacing:-.015em;white-space:nowrap}
 body.loox-sitewide-active .loox-ai-workspace-symbol svg{width:17px;height:17px;display:block}
 body.loox-sitewide-active .loox-internal-templates-tabs{display:none!important}
-body.loox-sitewide-active .loox-sitewide-drawer-list{width:100%;min-width:0}
 @media(min-width:901px){
- body.loox-sitewide-active:not(.loox-ai-sessions-only) .loox-sitewide-burger,
- body.loox-sitewide-active:not(.loox-ai-sessions-only) .loox-sitewide-dock-toggle{display:none!important}
+ body.loox-sitewide-active:not(.loox-ai-sessions-only) .loox-sitewide-burger{display:none!important}
 }
 @media(max-width:1200px){
  body.loox-sitewide-active .loox-sitewide-links{gap:clamp(4px,1vw,12px)}
@@ -1646,10 +1285,8 @@ body.loox-sitewide-active .loox-sitewide-drawer-list{width:100%;min-width:0}
   max-width:none!important;
   box-sizing:border-box!important;
  }
- body.loox-sitewide-active.loox-workspace-sidebar .loox-sitewide-burger,
- body.loox-sitewide-active.loox-workspace-sidebar .loox-sitewide-dock-toggle{display:none!important}
- body.loox-sitewide-active:not(.loox-workspace-sidebar):not(.loox-ai-sessions-only) .loox-sitewide-burger,
- body.loox-sitewide-active:not(.loox-workspace-sidebar):not(.loox-ai-sessions-only) .loox-sitewide-dock-toggle{display:flex!important}
+ body.loox-sitewide-active.loox-workspace-sidebar .loox-sitewide-burger{display:none!important}
+ body.loox-sitewide-active:not(.loox-workspace-sidebar):not(.loox-ai-sessions-only) .loox-sitewide-burger{display:flex!important}
 }
 @media(max-width:900px){
  body.loox-sitewide-active.loox-workspace-sidebar > main{margin-left:0!important;width:100%!important}
@@ -1680,40 +1317,12 @@ body.loox-sitewide-active .lx-avatar{overflow:hidden;flex-shrink:0}
   padding-left:clamp(20px,2vw,34px)!important;
   padding-right:clamp(20px,2vw,34px)!important;
  }
- body.loox-sitewide-active.loox-workspace-sidebar.loox-sitewide-sidebar-open > main{
-  padding-left:calc(var(--loox-workspace-edge) + clamp(20px,2vw,34px))!important;
- }
  body.loox-sitewide-active.loox-workspace-sidebar > main > .loox-community,
  body.loox-sitewide-active.loox-workspace-sidebar > main > #community-root,
  body.loox-sitewide-active.loox-workspace-sidebar > main > #creator-community,
  body.loox-sitewide-active.loox-workspace-sidebar > main > #template-library{
   width:100%!important;max-width:none!important;min-width:0!important;margin:0!important;
  }
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle{
-  display:flex!important;visibility:visible!important;pointer-events:auto!important;
-  position:fixed!important;z-index:10005!important;
-  top:155px!important;left:0!important;
-  width:22px!important;height:62px!important;min-width:22px!important;
-  padding:0!important;transform:translateY(-50%)!important;
-  border:1px solid #2a405c!important;border-left:0!important;
-  border-radius:0 8px 8px 0!important;
-  background:#142033!important;color:#a6ccff!important;
-  box-shadow:2px 2px 12px #0005!important;
- }
- body.loox-sitewide-active.loox-workspace-sidebar.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{left:var(--loox-workspace-edge)!important}
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-bars{
-  display:block!important;width:2px!important;height:22px!important;
-  border-radius:2px!important;background:currentColor!important;opacity:.5!important;
-  margin-left:1px!important
- }
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-arrow{
-  display:block!important;margin-left:1px!important;font:700 14px/1 Inter,system-ui,sans-serif!important;
- }
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:hover,
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:focus-visible{
-  background:#2a405c!important;color:#fff!important;border-color:#2a405c!important;
- }
- body.loox-sitewide-active.loox-workspace-sidebar > .loox-sitewide-scrim{display:none!important}
 }
 @media(max-width:900px){
  body.loox-sitewide-active.loox-workspace-sidebar > main{
@@ -1721,46 +1330,14 @@ body.loox-sitewide-active .lx-avatar{overflow:hidden;flex-shrink:0}
   margin:0!important;left:0!important;transform:none!important;
   padding:24px clamp(12px,3vw,22px)!important;box-sizing:border-box!important;
  }
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle{
-  width:22px!important;height:54px!important;min-width:22px!important;
-  display:flex!important;align-items:center!important;justify-content:center!important;
-  background:#142033!important;border-radius:0 8px 8px 0!important;
- }
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-bars{display:none!important}
- body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-arrow{display:block!important}
 }
 @media(prefers-reduced-motion:reduce){
  body.loox-sitewide-active.loox-workspace-sidebar > main{transition:none!important}
 }
 
-/* V61 — the landing-page navigation is the ONLY site navigation. */
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation{
- border-bottom:0!important;max-height:none!important;min-height:0!important;
- width:100%!important;overflow-y:auto!important;overflow-x:hidden!important;
- padding:7px 5px 15px!important;box-sizing:border-box!important
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-sitewide-drawer-list{
- min-height:0!important;min-width:0!important;width:100%!important;
- display:flex!important;flex-direction:column!important;overflow-y:auto!important
-}
-body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-dock-toggle{
- display:flex!important;visibility:visible!important;pointer-events:auto!important;
- top:165px!important;z-index:10005!important
-}
-body.loox-generator-no-topnav.loox-sitewide-active > aside#loox-sitewide-drawer{
- z-index:10004!important
-}
-body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
- display:block!important;z-index:10003!important
-}
-
 /* V62: one visual design for the ONE LOOX sidebar on every route.
    Remove V9's Community/Workspace-specific purple rectangle edge grip.
-   All pages use the original landing-page thin | grip, same icon/text spacing,
-   hover arrow and 300ms ease. Keep desktop content padding behavior intact. */
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle,
-body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-dock-toggle{
+   All pages use the original landing-page thin | grip, same icon/text spacing{
  display:flex!important;
  align-items:center!important;
  justify-content:center!important;
@@ -1787,87 +1364,9 @@ body.loox-generator-no-topnav.loox-sitewide-active > button.loox-sitewide-dock-t
  cursor:pointer!important;
  transition:left .3s cubic-bezier(.2,.83,.23,1),background-color .2s ease!important;
 }
-body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle,
-body.loox-sitewide-active.loox-workspace-sidebar.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{
- left:252px!important;
-}
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle .loox-dock-bars,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-bars{
- display:block!important;
- flex:none!important;
- width:2px!important;
- min-width:2px!important;
- height:32px!important;
- margin:0!important;
- background:#a6ccff!important;
- border-radius:6px!important;
- box-shadow:0 0 7px #60a5fa6b!important;
- font-size:0!important;
- line-height:0!important;
- opacity:1!important;
-}
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle .loox-dock-arrow,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle .loox-dock-arrow{
- display:none!important;
- margin:0!important;
- font:800 27px/1 system-ui,sans-serif!important;
-}
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:hover,
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:focus-visible,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:hover,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:focus-visible{
- background:#2a405c!important;
- border:0!important;
- color:#d9eaff!important;
-}
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:hover .loox-dock-bars,
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:focus-visible .loox-dock-bars,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:hover .loox-dock-bars,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:focus-visible .loox-dock-bars{display:none!important}
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:hover .loox-dock-arrow,
-body.loox-sitewide-active > button.loox-sitewide-dock-toggle:focus-visible .loox-dock-arrow,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:hover .loox-dock-arrow,
-body.loox-sitewide-active.loox-workspace-sidebar > button.loox-sitewide-dock-toggle:focus-visible .loox-dock-arrow{display:block!important}
-/* One uniform navigation control appearance independent of page body classes. */
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link{
- font:500 13px/1.35 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif!important;
- letter-spacing:-.012em!important;
- color:#d9eaff!important;
- min-height:37px!important;
- margin:0!important;
- padding:7px 11px!important;
- gap:11px!important;
- border:0!important;
- border-radius:9px!important;
- background:transparent!important;
- text-decoration:none!important;
- transition:background-color .18s ease,color .18s ease!important;
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link[aria-current="page"]{
- color:#fff!important;background:#20314a!important;
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:hover,
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link:focus-visible{
- color:#fff!important;background:#20314a!important;
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon{
- width:19px!important;height:19px!important;min-width:19px!important;
- color:#a6ccff!important;
-}
-body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox-workspace-icon svg{
- width:18px!important;height:18px!important;
-}
 @media(max-width:900px){
- body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle,
- body.loox-sitewide-active.loox-workspace-sidebar.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{
-  left:min(252px,88vw)!important;
- }
 }
 @media(prefers-reduced-motion:reduce){
- body.loox-sitewide-active > button.loox-sitewide-dock-toggle,
- body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation a.loox-workspace-link{
-  transition:none!important;
- }
 }
 
 /* AI Chat: desktop LOOX navigation docks alongside the workspace instead
@@ -1878,35 +1377,18 @@ body.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-navigation .loox
   padding-left:0!important;
   transition:padding-left .3s cubic-bezier(.2,.83,.23,1)!important;
  }
- body.ai-chat.loox-sitewide-active.loox-sitewide-sidebar-open > main.ai-chat-stage{
-  padding-left:252px!important;
- }
- body.ai-chat.loox-sitewide-active.loox-sitewide-sidebar-open > aside#loox-sitewide-drawer{
-  box-shadow:none!important;
- }
 }
 @media(prefers-reduced-motion:reduce){
  body.ai-chat.loox-sitewide-active > main.ai-chat-stage{transition:none!important}
 }
 
 /* V72: avoid the temporary navigation-only sidebar layout during page reload.
-   Reveal a fully assembled nav + sessions panel, rather than the transient
-   fallback link and half-initialized session history. */
-body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list:not(.loox-sidebar-ready){
+   Reveal a fully assembled nav + sessions panel{
  visibility:hidden!important;
  opacity:0!important;
  pointer-events:none!important;
 }
-body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list.loox-sidebar-ready{
- visibility:visible!important;
- opacity:1!important;
- pointer-events:auto!important;
-}
-body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list{
- transition:opacity .24s ease!important;
-}
 @media(prefers-reduced-motion:reduce){
- body.loox-ai-sessions-only #loox-sitewide-drawer .loox-sitewide-drawer-list{transition:none!important}
 }
 
 /* V73 — premium LOOX wordmark inside the native AI Agent / Image / Video headers.
@@ -2226,22 +1708,6 @@ body.loox-apps-open{overflow:hidden!important}
 
 /* V93: mobile sidebar stays fully within viewport after scrolling home. */
 @media(max-width:790px){
- body.loox-sitewide-active > aside#loox-sitewide-drawer,
- body.experience-shell.loox-sitewide-active > aside#loox-sitewide-drawer{
-  position:fixed!important;
-  top:0!important;bottom:0!important;left:0!important;
-  height:100dvh!important;max-height:100dvh!important;
-  padding-top:calc(18px + env(safe-area-inset-top,0px))!important;
-  overflow-y:auto!important;overscroll-behavior:contain!important;
-  z-index:10006!important;
- }
- body.loox-sitewide-active > button.loox-sitewide-scrim.is-open{
-  position:fixed!important;inset:0!important;
-  z-index:10004!important;
- }
- body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-dock-toggle{
-  z-index:10007!important;
- }
 }
 
 /* V94: small mobile app sheet with swipe-to-dismiss animation. */
@@ -2682,17 +2148,6 @@ html body.loox-studio .studio-button{font-size:14px!important;min-height:38px!im
    An orphaned sidebar scrim must NEVER tint the landing page while the
    navigation drawer is closed. The real open drawer retains its backdrop. */
 @media(max-width:900px){
-  body.loox-sitewide-active > button.loox-sitewide-scrim:not(.is-open),
-  body.loox-sitewide-active:not(.loox-sitewide-sidebar-open) > button.loox-sitewide-scrim,
-  body.loox-sitewide-active:not(:has(> aside#loox-sitewide-drawer.is-open)) > button.loox-sitewide-scrim{
-    display:none!important;
-    visibility:hidden!important;
-    opacity:0!important;
-    pointer-events:none!important;
-  }
-  body.loox-sitewide-active.loox-sitewide-sidebar-open > button.loox-sitewide-scrim.is-open{
-    inset:var(--loox-sitewide-height,64px) 0 0!important;
-  }
 }
 @media(max-width:790px){
   /* Do not paint an app-modal scrim when the native dialog is not open. */

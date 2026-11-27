@@ -5,6 +5,9 @@ on:
     paths:
       - ".github/workflows/site-ui-audit.yml"
       - "scripts/site-ui-static-audit.py"
+      - "scripts/sidebar-audit.mjs"
+      - "platform/sidebar*"
+      - "platform/workspace-navigation*"
       - "scripts/site-responsive-audit.mjs"
       - "scripts/privacy-consent-audit.mjs"
       - "scripts/account-security-audit.mjs"
@@ -74,6 +77,10 @@ jobs:
           LOOX_AUDIT_URL=http://127.0.0.1:8766/ node scripts/account-security-audit.mjs
       - name: Verify Settings 2.0 categories, search and preference persistence
         run: LOOX_AUDIT_URL=http://127.0.0.1:8766/ node scripts/settings-2-audit.mjs
+      - name: Verify shared sidebar, active routes, mobile scroll and desktop persistence
+        run: |
+          python3 -m http.server 8769 --bind 127.0.0.1 >/tmp/loox-sidebar-server.log 2>&1 &
+          LOOX_AUDIT_URL=http://127.0.0.1:8769/ node scripts/sidebar-audit.mjs
       - name: Run responsive overflow and interaction checks
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-ui-audit-server.log 2>&1 &

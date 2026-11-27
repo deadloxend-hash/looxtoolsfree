@@ -42,8 +42,6 @@ html body #loox-navigation-bar .loox-sitewide-wordmark,
 html body #loox-navigation-bar .loox-workspace-wordmark{font-size:28px!important;line-height:1!important;letter-spacing:-1.5px!important;padding:0 3px 0 0!important;white-space:nowrap!important}
 /* Retire the floating edge control now that the actual header button is mounted. */
 html body #loox-sidebar-edge-handle{display:none!important}
-html body.loox-sitewide-active>button.loox-sitewide-scrim.is-open{display:block!important;position:fixed!important;inset:64px 0 0!important;width:100%!important;height:calc(100dvh - 64px)!important;z-index:10030!important;background:#02071088!important}
-html body.loox-sitewide-active>aside#loox-sitewide-drawer.is-open{z-index:10031!important;top:64px!important;max-height:calc(100dvh - 64px)!important}
 html body.loox-sitewide-active>aside#loox-sitewide-drawer:not(.is-open){visibility:hidden!important;pointer-events:none!important;transform:translateX(-105%)!important}
 @media(max-width:1100px){html body #loox-navigation-bar .loox-sitewide-links{display:none!important}}
 @media(max-width:790px){

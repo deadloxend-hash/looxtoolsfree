@@ -51,6 +51,7 @@
    document.head.append(script);
  }
 
+ document.body.classList.add('loox-sidebar-premium');
  const page=location.pathname.split('/').pop()||'index.html';
  const pinnedWorkspace=['community.html','trending.html','templates.html','workflows.html','collections.html','creator.html','account.html'].includes(page);
  if(pinnedWorkspace)document.body.classList.add('loox-workspace-sidebar');
@@ -391,7 +392,7 @@
  let navigationReady=false;
  const revealWhenReady=()=>{
   if(!navigationReady)return;
-  if(hasSessionHistory&&!sideContent.querySelector(page==='ai-chat.html'?'#aiRecentPanel':'#loox-media-session-rail'))return;
+  // Navigation remains usable while independent private history initializes.
   sideContent.classList.add('loox-sidebar-ready');
  };
  // Reuse the real MediaSessions DOM only in image/video generation workspaces.
@@ -427,12 +428,14 @@
  fallback.href=url('ai-image-landing.html');sideContent.append(fallback);
  sidebar.append(sideContent);
  const navStyle=el('link');navStyle.rel='stylesheet';
- navStyle.href=url('platform/workspace-navigation.css?v=14');
+ navStyle.href=url('platform/workspace-navigation.css?v=sidebar-20261127');
  document.head.append(navStyle);
- import(url('platform/workspace-navigation.js?v=settings-2-20261124')).then(({mountWorkspaceNavigation})=>{
+ const sidebarStyle=el('link');sidebarStyle.rel='stylesheet';sidebarStyle.href=url('platform/sidebar.css?v=sidebar-20261127');document.head.append(sidebarStyle);
+ import(url('platform/workspace-navigation.js?v=sidebar-20261127')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
+  const footer=sideContent.querySelector('.loox-workspace-footer');if(footer)sidebar.append(footer);
   if(existingRail)sideContent.append(existingRail);
   navigationReady=true;
   revealWhenReady();
@@ -456,52 +459,8 @@
  dockToggle.innerHTML='<span class="loox-dock-bars" aria-hidden="true"></span><span class="loox-dock-arrow" aria-hidden="true">›</span>';
  // Do not mount the unrelated sitewide tools drawer in the focused AI workspaces.
  document.body.append(scrim,sidebar,dockToggle);
- const desktop=matchMedia('(min-width:901px)');
- const setDrawer=open=>{
-  const generationScroll=document.querySelector('body.loox-conversations .lig-content-scroll');
-  const savedScroll=generationScroll?.scrollTop;
-  const atBottom=generationScroll&&generationScroll.scrollHeight-generationScroll.clientHeight-savedScroll<160;
-  // Workspace sidebars default to open, but the edge tab always lets users hide or restore them.
-  if(open){sidebar.scrollTop=0;sideContent.scrollTop=0;}
-  sidebar.classList.toggle('is-open',open);
-  sidebar.inert=!open;
-  if(open&&!desktop.matches)lockAppsScroll();else if(appLayer.hidden)unlockAppsScroll();
-  if(!open&&sidebar.contains(document.activeElement))burger.focus({preventScroll:true});
-  scrim.classList.toggle('is-open',open&&(!desktop.matches||hasSessionHistory));
-  document.body.classList.toggle('loox-sitewide-sidebar-open',open);
-  dockToggle.setAttribute('aria-expanded',String(open));
-  dockToggle.setAttribute('aria-label',open?'Collapse LOOX sidebar':'Open LOOX sidebar');
-  dockToggle.title=open?'Collapse sidebar':'Expand sidebar';
-  dockToggle.querySelector('.loox-dock-arrow').textContent=open?'‹':'›';
-  burger.setAttribute('aria-expanded',String(open));
-  burger.setAttribute('aria-label',open?'Hide LOOX navigation':'Show LOOX navigation');
-  if(generationScroll)requestAnimationFrame(()=>{
-   generationScroll.scrollTop=atBottom?generationScroll.scrollHeight:savedScroll;
-   window.dispatchEvent(new Event('loox:sidebar-layout'));
-  });
- };
- const closeDrawer=()=>setDrawer(false);
- burger.addEventListener('click',()=>setDrawer(!sidebar.classList.contains('is-open')));
- dockToggle.addEventListener('click',()=>burger.click());
- // Every AI tab starts collapsed; the user can always open it manually.
- // Do not automatically expand these six tabs when switching desktop/mobile.
- desktop.addEventListener('change',()=>{
-  if(closedByDefaultTabs)setDrawer(false);
-  else setDrawer(!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
- });
- setDrawer(!closedByDefaultTabs&&!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
- scrim.addEventListener('click',closeDrawer);
- sidebar.addEventListener('click',event=>{if(event.target.closest('a[href]')&&!desktop.matches)closeDrawer();});
- document.addEventListener('click',event=>{
-  if(event.target.closest('.loox-notification-bell,.loox-profile-trigger,a[href*="settings.html"]'))closeDrawer();
- },true);
- document.addEventListener('keydown',event=>{
-  if(event.key!=='Tab'||desktop.matches||!sidebar.classList.contains('is-open'))return;
-  const items=[burger,...sidebar.querySelectorAll('a[href],button:not([disabled]),input')].filter(n=>n.getClientRects().length);
-  const index=items.indexOf(document.activeElement);
-  if(event.shiftKey&&index<=0){event.preventDefault();items.at(-1)?.focus();}
-  else if(!event.shiftKey&&index===items.length-1){event.preventDefault();burger.focus();}
- });
+ import(url('platform/sidebar.js?v=sidebar-20261127')).then(({mountSidebar})=>mountSidebar({sidebar,content:sideContent,burger,scrim,dockToggle,lock:lockAppsScroll,unlock:()=>{if(appLayer.hidden)unlockAppsScroll();}}));
+ const closeDrawer=()=>document.dispatchEvent(new Event('loox:close-sidebar'));
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only
  // the rendered credits and Upgrade controls to the small bundle beside LOOX.
@@ -529,77 +488,7 @@
 
  const closeLogo=()=>{const details=account.querySelector('.lx-profile-details');if(details)details.open=false;};
 
- // Small persistent account panel pinned to the bottom of the shared sidebar.
- // Keep it separate from the scrollable navigation; mirror the real account name.
- const sideFooter=el('div','loox-sidebar-footer');
- const sideAccount=el('a','loox-sidebar-account-row');sideAccount.href=url('creator.html');
- sideAccount.setAttribute('aria-label','Manage your LOOX account');
- const avatarMark=el('span','loox-sidebar-avatar');
- avatarMark.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="9" r="3"/><path d="M5.5 19c.8-4 12.2-4 13 0"/></svg>';
- const sideIdentity=el('span','loox-sidebar-identity');
- const sideName=el('strong','loox-sidebar-account-name','Profile');
- const sideSubtitle=el('small','','Creator & account');sideIdentity.append(sideName,sideSubtitle);
- sideAccount.append(avatarMark,sideIdentity);
- const sideOptions=el('div','loox-sidebar-utility-panel');sideOptions.hidden=true;
- sideOptions.id='loox-sidebar-utility-panel';
- const sideActions=el('div','loox-sidebar-actions');sideActions.setAttribute('role','group');
- sideActions.setAttribute('aria-label','Workspace quick settings');
- const sidebarIcons={};
- function makeSideAction(kind,label,href){
-  const node=el(href?'a':'button','loox-sidebar-action');
-  if(href)node.href=url(href);else node.type='button';
-  node.title=label;node.setAttribute('aria-label',label);node.innerHTML=pict(kind);
-  sideActions.append(node);sidebarIcons[kind]=node;return node;
- }
  function openCommunityNotifications(){import(url('platform/notifications.js?v=nav-20261127-1')).then(m=>m.openNotifications());}
- const bell=makeSideAction('notifications','Notifications');
- makeSideAction('settings','Account settings','settings.html#workspace-preferences');
- const globe=makeSideAction('language','Change language');
- const moon=makeSideAction('theme','Toggle light and dark theme');
- bell.setAttribute('aria-controls',sideOptions.id);bell.setAttribute('aria-expanded','false');
- globe.setAttribute('aria-controls',sideOptions.id);globe.setAttribute('aria-expanded','false');
- let panelKind='';
- function closeSideOptions(){
-  panelKind='';sideOptions.hidden=true;
-  bell.setAttribute('aria-expanded','false');globe.setAttribute('aria-expanded','false');
- }
- function showSideOptions(kind){
-  if(panelKind===kind&&!sideOptions.hidden){closeSideOptions();return}
-  panelKind=kind;sideOptions.replaceChildren();
-  sideOptions.append(el('strong','loox-sidebar-panel-title',kind==='language'?'Language':'Notifications'));
-  if(kind==='language'){
-   const languages=el('div','loox-sidebar-language-grid');
-   [['en','English'],['es','Español'],['fr','Français'],['de','Deutsch']].forEach(([code,label])=>{
-    const option=el('button','',label);option.type='button';
-    option.addEventListener('click',()=>{
-     try{localStorage.setItem('loox-language',code)}catch{}
-     const next=new URL(location.href);
-     if(code==='en')next.searchParams.delete('lang');else next.searchParams.set('lang',code);
-     location.assign(next.href);
-    });
-    languages.append(option);
-   });
-   sideOptions.append(languages);
-   const more=el('a','','More language settings');more.href=url('settings.html#workspace-preferences');sideOptions.append(more);
-  }else{
-   const view=el('a','','Open Community notifications');view.href=url('community.html?notifications=1');sideOptions.append(view);
-   const activity=el('a','','View account activity');activity.href=url('account.html#usage');sideOptions.append(activity);
-  }
-  sideOptions.hidden=false;
-  bell.setAttribute('aria-expanded',String(kind==='notifications'));
-  globe.setAttribute('aria-expanded',String(kind==='language'));
- }
- bell.addEventListener('click',openCommunityNotifications);
- globe.addEventListener('click',()=>showSideOptions('language'));
- moon.addEventListener('click',()=>{closeSideOptions();toggleSiteTheme(moon)});
- document.addEventListener('pointerdown',event=>{
-  if(!sideFooter.contains(event.target))closeSideOptions();
- });
- document.addEventListener('keydown',event=>{
-  if(event.key==='Escape'&&!sideOptions.hidden)closeSideOptions();
- });
- // Do not mount a profile card or utility footer inside the shared sidebar.
- // Account controls remain in the existing header/profile menu.
 
  function enableProfileShortcuts(menu){
   if(menu.querySelector('.loox-profile-actions'))return;
@@ -779,8 +668,7 @@
     enableProfileShortcuts(menu);
   });
   const userName=account.querySelector('.loox-popover-name,.lx-profile-name')?.textContent?.trim();
-  sideName.textContent=userName||'Profile';
-  sideSubtitle.textContent=userName?'Creator & account':'Sign in or create account';
+
   syncCreatorAvatar();
  }
  document.addEventListener('loox-header',syncAccountHeader);
