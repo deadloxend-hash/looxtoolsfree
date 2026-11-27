@@ -1,8 +1,7 @@
 import {state,auth} from './account.js?v=settings-2-20261124';
 import {cloudRequest,cloudImage,PROFILE_API} from './profile-cloudflare.js?v=settings-2-20261124';
 import {category,relativeTime,timeGroup,target,message,mergeNotifications} from './notifications-core.mjs';
-const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('./notifications.css?v=20261126',import.meta.url);document.head.append(style);
-const headerAlignment=document.createElement('style');headerAlignment.textContent=`@media(max-width:790px){#loox-sitewide-header .loox-notification-bell{order:5!important;margin:0!important;width:39px;height:39px}body.loox-creative-landing #loox-sitewide-header .loox-notification-bell{order:8!important}}@media(max-width:420px){#loox-sitewide-header .loox-notification-bell{width:35px;height:35px}}`;document.head.append(headerAlignment);
+const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('./notifications.css?v=nav-20261127-1',import.meta.url);document.head.append(style);
 const svg=(paths)=>'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+paths+'</svg>';
 const icons={bell:svg('<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/>'),close:svg('<path d="m6 6 12 12M6 18 18 6"/>'),user:svg('<circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>'),like:svg('<path d="M20 5c-3-3-6-1-8 1-2-2-5-4-8-1-5 5 3 10 8 15 5-5 13-10 8-15Z"/>'),comment:svg('<path d="M21 11a9 9 0 1 0-5 8l5 2-2-5a9 9 0 0 0 2-5Z"/>'),system:svg('<path d="m12 3 3 6 6 3-6 3-3 6-3-6-6-3 6-3Z"/>')};
 const el=(tag,cls='',text='')=>{const n=document.createElement(tag);n.className=cls;n.textContent=text;return n;};
@@ -44,10 +43,10 @@ export function createNotificationPanel({userState=state,request=(p,o)=>cloudReq
 }
 export function openNotifications(){if(!state.user){auth('login');return;}if(activePanel?.isConnected){activePanel.focus();return;}activePanel=createNotificationPanel();}
 export function mountNotifications(){
- const host=document.querySelector('.loox-sitewide-inner');if(!host||host.querySelector('.loox-notification-bell'))return;
+ const host=document.getElementById('loox-header-actions');if(!host||host.querySelector('.loox-notification-bell'))return;
  function bell(){const b=el('button','loox-notification-bell');b.type='button';b.innerHTML=icons.bell;b.setAttribute('aria-label','Notifications');b.setAttribute('aria-haspopup','dialog');const count=el('span','ln-count');count.hidden=true;b.append(count);b.onclick=openNotifications;return b;}
- host.insertBefore(bell(),host.querySelector('.loox-sitewide-account'));
- const native=document.querySelector('body>header.lig-header,body>header.lx-header');if(native){const b=bell();b.classList.add('ln-native-bell');let anchor=native.querySelector('.loox-mobile-app-native-trigger,.lig-header-user,[data-loox-account]');while(anchor&&anchor.parentElement!==native)anchor=anchor.parentElement;native.insertBefore(b,anchor||null);}
+ const placeholder=host.querySelector('.loox-notification-placeholder');
+ if(placeholder)placeholder.replaceWith(bell());else host.insertBefore(bell(),host.querySelector('.loox-sitewide-account'));
  document.body.classList.add('loox-notifications-ready');let pending=false;
  async function refresh(){if(pending||document.hidden)return;if(!state.user){countUpdate(0);return;}pending=true;const id=state.user.id;try{const data=await cloudRequest(state,'notifications',{query:{summary:1}});if(state.user?.id===id)countUpdate(data.unread_count);}catch{}finally{pending=false;if(state.user?.id!==id)refresh();}}
  document.addEventListener('loox-user',()=>{countUpdate(0);refresh();});document.addEventListener('visibilitychange',refresh);refresh();setInterval(refresh,60000);

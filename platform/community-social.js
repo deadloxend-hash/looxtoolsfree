@@ -265,7 +265,7 @@ export function installSocial(Community,{element:e,action:a,rpc,result,mediaURL,
     }catch(error){status.textContent=error.message;}
    }
   },
-  async notifications(){const m=await import('./notifications.js?v=20261126');m.openNotifications();},
+  async notifications(){const m=await import('./notifications.js?v=nav-20261127-1');m.openNotifications();},
   async details(post){
    // Re-fetch visibility on every open. Saved references and stale cards confer no permission.
    const fresh=await cloudRequest(this.state,'post',{query:{id:post.id}});if(!fresh)throw Error('This post is no longer public.');

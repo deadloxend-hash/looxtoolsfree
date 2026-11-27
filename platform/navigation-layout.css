@@ -1,0 +1,71 @@
+/* Canonical navigation layout. Actions are one flex item in either header;
+   their DOM order is search, utilities, notifications, account. Legacy page
+   order values cannot split this group or put a bell between brand and space. */
+html body #loox-navigation-bar{
+ display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+ gap:10px!important;padding:8px 12px!important;height:64px!important;
+ min-height:64px!important;max-height:64px!important;box-sizing:border-box!important;
+ width:100%!important;overflow:visible!important;
+}
+html body #loox-navigation-bar>.loox-sitewide-burger{
+ display:grid!important;place-items:center!important;order:-10!important;
+ width:38px!important;min-width:38px!important;height:38px!important;flex:0 0 38px!important;
+ margin:0!important;padding:0!important;border:1px solid #2a405c!important;
+ border-radius:10px!important;background:#142033!important;color:#d9eaff!important;cursor:pointer;
+}
+.loox-sitewide-burger svg{width:20px;height:20px;display:block}
+html body #loox-navigation-bar>.loox-sitewide-logo-wrap,
+html body #loox-navigation-bar>.lig-head-start{order:-9!important;flex:0 0 auto!important;margin:0!important;min-width:0!important}
+html body #loox-navigation-bar #loox-header-actions{
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;
+ flex:0 0 auto!important;gap:8px!important;margin:0 0 0 auto!important;
+ width:auto!important;min-width:0!important;order:20!important;position:relative;
+}
+html body #loox-navigation-bar #loox-header-actions>:is(button,.loox-sitewide-account){order:0!important;margin:0!important;position:relative!important;inset:auto!important;transform:none!important;flex:0 0 auto!important}
+html body #loox-navigation-bar #loox-header-actions>:is(button,.loox-notification-placeholder){
+ display:grid!important;place-items:center!important;box-sizing:border-box!important;
+ width:38px!important;min-width:38px!important;max-width:38px!important;height:38px!important;min-height:38px!important;
+ padding:0!important;border:1px solid #2a405c!important;border-radius:10px!important;background:#142033!important;color:#d9eaff!important;
+}
+html body #loox-navigation-bar #loox-header-actions>button svg{width:20px!important;height:20px!important;display:block!important}
+html body #loox-navigation-bar #loox-header-actions>.loox-sitewide-account{display:flex!important;align-items:center!important;gap:0!important;padding:0!important;width:38px!important;min-width:38px!important;height:38px!important}
+html body #loox-navigation-bar #loox-header-actions .lx-profile-details{display:block!important;margin:0!important;width:38px!important;height:38px!important}
+html body #loox-navigation-bar #loox-header-actions .lx-profile-trigger{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:38px!important;min-width:38px!important;height:38px!important;min-height:38px!important;margin:0!important;padding:0!important}
+html body #loox-navigation-bar #loox-header-actions .lx-avatar{width:32px!important;height:32px!important;flex:none!important;overflow:hidden!important;border-radius:50%!important}
+html body #loox-navigation-bar #loox-header-actions .lx-avatar img{width:100%!important;height:100%!important;max-width:100%!important;object-fit:cover!important}
+html body #loox-navigation-bar #loox-header-actions>.loox-sitewide-account>:not(.lx-profile-details){display:none!important}
+html body #loox-navigation-bar .loox-sitewide-credit-dock{order:10!important;margin:0!important}
+html body #loox-navigation-bar .loox-sitewide-links{order:0!important}
+html body #loox-navigation-bar .loox-sitewide-logo,
+html body #loox-navigation-bar .loox-workspace-brand{height:38px!important;padding:0!important;margin:0!important;min-width:0!important}
+html body #loox-navigation-bar .loox-sitewide-wordmark,
+html body #loox-navigation-bar .loox-workspace-wordmark{font-size:28px!important;line-height:1!important;letter-spacing:-1.5px!important;padding:0 3px 0 0!important;white-space:nowrap!important}
+/* Retire the floating edge control now that the actual header button is mounted. */
+html body #loox-sidebar-edge-handle{display:none!important}
+html body.loox-sitewide-active>button.loox-sitewide-scrim.is-open{display:block!important;position:fixed!important;inset:64px 0 0!important;width:100%!important;height:calc(100dvh - 64px)!important;z-index:10030!important;background:#02071088!important}
+html body.loox-sitewide-active>aside#loox-sitewide-drawer.is-open{z-index:10031!important;top:64px!important;max-height:calc(100dvh - 64px)!important}
+html body.loox-sitewide-active>aside#loox-sitewide-drawer:not(.is-open){visibility:hidden!important;pointer-events:none!important;transform:translateX(-105%)!important}
+@media(max-width:1100px){html body #loox-navigation-bar .loox-sitewide-links{display:none!important}}
+@media(max-width:790px){
+ html body #loox-navigation-bar .loox-sitewide-credit-dock,
+ html body #loox-navigation-bar>.loox-ai-workspace-tabs,
+ html body #loox-navigation-bar>.lig-head-tabs,
+ html body #loox-navigation-bar .lig-page-name,
+ html body #loox-navigation-bar>.studio-menu-host{display:none!important}
+ html body #loox-navigation-bar{gap:6px!important;padding-inline:8px!important}
+ html body #loox-navigation-bar #loox-header-actions{gap:6px!important}
+}
+@media(max-width:360px){
+ html body #loox-navigation-bar{gap:4px!important;padding-inline:6px!important}
+ html body #loox-navigation-bar #loox-header-actions{gap:4px!important}
+ html body #loox-navigation-bar>.loox-sitewide-burger,
+ html body #loox-navigation-bar #loox-header-actions>:is(button,.loox-notification-placeholder),
+ html body #loox-navigation-bar #loox-header-actions>.loox-sitewide-account,
+ html body #loox-navigation-bar #loox-header-actions .lx-profile-details,
+ html body #loox-navigation-bar #loox-header-actions .lx-profile-trigger{width:34px!important;min-width:34px!important;max-width:34px!important;height:36px!important;min-height:36px!important;flex-basis:34px!important}
+ html body #loox-navigation-bar .loox-workspace-wordmark,
+ html body #loox-navigation-bar .loox-sitewide-wordmark{font-size:25px!important}
+}
+
+/* Standalone Settings keeps its own scrolling content below navigation. */
+html body.settings-v2.loox-sitewide-active .s2-workspace{height:calc(100dvh - 64px);min-height:0}

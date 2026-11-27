@@ -1,4 +1,4 @@
-import {createNotificationPanel} from '../platform/notifications.js?v=20261126';
+import {createNotificationPanel} from '../platform/notifications.js?v=nav-20261127-1';
 const out=document.getElementById('results'),frame=document.getElementById('page'),wait=ms=>new Promise(r=>setTimeout(r,ms));let passed=0,failed=0;const check=(ok,msg)=>{ok?passed++:failed++;out.textContent+='\n'+(ok?'PASS ':'FAIL ')+msg;};
 const until=async fn=>{for(let i=0;i<180;i++){if(fn())return;await wait(40);}throw Error('Timed out');};
 import {fixture} from './notifications-fixture.mjs';

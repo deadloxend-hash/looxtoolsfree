@@ -6,12 +6,8 @@
 html[data-lx-theme=light] .ln-panel{background:#f6f9ff;color:#182c46}html[data-lx-theme=light] .ln-filters button{background:#e0e9f5;color:#243d5a}html[data-lx-theme=light] .ln-filters button[aria-pressed=true]{background:#bdd6f7}html[data-lx-theme=light] .ln-avatar{background:#dce7f4}
 
 .ln-brand>img{inset:9px 3px;width:32px;height:20px;object-fit:contain;border-radius:0}
-@media(max-width:430px){html body #loox-sitewide-header .loox-sitewide-credit-bundle>.lx-upgrade{display:none!important}html body #loox-sitewide-header .loox-sitewide-inner{column-gap:5px!important}}
-@media(max-width:360px){html body #loox-sitewide-header .loox-sitewide-inner{padding-inline:8px!important;gap:4px!important}.loox-notification-bell{width:30px}}
 
-body:not(.loox-generator-no-topnav) .ln-native-bell{display:none!important}body.loox-generator-no-topnav>header .ln-native-bell{display:grid!important;position:relative!important;flex:none!important;order:5!important;margin:0!important}body.loox-generator-no-topnav>header .loox-mobile-app-native-trigger{order:6!important}body.loox-generator-no-topnav>header .lig-header-user{order:7!important}
 html[data-loox-motion=reduce] .ln-panel,html[data-loox-motion=reduce] .ln-skeleton{animation:none!important}
 @media(max-width:600px){html body.loox-sitewide-active.loox-workspace-sidebar>button.loox-sitewide-dock-toggle,html body.loox-sitewide-active>button.loox-sitewide-dock-toggle{display:none!important}}
 
 @media(max-width:600px){html body #loox-sidebar-edge-handle{display:none!important}}
-@media(min-width:901px){html body.loox-studio>header.lig-header>.lig-head-start{order:-2!important}html body.loox-studio>header.lig-header .ln-native-bell{order:-1!important}}

@@ -4,6 +4,7 @@
  */
 (() => {
  'use strict';
+ if(location.pathname.endsWith('/settings.html')&&window.parent!==window&&typeof window.parent.__looxCloseSettings==='function')return;
  // Keep Settings in a dismissible overlay so the workspace stays mounted.
  if(!window.__looxOpenSettings&&!location.pathname.endsWith('/settings.html')){
   window.__looxOpenSettings=(target='settings.html')=>{
@@ -62,7 +63,8 @@
  };
  const nav=el('div','loox-sitewide-header');nav.id='loox-sitewide-header';nav.setAttribute('role','banner');
  const inner=el('div','loox-sitewide-inner');
- const burger=el('button','loox-sitewide-burger','☰');burger.type='button';burger.setAttribute('aria-label','Open LOOX tool navigation');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-controls','loox-sitewide-drawer');
+ const burger=el('button','loox-sitewide-burger');burger.type='button';burger.setAttribute('aria-label','Open LOOX tool navigation');burger.setAttribute('aria-expanded','false');burger.setAttribute('aria-controls','loox-sitewide-drawer');
+ burger.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M9 4v16m4-11h4m-4 6h4"/></svg>';
  const logoWrap=el('div','loox-sitewide-logo-wrap');
  const logo=el('a','loox-sitewide-logo');logo.href=url('ai-image-landing.html');logo.setAttribute('aria-label','LOOX home');
 
@@ -82,7 +84,7 @@
  const search=el('button','loox-sitewide-search');search.type='button';
  search.setAttribute('aria-label','Search all LOOX tools');search.title='Search tools';search.innerHTML=icons.search;
  const account=el('div','loox-sitewide-account');account.setAttribute('data-loox-account','');
- inner.append(logoWrap,links,search,creditDock,account);
+ inner.append(burger,logoWrap,links,search,creditDock,account);
   // AI Image marketing page: no visible credits/upgrade in its top navigation.
   // Keep balances available in the account popover and generator workspace.
   if(page==='ai-image-landing.html'||page==='ai-video-landing.html'){
@@ -203,20 +205,22 @@
   return button;
  };
  const navAppTrigger=buildAppTrigger();inner.insertBefore(navAppTrigger,account);
- if(native&&['ai-chat.html','ai-text-to-image.html','ai-video-generator.html','community.html','trending.html','templates.html'].includes(page)){
-  const nativeAppTrigger=buildAppTrigger();
-  nativeAppTrigger.classList.add('loox-mobile-app-native-trigger');
-  const accountSlot=native.querySelector('.lig-header-user,[data-loox-account]');
-  if(['ai-chat.html','ai-text-to-image.html','ai-video-generator.html','templates.html','trending.html'].includes(page)){
-   const chatSearch=el('button','loox-chat-header-search');
-   chatSearch.type='button';chatSearch.setAttribute('aria-label','Search LOOX tools');
-   chatSearch.title='Search LOOX tools';chatSearch.innerHTML=icons.search;
-   chatSearch.addEventListener('click',()=>search.click());
-   if(accountSlot)native.insertBefore(chatSearch,accountSlot);
-   else native.append(chatSearch);
-  }
-  if(accountSlot)native.insertBefore(nativeAppTrigger,accountSlot);
-  else native.append(nativeAppTrigger);
+ // Each page has one navigation action group. Move the same controls into
+ // focused workspace headers rather than mounting a second set.
+ const actions=el('div','loox-header-actions');actions.id='loox-header-actions';
+ const notificationPlaceholder=el('span','loox-notification-placeholder');notificationPlaceholder.setAttribute('aria-hidden','true');
+ actions.append(search,navAppTrigger,notificationPlaceholder,account);inner.append(actions);
+ const focusedHeader=document.body.classList.contains('loox-generator-no-topnav')&&native;
+ if(focusedHeader){
+  native.querySelector('[data-loox-account]')?.remove();
+  native.querySelectorAll('.loox-chat-header-search,.loox-mobile-app-native-trigger').forEach(n=>n.remove());
+  native.classList.add('loox-navigation-header');native.id='loox-navigation-bar';
+  native.prepend(burger);
+  native.append(creditDock,actions);
+ }else{inner.classList.add('loox-navigation-header');inner.id='loox-navigation-bar';}
+ if(!document.querySelector('link[href*="navigation-layout.css"]')){
+  const layoutStyle=el('link');layoutStyle.rel='stylesheet';
+  layoutStyle.href=url('platform/navigation-layout.css?v=nav-20261127-1');document.head.append(layoutStyle);
  }
  // Lock the DOCUMENT scroll root as well as body. On mobile, setting only
  // body overflow:hidden allows scroll chaining and visual viewport drift.
@@ -294,6 +298,7 @@
   else closeTimer=setTimeout(finish,320);
  };
  const openApps=trigger=>{
+  closeDrawer();
   if(closeTimer)clearTimeout(closeTimer);
   appClosing=false;appLayer.classList.remove('is-closing','is-dragging');
   appLayer.classList.add('is-opening');
@@ -447,6 +452,9 @@
   // Workspace sidebars default to open, but the edge tab always lets users hide or restore them.
   if(open){sidebar.scrollTop=0;sideContent.scrollTop=0;}
   sidebar.classList.toggle('is-open',open);
+  sidebar.inert=!open;
+  if(open&&!desktop.matches)lockAppsScroll();else if(appLayer.hidden)unlockAppsScroll();
+  if(!open&&sidebar.contains(document.activeElement))burger.focus({preventScroll:true});
   scrim.classList.toggle('is-open',open&&(!desktop.matches||hasSessionHistory));
   document.body.classList.toggle('loox-sitewide-sidebar-open',open);
   dockToggle.setAttribute('aria-expanded',String(open));
@@ -471,6 +479,17 @@
  });
  setDrawer(!closedByDefaultTabs&&!hasSessionHistory&&desktop.matches&&(pinnedWorkspace||isHome));
  scrim.addEventListener('click',closeDrawer);
+ sidebar.addEventListener('click',event=>{if(event.target.closest('a[href]')&&!desktop.matches)closeDrawer();});
+ document.addEventListener('click',event=>{
+  if(event.target.closest('.loox-notification-bell,.loox-profile-trigger,a[href*="settings.html"]'))closeDrawer();
+ },true);
+ document.addEventListener('keydown',event=>{
+  if(event.key!=='Tab'||desktop.matches||!sidebar.classList.contains('is-open'))return;
+  const items=[burger,...sidebar.querySelectorAll('a[href],button:not([disabled]),input')].filter(n=>n.getClientRects().length);
+  const index=items.indexOf(document.activeElement);
+  if(event.shiftKey&&index<=0){event.preventDefault();items.at(-1)?.focus();}
+  else if(!event.shiftKey&&index===items.length-1){event.preventDefault();burger.focus();}
+ });
 
  // Keep real account data and existing sign-in/sign-out actions. Rehome only
  // the rendered credits and Upgrade controls to the small bundle beside LOOX.
@@ -520,7 +539,7 @@
   node.title=label;node.setAttribute('aria-label',label);node.innerHTML=pict(kind);
   sideActions.append(node);sidebarIcons[kind]=node;return node;
  }
- function openCommunityNotifications(){import(url('platform/notifications.js?v=20261126')).then(m=>m.openNotifications());}
+ function openCommunityNotifications(){import(url('platform/notifications.js?v=nav-20261127-1')).then(m=>m.openNotifications());}
  const bell=makeSideAction('notifications','Notifications');
  makeSideAction('settings','Account settings','settings.html#workspace-preferences');
  const globe=makeSideAction('language','Change language');
@@ -807,7 +826,7 @@
  if(![...document.querySelectorAll('link[rel="stylesheet"]')].some(l=>l.href.includes('/platform/platform.css'))){
   const style=document.createElement('link');style.rel='stylesheet';style.href=url('platform/platform.css?v=upgrade-20261119-1');document.head.append(style);
  }
- import(url('platform/notifications.js?v=20261126')).then(m=>m.mountNotifications()).catch(()=>{});
+ import(url('platform/notifications.js?v=nav-20261127-1')).then(m=>m.mountNotifications()).catch(()=>{});
  import(url('platform/mobile-viewport.js?v=settings-2-20261124'));
  import(url('platform/account.js?v=settings-2-20261124')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
