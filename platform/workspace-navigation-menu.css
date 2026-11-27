@@ -1,9 +1,0 @@
-
-/* Workspace commands stay available in the mobile navigation drawer. */
-html body #loox-sitewide-drawer .studio-menu-host{display:block!important;position:relative!important;width:100%;margin:0 0 12px;padding:8px;box-sizing:border-box}
-html body #loox-sitewide-drawer .studio-menu-trigger{width:100%;min-height:38px}
-html body #loox-sitewide-drawer .studio-menu{position:static!important;width:100%!important;max-height:45dvh;overflow:auto}
-@media(min-width:791px){
- html body #loox-navigation-bar>.studio-menu-host{order:15!important;margin-left:auto!important;flex:none}
- html body #loox-navigation-bar:has(>.studio-menu-host)>#loox-header-actions{margin-left:0!important}
-}

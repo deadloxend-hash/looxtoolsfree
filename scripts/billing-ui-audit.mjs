@@ -67,9 +67,7 @@ try{for(const width of [360,390,768,1440]){
    await page.locator('body.loox-studio').waitFor({timeout:20000});
    assert.equal(await page.locator('button.lx-buy-credits,button.studio-budget-link').count(),0,'Unexpected Buy Credits button in '+route+' at '+width);checks++;
    const dock=page.locator('body > button.loox-sitewide-dock-toggle');
-   const sidebar=page.locator('button.studio-sidebar-menu-action');
-   await sidebar.waitFor({state:'attached'});
-   assert.equal(await sidebar.count(),1,'Sidebar menu fallback is missing in '+route);checks++;
+   assert.equal(await page.locator('.studio-menu-host').count(),0,'Duplicate workspace menu must not be mounted in '+route);checks++;
    await dock.waitFor({state:'hidden'});
    const headerToggle=page.locator('.loox-sitewide-burger');
    await headerToggle.waitFor({state:'visible'});await headerToggle.click();
