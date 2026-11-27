@@ -56,7 +56,7 @@
  document.documentElement.style.setProperty('--loox-sidebar-width',initialDesktopSidebar?(savedSidebarMode==='expanded'?'248px':'64px'):'0px');
  document.body.classList.toggle('loox-sidebar-compact',initialDesktopSidebar&&savedSidebarMode!=='expanded');
  document.body.classList.add('loox-sidebar-premium');
- const page=location.pathname.split('/').pop()||'index.html';
+ const page=document.body.hasAttribute('data-video-studio-locked')?'ai-video-landing.html':location.pathname.split('/').pop()||'index.html';
  const pinnedWorkspace=['community.html','trending.html','templates.html','workflows.html','collections.html','creator.html','account.html'].includes(page);
  if(pinnedWorkspace)document.body.classList.add('loox-workspace-sidebar');
  // The AI creator tabs use Generative sessions instead of a second tool-directory sidebar.

@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - "ai-video-landing.html"
+      - "ai-video-generator.html"
+      - "platform/video-lock.css"
       - "platform/video-first-creation.*"
       - "platform/creative-landing.js"
       - "platform/aspect-controls.js"
