@@ -9,10 +9,10 @@ export function mountSidebar({sidebar,content,burger,scrim,dockToggle,lock,unloc
  function render(){
   const open=desktop.matches?expanded:mobileOpen;hideTip();sidebar.classList.toggle('is-open',open);sidebar.inert=!desktop.matches&&!open;
   document.body.classList.toggle('loox-sidebar-compact',desktop.matches&&!expanded);document.body.classList.toggle('loox-sitewide-sidebar-open',open);
-  document.documentElement.style.setProperty('--loox-sidebar-width',desktop.matches?(expanded?'248px':'64px'):'0px');
   scrim.hidden=desktop.matches||!open;scrim.classList.toggle('is-open',!desktop.matches&&open);burger.setAttribute('aria-expanded',String(open));burger.setAttribute('aria-label',desktop.matches?(open?'Collapse navigation':'Expand navigation'):(open?'Close navigation':'Open navigation'));
   dockToggle.setAttribute('aria-expanded',String(open));
   if(!desktop.matches&&open)lock();else unlock();
+  document.documentElement.style.setProperty('--loox-sidebar-width',desktop.matches?(expanded?'248px':'64px'):'0px');
   if(!open&&!desktop.matches&&sidebar.contains(document.activeElement))burger.focus({preventScroll:true});
   window.dispatchEvent(new Event('loox:sidebar-layout'));
  }

@@ -62,3 +62,9 @@ html body.loox-sidebar-premium>button.loox-sitewide-dock-toggle{display:none!imp
  #loox-sitewide-drawer .loox-workspace-group[open]::details-content{block-size:auto}
  #loox-sitewide-drawer .loox-workspace-group:not([open])>.loox-workspace-group-links{display:grid}
 }
+@media(prefers-reduced-motion:reduce){
+ html body.loox-sidebar-premium.loox-sitewide-active:has(> #loox-sitewide-drawer),
+ html body.loox-sidebar-premium.loox-sitewide-active>aside#loox-sitewide-drawer,
+ html body.loox-sidebar-premium.loox-sitewide-active #loox-sitewide-drawer :is(a,summary,.loox-workspace-group,.loox-workspace-group-links),
+ html body.loox-sidebar-premium.loox-sitewide-active #loox-sitewide-drawer .loox-workspace-group::details-content{transition:none!important;animation:none!important}
+}

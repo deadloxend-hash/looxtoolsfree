@@ -8,6 +8,7 @@ try{
   page.on('pageerror',e=>errors.push(e.message));await context.route('https://looxtoolfree-backend.vercel.app/**',r=>{assert.equal(r.request().method(),'GET','Sidebar tests cannot mutate backend data');accountCalls++;return r.fulfill({json:{auth:false,billing:false,operations:[],imageModels:[],videoModels:[],items:[]}});});await context.route('https://loox-profile-api.looxai-studio.workers.dev/**',r=>r.fulfill({json:{items:[]}}));
   await page.goto(base+'index.html');const drawer=page.locator('#loox-sitewide-drawer'),burger=page.locator('#loox-navigation-bar .loox-sitewide-burger');await page.locator('#loox-sitewide-drawer[data-controller="premium"] .loox-workspace-navigation').waitFor({state:'attached'});await page.waitForTimeout(500);
   assert.equal(await page.locator('#loox-sitewide-drawer').count(),1);assert.equal(await drawer.locator('[aria-current="page"]').count(),1);assert.equal(await drawer.locator('[aria-current="page"]').getAttribute('data-navigation-label'),'Utilities');checks+=3;
+  assert.ok((await drawer.evaluate(n=>getComputedStyle(n).transitionDuration)).split(',').every(v=>parseFloat(v)===0),'Reduced motion disables drawer transitions');checks++;
   const before=accountCalls;const original=await page.evaluate(()=>({body:document.body.style.cssText,html:document.documentElement.style.cssText}));
   if(width>900){assert.ok((await drawer.boundingBox()).width<=65);assert.equal(await drawer.evaluate(n=>n.inert),false);await drawer.getByRole('link',{name:'Home',exact:true}).focus();await page.locator('.loox-sidebar-tooltip:not([hidden])').waitFor();assert.equal(await page.locator('.loox-sidebar-tooltip').textContent(),'Home');checks+=3;}
   else{assert.equal(await drawer.evaluate(n=>n.inert),true);assert.equal(await drawer.isVisible(),false);checks+=2;}
@@ -19,7 +20,7 @@ try{
   // Check keyboard/outside behavior independently of full-page navigation.
   if(width<=900){await burger.click();await page.keyboard.press('Escape');assert.equal(await drawer.evaluate(n=>n.classList.contains('is-open')),false);checks++;}
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'No horizontal overflow at '+width);assert.deepEqual(errors,[]);checks+=2;
-  if([390,1440].includes(width)){if(width<=900)await burger.click();await page.screenshot({path:'audit-artifacts/sidebar-'+width+'.png'});}
+  if([390,1440].includes(width)){if(width<=900)await burger.click();await page.waitForTimeout(220);await page.screenshot({path:'audit-artifacts/sidebar-'+width+'.png'});}
   await context.close();console.log('Sidebar groups, routing, scroll, SVG icons and '+(width>900?'desktop persistence':'mobile drawer')+' passed at '+width+'px');
  }
  // Shared layout on every main workspace; selecting groups never restarts auth.
