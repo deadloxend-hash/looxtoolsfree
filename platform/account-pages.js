@@ -1,5 +1,5 @@
 import {billingURL} from './billing-url.js';
-import {setupSettings} from './settings-2.js?v=billing-security-20261127';
+import {setupSettings} from './settings-2.js?v=sidebar-activity-20261127';
 import {state,config,api,auth,refresh,signOut,buyCredits,startGoogleSignIn} from './account.js?v=auth-20261127';
 import {authenticatorImage} from './account-security.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';

@@ -34,7 +34,7 @@
   document.addEventListener('click',event=>{
    const a=event.target.closest?.('a[href]');if(!a||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||event.button!==0)return;
    const target=new URL(a.href,location.href);
-   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')){event.preventDefault();event.stopImmediatePropagation();if(matchMedia('(max-width:900px)').matches)document.dispatchEvent(new Event('loox:close-sidebar'));window.__looxOpenSettings(target.href);}
+   if(target.origin===location.origin&&target.pathname.endsWith('/settings.html')&&a.dataset.navigationLabel!=='Recent Activity'){event.preventDefault();event.stopImmediatePropagation();if(matchMedia('(max-width:900px)').matches)document.dispatchEvent(new Event('loox:close-sidebar'));window.__looxOpenSettings(target.href);}
   },true);
  }
 
@@ -434,12 +434,13 @@
  navStyle.href=url('platform/workspace-navigation.css?v=sidebar-20261127');
  document.head.append(navStyle);
 
- import(url('platform/workspace-navigation.js?v=sidebar-20261127')).then(({mountWorkspaceNavigation})=>{
+ import(url('platform/workspace-navigation.js?v=sidebar-polish-20261127')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
-  const footer=sideContent.querySelector('.loox-workspace-footer');if(footer)sidebar.append(footer);
+  const footer=sideContent.querySelector('.loox-workspace-footer');
   if(existingRail)sideContent.append(existingRail);
+  if(footer)sideContent.append(footer);
   navigationReady=true;
   revealWhenReady();
  }).catch(error=>{

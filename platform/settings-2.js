@@ -121,7 +121,7 @@ joined.textContent=user?.created_at?new Date(user.created_at).toLocaleDateString
  for(const e of ['loox-user','loox-account'])document.addEventListener(e,updateAccount);updateAccount();
  const empty=node('p','No settings found. Try “profile”, “credits” or “password”.','s2-no-results');empty.hidden=true;side.append(empty);
  function show(){const aliases={'workspace-preferences':'general','account-management':'profile',sessions:'devices',credits:'billing',subscription:'billing',history:'billing'};const raw=location.hash.slice(1),id=aliases[raw]||raw;const selected=panels.has(id)?id:'general';for(const [key,panel] of panels)panel.hidden=key!==selected;for(const a of nav.querySelectorAll('a')){if(a.dataset.category===selected)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');}title.textContent=categories.find(c=>c[0]===selected)[1];shell.classList.toggle('s2-detail',Boolean(raw));content.scrollTop=0;}
- back.onclick=()=>{history.pushState(null,'',location.pathname+location.search);show();search.focus();};
+ back.onclick=()=>{history.pushState(null,'',location.pathname+location.search);show();window.dispatchEvent(new Event('loox:navigation-change'));search.focus();};
  nav.addEventListener('click',e=>{const a=e.target.closest('a');if(a){if(location.hash===a.hash){shell.classList.add('s2-detail');}requestAnimationFrame(()=>title.focus());}});
  window.addEventListener('hashchange',show);show();
  search.oninput=()=>{const q=search.value.trim().toLowerCase();let count=0;for(const a of nav.querySelectorAll('a')){const panel=panels.get(a.dataset.category);a.hidden=Boolean(q)&&!(a.textContent+' '+panel.textContent).toLowerCase().includes(q);if(!a.hidden)count++;}empty.hidden=count>0;};
