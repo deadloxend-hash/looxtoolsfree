@@ -50,7 +50,7 @@ async function client(restore=true){
   const api=window.supabase.createClient(cfg.url,cfg.key,{global:{fetch:authFetch},auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
   state.client=api;state.identityVerified=false;
   api.auth.onAuthStateChange((event,session)=>{
-   if(!state.identityVerified&&!state.identityCommit&&['INITIAL_SESSION','SIGNED_IN'].includes(event))return;
+   if(!state.identityVerified&&!state.identityCommit&&event!=='SIGNED_OUT')return;
    if(!authEventApplies(event,session,authStorage.getItem(sessionKey),Boolean(state.identityCommit)))return;
    const changed=state.user?.id!==session?.user?.id;
    state.user=session?.user||null;
