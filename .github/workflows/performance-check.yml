@@ -1,0 +1,32 @@
+name: LOOX performance observations
+on:
+  workflow_dispatch:
+  push:
+    paths: ['scripts/performance-audit.mjs', '.github/workflows/performance-check.yml']
+permissions:
+  contents: read
+jobs:
+  lab:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22
+      - run: npm install --no-save --no-package-lock --ignore-scripts playwright@1.58.2
+      - name: Compare the previous release with the repaired release
+        run: |
+          mkdir -p /tmp/loox-baseline
+          git archive e76a522074aa4af14428f512332bf967c75dad9a | tar -x -C /tmp/loox-baseline
+          python3 -m http.server 8767 --bind 127.0.0.1 --directory /tmp/loox-baseline >/tmp/loox-baseline-server.log 2>&1 &
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/loox-candidate-server.log 2>&1 &
+          LOOX_BASELINE_URL=http://127.0.0.1:8767/ LOOX_AUDIT_URL=http://127.0.0.1:8765/ node scripts/performance-audit.mjs
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: loox-performance-observations
+          path: audit-artifacts/performance-lab.json
