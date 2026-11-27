@@ -46,10 +46,10 @@ export function mountWorkspaceNavigation(host){
  if(!host||host.querySelector('.loox-workspace-navigation'))return;
  const nav=document.createElement('nav');nav.className='loox-workspace-navigation';nav.setAttribute('aria-label','LOOX AI workspace navigation');
  const root=new URL('../',import.meta.url),groups=[];
- function add(parent,[kind,label,href,badge]){
+ function add(parent,[kind,label,href,badge],displayLabel=label){
   const a=document.createElement('a');a.href=new URL(href,root).href;a.className='loox-workspace-link';a.dataset.navigationLabel=label;a.setAttribute('aria-label',label+(badge?' — '+badge:''));
   const icon=document.createElement('span');icon.className='loox-workspace-icon';icon.innerHTML=workspaceIcon(kind);
-  const text=document.createElement('span');text.className='loox-workspace-label';text.textContent=label;a.append(icon,text);
+  const text=document.createElement('span');text.className='loox-workspace-label';text.textContent=displayLabel;a.append(icon,text);
   if(badge){const b=document.createElement('small');b.className='loox-coming-label';b.textContent=badge;a.append(b);}
   parent.append(a);
  }
@@ -59,12 +59,23 @@ export function mountWorkspaceNavigation(host){
    const summary=document.createElement('summary');summary.setAttribute('aria-label',group.label);summary.innerHTML=workspaceIcon(group.icon);
    const label=document.createElement('span');label.className='loox-workspace-label';label.textContent=group.label;summary.append(label);section.append(summary);
    let saved;try{saved=localStorage.getItem('loox-sidebar-group:'+group.id);}catch{}
-   section.open=saved===null||saved===undefined?group.id==='discover':saved==='open';
+   section.open=saved===null||saved===undefined?group.id!=='workspace':saved==='open';
    section.addEventListener('toggle',()=>{try{localStorage.setItem('loox-sidebar-group:'+group.id,section.open?'open':'closed');}catch{}});
    summary.addEventListener('click',event=>{if(document.body.classList.contains('loox-sidebar-compact')){event.preventDefault();section.open=true;document.dispatchEvent(new Event('loox:expand-sidebar'));}});
    groups.push(section);
   }
-  const list=document.createElement('div');list.className='loox-workspace-group-links';for(const item of group.items)add(list,item);section.append(list);nav.append(section);
+  const list=document.createElement('div');list.className='loox-workspace-group-links';
+  if(group.id==='tools'){
+   add(list,group.items[0]);
+   const creative=document.createElement('details');creative.className='loox-workspace-group loox-creative-group';creative.dataset.navigationGroup='creative';
+   const summary=document.createElement('summary');summary.setAttribute('aria-label','Creative tools group');summary.innerHTML=workspaceIcon('tools');
+   const label=document.createElement('span');label.className='loox-workspace-label';label.textContent='Creative Tools';summary.append(label);creative.append(summary);
+   const links=document.createElement('div');links.className='loox-workspace-group-links';group.items.slice(1).forEach((item,index)=>add(links,item,index===0?'All Creative Tools':item[1]));creative.append(links);
+   try{creative.open=localStorage.getItem('loox-sidebar-group:creative')==='open';}catch{}
+   creative.addEventListener('toggle',()=>{try{localStorage.setItem('loox-sidebar-group:creative',creative.open?'open':'closed');}catch{}});
+   groups.push(creative);list.append(creative);
+  }else for(const item of group.items)add(list,item);
+  section.append(list);nav.append(section);
  }
  const footer=document.createElement('div');footer.className='loox-workspace-footer';for(const item of navigationFooter)add(footer,item);nav.append(footer);
  const navigationLinks=[...nav.querySelectorAll('a')];

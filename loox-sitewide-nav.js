@@ -434,12 +434,13 @@
  navStyle.href=url('platform/workspace-navigation.css?v=sidebar-20261127');
  document.head.append(navStyle);
 
- import(url('platform/workspace-navigation.js?v=sidebar-activity-20261127')).then(({mountWorkspaceNavigation})=>{
+ import(url('platform/workspace-navigation.js?v=sidebar-polish-20261127')).then(({mountWorkspaceNavigation})=>{
   // Keep the live session list when async navigation finishes loading.
   const existingRail=mediaWorkspace?sideContent.querySelector('#loox-media-session-rail'):chatWorkspace?sideContent.querySelector('#aiRecentPanel'):null;
   sideContent.replaceChildren();mountWorkspaceNavigation(sideContent);
-  const footer=sideContent.querySelector('.loox-workspace-footer');if(footer)sidebar.append(footer);
+  const footer=sideContent.querySelector('.loox-workspace-footer');
   if(existingRail)sideContent.append(existingRail);
+  if(footer)sideContent.append(footer);
   navigationReady=true;
   revealWhenReady();
  }).catch(error=>{

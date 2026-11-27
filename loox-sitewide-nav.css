@@ -1,4 +1,4 @@
-@import url("platform/sidebar.css?v=sidebar-20261127");
+@import url("platform/sidebar.css?v=sidebar-polish-20261127");
 /* Sitewide LOOX header for every tool, collection, guide and account page.
    Scoped IDs avoid overwriting editors' existing canvas/layout styles. */
 body.loox-sitewide-active{--loox-sitewide-height:64px}
