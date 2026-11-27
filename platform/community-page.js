@@ -1,5 +1,5 @@
 import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
-import {state,auth,initialize} from './account.js?v=settings-2-20261124';
+import {state,auth,initialize} from './account.js?v=auth-20261127';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
 import {Community,element,action,result,mediaURL} from './community.js?v=notifications-20261126';
 const root=document.getElementById('community-root'),page=location.pathname.split('/').pop();

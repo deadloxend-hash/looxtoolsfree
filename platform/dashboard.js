@@ -1,5 +1,5 @@
 import {aiTools} from './catalog.js?v=settings-2-20261124';
-import {el,button,config,state,pricing,auth} from './account.js?v=settings-2-20261124';
+import {el,button,config,state,pricing,auth} from './account.js?v=auth-20261127';
 const aiBannerFiles={
 'bg-remove':'loox_ai_background_remover_hero_banner.jpg',
 'ai-image-upscaler':'loox_ai_image_upscaler_showcase.jpg',

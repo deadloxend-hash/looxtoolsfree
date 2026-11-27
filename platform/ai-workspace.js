@@ -1,6 +1,6 @@
 import {dialog,confirmDialog,toast,icon} from './loox-ui.js?v=ui-20261125';
 import {renderMarkdown} from './safe-markdown.js?v=ui-20261125';
-import {auth,state,initialize,pricing} from './account.js?v=settings-2-20261124';
+import {auth,state,initialize,pricing} from './account.js?v=auth-20261127';
 
 const $=id=>document.getElementById(id);
 const landing=document.body.classList.contains('ai-home');

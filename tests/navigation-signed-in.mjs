@@ -1,4 +1,4 @@
-import {state,initialize,renderHeader} from '../platform/account.js?v=settings-2-20261124';
+import {state,initialize,renderHeader} from '../platform/account.js?v=auth-20261127';
 await initialize();
 // Exercise the production renderer with synthetic presentation data only.
 // Never change a visitor's real session or authenticated account.

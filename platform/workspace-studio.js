@@ -2,7 +2,7 @@ import {confirmDialog,promptDialog} from './loox-ui.js?v=ui-20261125';
 import {mountAspectControls} from './aspect-controls.js?v=settings-2-20261124';
 import {mountVideoControls} from './video-controls.js?v=settings-2-20261124';
 import {openSheet,moveIntoSheet} from './workspace-sheet.js';
-import {state,initialize,auth,api,refresh} from './account.js?v=settings-2-20261124';
+import {state,initialize,auth,api,refresh} from './account.js?v=auth-20261127';
 const $=s=>document.querySelector(s),node=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const button=(text,fn,cls='studio-button')=>{const b=node('button',cls,text);b.type='button';b.onclick=fn;return b;};
 function notify(text){let n=$('.studio-toast');if(!n){n=node('p','studio-toast');n.setAttribute('role','status');document.body.append(n);}n.textContent=text;clearTimeout(notify.timer);notify.timer=setTimeout(()=>n.remove(),4000);}

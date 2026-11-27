@@ -1,4 +1,4 @@
-import {state,api,auth,initialize,config,refresh,el,button} from './account.js?v=settings-2-20261124';
+import {state,api,auth,initialize,config,refresh,el,button} from './account.js?v=auth-20261127';
 import {openSheet} from './workspace-sheet.js';
 const endpoint='https://looxtoolfree-backend.vercel.app/api/loox';
 const grid=document.getElementById('workflow-grid'),status=document.getElementById('workflow-status'),search=document.getElementById('workflow-search'),category=document.getElementById('workflow-category');

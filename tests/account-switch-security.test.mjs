@@ -11,10 +11,10 @@ function fixture({failed=false,mfa=false,blockedStorage=false}={}){
  const candidate={auth:{signInWithPassword:async()=>failed?{error:Error('Invalid credentials')}:{data:{session:{access_token:'candidate-access',refresh_token:'candidate-refresh'},user:{id:'B',email:'b@example.com'}}},mfa:{getAuthenticatorAssuranceLevel:async()=>({data:{nextLevel:mfa?'aal2':'aal1'}}),listFactors:async()=>({data:{totp:[{id:'factor',status:'verified'}]}}),challengeAndVerify:async()=>({data:{access_token:'mfa-access',refresh_token:'mfa-refresh'}})}}};
  const active={auth:{setSession:async session=>{installed++;assert.equal(session.access_token,mfa?'mfa-access':'candidate-access');return {data:{}};}}};
  const form=element();
- const context={state:{user:{id:'A',email:'a@example.com'}},localStorage:{getItem:()=>remember,setItem:(k,v)=>{remember=v},removeItem:()=>{remember=null}},store:()=>context.localStorage,rememberKey:'remember',config:async()=>({auth:true,url:'https://auth.example.com',key:'public'}),client:async()=>active,dialog:()=>({box:element(),d:{...element(),close(){}}}),el:(tag)=>tag==='form'?form:element(),field:(parent,label)=>{const field={...element(),value:label==='Email address'?'b@example.com':'test-password'};fields.push(field);return field;},button:()=>element(),link:()=>element(),msg(){},strong:()=>true,withStatus:(f,s,n,fn)=>{call=fn},document:{baseURI:'https://example.com/'},URL,window:{supabase:{createClient:()=>candidate}},location:{reload:()=>{reloads++}},refresh:async()=>{},rememberRecentAccount(){},terms:'test'};
+ const context={ensureAuthStyles(){},googleAvailability:async()=>false,startGoogleSignIn(){},state:{user:{id:'A',email:'a@example.com'}},localStorage:{getItem:()=>remember,setItem:(k,v)=>{remember=v},removeItem:()=>{remember=null}},rememberKey:'remember',config:async()=>({auth:true,url:'https://auth.example.com',key:'public'}),client:async()=>active,dialog:()=>({box:element(),d:{...element(),isConnected:false,close(){}}}),el:(tag)=>tag==='form'?form:element(),field:(parent,label)=>{const field={...element(),value:label==='Email address'?'b@example.com':'test-password'};fields.push(field);return field;},button:()=>element(),link:()=>element(),msg(){},strong:()=>true,withStatus:(f,s,n,fn)=>{call=fn},document:{baseURI:'https://example.com/'},URL,window:{supabase:{createClient:()=>candidate}},location:{reload:()=>{reloads++}},refresh:async()=>{},rememberRecentAccount(){},terms:'test'};
  if(blockedStorage)for(const key of ['getItem','setItem','removeItem'])context.localStorage[key]=()=>{throw Error('Storage blocked');};
  context.authStorage=createAuthStorage({local:()=>context.localStorage,session:()=>context.localStorage}).storage;
- vm.runInNewContext(source.slice(source.indexOf('export function auth('),source.indexOf('function ensureSwitcherStyles')).replace('export function','function'),context);
+ vm.runInNewContext(source.slice(source.indexOf('export function auth('),source.indexOf('export function ensureAuthStyles')).replace('export function','function').replaceAll('import.meta.url',"'https://example.com/platform/account.js'"),context);
  context.auth('login',{switching:true});
  return {run:()=>call(),get installed(){return installed},get remember(){return remember},get reloads(){return reloads},form};
 }
@@ -26,7 +26,7 @@ test('blocked draft storage cannot prevent clearing private account state on ide
  const end=source.indexOf('\n  });',start);
  const callback=source.slice(start,end+4);
  let reloads=0;
- const context={state:{user:{id:'A'},account:{wallet:{balance:25}}},previousIdentity:'A',accountError:'',sessionStorage:{removeItem(){throw Error('Storage blocked')}},location:{reload(){reloads++}},renderHeader(){},document:{dispatchEvent(){}},Event:class{},setTimeout(){}};
+ const context={ensureAuthStyles(){},googleAvailability:async()=>false,startGoogleSignIn(){},state:{user:{id:'A'},account:{wallet:{balance:25}}},previousIdentity:'A',accountError:'',sessionStorage:{removeItem(){throw Error('Storage blocked')}},location:{reload(){reloads++}},renderHeader(){},document:{dispatchEvent(){}},Event:class{},setTimeout(){}};
  vm.runInNewContext('handler='+callback,context);
  context.handler('SIGNED_IN',{user:{id:'B'}});
  assert.equal(reloads,1);assert.equal(context.state.user.id,'B');assert.equal(context.state.account,null);

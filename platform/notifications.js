@@ -1,4 +1,4 @@
-import {state,auth} from './account.js?v=settings-2-20261124';
+import {state,auth} from './account.js?v=auth-20261127';
 import {cloudRequest,cloudImage,PROFILE_API} from './profile-cloudflare.js?v=settings-2-20261124';
 import {category,relativeTime,timeGroup,target,message,mergeNotifications} from './notifications-core.mjs';
 const style=document.createElement('link');style.rel='stylesheet';style.href=new URL('./notifications.css?v=nav-20261127-1',import.meta.url);document.head.append(style);

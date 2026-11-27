@@ -1,7 +1,7 @@
 import {billingURL} from './billing-url.js';
 import {setupSettings} from './settings-2.js?v=billing-security-20261127';
-import {state,config,api,auth,refresh,signOut,buyCredits} from './account.js?v=settings-2-20261124';
-import {verifyCurrentPassword,authenticatorImage} from './account-security.js?v=settings-2-20261124';
+import {state,config,api,auth,refresh,signOut,buyCredits,startGoogleSignIn} from './account.js?v=auth-20261127';
+import {authenticatorImage} from './account-security.js?v=settings-2-20261124';
 import {cloudRequest} from './profile-cloudflare.js?v=settings-2-20261124';
 if(document.body.hasAttribute('data-settings-page'))setupSettings();
 const byId=id=>document.getElementById(id);
@@ -154,9 +154,16 @@ async function loadSecurity(force=false){
 function savePrivateDownload(blob,name){
  const url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);
 }
+function googleOnly(){return state.user?.identities?.some(i=>i.provider==='google')&&!state.user?.identities?.some(i=>i.provider==='email');}
+function securityPassword(form,label){
+ if(!googleOnly()){const wrap=elem('label','lx-field'),input=elem('input');wrap.append(elem('span','',label),input);input.type='password';input.required=true;input.maxLength=128;input.autocomplete='current-password';form.append(wrap);return input;}
+ form.append(elem('p','','Verify the same Google account again, then return to this action. LOOX never needs your Google password. Verification lasts five minutes and each security action can use it once.'));
+ const verify=elem('button','lp-btn lp-btn-secondary','Verify with Google');verify.type='button';verify.onclick=async()=>{verify.disabled=true;try{await startGoogleSignIn({reauth:true,returnTo:location.href});}catch(error){form.append(elem('p','',error.message||'Google verification could not start.'));verify.disabled=false;}};form.append(verify);return {value:''};
+}
 function renderSettings(){
  if(!document.body.hasAttribute('data-settings-page'))return;
  const guest=byId('lp-settings-guest'),loading=byId('lp-settings-loading'),content=byId('lp-settings-content');
+ if(state.authRestoring&&!state.user){guest.hidden=true;loading.hidden=false;loading.textContent='Restoring your account…';content.hidden=true;return;}
  if(!state.user){
   guest.hidden=false;loading.hidden=true;content.hidden=true;securityOwner=null;securityLoaded=0;
   for(const id of ['lp-billing-balance','lp-billing-plan','lp-billing-allocation'])byId(id).textContent='Sign in';
@@ -177,8 +184,9 @@ function renderSettings(){
  state.client?.auth.mfa.listFactors().then(({data,error})=>{
   if(state.user?.id!==factorOwner)return;
   const enabled=data?.totp?.some(f=>f.status==='verified');
-  byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':enabled?'Authenticator enabled. Use your code when signing in. Contact support if you lose your authenticator.':'Add a time-based authenticator after verifying your password.';
+  byId('lp-mfa-status').textContent=error?'Authenticator status unavailable':enabled?'Authenticator enabled. Use your code when signing in. Contact support if you lose your authenticator.':'Add a time-based authenticator after verifying your identity.';
   byId('lp-mfa-enable').hidden=Boolean(error||enabled);
+  const remove=byId('lp-mfa-remove');if(remove){remove.hidden=Boolean(error||!enabled);remove.dataset.factor=data?.totp?.find(f=>f.status==='verified')?.id||'';}
  }).catch(()=>{if(state.user?.id===factorOwner)byId('lp-mfa-status').textContent='Authenticator status unavailable';});
  const plan=state.account?.plan||'free';
  byId('lp-plan-info').textContent=(plan==='business'?'LOOX Business':plan==='pro'?'LOOX Pro':plan==='creator'?'LOOX Creator':'LOOX Basic')+
@@ -218,15 +226,17 @@ if(document.body.hasAttribute('data-settings-page')){
    setStatus(status,error?.message||'Could not save your profile.',true);
   }finally{btn.disabled=false;}
  });
+ const removeFactor=elem('button','lp-btn lp-btn-secondary','Remove authenticator');removeFactor.id='lp-mfa-remove';removeFactor.type='button';removeFactor.hidden=true;byId('lp-mfa-enable').after(removeFactor);
+ removeFactor.onclick=async()=>{const {dialog,msg}=await import('./account.js?v=auth-20261127');const owner=state.user?.id;if(!owner)return;const {box,d}=dialog('Remove authenticator');box.append(elem('p','','Confirm your identity before removing this authenticator. Keep access to your verified email. Administrator accounts require a recovery review.'));const form=elem('form','lx-stack'),password=securityPassword(form,'Current LOOX password'),submit=elem('button','lx-button','Confirm removal'),note=elem('p');submit.type='submit';note.role='status';form.append(submit,note);box.append(form);form.onsubmit=async event=>{event.preventDefault();if(submit.disabled)return;submit.disabled=true;const value=password.value;password.value='';try{await api('auth_factor',{operation:'remove',factorId:removeFactor.dataset.factor,password:value});if(state.user?.id!==owner)return;await state.client.auth.refreshSession();d.close();renderSettings();}catch(error){msg(note,error.message||'Authenticator removal could not finish.');submit.disabled=false;}};};
  byId('lp-password-reset').addEventListener('click',()=>auth('forgot'));
  byId('lp-mfa-enable').addEventListener('click',async()=>{
-  const {dialog,field,msg}=await import('./account.js?v=settings-2-20261124');
+  const {dialog,field,msg}=await import('./account.js?v=auth-20261127');
   const owner=state.user?.id,user=state.user;if(!owner)return;
   const {box,d}=dialog('Set up authenticator');
   box.append(elem('p','','Keep access to your verified recovery email. Use a trusted authenticator app and keep its backup securely. Do not share the setup code.'));
   const form=elem('form','lx-stack'),note=elem('p');note.setAttribute('role','status');
-  const password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
-  const submit=elem('button','lx-button lx-primary','Verify password');submit.type='submit';form.append(submit,note);box.append(form);
+  const password=securityPassword(form,'Current LOOX password');
+  const submit=elem('button','lx-button lx-primary','Verify identity');submit.type='submit';form.append(submit,note);box.append(form);
   let factor=null,operation=Promise.resolve(),complete=false;
   d.addEventListener('close',()=>{
    box.replaceChildren();
@@ -238,11 +248,10 @@ if(document.body.hasAttribute('data-settings-page')){
   form.onsubmit=event=>{event.preventDefault();submit.disabled=true;const value=password.value;password.value='';
    operation=(async()=>{
     try{
-     await verifyCurrentPassword({sdk:window.supabase,config:await config(),user,password:value,currentUser:()=>state.user?.id});
      if(state.user?.id!==owner||!d.open)return;
      const existing=await state.client.auth.mfa.listFactors();if(existing.error)throw existing.error;
      if(existing.data?.totp?.some(f=>f.status==='verified'))throw Error('An authenticator is already enabled. Refresh Settings.');
-     const enrolled=await state.client.auth.mfa.enroll({factorType:'totp',friendlyName:'LOOX '+new Date().toISOString().slice(0,19)});
+     const enrolled={data:await api('auth_factor',{operation:'enroll',password:value})};
      if(enrolled.error)throw enrolled.error;factor=enrolled.data?.id;
      if(!factor)throw Error('Authenticator setup failed.');
      if(state.user?.id!==owner||!d.open)return;
@@ -263,12 +272,12 @@ if(document.body.hasAttribute('data-settings-page')){
   };
  });
  byId('lp-data-export').addEventListener('click',async()=>{
-  const {dialog,field,msg}=await import('./account.js?v=settings-2-20261124');
+  const {dialog,field,msg}=await import('./account.js?v=auth-20261127');
   const owner=state.user?.id;if(!owner)return;
   const {box,d}=dialog('Download personal data');
-  box.append(elem('p','','Verify your password to collect account, credit, conversation, creator and social records. Download the JSON and every media part for your content. Links expire after five minutes; verify again for fresh links. Keep downloads private. Very large exports require Support.'));
+  box.append(elem('p','','Verify your identity to collect account, credit, conversation, creator and social records. Download the JSON and every media part for your content. Links expire after five minutes; verify again for fresh links. Keep downloads private. Very large exports require Support.'));
   const form=elem('form','lx-stack'),parts=elem('div','lp-export-parts');
-  const password=field(form,'Confirm your password','password',{required:true,maxLength:128,autocomplete:'current-password'});
+  const password=securityPassword(form,'Confirm your LOOX password');
   const submit=elem('button','lx-button lx-primary','Verify and prepare downloads');submit.type='submit';
   const note=elem('p');note.setAttribute('role','status');form.append(submit,note);box.append(form,parts);
   const abort=new AbortController();d.addEventListener('close',()=>{abort.abort();parts.replaceChildren();},{once:true});
@@ -303,11 +312,11 @@ if(document.body.hasAttribute('data-settings-page')){
  });
  byId('lp-sign-out').addEventListener('click',signOut);
  async function revoke(scope){
-  const {dialog,field,msg}=await import('./account.js?v=settings-2-20261124');
+  const {dialog,field,msg}=await import('./account.js?v=auth-20261127');
   const owner=state.user?.id;if(!owner)return;
   const {box,d}=dialog(scope==='global'?'Sign out all devices':'Sign out other devices');
-  box.append(elem('p','','Verify your password to revoke sign-ins on the server. Previously issued access tokens may remain valid until expiry. Accounts with MFA must have completed authenticator verification.'));
-  const form=elem('form','lx-stack'),password=field(form,'Current password','password',{required:true,autocomplete:'current-password',maxLength:128});
+  box.append(elem('p','','Verify your identity to revoke sign-ins on the server. Previously issued access tokens may remain valid until expiry. Accounts with MFA must have completed authenticator verification.'));
+  const form=elem('form','lx-stack'),password=securityPassword(form,'Current LOOX password');
   const submit=elem('button','lx-button lx-primary','Verify and sign out'),note=elem('p');submit.type='submit';note.role='status';form.append(submit,note);box.append(form);
   let pending=false;form.onsubmit=async event=>{event.preventDefault();if(pending)return;pending=true;submit.disabled=true;const value=password.value;password.value='';
    try{await api('revoke_sessions',{password:value,scope});if(state.user?.id!==owner)return;d.close();if(scope==='global'){await signOut();return;}byId('s2-session-status').textContent='Other sessions revoked. Access tokens expire at their normal expiry.';loadSecurity(true);}
@@ -317,7 +326,7 @@ if(document.body.hasAttribute('data-settings-page')){
  byId('lp-sign-out-others').addEventListener('click',()=>revoke('others'));
  byId('s2-sign-out-all').addEventListener('click',()=>revoke('global'));
  const deleteDialog=byId('lp-delete-dialog');
- byId('lp-delete-open').addEventListener('click',()=>{if(!byId('lp-delete-open').disabled)deleteDialog.showModal();});
+ byId('lp-delete-open').addEventListener('click',()=>{if(!byId('lp-delete-open').disabled){const password=byId('lp-delete-password');password.required=!googleOnly();password.closest('label').hidden=googleOnly();let google=byId('lp-delete-google');if(!google){google=elem('button','lp-btn lp-btn-secondary','Verify with Google before deleting');google.id='lp-delete-google';google.type='button';google.onclick=()=>startGoogleSignIn({reauth:true,returnTo:location.href});deleteDialog.querySelector('form').prepend(google);}google.hidden=!googleOnly();deleteDialog.showModal();}});
  byId('lp-delete-cancel').addEventListener('click',()=>deleteDialog.close());
  deleteDialog.addEventListener('close',()=>{
   byId('lp-delete-form').reset();
@@ -326,7 +335,7 @@ if(document.body.hasAttribute('data-settings-page')){
  byId('lp-delete-form').addEventListener('submit',async event=>{
   event.preventDefault();
   const password=byId('lp-delete-password').value;byId('lp-delete-password').value='';
-  if(!password||!byId('lp-delete-agree').checked)return;
+  if((!password&&!googleOnly())||!byId('lp-delete-agree').checked)return;
   const btn=byId('lp-delete-confirm'),status=byId('lp-delete-status');
   btn.disabled=true;setStatus(status,'Deleting your account…');
   try{

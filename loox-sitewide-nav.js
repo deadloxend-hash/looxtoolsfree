@@ -840,7 +840,7 @@
  }
  import(url('platform/notifications.js?v=nav-20261127-1')).then(m=>m.mountNotifications()).catch(()=>{});
  import(url('platform/mobile-viewport.js?v=settings-2-20261124'));
- import(url('platform/account.js?v=settings-2-20261124')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
+ import(url('platform/account.js?v=auth-20261127')).then(m=>{looxAccountModule=m;m.renderHeader();syncAccountHeader();}).catch(()=>{
   account.replaceChildren();
   const link=el('a','loox-sitewide-signin','Sign in');link.href=url('account.html');account.append(link);
  });

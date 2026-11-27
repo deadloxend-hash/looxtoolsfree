@@ -1,4 +1,4 @@
-import {state,api,refresh,auth,switchAccount,signOut,initialize} from './account.js?v=settings-2-20261124';
+import {state,api,refresh,auth,switchAccount,signOut,initialize} from './account.js?v=auth-20261127';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=settings-2-20261124';
 import {cropAvatar} from './avatar-crop.js?v=settings-2-20261124';
 const $=id=>document.getElementById(id);

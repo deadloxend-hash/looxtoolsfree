@@ -1,4 +1,4 @@
-import {state,auth,initialize,refresh} from './account.js?v=settings-2-20261124';
+import {state,auth,initialize,refresh} from './account.js?v=auth-20261127';
 import {Community,rpc,mediaURL,result} from './community.js?v=ui-20261125';
 import {cropAvatar} from './avatar-crop.js?v=settings-2-20261124';
 import {cloudRequest,cloudImage,cloudUpload,cloudDelete} from './profile-cloudflare.js?v=settings-2-20261124';

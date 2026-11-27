@@ -6,7 +6,7 @@ export function createAuthStorage({local=()=>globalThis.localStorage,session=()=
  const selected=()=>(read(local,'loox-auth-storage')??read(session,'loox-auth-storage')??memory.get('loox-auth-storage'))==='session'?[session,local]:[local,session];
  const storage={
   getItem(key){for(const factory of selected()){const value=read(factory,key);if(value!==null)return value;}return memory.get(key)??null;},
-  setItem(key,value){const stores=selected();for(const factory of stores){try{const target=factory();if(!target)continue;target.setItem(key,value);for(const other of stores)if(other!==factory)remove(other,key);memory.delete(key);return;}catch{}}
+  setItem(key,value){if(key==='loox-account-v1'){try{const session=JSON.parse(value);delete session.provider_token;delete session.provider_refresh_token;value=JSON.stringify(session);}catch{}}const stores=selected();for(const factory of stores){try{const target=factory();if(!target)continue;target.setItem(key,value);for(const other of stores)if(other!==factory)remove(other,key);memory.delete(key);return;}catch{}}
    memory.set(key,value);
   },
   removeItem(key){remove(local,key);remove(session,key);memory.delete(key);}

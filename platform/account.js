@@ -1,3 +1,4 @@
+import {newOAuthAttempt,oauthAttemptKey,oauthVerifierStorage,googleAvailable,googleOAuthOptions,trustedOAuthURL,safeAuthReturn} from './auth-flow.js';
 import {createAuthStorage} from './auth-storage.js';
 import {billingURL} from './billing-url.js';
 import {syncAccountAvatar} from './account-avatar.js?v=settings-2-20261124';
@@ -7,7 +8,7 @@ export const labels={fill:'Generative Fill',background:'Background removal',upsc
 const proposal=[{id:'free',price_cents:0,credits:25},{id:'creator',price_cents:1200,credits:500},{id:'pro',price_cents:2900,credits:1500},{id:'business',price_cents:6900,credits:4000}];
 const planName={basic:'LOOX Basic',free:'LOOX Basic',creator:'LOOX Creator',creator_yearly:'LOOX Creator',pro:'LOOX Pro',pro_yearly:'LOOX Pro',business:'LOOX Business',business_yearly:'LOOX Business',lifetime:'Legacy Lifetime'};
 export const state={config:null,client:null,user:null,account:null};
-let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='';
+let loading,library,clientReady,modal,refreshTask,previousIdentity=null,accountError='',googleCheck;
 export function el(tag,text,cls){
  const node=document.createElement(tag);if(text!=null)node.textContent=text;if(cls)node.className=cls;return node;
 }
@@ -38,14 +39,14 @@ function rememberRecentAccount(email){
 }
 
 const {storage:authStorage,hasStoredSession}=createAuthStorage();
-async function sdk(){
+export async function loadAuthSDK(){
  if(!library)library=new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL('../vendor/supabase-2.118.0.js',import.meta.url);const timer=setTimeout(()=>{library=null;s.remove();reject(Error('Account library timed out. Check your connection and retry.'));},15000);s.onload=()=>{clearTimeout(timer);resolve();};s.onerror=()=>{clearTimeout(timer);library=null;reject(Error('Account library could not load.'));};document.head.append(s);});
  await library;
 }
 async function client(){
  const cfg=await config();if(!cfg.auth)throw Error('Account setup is pending. Free browser tools are available.');
  if(!clientReady)clientReady=(async()=>{
-  await sdk();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:true}});
+  await loadAuthSDK();const api=window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:authStorage,storageKey:sessionKey,flowType:'pkce',detectSessionInUrl:false}});
   state.client=api;
   api.auth.onAuthStateChange((event,session)=>{
    const changed=state.user?.id!==session?.user?.id;
@@ -53,12 +54,13 @@ async function client(){
    if(changed){
     // Shared-device drafts must never transfer to the next signed-in account.
     if(previousIdentity && previousIdentity!==session?.user?.id){
+     state.account=null;accountError='';state.accountError='';
      try{for(const key of ['loox-image-generator-draft-v2','loox-creative-launch-v1'])sessionStorage.removeItem(key);}catch{/* Reload still clears private in-memory state when storage is unavailable. */}
-     location.reload();
+     if(!state.identityCommit)location.reload();
     }
     previousIdentity=session?.user?.id||null;
     state.account=null;accountError='';renderHeader();document.dispatchEvent(new Event('loox-user'));}
-   if(event==='PASSWORD_RECOVERY')setTimeout(()=>auth('reset'),0);
+   if(event==='PASSWORD_RECOVERY'){state.recoveryReady=true;setTimeout(()=>auth('reset'),0);}
    if(session&&changed)setTimeout(()=>refresh().catch(()=>{}),0);
   });
   const {data,error}=await Promise.race([api.auth.getSession(),new Promise((_,reject)=>setTimeout(()=>reject(Error('Session restoration timed out. Check your connection and retry.')),15000))]);if(error)throw error;
@@ -86,25 +88,31 @@ export function dialog(title){
 export function field(parent,title,type='text',opts={}){
  const wrap=el('label',null,'lx-field'),caption=el('span',title),input=el('input');input.type=type;Object.assign(input,opts);wrap.append(caption,input);parent.append(wrap);return input;
 }
-function friendlyAuthError(err){
+export function friendlyAuthError(err){
  const code=String(err?.code||'').toLowerCase(),message=String(err?.message||'');
  if(code==='over_email_send_rate_limit'||/email rate limit exceeded/i.test(message))return 'The verification email limit for LOOX Tools has been reached. Please do not try another email or register repeatedly. If you already verified your account, use Sign in instead. Email delivery will resume when the provider limit resets or when LOOX configures custom email sending.';
  if(code==='email_address_not_authorized'||/email address not authorized/i.test(message))return 'Email signup is temporarily restricted by the email provider. LOOX must configure custom SMTP before registering other addresses.';
- if(code==='email_exists'||code==='user_already_exists'||/already registered/i.test(message))return 'That email may already have an account. Choose Sign in instead of registering again.';
- if(code==='invalid_credentials'||/invalid login credentials/i.test(message))return 'The email or password is incorrect. If you already verified your email, try signing in with the password you used at registration; otherwise use Forgot password.';
- return message||'The account request failed. Please try again later.';
+ if(['email_exists','user_already_exists'].includes(code))return 'Check your inbox for next steps, or sign in if you already have an account.';
+ if(code==='invalid_credentials'||/invalid login credentials/i.test(message))return 'The email or password is incorrect. You can also request a recovery link.';
+ if(/rate.limit|too.many/i.test(code+' '+message))return 'Too many attempts. Wait a moment before trying again.';
+ if(/expired|otp_expired|flow_state/i.test(code+' '+message))return 'This sign-in or recovery link has expired. Request a new link from LOOX.';
+ return 'The account request could not be completed. Check your details and try again.';
 }
 function withStatus(form,submit,status,call){
- form.onsubmit=async e=>{e.preventDefault();submit.disabled=true;msg(status,'');try{await call();}catch(err){msg(status,friendlyAuthError(err));}finally{submit.disabled=false;}};
+ let pending=false,nextAttempt=0,failures=0;
+ form.onsubmit=async e=>{e.preventDefault();if(pending||Date.now()<nextAttempt)return;pending=true;submit.disabled=true;submit.setAttribute('aria-busy','true');msg(status,'');try{await call();failures=0;}catch(err){nextAttempt=Date.now()+Math.min(15000,1000*2**Math.min(failures++,4));msg(status,friendlyAuthError(err));}finally{pending=false;submit.disabled=false;submit.setAttribute('aria-busy','false');}};
 }
 export function auth(mode='login',options={}){
+ if(mode==='reset'&&!state.recoveryReady){const {box}=dialog('Password recovery');box.append(el('p','Request a new recovery link to choose a password.'),button('Request recovery email',()=>auth('forgot')));return;}
+ ensureAuthStyles();
  const titles={login:'Welcome back',register:'Create your LOOX account',forgot:'Forgot your password?',reset:'Choose a new password'};
  const switching=mode==='login'&&Boolean(options.switching);
  const previousUserId=state.user?.id||null;
  const previousUserEmail=state.user?.email||null;
- const previousRemembered=store()===localStorage;
+ const previousRemembered=authStorage.getItem(rememberKey)!=='session';
  const {box,d}=dialog(switching?'Sign in to another account':titles[mode]);
  if(switching)box.append(el('p','Your current LOOX account stays signed in until the new account is verified.','lx-note'));
+ d.classList?.add('lx-auth');box.append(el('p','LOOX AI · YOUR CREATIVE WORKSPACE','lx-auth-brand'));
  const form=el('form',null,'lx-stack');box.append(form);
  const reg=mode==='register', reset=mode==='reset', forgot=mode==='forgot';
  const full=reg&&field(form,'Full name','text',{required:true,maxLength:80,autocomplete:'name'});
@@ -127,11 +135,21 @@ export function auth(mode='login',options={}){
   if(mode!=='login')box.append(button('Already have an account? Sign in',()=>auth(),'lx-link'));
   if(mode==='login')box.append(button('Create an account',()=>auth('register'),'lx-link'),button('Forgot password?',()=>auth('forgot'),'lx-link'));
  }
+ if(mode==='login'||reg){
+  const google=button('',async()=>{google.disabled=true;google.setAttribute('aria-busy','true');try{if(reg&&!agreement.checked){msg(note,'Accept the Terms and Privacy Policy before creating an account.');return;}await startGoogleSignIn({remember:remember?.checked??true});}catch(error){msg(note,error.message||'Google sign-in is unavailable.');}finally{google.disabled=false;google.setAttribute('aria-busy','false');}},'lx-button lx-google');
+  const icon=el('img');icon.src=new URL('../assets/google-g.png',import.meta.url).href;icon.alt='';icon.width=20;icon.height=20;
+  google.append(icon,el('span','Continue with Google'));google.disabled=true;
+  const googleNote=el('p','Checking Google sign-in availability…','lx-note');googleNote.setAttribute('role','status');
+  const divider=el('div','or continue with email','lx-auth-divider');box.insertBefore?.(google,form);box.insertBefore?.(googleNote,form);box.insertBefore?.(divider,form);
+  googleAvailability().then(enabled=>{if(!d.isConnected)return;google.disabled=!enabled;googleNote.textContent=enabled?'Google shares only your basic identity. LOOX does not request Gmail access.':'Google sign-in is not configured yet. Use email sign-in below.';}).catch(()=>{googleNote.textContent='Google sign-in is temporarily unavailable. Email sign-in remains available.';});
+ }
+ const footer=el('nav',null,'lx-auth-footer');footer.setAttribute('aria-label','Sign-in information');
+ for(const [label,url] of [['Home','index.html'],['Terms','terms.html'],['Privacy','privacy-policy.html'],['Cookie Settings','cookie-settings.html']])footer.append(link(label,new URL('../'+url,import.meta.url).href));box.append(footer);
  config().then(cfg=>{if(!cfg.auth){submit.disabled=true;msg(note,'Account setup is pending. You can still use all free browser tools.');}}).catch(e=>msg(note,e.message));
  withStatus(form,submit,note,async()=>{
   if(confirm&&(!strong(pass.value)||pass.value!==confirm.value))throw Error('Use a stronger password and make sure both passwords match.');
   // Commit persistence preferences only after credentials have been verified.
-  const c=await client(),redirect=new URL('account.html',document.baseURI);
+  const c=await client(),redirect=new URL('../account.html',import.meta.url);
   let result;
   if(reg){result=await c.auth.signUp({email:email.value.trim(),password:pass.value,options:{emailRedirectTo:redirect.href,data:{full_name:full.value.trim(),loox_terms:terms}}});}
   else if(forgot){redirect.searchParams.set('flow','recovery');result=await c.auth.resetPasswordForEmail(email.value.trim(),{redirectTo:redirect.href});}
@@ -178,13 +196,13 @@ export function auth(mode='login',options={}){
     committed=true;
    }catch(error){if(before===null)authStorage.removeItem(rememberKey);else authStorage.setItem(rememberKey,before);throw error;}
   }
-  if(result.error)throw result.error;
+  if(result.error&&!((forgot||reg)&&['email_exists','user_already_exists','user_not_found'].includes(result.error.code)))throw result.error;
   if(forgot||reg){
    form.replaceChildren(el('p',forgot?'If this email has an account, check your inbox for a recovery link. Only request another email if needed.':'Registration was submitted. Check your inbox for a verification link. After verifying, return to the LOOX website and choose Sign in with the same email and password. Do not register a second time.'));
    if(reg)form.append(button('I already verified my email · Sign in',()=>auth('login'),'lx-button lx-primary'));
    return;
   }
-  if(reset){await c.auth.signOut();history.replaceState(null,'','account.html');auth();return;}
+  if(reset){state.recoveryReady=false;state.identityCommit=true;const loggedOut=await c.auth.signOut({scope:'global'});state.identityCommit=false;if(loggedOut.error)throw loggedOut.error;location.replace(new URL('../settings.html#security',import.meta.url).href);return;}
   if(mode==='login'&&remember?.checked){
    if(switching&&previousRemembered&&previousUserEmail)rememberRecentAccount(previousUserEmail);
    rememberRecentAccount(result.data?.user?.email||email.value.trim());
@@ -196,6 +214,25 @@ export function auth(mode='login',options={}){
   }
   await refresh();
  });
+}
+export function ensureAuthStyles(){if(document.querySelector('link[data-loox-auth-style]'))return;const css=el('link');css.rel='stylesheet';css.href=new URL('./auth-ui.css?v=auth-20261127',import.meta.url).href;css.dataset.looxAuthStyle='';document.head.append(css);}
+export function googleAvailability(){if(!googleCheck)googleCheck=config().then(cfg=>cfg.auth?googleAvailable(cfg):false).catch(e=>{googleCheck=null;throw e;});return googleCheck;}
+export const getAuthClient=()=>client();
+export function emailCallbackClient(cfg){const memory=new Map(),key=sessionKey+'-code-verifier';return window.supabase.createClient(cfg.url,cfg.key,{auth:{storageKey:'loox-email-callback-'+crypto.randomUUID(),storage:{getItem:k=>k.endsWith('-code-verifier')?authStorage.getItem(key):memory.get(k)??null,setItem:(k,v)=>k.endsWith('-code-verifier')?authStorage.setItem(key,v):memory.set(k,v),removeItem:k=>k.endsWith('-code-verifier')?authStorage.removeItem(key):memory.delete(k)},persistSession:true,autoRefreshToken:false,detectSessionInUrl:false,flowType:'pkce'}});}
+export function emailRecoveryPending(){return String(authStorage.getItem(sessionKey+'-code-verifier')||'').includes('/PASSWORD_RECOVERY');}
+export async function installVerifiedSession(session,remember){state.identityCommit=true;state.account=null;state.accountError='';try{if(typeof remember==='boolean')authStorage.setItem(rememberKey,remember?'local':'session');const c=await client();const r=await c.auth.setSession(session);if(r.error)throw r.error;return c;}finally{state.identityCommit=false;}}
+
+export function isolatedOAuthClient(cfg,nonce){return window.supabase.createClient(cfg.url,cfg.key,{auth:{storage:oauthVerifierStorage(nonce),storageKey:'loox-oauth-'+nonce,persistSession:true,autoRefreshToken:false,detectSessionInUrl:false,flowType:'pkce'}});}
+export async function startGoogleSignIn({remember=true,reauth=false,returnTo=location.href}={}){
+ if(!await googleAvailability())throw Error('Google sign-in is not configured yet. Use email sign-in.');
+ await loadAuthSDK();const cfg=await config();
+ const attempt=newOAuthAttempt({base:new URL('../index.html',import.meta.url).href,returnTo,owner:state.user?.id||null,remember,reauth});
+ // Same-tab, short-lived correlation state. If storage is blocked, do not begin a broken redirect flow.
+ try{sessionStorage.setItem(oauthAttemptKey,JSON.stringify(attempt));if(!sessionStorage.getItem(oauthAttemptKey))throw Error();}catch{throw Error('Google sign-in needs temporary browser storage. Allow site storage or use email sign-in.');}
+ const callback=new URL('../auth-callback.html',import.meta.url);callback.searchParams.set('flow','google');callback.searchParams.set('attempt',attempt.nonce);
+ const candidate=isolatedOAuthClient(cfg,attempt.nonce);
+ try{const {data,error}=await candidate.auth.signInWithOAuth(googleOAuthOptions(callback.href));if(error)throw error;location.assign(trustedOAuthURL(data.url,cfg));}
+ catch{sessionStorage.removeItem(oauthAttemptKey);throw Error('Google sign-in could not start. Please try again.');}
 }
 function ensureSwitcherStyles(){
  if(document.querySelector('link[data-loox-account-switcher]'))return;
@@ -217,7 +254,9 @@ export function switchAccount(){
  const identity=el('span',null,'loox-switch-copy');
  identity.append(el('strong',String(state.account?.profile?.name||state.user.user_metadata?.full_name||'Current account')));
  identity.append(el('small',currentEmail));
+ const picture=document.querySelector('[data-loox-account] .lx-avatar img');if(picture){const image=picture.cloneNode();image.alt='';avatar.replaceChildren(image);}
  current.append(avatar,identity,el('span','Current','loox-switch-status'));
+ box.append(link('Manage account','settings.html#security'),button('Sign out',signOut,'lx-link'));
  box.append(current);
  const others=recentAccounts().filter(email=>email!==currentEmail);
  if(others.length){
@@ -332,7 +371,7 @@ if(typeof document!=='undefined')document.addEventListener('pointerdown',event=>
 if(typeof document!=='undefined')document.addEventListener('keydown',event=>{
  if(event.key==='Escape')document.querySelectorAll('.lx-profile-details[open]').forEach(node=>{node.open=false;});
 });
-export async function signOut(){try{const c=await client();const {error}=await c.auth.signOut({scope:'local'});if(error)throw error;location.assign('index.html');}catch(e){dialog('Sign out').box.append(el('p',e.message));}}
+export async function signOut(){try{state.identityCommit=true;const c=await client();const {error}=await c.auth.signOut({scope:'local'});if(error)throw error;location.assign('index.html');}catch(e){state.identityCommit=false;dialog('Sign out').box.append(el('p','Sign-out could not be completed. Check your connection and retry.'));}}
 const sections=[['profile','Account Overview'],['credits','My Credits'],['subscription','Subscription'],['history','Transaction History'],['settings','Account Settings']];
 function money(cents){return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(cents/100);}
 export async function plans(host){host.replaceChildren(el('p','Explore LOOX Basic, Creator, Pro and Business with monthly billing.'),button('Compare plans and generation counts',pricing,'lx-button lx-primary'));}
